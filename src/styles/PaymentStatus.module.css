@@ -1,0 +1,29 @@
+.main_cont {
+    padding: 2rem 0rem;
+}
+
+.icon_container {
+    margin-bottom: 2rem;
+}
+
+.icon {
+    width: 64px;
+    height: 64px;
+}
+
+.title {
+    margin-bottom: 1rem;
+}
+
+.sub_title {
+    margin-bottom: 2rem;
+}
+
+.button {
+    background-color: var(--brand-blue);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2.5rem;
+    cursor: pointer;
+}

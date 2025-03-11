@@ -1,0 +1,351 @@
+/* Layout */
+.main_content {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin: 2rem 0rem;
+}
+
+/* Dashboard Stats Grid */
+.dashboard_stats {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 1rem;
+    width: 100%;
+}
+
+.stats_section_primary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.stats_section_secondary {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+/* Section Titles */
+.stats_section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 1px solid var(--primary-bg);
+    border-radius: 1.5rem;
+    padding: 1.5rem 1rem 1rem 1rem;
+    background-color: #efefef24;
+}
+
+.section_title {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--grey);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 1rem;
+}
+
+.view_toggle {
+    display: flex;
+    gap: 0.2rem;
+    background: var(--primary-bg);
+    padding: 0.3rem;
+    border-radius: 1rem;
+}
+
+.toggle_btn {
+    padding: 0.3rem 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--grey);
+    width: auto;
+    height: 1.5rem;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toggle_btn.active {
+    background: var(--brand-blue);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    padding: 0.3rem 0.5rem;
+    color: var(--white);
+}
+
+/* Stat Card Components */
+.total_units_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 135px;
+    /* Set fixed height for consistency */
+    width: 100%;
+    background-color: var(--primary-bg);
+    border-radius: 1.5rem;
+}
+
+.stat_card {
+    background-color: var(--white);
+    padding: 1.25rem;
+    border-radius: 1.5rem;
+    width: 100%;
+    height: 100px;
+    /* Set fixed height for the stat card */
+    border: 1px solid var(--primary-bg);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 0.5rem;
+}
+
+.stat_card_left {
+    display: flex;
+    font-family: 'Roboto';
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.stat_card_right {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.stat_card_right span {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--white);
+}
+
+.stat_number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--brand-blue);
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.active_units_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0.6rem 1.5rem 0.8rem 1.5rem;
+}
+
+/* Unit Details Section */
+.unit_details_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.unit_details_container>div {
+    align-items: center;
+}
+
+/* Table and Activities Layout */
+.table_activities_cont {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+}
+
+.units_table_container {
+    width: 70%;
+    border: 1px solid var(--primary-bg);
+    padding: 1rem;
+    border-radius: 1.5rem;
+}
+
+.activities_container {
+    width: 30%;
+    border: 1px solid var(--primary-bg);
+    padding: 1rem;
+    border-radius: 1.5rem;
+}
+
+/* Metrics Container */
+.metrics_container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.metrics_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.metric_graphs{
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+}
+
+.metrics {
+    border: 1px solid var(--primary-bg);
+    border-radius: 1.5rem;
+    width: 100%;
+}
+
+@media (max-width: 1400px) {
+    .dashboard_stats {
+        grid-template-columns: 1fr;
+    }
+
+    .section_title {
+        padding-left: 0.5rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .stats_section_primary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats_section_secondary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+
+    .stats_section_primary,
+    .stats_section_secondary {
+        grid-template-columns: 1fr;
+    }
+}
+
+.tables_container {
+    display: flex;
+    gap: 1rem;
+    padding-bottom: 2rem;
+}
+
+.table_column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form_container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form_group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form_group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--black);
+}
+
+.form_group input,
+.form_group textarea,
+.form_group select {
+    padding: 0.75rem;
+    border: 1px solid var(--primary-bg);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    width: 100%;
+    resize: vertical;
+}
+
+.form_group input:focus,
+.form_group textarea:focus,
+.form_group select:focus {
+    outline: none;
+    border-color: var(--brand-blue);
+}
+
+.form_group select {
+    appearance: none;
+    background-image: url('icons/arrow-down.svg');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+}
+
+.form_group textarea {
+    min-height: 100px;
+}
+
+.action_cont {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-direction: row;
+    margin-left: 1rem;
+}
+
+.time_range_select_dropdown {
+    position: relative;
+}
+
+.time_range_select {
+    border-radius: 2rem;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    width: fit-content;
+    height: 2.1rem;
+    padding: 0 1rem;
+    min-width: 9rem;
+    border: 1px solid var(--primary-bg);
+    background-color: var(--white);
+}
+
+.time_range_select_dropdown_icon {
+    position: absolute;
+    right: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    width: 0.7rem;
+    height: 0.7rem;
+}
+

@@ -1,0 +1,236 @@
+.main_auth_layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    row-gap: 1.5rem;
+    column-gap: 1.5rem;
+    height: 100%;
+}
+.slider_container {
+    grid-row: 1 / 15;
+    grid-column: 1 / 10;
+    background-color: var(--white);
+    border-radius: 1.5rem;
+}
+.form_placeholder {
+    grid-row: 1 / 15;
+    grid-column: 10 / 15;
+    height: 100%;
+    background-color: var(--primary-bg);
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+}
+.form_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    height: 3rem;
+    width: 100%;
+}
+
+.form_headlink {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+.form_footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    height: 3rem;
+    width: 100%;
+}
+.form_footlink {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    gap: 1rem;
+}
+.form_footlink a {
+    text-decoration: none;
+    color: var(--brand-blue);
+}
+.form_support a {
+    text-decoration: none;
+    color: var(--brand-blue);
+}
+.form_body_cont {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--white);
+}
+.form_headlink {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.form_body_cont {
+    display: flex;
+    width: 60%;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    border: 2px solid var(--neutral-4);
+}
+
+
+
+.modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+.modal_content {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: 1.5rem;
+    width: 40%;
+    height: 50%;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+.modal_content::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+}
+.modal_buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+}
+.modal_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    width: 100%;
+    padding-bottom: 2rem;
+    border-bottom: 2px dotted var(--blue-bright);
+    margin-bottom: 1rem;
+}
+.modal_close {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-content: center;
+    gap: 1rem;
+}
+@media screen and (max-width: 1440px) {
+    .form_body_cont {
+        width: 100%;
+    }
+
+    .form_footer {
+        flex-direction: column;
+    }
+}
+@media screen and (max-width: 1000px) {
+    .main_auth_layout {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .slider_container {
+        display: none;
+    }
+
+    .form_placeholder {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        padding: 1rem;
+        background-color: var(--primary-bg);
+        justify-content: center;
+    }
+
+    .form_header {
+        display: none;
+    }
+
+    .form_body_cont {
+        width: 80%;
+        margin: 0 auto;
+        padding: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .form_footer {
+        flex-direction: row;
+        width: 100%;
+        padding: 1rem 5.8rem;
+        white-space: nowrap;
+    }
+
+    .form_footlink {
+        width: auto;
+        justify-content: flex-end;
+    }
+
+    .modal_content {
+        width: 90%;
+        height: 80%;
+        padding: 1rem;
+    }
+
+    .modal_header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .modal_close {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 730px) {
+    .form_footer {
+        flex-direction: column;
+        gap: 1rem;
+        padding:2rem 1rem;
+    }
+
+    .form_footlink {
+        width: 100%;
+        justify-content: center;
+    }
+    .form_body_cont{
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .form_body_cont {
+        width: 90%;
+        padding: 0.5rem;
+    }
+    .form_placeholder {
+        padding: 0;
+    }
+}

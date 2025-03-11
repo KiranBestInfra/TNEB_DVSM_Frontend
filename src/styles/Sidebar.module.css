@@ -1,0 +1,224 @@
+.sidebar_cont {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    width: 100%;
+}
+
+.navmenu_cont {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    border-top: 1px solid var(--primary-bg);
+}
+
+.navmenu_cont>div {
+    position: relative;
+}
+
+.bottom_accmenu>div {
+    position: relative;
+}
+
+.navmenu_item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: row;
+    color: var(--grey);
+    padding: 0.5rem 1.5rem;
+    font-size: 0.875rem;
+    text-decoration: none;
+    cursor: pointer;
+    border-bottom: 1px solid var(--primary-bg);
+}
+
+.navmenu_item:hover {
+    background-color: var(--primary-bg);
+    color: var(--grey);
+}
+
+.navmenu_item:active {
+    background-color: var(--brand-blue);
+    color: var(--white);
+}
+
+.navmenu_item.active {
+    background-color: var(--brand-blue);
+    color: var(--white);
+}
+
+.bottom_navmenu {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.modalFullScreen {
+    display: none;
+}
+
+.top_navmenu {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
+
+.hamburger_menu_icon {
+    display: none;
+
+}
+
+.bottom_accmenu {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.icons_account {
+    background-color: var(--primary-bg);
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 100%;
+    font-weight: 600;
+}
+
+.bills_cont.active {
+    background-color: var(--brand-blue);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.bills_cont {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    justify-content: space-between;
+    width: 100%;
+    color: var(--blue-bright);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.bottom_logo_cont {
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: 100%;
+    background-color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    overflow: hidden;
+    border: 1px solid var(--primary-bg);
+}
+
+.bottom_logo {
+    width: 100%;
+}
+
+@media screen and (min-width: 350px) and (max-width: 480px) {
+    .bottom_navmenu {
+        display: none;
+    }
+
+    .sidebar_cont {
+        width: 100%;
+
+    }
+
+    .top_navmenu {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .hamburger_menu_icon {
+        display: block;
+        padding: 1rem;
+    }
+
+    .navmenu_cont {
+        width: 100%;
+        display: none;
+    }
+
+    .bottom_navmenu {
+        width: 100%;
+        display: none;
+    }
+
+    .modalFullScreen {
+        display: block;
+        position: fixed;
+        top: 0;
+        right: -480px;
+        height: 100vh;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        transition: right 0.3s ease-in-out;
+        z-index: 9999;
+    }
+
+    .modalFullScreen.show {
+        right: 0;
+    }
+
+    .modalContent {
+        height: 100%;
+        background: linear-gradient(0deg, var(--blue-dark), var(--brand-blue));
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .top_navmenu {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .modal_navmenu_cont.show {
+        display: block;
+    }
+
+    .modal_navmenu_cont {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .modal_navmenu_cont>div:nth-child(1) {
+        justify-content: flex-end;
+    }
+
+    .bills_cont {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        justify-content: space-between;
+        width: 100%;
+        color: var(--blue-bright);
+    }
+
+    .bottom_modal_menu {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 1rem;
+        width: 100%;
+    }
+}

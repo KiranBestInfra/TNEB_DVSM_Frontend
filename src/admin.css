@@ -1,0 +1,40 @@
+.adminheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header_actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.metrics_title {
+  font-size: 1rem;
+}
+
+.icons_actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: var(--primary-bg);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.icons_actions:hover {
+  background-color: var(--brand-blue);
+}
+
+.icons_actions:hover img {
+  filter: brightness(0) invert(1);
+}
+
+.icons_actions img {
+  width: 1rem;
+  height: 1rem;
+  transition: all 0.2s ease;
+}

@@ -1,0 +1,126 @@
+.login_container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 2rem;
+}
+.form_login_cont {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+}
+.verify_btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.verify_btn button {
+    width: 25rem;
+}
+.remember_forgot_cont {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.remember_forgot_cont label{
+    display: flex;
+    align-items: center;
+}
+input[type='checkbox'] {
+    margin-right: 0.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.5rem;
+    outline: none;
+    border: 2px solid var(--neutral-4);
+    appearance: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+input[type='checkbox']:checked {
+    background-image: url('icons/checkmark.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 0.75rem;
+    border-color: var(--brand-blue);
+    background-color: var(--brand-blue);
+}
+.message {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.otp_inputs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.2rem;
+}
+.otp_inputs input {
+    width: 3.5rem;
+    text-align: center;
+}
+
+.form_login_cont button {
+    margin:0 auto;
+}
+
+.password_rules {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    padding: 1rem;
+    border-radius: 1.5rem;
+    border: 2px dotted var(--blue-bright);
+    background-color: var(--neutral-4);
+}
+
+@media screen and (max-width: 1440px) {
+    .otp_inputs input {
+        width: 3rem;
+        height: 3rem;
+    }
+    .otp_inputs {
+        gap: 0.4rem;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .verify_btn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .verify_btn button {
+        width: 25rem;
+        height: 3.5rem;
+    }
+    .otp_inputs input {
+        width: 3.2rem;
+        height: 3.2rem;
+    }
+    .login_container{
+        padding: 1.5rem 0.5rem 1.5rem 0.5rem;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .otp_inputs {
+        gap: 0.25rem;
+    }
+
+    .otp_inputs input {
+        width: 3rem;
+        height: 3rem;
+        font-size: 0.9rem;
+    }
+}

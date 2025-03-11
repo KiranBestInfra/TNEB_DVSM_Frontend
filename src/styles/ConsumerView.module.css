@@ -1,0 +1,627 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.content {
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.headerMain {
+  display: flex;
+
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+.header_left {
+  display: flex;
+  gap: 1.5rem;
+  margin-left: auto;
+}
+.consumerName {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--black);
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.statusBadge.approved {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.statusBadge.pending {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.statusBadge.rejected {
+  background-color: #fdecea;
+  color: #d32f2f;
+}
+
+.statusBadge.active {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.headerDetails {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 200px;
+}
+
+.label {
+  font-size: 0.85rem;
+  color: var(--black);
+  font-weight: 400;
+}
+
+.value {
+  font-size: 1rem;
+  color: #1a202c;
+  font-weight: 600;
+}
+
+.profileSection {
+  transition: box-shadow 0.3s ease;
+  border: 1px solid var(--primary-bg);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+
+.profileGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  background-color: var(--primary-bg);
+  padding: 1.5rem;
+  border-radius: 1.5rem;
+}
+
+.profileGrid:last-child {
+  margin-bottom: 0;
+}
+
+.profileItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.addressGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.addressBlock {
+  padding: 0rem 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.subTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--black);
+}
+
+.addressText {
+  font-size: 1rem;
+  color: #4a5568;
+  line-height: 1.6;
+  margin: 0;
+}
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 2px;
+}
+
+.tabButton {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: none;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tabButton:hover {
+  color: #3182ce;
+}
+
+.tabButton.active {
+  color: #2d3748;
+}
+
+.tabButton.active::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #3182ce;
+  transition: background-color 0.2s ease;
+}
+
+.consumptionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.consumptionCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.readingDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tariffTable table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.billingSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.tariffTable th,
+.tariffTable td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tariffTable th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #1a202c;
+}
+
+.tariffTable tr:last-child td {
+  border-bottom: none;
+}
+
+.filterSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.searchInput {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  width: 280px;
+  transition: border-color 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #3182ce;
+}
+
+.filterControls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filterSelect {
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background-color: white;
+  min-width: 150px;
+}
+
+.downloadBtn {
+  padding: 0.75rem 1.5rem;
+  background: #3182ce;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.downloadBtn:hover {
+  background: #2c5282;
+}
+
+.actionBtn {
+  padding: 0.5rem 1rem;
+  background: #4a5568;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.actionBtn:hover {
+  background: #2d3748;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .headerDetails {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .consumerName {
+    font-size: 1rem;
+  }
+
+  .filterSection {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+
+  .filterControls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tariffTable {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 640px) {
+  .profileGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .profileSection {
+    padding: 1.5rem;
+  }
+
+  .addressGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.chartsSection {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid #e2e8f0;
+}
+
+.chartTabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.chartTabButton {
+  padding: 0.75rem 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
+  color: #4a5568;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.chartTabButton.active {
+  background: #3182ce;
+  color: white;
+  border-color: #3182ce;
+}
+
+.chartTabButton:hover:not(.active) {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.chartContainer h3 {
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #1a202c;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .chartTabs {
+    flex-direction: column;
+  }
+
+  .chartContainer {
+    height: 300px;
+    padding: 1rem;
+  }
+}
+.units_table_container {
+  background: var(--white);
+  border-radius: 8px;
+}
+
+.units_table_status {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.units_table_status.approved {
+  background-color: #e6f4ea;
+  color: #1e7e34;
+}
+
+.units_table_status.pending {
+  background-color: #fff3e0;
+  color: #f57c00;
+}
+
+.units_table_status.rejected {
+  background-color: #fdecea;
+  color: #d32f2f;
+}
+
+.units_table_status.active {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.reportCard {
+  border: 1px solid var(--primary-bg);
+  border-radius: 1.5rem;
+  padding-bottom: 1rem;
+}
+
+.profileImageContainer {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--primary-bg);
+}
+
+.profileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .profileImageContainer {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+.profileInitials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-bg);
+  color: var(--brand-blue);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .profileInitials {
+    font-size: 1.25rem;
+  }
+}
+
+.reportsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.lineGraphReportsGrid{
+  grid-template-columns: 1fr;
+}
+
+@media (max-width: 1200px) {
+  .reportsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .reportsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.status_paid,
+.status_overdue,
+.status_pending,
+.status_partially_paid {
+  color: var(--white);
+  padding: 0.3rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.status_paid {
+  background-color: #029447; /* Green */
+}
+
+.status_overdue {
+  background-color: #dc272c; /* Red */
+}
+
+.status_pending {
+  background-color: #ed8c22; /* Orange */
+}
+
+.status_partially_paid {
+  background-color: #3f68b2; /* Blue */
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.iconButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.iconButton:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.iconButton img {
+  width: 20px;
+  height: 20px;
+}
+.dashboard_stats_container{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.total_units_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: var(--primary-bg);
+  border-radius: 1.5rem;
+}
+
+.stat_card {
+  background-color: var(--white);
+  padding: 1rem;
+  border-radius: 1.5rem;
+  width: 100%;
+  border: 1px solid var(--primary-bg);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  column-gap: 0.5rem;
+}
+
+.stat_card_left {
+  display: flex;
+  font-family: 'Roboto';
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.stat_card_right {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.stat_number {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--brand-blue);
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.active_units_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.6rem 1rem 0.8rem 1rem;
+}
+
+.active_units_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.6rem 1rem 0.8rem 1rem;
+}

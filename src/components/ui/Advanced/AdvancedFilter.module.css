@@ -1,0 +1,177 @@
+.advanced_options {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.section_title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+}
+
+.form_container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.toggle_container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.label {
+    font-size: 1rem;
+    color: var(--black);
+    font-weight: 400;
+}
+
+.toggle_buttons {
+    background: var(--neutral-4);
+    padding: 0.5rem;
+    border-radius: 2rem;
+    display: inline-flex;
+    position: relative;
+    gap: 0.5rem;
+}
+
+.toggle_btn {
+    padding: 0.5rem 1.5rem;
+    background: var(--blue-bright);
+    border-radius: 1.5rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    z-index: 1;
+    white-space: nowrap;
+    font-family: 'Roboto';
+    text-align: center;
+    width: fit-content;
+    border: 2px solid var(--blue-bright);
+    color: var(--white);
+}
+
+.toggle_btn.active {
+    color: var(--white);
+    background: var(--brand-blue);
+    border: 2px solid var(--brand-blue);
+}
+
+.toggle_btn:hover:not(.active) {
+    color: var(--white);
+}
+
+.toggle_buttons::before {
+    content: '';
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
+    height: calc(100% - 0.5rem);
+    background: white;
+    border-radius: 1.5rem;
+    transition: transform 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggle_buttons[data-state="right"]::before {
+    transform: translateX(100%);
+}
+
+.filter_options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.checkbox_wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reminder_options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.select_group {
+    display: flex;
+    gap: 1rem;
+}
+
+.tabs_container {
+    width: 100%;
+}
+
+.tabs_list {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--neutral-4);
+}
+
+.tab_button {
+    padding: 1rem 1.5rem;
+    background: var(--blue-bright);
+    border: none;
+    cursor: pointer;
+    font-weight: 400;
+    position: relative;
+    border-radius: 1rem 1rem 0rem 0rem;
+    font-family: 'Roboto';
+    font-size: 1rem;
+    color: var(--white);
+}
+
+.tab_button.active {
+    color: var(--white);
+    background: var(--brand-blue);
+}
+
+.tab_button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
+.tab_content {
+    display: none;
+}
+
+.tab_content.active {
+    display: block;
+    background: var(--primary-bg);
+    border-radius: 0rem 1.5rem 1.5rem 1.5rem;
+    padding: 1rem;
+}
+
+.amount_range {
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+}
+
+.date_ranges {
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+    position: relative;
+}
+
+.search_cont {
+    position: relative;
+    width: 100%;
+}
+
+.date_input {
+    width: 100%;
+    text-transform: uppercase;
+}

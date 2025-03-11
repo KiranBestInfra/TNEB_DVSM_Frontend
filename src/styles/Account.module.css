@@ -1,0 +1,278 @@
+.main_content {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem 0rem;
+    gap: 2rem;
+}
+
+/* Form Groups */
+.form_group {
+    margin-bottom: 1.5rem;
+}
+
+.form_group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form_group input,
+.form_group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.form_group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.input_disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+}
+
+/* Profile Sections */
+.profile_section {
+    background-color: var(--white);
+    border: 1px solid var(--primary-bg);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.profile_section h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.profile_picture_container {
+    display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.profile_picture_container img {
+    width: 7.5rem;
+    height: 7.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+    padding: 0.2rem;
+    background-color: var(--primary-bg);
+}
+
+.profile_section_content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.profile_picture_initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--primary-bg);
+    color: var(--brand-blue);
+    font-size: 2rem;
+    font-weight: 600;
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+}
+
+/* Login Activities */
+.login_activities {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.activity_item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem;
+    background: var(--primary-bg);
+    border-radius: 1rem ;
+}
+
+.activity_date {
+    font-weight: 400;
+    color: var(--grey);
+    font-size: 0.8rem;
+}
+
+.activity_details {
+    flex: 1;
+}
+
+.activity_details p {
+    margin: 0;
+    color: #333;
+}
+
+.activity_details span {
+    display: block;
+    font-size: 0.875rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* Security Section */
+.security_section {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--white);
+    border: 1px solid var(--primary-bg);
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+/* Recovery Options */
+.recovery_options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.option_item label {
+    display: flex;
+    font-weight: 400;
+    justify-content: space-between;
+    gap: 0.2rem;
+    align-items: center;
+}
+
+.option_item p {
+    font-size: 0.9rem;
+    padding: 1rem;
+    color: var(--grey);
+}
+
+/* Preferences Section */
+
+.preferences_container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.preferences_section {
+    background-color: var(--white);
+    border: 1px solid var(--primary-bg);
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+
+.option_item {
+    padding: 0rem 1rem;
+    background: var(--primary-bg);
+    display: flex;
+    align-content: center;
+    align-items: center;
+    border-radius: 2rem;
+}
+.preferences_options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Tabs Styles */
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main_content {
+        padding: 1rem;
+    }
+    
+    .activity_item {
+        flex-direction: column;
+    }
+    
+    .activity_date {
+        margin-bottom: 0.5rem;
+    }
+}
+
+.settings_container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.settings_container > div {
+    background-color: var(--white);
+    border: 1px solid var(--primary-bg);
+    padding: 1.5rem;
+    border-radius: 1rem;
+}
+
+.account_item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--primary-bg);
+    padding: 0.3rem 0.3rem 0.3rem 1rem;
+    border-radius: 2rem;
+}
+
+.accounts_list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.sessions_list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.devices_list {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.device_item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--primary-bg);
+    padding: 1rem;
+    border-radius: 1rem;
+    width: 25%;
+}
+
+.device_info h3 {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--black);
+    margin-bottom: 0.5rem;
+}
+
+.device_info p {
+    font-size: 0.8rem;
+    color: var(--grey);
+}
+
+.security_content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}

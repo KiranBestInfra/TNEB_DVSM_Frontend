@@ -1,0 +1,329 @@
+.container {
+    margin: 1.5rem 0rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.quickActions {
+    display: flex;
+    gap: 1rem;
+}
+
+.section {
+    background: white;
+    border-radius: 1.5rem;
+    border: 1px solid var(--primary-color);
+}
+
+.section h2 {
+    color: #2c3e50;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 0.5rem;
+}
+
+.consumerDetails,
+.billSummary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.detailGroup,
+.summaryGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detailItem,
+.summaryItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0rem 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    height: 2.5rem;
+}
+
+.label {
+    color: var(--text-color);
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+.value {
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
+
+.active {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.pending {
+    background-color: #f1c40f;
+    color: white;
+    padding: 0.2rem 1rem;
+    border-radius: 1.5rem;
+}
+
+.overdue {
+    background-color: #e74c3c;
+    color: white;
+    padding: 0.2rem 1rem;
+    border-radius: 1.5rem;
+}
+
+.billBreakdown {
+    overflow-x: auto;
+}
+
+.breakdownTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.breakdownTable th,
+.breakdownTable td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ecf0f1;
+    font-size: 0.9rem;
+}
+
+.breakdownTable th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.breakdownTable tr:hover {
+    background-color: #f8f9fa;
+}
+
+.totalRow {
+    font-weight: 700;
+    background-color: #f8f9fa;
+}
+
+.totalRow td {
+    color: #2c3e50;
+}
+
+.grandTotal {
+    background-color: #e8f5e9;
+}
+
+.grandTotal td {
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+/* Status styles for bill history */
+.status_paid,
+.status_overdue,
+.status_pending,
+.status_partially_paid {
+    padding: 0.3rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-transform: capitalize;
+    display: inline-block;
+    text-align: center;
+}
+
+.status_paid {
+    background-color: #029447;
+    color: white;
+}
+
+.status_overdue {
+    background-color: #dc272c;
+    color: white;
+}
+
+.status_pending {
+    background-color: #ed8c22;
+    color: white;
+}
+
+.status_partially_paid {
+    background-color: #3f68b2;
+    color: white;
+}
+
+/* Action Buttons Styles */
+.actionButtons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.actionButtons span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background-color: var(--primary-bg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.actionButtons span:hover {
+    background-color: var(--brand-blue);
+}
+
+.actionButtons span:hover img {
+    filter: brightness(0) invert(1);
+}
+
+.actionButtons img {
+    width: 1rem;
+    height: 1rem;
+    transition: all 0.2s ease;
+}
+
+/* Table Actions Styles */
+.tableActions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.actionButton {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    color: var(--primary-color);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actionButton:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Tab content styles */
+.tabContent {
+    margin-top: 1.5rem;
+}
+
+.section+.section {
+    margin-top: 1.5rem;
+}
+
+.adminActions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.adminButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #34495e;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.adminButton:hover {
+    background-color: #2c3e50;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .quickActions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .actionButton {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .detailItem,
+    .summaryItem {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .breakdownTable {
+        font-size: 0.9rem;
+    }
+
+    .adminActions {
+        flex-direction: column;
+    }
+
+    .adminButton {
+        width: 100%;
+        justify-content: center;
+    }
+}
