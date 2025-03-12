@@ -14,7 +14,7 @@ import {
 } from '../utils/globalUtils.js';
 import { useAuth } from '../components/AuthProvider.jsx';
 
-const Dashboard = () => {
+const   Dashboard = () => {
     const [stats, setStats] = useState({
         // Widget 1
         totalConsumers: 0,
@@ -956,6 +956,12 @@ const Dashboard = () => {
                                     `${stats.totalOutstandingPercentage}% of Total Billed Amount`
                                 )}
                                 {renderStatCard(
+                                    'High-Usage Consumers',
+                                    stats.heavyUsers,
+                                    'icons/heavy-user.svg',
+                                    `${stats.heavyUsersAverageConsumption} kWh Average Consumption`
+                                )}
+                                 {renderStatCard(
                                     'High-Usage Consumers',
                                     stats.heavyUsers,
                                     'icons/heavy-user.svg',
