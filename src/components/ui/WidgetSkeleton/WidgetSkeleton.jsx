@@ -10,7 +10,7 @@ const WidgetSkeleton = () => (
                         width: '120px',
                         height: '24px',
                         borderRadius: '12px',
-                        animation: 'pulse 1.5s ease-in-out infinite',
+                        animation: 'pulse 0s ease-in-out infinite',
                     }}
                 />
                 <div
@@ -25,7 +25,7 @@ const WidgetSkeleton = () => (
                             width: '80px',
                             height: '24px',
                             borderRadius: '12px',
-                            animation: 'pulse 1.5s ease-in-out 0.2s infinite',
+                            animation: 'pulse 0s ease-in-out 0.2s infinite',
                         }}
                     />
                     <div
@@ -33,7 +33,7 @@ const WidgetSkeleton = () => (
                         style={{
                             width: '24px',
                             height: '24px',
-                            animation: 'pulse 1.5s ease-in-out 0.3s infinite',
+                            animation: 'pulse 0s ease-in-out 0.3s infinite',
                         }}
                     />
                 </div>
@@ -44,7 +44,7 @@ const WidgetSkeleton = () => (
                     style={{
                         width: '32px',
                         height: '32px',
-                        animation: 'pulse 1.5s ease-in-out 0.4s infinite',
+                        animation: 'pulse 0s ease-in-out 0.4s infinite',
                     }}
                 />
             </div>
@@ -56,7 +56,7 @@ const WidgetSkeleton = () => (
                     width: '80px',
                     height: '16px',
                     borderRadius: '8px',
-                    animation: 'pulse 1.5s ease-in-out 0.5s infinite',
+                    animation: 'pulse 0s ease-in-out 0.5s infinite',
                 }}
             />
             <div
@@ -65,7 +65,7 @@ const WidgetSkeleton = () => (
                     width: '80px',
                     height: '16px',
                     borderRadius: '8px',
-                    animation: 'pulse 1.5s ease-in-out 0.6s infinite',
+                    animation: 'pulse 0s ease-in-out 0.6s infinite',
                 }}
             />
         </div>
