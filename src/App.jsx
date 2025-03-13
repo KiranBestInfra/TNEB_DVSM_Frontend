@@ -28,6 +28,7 @@ import Load from './pages/Load';
 import TNEBDashboard from './pages/TNEBDashboard';
 import RegionDetailPage from './pages/RegionDetailPage';
 import UnitDetailPage from './pages/UnitDetailPage';
+import ChennaiCentralPage from './pages/ChennaiCentralPage';
 
 const App = () => {
     const getUserRole = () => {
@@ -108,6 +109,7 @@ const App = () => {
                             />
                             <Route path="dashboard" element={<TNEBDashboard />} />
                             <Route path="region/:regionId" element={<RegionDetailPage />} />
+                            <Route path="subdistrict/:subdistrictId" element={<ChennaiCentralPage />} />
                             <Route path="units" element={<UnitDetailPage />} />
                             <Route path="consumers">
                                 <Route index element={<Consumers />} />

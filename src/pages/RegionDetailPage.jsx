@@ -236,7 +236,12 @@ const RegionDetailPage = () => {
 
     const renderSubDistrictCard = (subDistrict) => {
         return (
-            <div className={styles.total_units_container} key={subDistrict.id}>
+            <div 
+                className={styles.total_units_container} 
+                key={subDistrict.id}
+                onClick={() => navigate(`/admin/subdistrict/${subDistrict.id}`)}
+                style={{ cursor: 'pointer' }}
+            >
                 <div className={styles.stat_card}>
                     <div className={styles.stat_card_left}>
                         <div className={styles.region}>
