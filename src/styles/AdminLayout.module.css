@@ -20,12 +20,12 @@
 
 .header_placeholder {
     grid-row: 1/2;
-    grid-column: 3/13;
+    grid-column: 1/13;
 }
 
 .content_placeholder {
     grid-row: 2/15;
-    grid-column: 3/13;
+    grid-column: 1/13;
     background-color: var(--white);
     border-radius: 1.5rem;
     padding: 0rem 2rem;

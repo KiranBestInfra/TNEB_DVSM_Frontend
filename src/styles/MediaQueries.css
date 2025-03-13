@@ -1,0 +1,106 @@
+/* Media Queries for Responsive Design */
+
+/* Desktop and Large Screens */
+@media screen and (min-width: 1200px) {
+    .region_stats_grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Tablets and Medium Screens */
+@media screen and (max-width: 1199px) and (min-width: 768px) {
+    .region_stats_grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .summary_card {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+}
+
+/* Tablets and Small Screens */
+@media screen and (max-width: 767px) and (min-width: 481px) {
+    .region_stats_grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .summary_card {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .detail_grid {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow-y: auto;
+    }
+    
+    .detail_grid_item_full {
+        grid-column: span 1;
+    }
+}
+
+/* Mobile Screens */
+@media screen and (max-width: 480px) {
+    .region_stats_grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .summary_card {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+    
+    .detail_header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .action_cont {
+        width: 100%;
+    }
+    
+    .time_range_select {
+        width: 100%;
+    }
+    
+    .detail_grid {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow-y: auto;
+    }
+    
+    .detail_grid_item_full {
+        grid-column: span 1;
+    }
+    
+    .stat_number {
+        font-size: 1.5rem;
+    }
+    
+    .summary_value {
+        font-size: 1.8rem;
+    }
+}
+
+/* Accessibility styles */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus styles for keyboard accessibility */
+:focus-visible {
+    outline: 2px solid var(--brand-blue);
+    outline-offset: 2px;
+} 

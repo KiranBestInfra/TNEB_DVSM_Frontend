@@ -25,6 +25,11 @@ import { AuthProvider } from './components/AuthProvider';
 import ConTicketDetails from './pages/ConTicketDetails';
 import Profile from './pages/Profile';
 import Load from './pages/Load';
+import TNEBDashboard from './pages/TNEBDashboard';
+import RegionDetailPage from './pages/RegionDetailPage';
+import UnitDetailPage from './pages/UnitDetailPage';
+import ChennaiCentralPage from './pages/ChennaiCentralPage';
+
 const App = () => {
     const getUserRole = () => {
         const accessToken = document.cookie
@@ -50,7 +55,7 @@ const App = () => {
         const role = getUserRole();
         return (
             <Navigate
-                to={role === 'Admin' ? '/admin/dashboard' : '/user/dashboard'}
+                to={role === 'Admin' ? '/admin/emptydashboard' : '/user/dashboard'}
                 replace
             />
         );
@@ -102,7 +107,10 @@ const App = () => {
                                 index
                                 element={<Navigate to="dashboard" replace />}
                             />
-                            <Route path="dashboard" element={<Dashboard />} />
+                            <Route path="dashboard" element={<TNEBDashboard />} />
+                            <Route path="region/:regionId" element={<RegionDetailPage />} />
+                            <Route path="subdistrict/:subdistrictId" element={<ChennaiCentralPage />} />
+                            <Route path="units" element={<UnitDetailPage />} />
                             <Route path="consumers">
                                 <Route index element={<Consumers />} />
                                 <Route

@@ -10,9 +10,9 @@ const AdminLayout = ({ children }) => {
     return (
         <div className="main_container">
             <div className={styles.main_admin_layout}>
-                <div className={styles.sidebar_container}>
+                {/* <div className={styles.sidebar_container}>
                     <Sidebar setMainTitle={setMainTitle} />
-                </div>
+                </div> */}
                 <div className={styles.header_placeholder}>
                     <Header title={mainTitle} />
                 </div>
