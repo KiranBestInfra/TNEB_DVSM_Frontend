@@ -87,7 +87,7 @@
 }
 
 .profile_name {
-    color: var(--white);
+    color: var(--black);
     font-weight: 500;
     margin-left: 0.25rem;
 }
@@ -108,11 +108,9 @@
 .dropdown_header {
     padding: 1rem;
     border-bottom: 1px solid var(--primary-bg);
-    text-align: center;
-}
-
-.dropdown_options {
-    padding: 0.5rem 0;
+    text-align: left;
+    background-color: var(--blue-bright);
+    color: var(--white);
 }
 
 .dropdown_item {

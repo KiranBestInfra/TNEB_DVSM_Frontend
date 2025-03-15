@@ -14,10 +14,8 @@ const Header = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
     const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
-    const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
     const { isAdmin } = useAuth();
     const basePath = isAdmin() ? '/admin' : '/user';
-    const profileDropdownRef = useRef(null);
 
     const debouncedSearchTerm = useDebounce(searchQuery, 500);
 
@@ -46,15 +44,6 @@ const Header = () => {
         const handleClickOutside = (e) => {
             if (!e.target.closest(`.${styles.search_cont}`)) {
                 setSearchResults([]);
-            }
-
-            // Close profile dropdown when clicking outside
-            if (
-                profileDropdownRef.current &&
-                !profileDropdownRef.current.contains(e.target) &&
-                !e.target.closest(`.${styles.profile_container}`)
-            ) {
-                setIsProfileDropdownOpen(false);
             }
         };
 
@@ -99,10 +88,6 @@ const Header = () => {
         );
     };
 
-    const toggleProfileDropdown = () => {
-        setIsProfileDropdownOpen(!isProfileDropdownOpen);
-    };
-
     const handleNotificationsClick = () => {
         setIsNotificationsPanelOpen(true);
     };
@@ -111,9 +96,12 @@ const Header = () => {
         setIsNotificationsPanelOpen(false);
     };
 
-    const handleSettingsClick = () => {
-        navigate(`${basePath}/settings`);
-        setIsProfileDropdownOpen(false);
+    const handleProfileClick = () => {
+        navigate(`${basePath}/account`);
+    };
+
+    const handleTicketsClick = () => {
+        navigate(`${basePath}/tickets`);
     };
 
     useEffect(() => {
@@ -121,7 +109,7 @@ const Header = () => {
             const search = async () => {
                 setIsSearching(true);
                 try {
-                    // Updated endpoint to search by Regions, Districts, and Substations
+
                     const response = await apiClient.get(
                         `/search/locations?term=${debouncedSearchTerm}`
                     );
@@ -138,7 +126,6 @@ const Header = () => {
         }
     }, [debouncedSearchTerm]);
 
-    // Updated placeholders to reflect the new search options
     const placeholders = [
         'Search by Region',
         'Search by District',
@@ -178,7 +165,7 @@ const Header = () => {
                     {isSearching ? (
                         <div className={styles.spinner}></div>
                     ) : (
-                        <img src="/icons/search-icon.svg" alt="Search" />
+                        <img src="icons/search-icon.svg" alt="Search" />
                     )}
                 </span>
                 {searchResults.length > 0 && (
@@ -201,42 +188,27 @@ const Header = () => {
             </div>
             <div className={styles.right_cont}>
                 <div className={styles.right_cont_item}>
-                    <div className={styles.profile_container} onClick={toggleProfileDropdown}>
-                        <div className={styles.white_icons}>
-                            {renderProfilePicture()}
-                        </div>
-                        <span className={styles.profile_name}>{`${profileData.firstName} ${profileData.lastName}`}</span>
+                    <div className={styles.white_icons} onClick={handleProfileClick}>
+                        {renderProfilePicture()}
                     </div>
 
-                    {isProfileDropdownOpen && (
-                        <div className={styles.profile_dropdown} ref={profileDropdownRef}>
-                            <div className={styles.dropdown_header}>
-                                <strong>{`${profileData.firstName} ${profileData.lastName}`}</strong>
-                            </div>
-                            <div className={styles.dropdown_options}>
-                                <div className={styles.dropdown_item} onClick={handleSettingsClick}>
-                                    <img src="/icons/settings.svg" alt="Settings" />
-                                    <span>Settings</span>
-                                </div>
-                                <div className={styles.dropdown_item} onClick={handleLogout}>
-                                    <img src="/icons/logout-icon.svg" alt="Logout" />
-                                    <span>Logout</span>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    <span
+                        className={styles.white_icons}
+                        onClick={handleTicketsClick}>
+                        <img src="icons/support-tickets.svg" alt="Tickets" />
+                    </span>
 
                     <span
                         className={styles.white_icons}
                         onClick={handleNotificationsClick}>
-                        <img src="/icons/bell.svg" alt="notifications" />
+                        <img src="icons/bell.svg" alt="notifications" />
                     </span>
 
                     <Buttons
                         label="Logout"
                         onClick={handleLogout}
                         variant="secondary"
-                        icon="/icons/logout-icon.svg"
+                        icon="/images/icons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
                     />
