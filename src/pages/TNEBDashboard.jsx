@@ -617,7 +617,7 @@ const TNEBDashboard = () => {
           <LineBarChart
             title={`${selectedRegion.name} Communication Status`}
             data={selectedRegionData}
-            seriesColors={["#029447", "#dc272c"]}
+            seriesColors={["var(--positive)", "var(--danger)"]}
             yAxisLabel="Units"
             height="400px"
           />
