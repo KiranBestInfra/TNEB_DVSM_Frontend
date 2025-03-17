@@ -17,6 +17,7 @@ import UnitDetailPage from './pages/UnitDetailPage';
 import ChennaiCentralPage from './pages/ChennaiCentralPage';
 import Tickets from './pages/Tickets';
 import TicketDetails from './pages/TicketDetails';
+import CreateTicket from './pages/CreateTicket';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 
@@ -73,7 +74,7 @@ const App = () => {
                             <Route path="units" element={<UnitDetailPage />} />
                             <Route path="tickets">
                                 <Route index element={<Tickets />} />
-                                <Route path="new" element={<TicketDetails />} />
+                                <Route path="new" element={<CreateTicket />} />
                                 <Route path=":id" element={<TicketDetails />} />
                             </Route>
                             <Route path="account" element={<Profile />} />

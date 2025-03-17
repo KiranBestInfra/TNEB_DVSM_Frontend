@@ -1,16 +1,18 @@
 .tickets_container {
     margin: 1.5rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .tickets_header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
 }
 
 .tickets_title {
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: bold;
     color: #333;
 }
@@ -19,15 +21,14 @@
 .dashboard {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 1rem;
 }
 
 .widget {
     background-color: #fff;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     border: 1px solid var(--primary-bg);
-    padding: 16px;
+    padding: 1rem;
     flex: 1;
     min-width: 150px;
     display: flex;
@@ -36,62 +37,61 @@
     transition: transform 0.2s ease;
 }
 
-.widget:hover {
+/* .widget:hover {
     transform: translateY(-5px);
     box-shadow: 0px 12px 20px rgba(191, 191, 191, 0.15);
-}
+} */
 
 .widget_value {
     font-size: 2rem;
     font-weight: bold;
-    margin: 20px 0;
+    padding: 1rem 0;
     color: var(--blue-bright);
 }
 
 .widget_label {
-    font-size: 14px;
-    color: #666;
+    font-size: 0.8rem;
+    color: var(--grey);
     text-align: center;
 }
 
 .widget_total {
-    border-top: 10px solid #3182ce;
+    border-top: 0.6rem solid var(--brand-blue);
 }
 
 .widget_open {
-    border-top: 10px solid #38a169;
+    border-top: 0.6rem solid var(--positive);
 }
 
 .widget_pending {
-    border-top: 10px solid #d69e2e;
+    border-top: 0.6rem solid var(--warning);
 }
 
 .widget_closed {
-    border-top: 10px solid #718096;
+    border-top: 0.6rem solid #718096;
 }
 
 .widget_critical {
-    border-top: 10px solid #e53e3e;
+    border-top: 0.6rem solid #e53e3e;
 }
 
 /* Existing Styles */
 .tickets_filters {
     display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
+    gap: 1rem;
     justify-content: space-between;
 }
 
 .filter_item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 0.5rem;
     width: 100%;
 }
 
 .filter_label {
-    font-size: 14px;
-    color: #666;
+    font-size: 0.8rem;
+    color: var(--grey);
 }
 
 .select_with_arrow {
@@ -101,22 +101,22 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
-    background-size: 16px;
-    padding-right: 35px;
+    background-size: 1rem;
+    padding-right: 2rem;
 }
 
 .sort_button {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     background-color: #fff;
     border: 1px solid #ddd;
     cursor: pointer;
-    font-size: 16px;
-    color: #333;
+    font-size: 1rem;
+    color: var(--grey);
     transition: all 0.2s;
 }
 
@@ -125,9 +125,7 @@
 }
 
 .tickets_table_container {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 0.5rem;
     overflow: hidden;
 }
 
@@ -138,17 +136,17 @@
 
 .tickets_table th {
     background-color: #f5f5f5;
-    padding: 12px 15px;
+    padding: 1rem 1.25rem;
     text-align: left;
     font-weight: 600;
-    color: #333;
+    color: var(--grey);
     border-bottom: 1px solid #ddd;
 }
 
 .tickets_table td {
-    padding: 12px 15px;
+    padding: 1rem 1.25rem;
     border-bottom: 1px solid #eee;
-    color: #555;
+    color: var(--grey);
 }
 
 .tickets_table tr:hover {
@@ -157,15 +155,15 @@
 
 .ticket_id {
     font-weight: 600;
-    color: #2c5282;
+    color: var(--brand-blue);
     cursor: pointer;
 }
 
 .status_badge {
     display: inline-block;
-    padding: 8px 14px;
+    padding: 0.5rem 0.8rem;
     border-radius: 2rem;
-    font-size: 12px;
+    font-size:0.75rem;
     font-weight: 700;
     text-align: center;
     text-transform: uppercase;
@@ -174,17 +172,17 @@
 
 .status_open {
     background-color: #ebf8ff;
-    color: #2c5282;
+    color: var(--brand-blue);
 }
 
 .status_closed {
     background-color: #e6fffa;
-    color: #2c7a7b;
+    color: var(--positive);
 }
 
 .status_pending {
     background-color: #fffaf0;
-    color: #c05621;
+    color: var(--warning);
 }
 
 .pagination {
@@ -194,26 +192,25 @@
     margin-top: 20px;
     padding: 15px;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 0.5rem;
 }
 
 .page_info {
-    color: #666;
-    font-size: 14px;
+    color: var(--grey);
+    font-size: 0.8rem;
 }
 
 .page_controls {
     display: flex;
-    gap: 10px;
+    gap: 0.6rem;
 }
 
 .page_button {
-    padding: 6px 12px;
+    padding: 0.3rem 0.8rem;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 0.5rem;
     background-color: #fff;
-    color: #333;
+    color: var(--grey);
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -223,32 +220,31 @@
 }
 
 .page_button.active {
-    background-color: #3182ce;
-    color: #fff;
-    border-color: #3182ce;
+    background-color: var(--brand-blue);
+    color: var(--white);
+    border-color: var(--brand-blue);
 }
 
 .page_button.disabled {
-    color: #ccc;
-    cursor: not-allowed;
+    color: var(--grey);
 }
 
 .empty_state {
     padding: 50px 20px;
     text-align: center;
-    color: #666;
+    color: var(--grey);
 }
 
 .empty_state_title {
     font-size: 18px;
     margin-top: 15px;
     margin-bottom: 10px;
-    color: #333;
+    color: var(--grey);
 }
 
 .empty_state_message {
-    font-size: 14px;
-    margin-bottom: 20px;
+    font-size: 0.8rem;
+    margin-bottom: 1.2rem;
 }
 
 @media (max-width: 768px) {

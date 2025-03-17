@@ -280,14 +280,28 @@ const TicketDetails = () => {
         <div className={styles.ticket_details_container}>
             <div className={styles.ticket_header}>
                 <div className={styles.header_left}>
-                    <div><span
-                        className={styles.back_arrow}
+                    {/* <div>
+                        <span
+                            className={`${styles.back_arrow} ${styles.icon_hover}`}
+                            onClick={() => navigate('/admin/tickets')}
+                        >
+                        </span>
+                    </div> */}
+                    <div className={styles.header_right}>
+                    <span 
+                        className={`${styles.back_arrow} ${styles.icon_hover}`}
                         onClick={() => navigate('/admin/tickets')}
                     >
-                        ←
-                    </span></div>
+                        <img src="icons/arrow-down.svg" alt="Back"/>
+                    </span>
+                    <div>
                     <h1 className='title'>{ticket.subject}</h1>
                     <div className={styles.ticket_id}>Ticket ID: {ticket.id}</div>
+                    </div>
+                    </div>
+                    
+                   
+                    
                 </div>
 
                 <div className={styles.ticket_actions}>
@@ -368,7 +382,10 @@ const TicketDetails = () => {
 
                 <div className={styles.ticket_sidebar}>
                     <div className={styles.ticket_info_card}>
-                        <h3 className={styles.card_title}>Ticket Information</h3>
+                        <div className={styles.card_title}>
+                        <h3>Ticket Information</h3>
+                        </div>
+                        
 
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>Status:</span>

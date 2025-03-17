@@ -85,11 +85,20 @@ const Tickets = () => {
     ];
 
     useEffect(() => {
-        // Simulating API call with setTimeout
+        // Get tickets from localStorage
         const fetchTickets = () => {
             setLoading(true);
             setTimeout(() => {
-                let filteredTickets = [...mockTickets];
+                // Get tickets from localStorage or use mock data if none exist
+                let allTickets = JSON.parse(localStorage.getItem('tickets') || '[]');
+                
+                // If no tickets in localStorage, use mock data and save it
+                if (allTickets.length === 0) {
+                    allTickets = mockTickets;
+                    localStorage.setItem('tickets', JSON.stringify(mockTickets));
+                }
+
+                let filteredTickets = [...allTickets];
 
                 // Apply filters
                 if (filterStatus !== 'all') {
@@ -234,7 +243,7 @@ const Tickets = () => {
                     label="Create New Ticket"
                     variant="primary"
                     onClick={handleCreateTicket}
-                    icon="/icons/plus.svg"
+                    icon="icons/plus.svg"
                 />
             </div>
 
