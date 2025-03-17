@@ -149,7 +149,7 @@ const Header = () => {
         <div className={styles.header_container}>
             <div className={styles.logo_container}>
                 <Link to={basePath}>
-                    <img src="/images/logo.png" alt="Company Logo" className={styles.logo} />
+                    <img src="images/bestinfra.png" alt="Company Logo" className={styles.logo_bestinfra} />
                 </Link>
             </div>
             <div className={styles.search_cont}>
