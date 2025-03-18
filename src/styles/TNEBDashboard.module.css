@@ -101,7 +101,8 @@
 
 .communication_status_container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     gap: 0.4rem;
 }
 
@@ -114,8 +115,11 @@
     padding: 0.5rem 1rem;
     width: fit-content;
     height: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
 }
-
+    
 .communication_positive_percentage {
     font-size: 2.5rem;
     color: var(--positive);
@@ -125,7 +129,9 @@
     gap: 0.2rem;
     font-weight: 500;
 }
+.communication_preprevious_value{
 
+}
 .communication_positive_arrow {
     width: 1rem;
     height: 1rem;
@@ -639,6 +645,11 @@ padding: 0.8rem 1rem;
     gap: 0.1rem;
 }
 
+.individual_region_header_title{
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: "Roboto", sans-serif;
+}
 .individual_region_header_left_text{
     font-size: 0.85rem;
     color: var(--grey);
@@ -672,4 +683,14 @@ padding: 0.8rem 1rem;
 .individual_region_body div {
     width: 100%;
     height: auto;
+}
+
+.overall_graph_container {
+    background-color: var(--white);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--primary-bg);
+    width: 100%;
+    height: 400px;
+    margin-top: 1rem;
 }
