@@ -76,16 +76,15 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
               <div className={styles.communication_preprevious_value}>
                 340
               </div>
-
-              
-            </div>
-            <div className={styles.communication_value}>
-              <img
+              <div className={styles.communication_value}>
+                <img
                   src="icons/up-right-arrow.svg"
                   alt="Positive"
                   className={styles.communication_positive_arrow}
                 />
-                {100}%</div>
+                100%
+              </div>
+            </div>
           </div>
           <div className={styles.region_graph}>
             <LineChartTNEB
@@ -171,7 +170,7 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Regions (value)</h2>
+        <h2 className="title">Regions</h2>
       </div>
       <div className={styles.region_stats_container}>
         <div className={styles.individual_region_stats}>

@@ -11,7 +11,7 @@ const LineChartTNEB = ({
     yAxisLabel = 'kWh',
     showLabel = false,
     toolbox = true,
-    height = '100%',
+    height = '100px',
     className,
 }) => {
     const chartRef = React.useRef(null);
@@ -23,6 +23,7 @@ const LineChartTNEB = ({
 
     const option = {
         tooltip: {
+            
             trigger: 'axis',
             axisPointer: {
                 type: 'cross',
@@ -32,16 +33,17 @@ const LineChartTNEB = ({
                     fontSize: '0.7rem',
                     lineHeight: 1.6,
                     borderRadius: '10',
-                    padding: [10, 6, 8, 6],
+                    padding: [0, 0, 0, 0],
+                    width: '100%',
                 },
             },
             formatter: (params) => {
                 const label = formatTooltipLabel(params);
-                let result = `${label}<br/>`;
+                let result = ``;
                 let total = 0;
                 params.forEach((param) => {
                     total += param.value;
-                    result += `${param.marker} ${param.seriesName}: ${param.value} ${yAxisLabel}<br/>`;
+                    result += `${param.seriesName}<br/>${param.value} ${yAxisLabel}<br/>`;
                 });
                 return result;
             },
@@ -49,7 +51,7 @@ const LineChartTNEB = ({
                 fontFamily: 'Roboto',
             },
             borderRadius: '10',
-            padding: [8, 12, 8, 12],
+            padding: [5, 0, 5, 5],
         },
         legend: {
             show: false
@@ -111,9 +113,7 @@ const LineChartTNEB = ({
     return (
         <div
             className={`${styles.chart_container} ${className || ''}`}
-            style={{ height, fontFamily: 'Roboto' }}>
-            <div className={styles.chart_controls}>
-            </div>
+            style={{ fontFamily: 'Roboto' }}>
             <div className={styles.echart_container}>
                 <ReactECharts ref={chartRef} option={option} />
             </div>
