@@ -36,12 +36,12 @@ const dummyNotifications = [
     },
     {
         id: 2,
-        title: 'Payment Received',
-        message: 'Payment of ₹2,500 received from Consumer ID: CONS456.',
+        title: 'Power Fluctuation Alert',
+        message: 'Unusual power fluctuation detected in Sector 5. Please check the distribution network.',
         timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
-        type: 'payment',
+        type: 'alert',
         isRead: false,
-        category: 'payments'
+        category: 'alerts'
     },
     {
         id: 3,
@@ -72,18 +72,18 @@ const dummyNotifications = [
     },
     {
         id: 6,
-        title: 'Payment Failed',
-        message: 'Payment of ₹1,800 failed for Consumer ID: CONS789.',
+        title: 'Transformer Overload Alert',
+        message: 'Transformer T-456 in Sector 3 is operating at 95% capacity. Immediate attention required.',
         timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(), // 4 days ago
-        type: 'payment',
+        type: 'alert',
         isRead: false,
-        category: 'payments'
+        category: 'alerts'
     }
 ];
 
 const TABS = [
     { id: 'all', label: 'All' },
-    { id: 'payments', label: 'Payments' },
+    { id: 'alerts', label: 'Alerts' },
     { id: 'tickets', label: 'Tickets' }
 ];
 

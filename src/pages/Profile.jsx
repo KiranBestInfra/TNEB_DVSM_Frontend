@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Buttons from "../components/ui/Buttons/Buttons";
-import styles from "../styles/Account.module.css";
+import styles from "../styles/Profile.module.css";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -9,10 +9,10 @@ const Profile = () => {
     // State
     const [profileData, setProfileData] = useState({
         profilePicture: null,
-        consumerId: "CID123456", 
+        consumerId: "CID123456",
         firstName: "John",
         lastName: "Doe",
-        occupation: "Software Engineer", 
+        occupation: "Software Engineer",
         role: "Consumer",
         email: "john.doe@example.com",
         phone: "+1 (555) 123-4567",
@@ -52,13 +52,13 @@ const Profile = () => {
     // Render
     const renderProfilePicture = () => {
         const initials = `${profileData.firstName[0]}${profileData.lastName[0]}`;
-        
+
         return (
             <div className={styles.profile_picture_container}>
                 {profileData.profilePicture ? (
-                    <img 
-                        src={profileData.profilePicture} 
-                        alt="Profile" 
+                    <img
+                        src={profileData.profilePicture}
+                        alt="Profile"
                         className={styles.profile_picture}
                     />
                 ) : (
@@ -79,7 +79,7 @@ const Profile = () => {
                             label="Upload Picture"
                             variant="outline"
                             type="button"
-                            
+
                         />
                     </label>
                     {profileData.profilePicture && (
@@ -185,18 +185,18 @@ const Profile = () => {
     );
 
     const renderLoginActivities = () => (
-            <div className={styles.login_activities}>
-                {loginActivities.map(activity => (
-                    <div key={activity.id} className={styles.activity_item}>
-                        
-                        <div className={styles.activity_details}>
-                            <p>{activity.activity}</p>
-                            <span>{activity.device}</span>
-                        </div>
-                        <div className={styles.activity_date}>{activity.date}</div>
+        <div className={styles.login_activities}>
+            {loginActivities.map(activity => (
+                <div key={activity.id} className={styles.activity_item}>
+
+                    <div className={styles.activity_details}>
+                        <p>{activity.activity}</p>
+                        <span>{activity.device}</span>
                     </div>
-                ))}
-            </div>
+                    <div className={styles.activity_date}>{activity.date}</div>
+                </div>
+            ))}
+        </div>
     );
 
     return (

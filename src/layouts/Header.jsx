@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import styles from '../styles/Header.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import { useNavigate, Link } from 'react-router-dom';
@@ -8,21 +8,18 @@ import Cookies from 'js-cookie';
 import NotificationsPanel from '../components/NotificationsPanel/NotificationsPanel';
 import { useAuth } from '../components/AuthProvider';
 
-const Header = ({ title }) => {
+const Header = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
-    const [showTariffModal, setShowTariffModal] = useState(false);
-    const [tariff, setTariff] = useState([]);
-    const [error, setError] = useState(null);
-    const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
-        useState(false);
+    const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
     const { isAdmin } = useAuth();
     const basePath = isAdmin() ? '/admin' : '/user';
 
     const debouncedSearchTerm = useDebounce(searchQuery, 500);
 
+    // Simulated profile data - in a real app, this would come from user context/auth
     const [profileData] = useState({
         profilePicture: null,
         firstName: 'John',
@@ -37,8 +34,8 @@ const Header = ({ title }) => {
         setSearchQuery(query);
     };
 
-    const handleResultClick = (consumerId) => {
-        navigate(`${basePath}/consumers/view/${consumerId}`);
+    const handleResultClick = (resultId) => {
+        navigate(`${basePath}/details/${resultId}`);
         setSearchQuery('');
         setSearchResults([]);
     };
@@ -91,43 +88,38 @@ const Header = ({ title }) => {
         );
     };
 
-    // Add these new handlers
-    const handleTariffClick = () => {
-        setShowTariffModal(true);
+    const handleNotificationsClick = () => {
+        setIsNotificationsPanelOpen(true);
     };
 
-    const handleCloseModal = () => {
-        setShowTariffModal(false);
+    const handleCloseNotifications = () => {
+        setIsNotificationsPanelOpen(false);
     };
 
-    const handleModalClick = (e) => {
-        if (e.target.className === 'modal') {
-            setShowTariffModal(false);
-        }
+    const handleProfileClick = () => {
+        navigate(`${basePath}/account`);
     };
 
-    useEffect(() => {
-        const fetchTariff = async () => {
-            try {
-                const response = await apiClient.get('/tariff');
-                setTariff(response.data);
-            } catch (err) {
-                setError(err.message);
-                console.error('Error fetching tariff data:', err);
-            }
-        };
-
-        fetchTariff();
-    }, []);
+    const handleTicketsClick = () => {
+        navigate(`${basePath}/tickets`);
+    };
 
     useEffect(() => {
         if (debouncedSearchTerm) {
             const search = async () => {
-                const response = await apiClient.get(
-                    `/consumers/search?term=${debouncedSearchTerm}`
-                );
-                const results = response.data;
-                setSearchResults(results);
+                setIsSearching(true);
+                try {
+
+                    const response = await apiClient.get(
+                        `/search/locations?term=${debouncedSearchTerm}`
+                    );
+                    const results = response.data;
+                    setSearchResults(results);
+                } catch (error) {
+                    console.error('Search error:', error);
+                } finally {
+                    setIsSearching(false);
+                }
             };
 
             search();
@@ -135,10 +127,9 @@ const Header = ({ title }) => {
     }, [debouncedSearchTerm]);
 
     const placeholders = [
-        'Search by Consumer ID',
-        'Search by Consumer Name',
-        'Search by Meter No',
-        'Search by Unique ID',
+        'Search by Region',
+        'Search by District',
+        'Search by Substation',
     ];
 
     const [placeholderIndex, setPlaceholderIndex] = useState(0);
@@ -154,18 +145,12 @@ const Header = ({ title }) => {
         return () => clearInterval(intervalId);
     }, [placeholders.length]);
 
-    const handleNotificationsClick = () => {
-        setIsNotificationsPanelOpen(true);
-    };
-
-    const handleCloseNotifications = () => {
-        setIsNotificationsPanelOpen(false);
-    };
-
     return (
         <div className={styles.header_container}>
-            <div className={styles.consumer_id_cont}>
-                <div className="title">{title}</div>
+            <div className={styles.logo_container}>
+                <Link to={basePath}>
+                    <img src="images/tangedco.png" alt="Company Logo" className={styles.logo_bestinfra} />
+                </Link>
             </div>
             <div className={styles.search_cont}>
                 <input
@@ -187,14 +172,14 @@ const Header = ({ title }) => {
                     <div className={styles.search_results}>
                         {searchResults.map((result) => (
                             <div
-                                key={result.sl_no}
+                                key={result.id}
                                 className={styles.search_result_item}
-                                onClick={() => handleResultClick(result.uid)}>
-                                <span className={styles.consumer_id}>
-                                    {result.consumer_id}{' '}
+                                onClick={() => handleResultClick(result.id)}>
+                                <span className={styles.result_type}>
+                                    {result.type}{' '}
                                 </span>
-                                <span className={styles.consumer_name}>
-                                    {result.consumer_name}
+                                <span className={styles.result_name}>
+                                    {result.name}
                                 </span>
                             </div>
                         ))}
@@ -203,30 +188,27 @@ const Header = ({ title }) => {
             </div>
             <div className={styles.right_cont}>
                 <div className={styles.right_cont_item}>
-                    {isAdmin() ? (
-                        ''
-                    ) : (
-                        <Link to={`${basePath}/account`} title="Account">
-                            <span className={styles.white_icons}>
-                                {renderProfilePicture()}
-                            </span>
-                        </Link>
-                    )}
+                    <div className={styles.white_icons} onClick={handleProfileClick}>
+                        {renderProfilePicture()}
+                    </div>
+
+                    <span
+                        className={styles.white_icons}
+                        onClick={handleTicketsClick}>
+                        <img src="icons/support-tickets.svg" alt="Tickets" />
+                    </span>
+
                     <span
                         className={styles.white_icons}
                         onClick={handleNotificationsClick}>
                         <img src="icons/bell.svg" alt="notifications" />
                     </span>
-                    <span
-                        className={styles.white_icons}
-                        onClick={handleTariffClick}>
-                        <img src="icons/tax-alt.svg" alt="tariff" />
-                    </span>
+
                     <Buttons
                         label="Logout"
                         onClick={handleLogout}
                         variant="secondary"
-                        icon="icons/logout-icon.svg"
+                        icon="/images/icons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
                     />
@@ -238,54 +220,6 @@ const Header = ({ title }) => {
                 isOpen={isNotificationsPanelOpen}
                 onClose={handleCloseNotifications}
             />
-
-            {/* Add Tariff Modal */}
-            {showTariffModal && (
-                <div className="modal" onClick={handleModalClick}>
-                    <div className="modalContent">
-                        <div className="modalHeader">
-                            <h2 className="title">Tariff Details</h2>
-                            <span className="icons" onClick={handleCloseModal}>
-                                <img src="icons/close.svg" alt="close" />
-                            </span>
-                        </div>
-                        <div className="tariff-plans">
-                            {tariff.map((plan, index) => (
-                                <div className="tariff-plan" key={index}>
-                                    <div className="tariff-plan-header">
-                                        <h3 className="titles">
-                                            Slab {index + 1}
-                                        </h3>
-                                        <p className="range">
-                                            {plan.tariff_category}
-                                        </p>
-                                    </div>
-                                    <p className="rate">
-                                        <div className="rate_cont">
-                                            <span className="icons_rupee">
-                                                <img
-                                                    src="icons/indian-rupee-sign.svg"
-                                                    alt="rupee"
-                                                />
-                                            </span>
-                                            {plan.rate || 0}
-                                            <span className="perunit">
-                                                /Unit
-                                            </span>
-                                        </div>
-                                    </p>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="tariff-notes">
-                            <p>
-                                *Taxes are applicable and subjected to change
-                                from time to time.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

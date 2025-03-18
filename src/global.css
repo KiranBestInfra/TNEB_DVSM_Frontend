@@ -445,12 +445,20 @@ form {
   font-family: "Roboto", sans-serif;
   line-height: 0;
 }
+.arrow_icon img{
+  width: 0.8rem;
+  height: 0.8rem;
+}
 
 .form_actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 2rem;
+}
+.form_group img{
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 /* Search */

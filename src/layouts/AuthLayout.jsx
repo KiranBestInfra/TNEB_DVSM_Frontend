@@ -3,9 +3,24 @@ import LoginSlider from '../components/ui/LoginSlider/LoginSlider';
 import Login from '../pages/Login';
 import styles from '../styles/AuthLayout.module.css';
 import { useState } from 'react';
-import Terms from '../pages/Terms';
 import Buttons from '../components/ui/Buttons/Buttons';
-import Privacy from '../pages/Privacy';
+
+// Simple placeholder components for Terms and Privacy
+const TermsPlaceholder = () => (
+    <div style={{ padding: '20px' }}>
+        <h2>Terms and Conditions</h2>
+        <p>This is a placeholder for the Terms and Conditions.</p>
+        <p>The detailed terms document has been removed in the streamlined application.</p>
+    </div>
+);
+
+const PrivacyPlaceholder = () => (
+    <div style={{ padding: '20px' }}>
+        <h2>Privacy Policy</h2>
+        <p>This is a placeholder for the Privacy Policy.</p>
+        <p>The detailed privacy policy document has been removed in the streamlined application.</p>
+    </div>
+);
 
 const AuthLayout = ({ children }) => {
     const [showTerms, setShowTerms] = useState(false);
@@ -112,7 +127,7 @@ const AuthLayout = ({ children }) => {
                             title="Terms and Conditions"
                             date="January 1, 2024"
                         />
-                        <Terms />
+                        <TermsPlaceholder />
                     </div>
                 </div>
             )}
@@ -126,7 +141,7 @@ const AuthLayout = ({ children }) => {
                             title="Privacy Policy"
                             date="January 1, 2024"
                         />
-                        <Privacy />
+                        <PrivacyPlaceholder />
                     </div>
                 </div>
             )}

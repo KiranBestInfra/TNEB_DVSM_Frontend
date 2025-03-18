@@ -95,7 +95,7 @@ const Login = () => {
     return (
         <div className={styles.login_container}>
             <div className="logo">
-                <Logo width={190} />
+                <Logo width={150} />
             </div>
             <form className={styles.form_login_cont} onSubmit={handleSubmit}>
                 {Object.entries(errors).map(
