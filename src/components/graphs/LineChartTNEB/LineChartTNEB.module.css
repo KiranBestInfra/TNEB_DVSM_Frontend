@@ -1,6 +1,9 @@
 .chart_container {
     width: 100%;
     transition: all 0.3s ease;
+    height: 150px;
+    border-radius: 0.5rem;
+    overflow: hidden;
 }
 
 .chart_container :global(.echarts-for-react) {
