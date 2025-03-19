@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "../styles/TNEBDashboard.module.css";
 import LineChartTNEB from "../components/graphs/LineChartTNEB/LineChartTNEB";
+import { Breadcrumbs } from "react-breadcrumbs";
 
 const TNEBDashboard = () => {
   const [timeframe, setTimeframe] = useState("Last 7 Days");
@@ -51,12 +52,17 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
   };
 
   const IndividualRegion = ({ regionName }) => {
+    const currentValue = 452;
+    const previousValue = 350;
+    const percentageChange = ((currentValue - previousValue) / previousValue * 100).toFixed(1);
+    const isPositiveChange = currentValue >= previousValue;
+
     return (
       <div className={styles.individual_region}>
         <div className={styles.individual_region_header}>
           <div className={styles.individual_region_header_left}>
             <h3 className={styles.individual_region_header_title}>{regionName}</h3>
-            <p className="titles">Total Meters: 95  Sub Stations: 20</p>
+            <p className="titles">95 EDC \ 20 Substations \ 16 Feeders</p>
           </div>
           <div className={styles.individual_region_header_right}>
             <img
@@ -67,36 +73,37 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
           </div>
         </div>
         <div className={styles.individual_region_body}>
-          <div className={styles.region_unit_utilization}>
-            <p className="titles">Units Utilization</p>
-            <div className={styles.communication_status_container}>
-              <div className={styles.communication_positive_percentage}>
-                452
+          <div className={styles.region_content_wrapper}>
+            <div className={styles.region_stats_utilization}>
+              <p className="titles">Units Utilization</p>
+              <div className={styles.region_stats_values}>
+                <div className={styles.region_current_value}>
+                  {currentValue}
+                </div>
+                <div className={styles.region_previous_value}>
+                  {previousValue} MW
+                </div>
+                <div className={`${styles.region_percentage_change} ${isPositiveChange ? styles.positive : styles.negative}`}>
+                  <img
+                    src={isPositiveChange ? "icons/up-right-arrow.svg" : "icons/down-right-arrow.svg"}
+                    alt={isPositiveChange ? "Increase" : "Decrease"}
+                    className={`${styles.region_trend_arrow} ${isPositiveChange ? styles.positive : styles.negative}`}
+                  />
+                  {Math.abs(percentageChange)}%
+                </div>
               </div>
-              <div className={styles.communication_preprevious_value}>
-                340
-              </div>
-
-              
             </div>
-            <div className={styles.communication_value}>
-              <img
-                  src="icons/up-right-arrow.svg"
-                  alt="Positive"
-                  className={styles.communication_positive_arrow}
-                />
-                {100}%</div>
-          </div>
-          <div className={styles.region_graph}>
-            <LineChartTNEB
-              title="Energy Usage"
-              data={graphData}
-              seriesColors={['#3f68b2']}
-              yAxisLabel="MW"
-              showLabel={false}
-              toolbox={true}
-              height="100px"
-            />
+            <div className={styles.region_stats_graph}>
+              <LineChartTNEB
+                title="Energy Usage"
+                data={graphData}
+                seriesColors={['#3f68b2', '#ed8c22', '#dc272c']}
+                yAxisLabel="MW"
+                showLabel={false}
+                toolbox={true}
+                height="100%"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -107,6 +114,8 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
     <div className={styles.main_content}>
       <div className={styles.section_header}>
         <h2 className="title">Dashboard</h2>
+        
+        <Breadcrumbs/>
 
         <div className={styles.action_cont}>
           <div className={styles.time_range_select_dropdown}>
@@ -171,7 +180,7 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Regions (value)</h2>
+        <h2 className="title">Regions</h2>
       </div>
       <div className={styles.region_stats_container}>
         <div className={styles.individual_region_stats}>
@@ -213,23 +222,7 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
         <div className={styles.individual_region_stats}>
           <IndividualRegion regionName={regionName[12]} />
         </div>
-
       </div>
-
-      <div className={styles.section_header}>
-        <h2 className="title">Overall Energy Usage</h2>
-      </div>
-      {/* <div className={styles.overall_graph_container}>
-        <LineChartTNEB
-          title="Energy Usage Trend"
-          data={graphData}
-          seriesColors={['#3f68b2', '#ff6b6b']}
-          yAxisLabel="MW"
-          showLabel={true}
-          toolbox={true}
-          height="300px"
-        />
-      </div> */}
     </div>
   );
 };
