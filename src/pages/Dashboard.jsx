@@ -1,16 +1,22 @@
 import { useState } from "react";
-import styles from "../styles/TNEBDashboard.module.css";
+import styles from "../styles/Dashboard.module.css";
 import LineChartTNEB from "../components/graphs/LineChartTNEB/LineChartTNEB";
 import { Breadcrumbs } from "react-breadcrumbs";
 
-const TNEBDashboard = () => {
+const Dashboard = () => {
   const [timeframe, setTimeframe] = useState("Last 7 Days");
   const totalMeters = 1243;
+  const totalRegions = 13; // Total number of regions
+  const totalEDCs = 95; // Total number of EDCs
+  const totalSubstations = 260; // Total number of substations
+  const totalFeeders = 416; // Total number of feeders
 
   const handleTimeframeChange = (e) => {
     setTimeframe(e.target.value);
   };
-const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur ","Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy","Vellore","Villupuram"]
+
+  const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur ","Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy","Vellore","Villupuram"];
+  
   // Sample data for the LineChart
   const graphData = {
     daily: {
@@ -51,7 +57,7 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
     }
   };
 
-  const IndividualRegion = ({ regionName }) => {
+  const IndividualRegion = ({ region }) => {
     const currentValue = 452;
     const previousValue = 350;
     const percentageChange = ((currentValue - previousValue) / previousValue * 100).toFixed(1);
@@ -61,7 +67,7 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
       <div className={styles.individual_region}>
         <div className={styles.individual_region_header}>
           <div className={styles.individual_region_header_left}>
-            <h3 className={styles.individual_region_header_title}>{regionName}</h3>
+            <h3 className={styles.individual_region_header_title}>{region}</h3>
             <p className="titles">95 EDC \ 20 Substations \ 16 Feeders</p>
           </div>
           <div className={styles.individual_region_header_right}>
@@ -114,10 +120,7 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
     <div className={styles.main_content}>
       <div className={styles.section_header}>
         <h2 className="title">Dashboard</h2>
-        
-        <Breadcrumbs/>
-
-        <div className={styles.action_cont}>
+        <div className={styles.action_container}>
           <div className={styles.time_range_select_dropdown}>
             <select
               value={timeframe}
@@ -135,14 +138,45 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
           </div>
         </div>
       </div>
-
+      <Breadcrumbs>
+        <span>Home</span>
+        <span className={styles.breadcrumb_separator}>/</span>
+        <span>Dashboard</span>
+      </Breadcrumbs>
       <div className={styles.summary_section}>
+      <div className={styles.total_regions_container}>
+          <div className={styles.total_main_info}>
+          <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
+          <div className={styles.total_title_value}>
+            <p className="titles">Total Regions</p>
+              <div className={styles.summary_value}>{totalRegions}</div>
+            </div>
+          </div>
+        </div>
+        <div className={styles.total_edcs_container}>
+          <div className={styles.total_main_info}>
+            <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
+            <div className={styles.total_title_value}>
+            <p className="titles">Total EDCs</p>
+              <div className={styles.summary_value}>{totalEDCs}</div>
+            </div>
+          </div>  
+        </div>
+        <div className={styles.total_substations_container}>
+          <div className={styles.total_main_info}>
+          <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
+            <div className={styles.total_title_value}>
+            <p className="titles">Total Substations</p> 
+              <div className={styles.summary_value}>{totalSubstations}</div>
+            </div>
+          </div>  
+        </div>
         <div className={styles.total_meters_container}>
           <div className={styles.total_meters_main_info}>
             <img
-              src="icons/meter.svg"
+              src="icons/electric-meter.svg"
               alt="Total Meters"
-              className={styles.total_meters_icon}
+              className={styles.TNEB_icons}
             />
             <div className={styles.total_meters}>
               <div className="titles">Total Meters</div>
@@ -177,54 +211,21 @@ const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "
             </div>
           </div>
         </div>
+        
       </div>
 
       <div className={styles.section_header}>
         <h2 className="title">Regions</h2>
       </div>
       <div className={styles.region_stats_container}>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[0]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[1]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[2]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[3]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[4]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[5]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[6]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[7]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[8]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[9]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[10]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[11]} />
-        </div>
-        <div className={styles.individual_region_stats}>
-          <IndividualRegion regionName={regionName[12]} />
-        </div>
+        {regionName.map((region, index) => (
+          <div key={index} className={styles.individual_region_stats}>
+            <IndividualRegion region={region} />
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default TNEBDashboard;
+export default Dashboard;

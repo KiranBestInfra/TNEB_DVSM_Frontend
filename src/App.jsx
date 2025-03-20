@@ -11,7 +11,7 @@ import { jwtDecode } from 'jwt-decode';
 import { AuthProvider } from './components/AuthProvider';
 import Profile from './pages/Profile';
 import Load from './pages/Load';
-import TNEBDashboard from './pages/TNEBDashboard';
+import Dashboard from './pages/Dashboard';
 import RegionDetailPage from './pages/RegionDetailPage';
 import UnitDetailPage from './pages/UnitDetailPage';
 import ChennaiCentralPage from './pages/ChennaiCentralPage';
@@ -68,7 +68,7 @@ const App = () => {
                                 index
                                 element={<Navigate to="dashboard" replace />}
                             />
-                            <Route path="dashboard" element={<TNEBDashboard />} />
+                            <Route path="dashboard" element={<Dashboard />} />
                             <Route path="region/:regionId" element={<RegionDetailPage />} />
                             <Route path="subdistrict/:subdistrictId" element={<ChennaiCentralPage />} />
                             <Route path="units" element={<UnitDetailPage />} />
