@@ -2,6 +2,10 @@ import { useState } from "react";
 import styles from "../styles/Dashboard.module.css";
 import LineChartTNEB from "../components/graphs/LineChartTNEB/LineChartTNEB";
 import { Breadcrumbs } from "react-breadcrumbs";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import Buttons from "../components/ui/Buttons/Buttons";
+import IndividualRegion from "./IndividualRegion";
 
 const Dashboard = () => {
   const [timeframe, setTimeframe] = useState("Last 7 Days");
@@ -10,6 +14,10 @@ const Dashboard = () => {
   const totalEDCs = 95; // Total number of EDCs
   const totalSubstations = 260; // Total number of substations
   const totalFeeders = 416; // Total number of feeders
+  const [dateRange, setDateRange] = useState({
+    start: null,
+    end: null
+  });
 
   const handleTimeframeChange = (e) => {
     setTimeframe(e.target.value);
@@ -17,6 +25,74 @@ const Dashboard = () => {
 
   const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur ","Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy","Vellore","Villupuram"];
   
+  // EDC counts for each region
+  const regionEdcCounts = {
+    "Chennai": 8,
+    "Coimbatore": 7,
+    "Erode": 6,
+    "Kancheepuram": 8,
+    "Karur": 7,
+    "Madurai": 8,
+    "Thanjavur": 7,
+    "Thiruvallur": 8,
+    "Tirunelveli": 7,
+    "Tiruvannamalai": 8,
+    "Trichy": 7,
+    "Vellore": 7,
+    "Villupuram": 7
+  };
+
+  // Add this new object for substation counts
+  const regionSubstationCounts = {
+    "Chennai": 25,
+    "Coimbatore": 22,
+    "Erode": 18,
+    "Kancheepuram": 20,
+    "Karur": 19,
+    "Madurai": 23,
+    "Thanjavur": 21,
+    "Thiruvallur": 24,
+    "Tirunelveli": 20,
+    "Tiruvannamalai": 22,
+    "Trichy": 21,
+    "Vellore": 23,
+    "Villupuram": 22
+  };
+
+  // Add this new object for feeder counts
+  const regionFeederCounts = {
+    "Chennai": 42,
+    "Coimbatore": 38,
+    "Erode": 35,
+    "Kancheepuram": 36,
+    "Karur": 32,
+    "Madurai": 39,
+    "Thanjavur": 34,
+    "Thiruvallur": 37,
+    "Tirunelveli": 33,
+    "Tiruvannamalai": 35,
+    "Trichy": 36,
+    "Vellore": 34,
+    "Villupuram": 35
+  };
+
+  // Region-wise current and previous values
+  const regionStats = {
+    "Chennai": { currentValue: 452, previousValue: 350 },
+    "Coimbatore": { currentValue: 480, previousValue: 420 },
+    "Erode": { currentValue: 510, previousValue: 480 },
+    "Kancheepuram": { currentValue: 490, previousValue: 440 },
+    "Karur": { currentValue: 520, previousValue: 460 },
+    "Madurai": { currentValue: 540, previousValue: 470 },
+    "Thanjavur": { currentValue: 500, previousValue: 450 },
+    "Thiruvallur": { currentValue: 530, previousValue: 480 },
+    "Tirunelveli": { currentValue: 560, previousValue: 500 },
+    "Tiruvannamalai": { currentValue: 470, previousValue: 430 },
+    "Trichy": { currentValue: 550, previousValue: 490 },
+    "Vellore": { currentValue: 510, previousValue: 460 },
+    "Villupuram": { currentValue: 480, previousValue: 440 }
+  };
+
   // Sample data for the LineChart
   const graphData = {
     daily: {
@@ -57,98 +133,69 @@ const Dashboard = () => {
     }
   };
 
-  const IndividualRegion = ({ region }) => {
-    const currentValue = 452;
-    const previousValue = 350;
-    const percentageChange = ((currentValue - previousValue) / previousValue * 100).toFixed(1);
-    const isPositiveChange = currentValue >= previousValue;
-
-    return (
-      <div className={styles.individual_region}>
-        <div className={styles.individual_region_header}>
-          <div className={styles.individual_region_header_left}>
-            <h3 className={styles.individual_region_header_title}>{region}</h3>
-            <p className="titles">95 EDC \ 20 Substations \ 16 Feeders</p>
-          </div>
-          <div className={styles.individual_region_header_right}>
-            <img
-              src="icons/click-through-rate.svg"
-              alt="Click Here"
-              className={styles.click_individual_region}
-            />
-          </div>
-        </div>
-        <div className={styles.individual_region_body}>
-          <div className={styles.region_content_wrapper}>
-            <div className={styles.region_stats_utilization}>
-              <p className="titles">Units Utilization</p>
-              <div className={styles.region_stats_values}>
-                <div className={styles.region_current_value}>
-                  {currentValue}
-                </div>
-                <div className={styles.region_previous_value}>
-                  {previousValue} MW
-                </div>
-                <div className={`${styles.region_percentage_change} ${isPositiveChange ? styles.positive : styles.negative}`}>
-                  <img
-                    src={isPositiveChange ? "icons/up-right-arrow.svg" : "icons/down-right-arrow.svg"}
-                    alt={isPositiveChange ? "Increase" : "Decrease"}
-                    className={`${styles.region_trend_arrow} ${isPositiveChange ? styles.positive : styles.negative}`}
-                  />
-                  {Math.abs(percentageChange)}%
-                </div>
-              </div>
-            </div>
-            <div className={styles.region_stats_graph}>
-              <LineChartTNEB
-                title="Energy Usage"
-                data={graphData}
-                seriesColors={['#3f68b2', '#ed8c22', '#dc272c']}
-                yAxisLabel="MW"
-                showLabel={false}
-                toolbox={true}
-                height="100%"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className={styles.main_content}>
       <div className={styles.section_header}>
         <h2 className="title">Dashboard</h2>
         <div className={styles.action_container}>
-          <div className={styles.time_range_select_dropdown}>
-            <select
-              value={timeframe}
-              onChange={handleTimeframeChange}
-              className={styles.time_range_select}
-            >
-              <option value="Last 7 Days">Last 7 Days</option>
-              <option value="Last 30 Days">Last 30 Days</option>
-            </select>
-            <img
-              src="icons/arrow-down.svg"
-              alt="Select Time"
-              className={styles.time_range_select_dropdown_icon}
+          <div className={styles.date_range}>
+            <div className={styles.search_cont}>
+              <DatePicker
+                selected={dateRange.start}
+                onChange={(date) =>
+                  setDateRange({ ...dateRange, start: date })
+                }
+                className={styles.date_input}
+                dateFormat="MMM dd, yyyy"
+                placeholderText="Start Date"
+              />
+              <span className="icons icon_placement">
+                <img src="icons/date.svg" alt="Calendar" />
+              </span>
+            </div>
+
+            <div className={styles.search_cont}>
+              <DatePicker
+                selected={dateRange.end}
+                onChange={(date) =>
+                  setDateRange({ ...dateRange, end: date })
+                }
+                className={styles.date_input}
+                dateFormat="MMM dd, yyyy"
+                placeholderText="End Date"
+                minDate={dateRange.start}
+              />
+              <span className="icons icon_placement">
+                <img src="icons/date.svg" alt="Calendar" />
+              </span>
+            </div>
+            <Buttons
+              label="Get Reports"
+              variant="primary"
+              alt="GetReports"
+              icon="icons/reports.svg"
+              iconPosition="left"
             />
           </div>
         </div>
       </div>
       <Breadcrumbs>
-        <span>Home</span>
-        <span className={styles.breadcrumb_separator}>/</span>
         <span>Dashboard</span>
+        <span className={styles.breadcrumb_separator}>/</span>
+        <span>Region</span>
+        <span className={styles.breadcrumb_separator}>/</span>
+        <span>EDC</span>
+        <span className={styles.breadcrumb_separator}>/</span>
+        <span>Substation</span>
+        <span className={styles.breadcrumb_separator}>/</span>
+        <span>Feeder</span>
       </Breadcrumbs>
       <div className={styles.summary_section}>
-      <div className={styles.total_regions_container}>
+        <div className={styles.total_regions_container}>
           <div className={styles.total_main_info}>
-          <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
-          <div className={styles.total_title_value}>
-            <p className="titles">Total Regions</p>
+            <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
+            <div className={styles.total_title_value}>
+              <p className="title">Regions</p>
               <div className={styles.summary_value}>{totalRegions}</div>
             </div>
           </div>
@@ -157,19 +204,19 @@ const Dashboard = () => {
           <div className={styles.total_main_info}>
             <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
-            <p className="titles">Total EDCs</p>
+              <p className="title">EDCs</p>
               <div className={styles.summary_value}>{totalEDCs}</div>
             </div>
-          </div>  
+          </div>
         </div>
         <div className={styles.total_substations_container}>
           <div className={styles.total_main_info}>
-          <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
+            <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
-            <p className="titles">Total Substations</p> 
+              <p className="title">Substations</p>
               <div className={styles.summary_value}>{totalSubstations}</div>
             </div>
-          </div>  
+          </div>
         </div>
         <div className={styles.total_meters_container}>
           <div className={styles.total_meters_main_info}>
@@ -179,7 +226,7 @@ const Dashboard = () => {
               className={styles.TNEB_icons}
             />
             <div className={styles.total_meters}>
-              <div className="titles">Total Meters</div>
+              <div className="title">Feeders</div>
               <div className={styles.summary_value}>{totalMeters}</div>
             </div>
           </div>
@@ -211,16 +258,22 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Regions</h2>
+        <h2 className="title">Regions <span className={styles.region_count}>{`[${totalRegions}]`}</span></h2>
       </div>
       <div className={styles.region_stats_container}>
         {regionName.map((region, index) => (
           <div key={index} className={styles.individual_region_stats}>
-            <IndividualRegion region={region} />
+            <IndividualRegion 
+              region={region} 
+              edcCount={regionEdcCounts[region.trim()]}
+              substationCount={regionSubstationCounts[region.trim()]}
+              feederCount={regionFeederCounts[region.trim()]}
+              currentValue={regionStats[region.trim()].currentValue}
+              previousValue={regionStats[region.trim()].previousValue}
+            />
           </div>
         ))}
       </div>

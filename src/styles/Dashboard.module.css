@@ -13,7 +13,9 @@
     justify-content: space-between;
     align-items: center;
 }
-
+.region_count{
+    color: var(--brand-blue);
+}
 .action_cont {
     display: flex;
     align-items: center;
@@ -533,7 +535,18 @@ padding: 0.8rem 1rem;
     gap: 1rem;
 
 }
-
+/* Date Range Picker */
+.date_range {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.search_cont{
+    position: relative;
+}
+.search_cont img{
+filter: brightness(0) invert(1);
+}
 .edc_section{
     font-size: 0.9rem;
     color: var(--black);
@@ -726,7 +739,10 @@ padding: 0.8rem 1rem;
     justify-content: space-between;
     align-items: center;
 }
-
+.region_stats_utilization p.titles {
+    white-space: nowrap;
+    
+}
 .region_stats_values {
     display: flex;
     flex-direction: column;

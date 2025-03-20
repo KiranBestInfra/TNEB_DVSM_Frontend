@@ -20,6 +20,9 @@ import TicketDetails from './pages/TicketDetails';
 import CreateTicket from './pages/CreateTicket';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import Edc from './pages/Edc';
+import Substations from './pages/Substations';
+import Feeder from './pages/Feeder';
 
 const App = () => {
     const getUserRole = () => {
@@ -72,6 +75,9 @@ const App = () => {
                             <Route path="region/:regionId" element={<RegionDetailPage />} />
                             <Route path="subdistrict/:subdistrictId" element={<ChennaiCentralPage />} />
                             <Route path="units" element={<UnitDetailPage />} />
+                            <Route path="edc/:region" element={<Edc />} />
+                            <Route path="substations/:region" element={<Substations />} />
+                            <Route path="feeder/:region" element={<Feeder />} />
                             <Route path="tickets">
                                 <Route index element={<Tickets />} />
                                 <Route path="new" element={<CreateTicket />} />
