@@ -64,6 +64,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     border: 2px solid var(--white);
+    
 }
 
 .white_icons>img {
@@ -251,4 +252,11 @@
     100% {
         transform: rotate(360deg);
     }
+}
+
+.welcome_message {
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
 }
