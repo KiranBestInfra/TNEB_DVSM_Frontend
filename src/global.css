@@ -383,7 +383,9 @@ textarea:focus {
   top: 0.45rem;
   right: 0.6rem;
 }
-
+.icons_placement img{
+  filter: brightness(0) invert(1);
+}
 /* Lists */
 li {
   list-style: none;
@@ -429,6 +431,10 @@ form {
   flex-direction: row;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.form_row_profile{
+width: 100%;
 }
 
 .form_group {

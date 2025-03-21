@@ -4,22 +4,22 @@ import AdminLayout from './layouts/AdminLayout';
 import AuthLayout from './layouts/AuthLayout';
 import ForgotPassword from './pages/ForgotPassword';
 import Verification from './pages/Verification';
-import ProtectedRoute from './components/ProtectedRoute';
 import PDFViewer from './components/Documents/PDFViewer';
 import './styles/MediaQuaries.css';
 import { jwtDecode } from 'jwt-decode';
 import { AuthProvider } from './components/AuthProvider';
 import Profile from './pages/Profile';
 import Load from './pages/Load';
-import TNEBDashboard from './pages/TNEBDashboard';
-import RegionDetailPage from './pages/RegionDetailPage';
-import UnitDetailPage from './pages/UnitDetailPage';
-import ChennaiCentralPage from './pages/ChennaiCentralPage';
+import Dashboard from './pages/Dashboard';
 import Tickets from './pages/Tickets';
 import TicketDetails from './pages/TicketDetails';
 import CreateTicket from './pages/CreateTicket';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
+import EDCs from './pages/EDCs';
+import Substations from './pages/Substations';
+import Regions from './pages/Regions';
+import Feeders from './pages/Feeders';
 
 const App = () => {
     const getUserRole = () => {
@@ -54,13 +54,7 @@ const App = () => {
                         path="/pdf/:invoiceId/:meterNo"
                         element={<PDFViewer />}
                     />
-                    <Route
-                        path="/"
-                        element={
-                            <ProtectedRoute>
-                                <AdminLayout />
-                            </ProtectedRoute>
-                        }>
+                    <Route path="/" element={<AdminLayout />}>
                         <Route index element={<DefaultRedirect />} />
 
                         <Route path="admin">
@@ -68,10 +62,11 @@ const App = () => {
                                 index
                                 element={<Navigate to="dashboard" replace />}
                             />
-                            <Route path="dashboard" element={<TNEBDashboard />} />
-                            <Route path="region/:regionId" element={<RegionDetailPage />} />
-                            <Route path="subdistrict/:subdistrictId" element={<ChennaiCentralPage />} />
-                            <Route path="units" element={<UnitDetailPage />} />
+                            <Route path="dashboard" element={<Dashboard />} />
+                            <Route path="regions" element={<Regions />} />
+                            <Route path=":region/edcs" element={<EDCs />} />
+                            <Route path=":region/substations" element={<Substations />} />
+                            <Route path=":region/feeders" element={<Feeders />} />
                             <Route path="tickets">
                                 <Route index element={<Tickets />} />
                                 <Route path="new" element={<CreateTicket />} />
