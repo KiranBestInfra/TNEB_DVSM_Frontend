@@ -6,7 +6,7 @@ import Buttons from "../components/ui/Buttons/Buttons";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import ShortDetailsWidget from "./ShortDetailsWidget";
 
-const Substations = () => {
+const Feeders = () => {
   const [timeframe, setTimeframe] = useState("Last 7 Days");
   const totalMeters = 1243;
   const totalRegions = 13; // Total number of regions
@@ -22,50 +22,50 @@ const Substations = () => {
     setTimeframe(e.target.value);
   };
 
-  // Replace EDC data with Substation data
-  const substationNames = [
-    "Adyar SS", "Velachery SS", "T Nagar SS", "Mylapore SS",
-    "Anna Nagar SS", "Porur SS", "Ambattur SS", "Perambur SS",
-    "Guindy SS", "Kodambakkam SS", "Royapuram SS", "Thiruvanmiyur SS",
-    "Kilpauk SS", "Egmore SS", "Nungambakkam SS"
+  // Replace EDC data with Feeder data
+  const feederNames = [
+    "Adyar Feeder 1", "Velachery Feeder 2", "T Nagar Feeder 3", "Mylapore Feeder 4",
+    "Anna Nagar Feeder 5", "Porur Feeder 6", "Ambattur Feeder 7", "Perambur Feeder 8",
+    "Guindy Feeder 9", "Kodambakkam Feeder 10", "Royapuram Feeder 11", "Thiruvanmiyur Feeder 12",
+    "Kilpauk Feeder 13", "Egmore Feeder 14", "Nungambakkam Feeder 15"
   ];
   
-  // Substation feeder counts
-  const substationFeederCounts = {
-    "Adyar SS": 8,
-    "Velachery SS": 6,
-    "T Nagar SS": 7,
-    "Mylapore SS": 5,
-    "Anna Nagar SS": 6,
-    "Porur SS": 4,
-    "Ambattur SS": 5,
-    "Perambur SS": 6,
-    "Guindy SS": 7,
-    "Kodambakkam SS": 5,
-    "Royapuram SS": 4,
-    "Thiruvanmiyur SS": 6,
-    "Kilpauk SS": 5,
-    "Egmore SS": 4,
-    "Nungambakkam SS": 6
+  // Feeder meter counts
+  const feederMeterCounts = {
+    "Adyar Feeder 1": 45,
+    "Velachery Feeder 2": 38,
+    "T Nagar Feeder 3": 42,
+    "Mylapore Feeder 4": 35,
+    "Anna Nagar Feeder 5": 40,
+    "Porur Feeder 6": 32,
+    "Ambattur Feeder 7": 36,
+    "Perambur Feeder 8": 34,
+    "Guindy Feeder 9": 41,
+    "Kodambakkam Feeder 10": 37,
+    "Royapuram Feeder 11": 33,
+    "Thiruvanmiyur Feeder 12": 39,
+    "Kilpauk Feeder 13": 35,
+    "Egmore Feeder 14": 31,
+    "Nungambakkam Feeder 15": 38
   };
 
-  // Substation consumption stats (in MVA)
-  const substationStats = {
-    "Adyar SS": { currentValue: 42, previousValue: 38 },
-    "Velachery SS": { currentValue: 35, previousValue: 32 },
-    "T Nagar SS": { currentValue: 45, previousValue: 41 },
-    "Mylapore SS": { currentValue: 38, previousValue: 35 },
-    "Anna Nagar SS": { currentValue: 40, previousValue: 37 },
-    "Porur SS": { currentValue: 32, previousValue: 29 },
-    "Ambattur SS": { currentValue: 36, previousValue: 33 },
-    "Perambur SS": { currentValue: 34, previousValue: 31 },
-    "Guindy SS": { currentValue: 41, previousValue: 38 },
-    "Kodambakkam SS": { currentValue: 37, previousValue: 34 },
-    "Royapuram SS": { currentValue: 33, previousValue: 30 },
-    "Thiruvanmiyur SS": { currentValue: 39, previousValue: 36 },
-    "Kilpauk SS": { currentValue: 35, previousValue: 32 },
-    "Egmore SS": { currentValue: 31, previousValue: 28 },
-    "Nungambakkam SS": { currentValue: 38, previousValue: 35 }
+  // Feeder consumption stats (in kW)
+  const feederStats = {
+    "Adyar Feeder 1": { currentValue: 850, previousValue: 780 },
+    "Velachery Feeder 2": { currentValue: 720, previousValue: 680 },
+    "T Nagar Feeder 3": { currentValue: 920, previousValue: 850 },
+    "Mylapore Feeder 4": { currentValue: 780, previousValue: 720 },
+    "Anna Nagar Feeder 5": { currentValue: 820, previousValue: 760 },
+    "Porur Feeder 6": { currentValue: 680, previousValue: 620 },
+    "Ambattur Feeder 7": { currentValue: 740, previousValue: 680 },
+    "Perambur Feeder 8": { currentValue: 700, previousValue: 650 },
+    "Guindy Feeder 9": { currentValue: 840, previousValue: 780 },
+    "Kodambakkam Feeder 10": { currentValue: 760, previousValue: 700 },
+    "Royapuram Feeder 11": { currentValue: 680, previousValue: 620 },
+    "Thiruvanmiyur Feeder 12": { currentValue: 800, previousValue: 740 },
+    "Kilpauk Feeder 13": { currentValue: 720, previousValue: 660 },
+    "Egmore Feeder 14": { currentValue: 640, previousValue: 580 },
+    "Nungambakkam Feeder 15": { currentValue: 780, previousValue: 720 }
   };
 
   // Sample data for the LineChart
@@ -111,7 +111,7 @@ const Substations = () => {
   return (
     <div className={styles.main_content}>
       <div className={styles.section_header}>
-        <h2 className="title">Substations</h2>
+        <h2 className="title">Feeders</h2>
         <div className={styles.action_container}>
           <div className={styles.date_range}>
             <div className={styles.search_cont}>
@@ -226,17 +226,17 @@ const Substations = () => {
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Substations <span className={styles.region_count}>{`[ ${totalSubstations} ]`}</span></h2>
+        <h2 className="title">Feeders <span className={styles.region_count}>{`[ ${totalFeeders} ]`}</span></h2>
       </div>
       <div className={styles.region_stats_container}>
-        {substationNames.map((substation, index) => (
+        {feederNames.map((feeder, index) => (
           <div key={index} className={styles.individual_region_stats}>
             <ShortDetailsWidget
-              region={substation} 
-              feederCount={substationFeederCounts[substation]}
-              currentValue={substationStats[substation].currentValue}
-              previousValue={substationStats[substation].previousValue}
-              pageType="substations"
+              region={feeder} 
+              feederCount={feederMeterCounts[feeder]}
+              currentValue={feederStats[feeder].currentValue}
+              previousValue={feederStats[feeder].previousValue}
+              pageType="feeders"
             />
           </div>
         ))}
@@ -245,4 +245,4 @@ const Substations = () => {
   );
 };
 
-export default Substations;
+export default Feeders;

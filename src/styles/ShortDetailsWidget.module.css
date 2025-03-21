@@ -70,6 +70,7 @@
     height: 100%;
     justify-content: space-between;
     align-items: center;
+    min-width: 140px;
 }
 
 .region_stats_values {
@@ -155,4 +156,4 @@
 
 .nav_link:hover {
     color: var(--brand-blue);  /* or your preferred hover color */
-}
+} 

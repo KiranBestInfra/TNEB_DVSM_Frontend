@@ -6,7 +6,7 @@ import Buttons from "../components/ui/Buttons/Buttons";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import ShortDetailsWidget from "./ShortDetailsWidget";
 
-const Substations = () => {
+const EDCs = () => {
   const [timeframe, setTimeframe] = useState("Last 7 Days");
   const totalMeters = 1243;
   const totalRegions = 13; // Total number of regions
@@ -22,50 +22,69 @@ const Substations = () => {
     setTimeframe(e.target.value);
   };
 
-  // Replace EDC data with Substation data
-  const substationNames = [
-    "Adyar SS", "Velachery SS", "T Nagar SS", "Mylapore SS",
-    "Anna Nagar SS", "Porur SS", "Ambattur SS", "Perambur SS",
-    "Guindy SS", "Kodambakkam SS", "Royapuram SS", "Thiruvanmiyur SS",
-    "Kilpauk SS", "Egmore SS", "Nungambakkam SS"
+  // Replace region data with EDC data
+  const edcNames = [
+    "Chennai North", "Chennai South", "Chennai Central", "Chennai West",
+    "Coimbatore North", "Coimbatore South", "Madurai Urban", "Madurai Rural",
+    "Trichy Urban", "Trichy Rural", "Thanjavur", "Villupuram", "Vellore",
+    "Salem", "Erode"
   ];
   
-  // Substation feeder counts
-  const substationFeederCounts = {
-    "Adyar SS": 8,
-    "Velachery SS": 6,
-    "T Nagar SS": 7,
-    "Mylapore SS": 5,
-    "Anna Nagar SS": 6,
-    "Porur SS": 4,
-    "Ambattur SS": 5,
-    "Perambur SS": 6,
-    "Guindy SS": 7,
-    "Kodambakkam SS": 5,
-    "Royapuram SS": 4,
-    "Thiruvanmiyur SS": 6,
-    "Kilpauk SS": 5,
-    "Egmore SS": 4,
-    "Nungambakkam SS": 6
+  // EDC substation counts
+  const edcSubstationCounts = {
+    "Chennai North": 18,
+    "Chennai South": 22,
+    "Chennai Central": 20,
+    "Chennai West": 15,
+    "Coimbatore North": 16,
+    "Coimbatore South": 19,
+    "Madurai Urban": 17,
+    "Madurai Rural": 14,
+    "Trichy Urban": 15,
+    "Trichy Rural": 13,
+    "Thanjavur": 16,
+    "Villupuram": 14,
+    "Vellore": 17,
+    "Salem": 18,
+    "Erode": 16
   };
 
-  // Substation consumption stats (in MVA)
-  const substationStats = {
-    "Adyar SS": { currentValue: 42, previousValue: 38 },
-    "Velachery SS": { currentValue: 35, previousValue: 32 },
-    "T Nagar SS": { currentValue: 45, previousValue: 41 },
-    "Mylapore SS": { currentValue: 38, previousValue: 35 },
-    "Anna Nagar SS": { currentValue: 40, previousValue: 37 },
-    "Porur SS": { currentValue: 32, previousValue: 29 },
-    "Ambattur SS": { currentValue: 36, previousValue: 33 },
-    "Perambur SS": { currentValue: 34, previousValue: 31 },
-    "Guindy SS": { currentValue: 41, previousValue: 38 },
-    "Kodambakkam SS": { currentValue: 37, previousValue: 34 },
-    "Royapuram SS": { currentValue: 33, previousValue: 30 },
-    "Thiruvanmiyur SS": { currentValue: 39, previousValue: 36 },
-    "Kilpauk SS": { currentValue: 35, previousValue: 32 },
-    "Egmore SS": { currentValue: 31, previousValue: 28 },
-    "Nungambakkam SS": { currentValue: 38, previousValue: 35 }
+  // EDC feeder counts
+  const edcFeederCounts = {
+    "Chennai North": 35,
+    "Chennai South": 42,
+    "Chennai Central": 38,
+    "Chennai West": 32,
+    "Coimbatore North": 28,
+    "Coimbatore South": 34,
+    "Madurai Urban": 30,
+    "Madurai Rural": 25,
+    "Trichy Urban": 28,
+    "Trichy Rural": 24,
+    "Thanjavur": 29,
+    "Villupuram": 26,
+    "Vellore": 31,
+    "Salem": 33,
+    "Erode": 29
+  };
+
+  // EDC consumption stats
+  const edcStats = {
+    "Chennai North": { currentValue: 380, previousValue: 350 },
+    "Chennai South": { currentValue: 420, previousValue: 390 },
+    "Chennai Central": { currentValue: 390, previousValue: 360 },
+    "Chennai West": { currentValue: 360, previousValue: 340 },
+    "Coimbatore North": { currentValue: 340, previousValue: 310 },
+    "Coimbatore South": { currentValue: 370, previousValue: 350 },
+    "Madurai Urban": { currentValue: 350, previousValue: 320 },
+    "Madurai Rural": { currentValue: 310, previousValue: 290 },
+    "Trichy Urban": { currentValue: 330, previousValue: 300 },
+    "Trichy Rural": { currentValue: 290, previousValue: 270 },
+    "Thanjavur": { currentValue: 320, previousValue: 300 },
+    "Villupuram": { currentValue: 300, previousValue: 280 },
+    "Vellore": { currentValue: 340, previousValue: 310 },
+    "Salem": { currentValue: 350, previousValue: 320 },
+    "Erode": { currentValue: 330, previousValue: 300 }
   };
 
   // Sample data for the LineChart
@@ -111,7 +130,7 @@ const Substations = () => {
   return (
     <div className={styles.main_content}>
       <div className={styles.section_header}>
-        <h2 className="title">Substations</h2>
+        <h2 className="title">EDCs</h2>
         <div className={styles.action_container}>
           <div className={styles.date_range}>
             <div className={styles.search_cont}>
@@ -226,17 +245,18 @@ const Substations = () => {
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Substations <span className={styles.region_count}>{`[ ${totalSubstations} ]`}</span></h2>
+        <h2 className="title">EDCs <span className={styles.region_count}>{`[ ${totalEDCs} ]`}</span></h2>
       </div>
       <div className={styles.region_stats_container}>
-        {substationNames.map((substation, index) => (
+        {edcNames.map((edc, index) => (
           <div key={index} className={styles.individual_region_stats}>
             <ShortDetailsWidget
-              region={substation} 
-              feederCount={substationFeederCounts[substation]}
-              currentValue={substationStats[substation].currentValue}
-              previousValue={substationStats[substation].previousValue}
-              pageType="substations"
+              region={edc} 
+              substationCount={edcSubstationCounts[edc]}
+              feederCount={edcFeederCounts[edc]}
+              currentValue={edcStats[edc].currentValue}
+              previousValue={edcStats[edc].previousValue}
+              pageType="edcs"
             />
           </div>
         ))}
@@ -245,4 +265,4 @@ const Substations = () => {
   );
 };
 
-export default Substations;
+export default EDCs;

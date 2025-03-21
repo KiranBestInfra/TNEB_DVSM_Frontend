@@ -6,7 +6,7 @@ import Buttons from "../components/ui/Buttons/Buttons";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import ShortDetailsWidget from "./ShortDetailsWidget";
 
-const Substations = () => {
+const Regions = () => {
   const [timeframe, setTimeframe] = useState("Last 7 Days");
   const totalMeters = 1243;
   const totalRegions = 13; // Total number of regions
@@ -22,50 +22,74 @@ const Substations = () => {
     setTimeframe(e.target.value);
   };
 
-  // Replace EDC data with Substation data
-  const substationNames = [
-    "Adyar SS", "Velachery SS", "T Nagar SS", "Mylapore SS",
-    "Anna Nagar SS", "Porur SS", "Ambattur SS", "Perambur SS",
-    "Guindy SS", "Kodambakkam SS", "Royapuram SS", "Thiruvanmiyur SS",
-    "Kilpauk SS", "Egmore SS", "Nungambakkam SS"
-  ];
+  const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur ","Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy","Vellore","Villupuram"];
   
-  // Substation feeder counts
-  const substationFeederCounts = {
-    "Adyar SS": 8,
-    "Velachery SS": 6,
-    "T Nagar SS": 7,
-    "Mylapore SS": 5,
-    "Anna Nagar SS": 6,
-    "Porur SS": 4,
-    "Ambattur SS": 5,
-    "Perambur SS": 6,
-    "Guindy SS": 7,
-    "Kodambakkam SS": 5,
-    "Royapuram SS": 4,
-    "Thiruvanmiyur SS": 6,
-    "Kilpauk SS": 5,
-    "Egmore SS": 4,
-    "Nungambakkam SS": 6
+  // EDC counts for each region
+  const regionEdcCounts = {
+    "Chennai": 8,
+    "Coimbatore": 7,
+    "Erode": 6,
+    "Kancheepuram": 8,
+    "Karur": 7,
+    "Madurai": 8,
+    "Thanjavur": 7,
+    "Thiruvallur": 8,
+    "Tirunelveli": 7,
+    "Tiruvannamalai": 8,
+    "Trichy": 7,
+    "Vellore": 7,
+    "Villupuram": 7
   };
 
-  // Substation consumption stats (in MVA)
-  const substationStats = {
-    "Adyar SS": { currentValue: 42, previousValue: 38 },
-    "Velachery SS": { currentValue: 35, previousValue: 32 },
-    "T Nagar SS": { currentValue: 45, previousValue: 41 },
-    "Mylapore SS": { currentValue: 38, previousValue: 35 },
-    "Anna Nagar SS": { currentValue: 40, previousValue: 37 },
-    "Porur SS": { currentValue: 32, previousValue: 29 },
-    "Ambattur SS": { currentValue: 36, previousValue: 33 },
-    "Perambur SS": { currentValue: 34, previousValue: 31 },
-    "Guindy SS": { currentValue: 41, previousValue: 38 },
-    "Kodambakkam SS": { currentValue: 37, previousValue: 34 },
-    "Royapuram SS": { currentValue: 33, previousValue: 30 },
-    "Thiruvanmiyur SS": { currentValue: 39, previousValue: 36 },
-    "Kilpauk SS": { currentValue: 35, previousValue: 32 },
-    "Egmore SS": { currentValue: 31, previousValue: 28 },
-    "Nungambakkam SS": { currentValue: 38, previousValue: 35 }
+  // Add this new object for substation counts
+  const regionSubstationCounts = {
+    "Chennai": 25,
+    "Coimbatore": 22,
+    "Erode": 18,
+    "Kancheepuram": 20,
+    "Karur": 19,
+    "Madurai": 23,
+    "Thanjavur": 21,
+    "Thiruvallur": 24,
+    "Tirunelveli": 20,
+    "Tiruvannamalai": 22,
+    "Trichy": 21,
+    "Vellore": 23,
+    "Villupuram": 22
+  };
+
+  // Add this new object for feeder counts
+  const regionFeederCounts = {
+    "Chennai": 42,
+    "Coimbatore": 38,
+    "Erode": 35,
+    "Kancheepuram": 36,
+    "Karur": 32,
+    "Madurai": 39,
+    "Thanjavur": 34,
+    "Thiruvallur": 37,
+    "Tirunelveli": 33,
+    "Tiruvannamalai": 35,
+    "Trichy": 36,
+    "Vellore": 34,
+    "Villupuram": 35
+  };
+
+  // Region-wise current and previous values
+  const regionStats = {
+    "Chennai": { currentValue: 452, previousValue: 350 },
+    "Coimbatore": { currentValue: 480, previousValue: 420 },
+    "Erode": { currentValue: 510, previousValue: 480 },
+    "Kancheepuram": { currentValue: 490, previousValue: 440 },
+    "Karur": { currentValue: 520, previousValue: 460 },
+    "Madurai": { currentValue: 540, previousValue: 470 },
+    "Thanjavur": { currentValue: 500, previousValue: 450 },
+    "Thiruvallur": { currentValue: 530, previousValue: 480 },
+    "Tirunelveli": { currentValue: 560, previousValue: 500 },
+    "Tiruvannamalai": { currentValue: 470, previousValue: 430 },
+    "Trichy": { currentValue: 550, previousValue: 490 },
+    "Vellore": { currentValue: 510, previousValue: 460 },
+    "Villupuram": { currentValue: 480, previousValue: 440 }
   };
 
   // Sample data for the LineChart
@@ -111,7 +135,7 @@ const Substations = () => {
   return (
     <div className={styles.main_content}>
       <div className={styles.section_header}>
-        <h2 className="title">Substations</h2>
+        <h2 className="title">Regions</h2>
         <div className={styles.action_container}>
           <div className={styles.date_range}>
             <div className={styles.search_cont}>
@@ -226,17 +250,18 @@ const Substations = () => {
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Substations <span className={styles.region_count}>{`[ ${totalSubstations} ]`}</span></h2>
+        <h2 className="title">Regions <span className={styles.region_count}>{`[ ${totalRegions} ]`}</span></h2>
       </div>
       <div className={styles.region_stats_container}>
-        {substationNames.map((substation, index) => (
+        {regionName.map((region, index) => (
           <div key={index} className={styles.individual_region_stats}>
             <ShortDetailsWidget
-              region={substation} 
-              feederCount={substationFeederCounts[substation]}
-              currentValue={substationStats[substation].currentValue}
-              previousValue={substationStats[substation].previousValue}
-              pageType="substations"
+              region={region} 
+              edcCount={regionEdcCounts[region.trim()]}
+              substationCount={regionSubstationCounts[region.trim()]}
+              feederCount={regionFeederCounts[region.trim()]}
+              currentValue={regionStats[region.trim()].currentValue}
+              previousValue={regionStats[region.trim()].previousValue}
             />
           </div>
         ))}
@@ -245,4 +270,4 @@ const Substations = () => {
   );
 };
 
-export default Substations;
+export default Regions;
