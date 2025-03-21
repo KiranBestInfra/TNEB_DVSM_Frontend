@@ -167,8 +167,19 @@ const Profile = () => {
                         </div>
                     </div>
                 )}
+                <div className={styles.profile_section_content_header}>
+                 <span
+                        className={styles.white_icons}
+                  >
+                        <img
+                            src="icons/lock.svg"
+                            alt="Download chart"
+                        />
+                    </span>
+                   <h2>Change Password</h2>
+                </div>
             <form onSubmit={handleChangePassword}>
-              
+           
                 <div className="form_row form_row_profile">
                     <div className="form_group">
                         <input
@@ -236,15 +247,7 @@ const Profile = () => {
                                     <div className={styles.activity_date}>{activity.date}</div>
                                 </div>
                             </div>
-                            <div className={styles.login_details}>
-                                <div className={styles.activity_item}>
-                                    <div className={styles.activity_details}>
-                                        <p>{activity.activity}</p>
-                                        <span>{activity.device}</span>
-                                    </div>
-                                    <div className={styles.activity_date}>{activity.date}</div>
-                                </div>
-                            </div>
+                           
                         </div>
                     ))}
                 </div>
@@ -294,8 +297,8 @@ const Profile = () => {
                 <section className={styles.profile_section}>
                     {renderProfilePicture()}
                 </section>
-                <section className={styles.profile_section}>     {renderProfileForm()}</section>
-                <section className={styles.profile_section}>     {renderLoginActivities()}</section>
+                <section className={styles.profile_form}>     {renderProfileForm()}</section>
+                <section className={styles.profile_activities}>     {renderLoginActivities()}</section>
               
             </div>
         </div>
