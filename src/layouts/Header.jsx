@@ -151,6 +151,9 @@ const Header = () => {
                 <Link to={basePath}>
                     <img src="images/tangedco.png" alt="Company Logo" className={styles.logo_bestinfra} />
                 </Link>
+                <span className={styles.welcome_message}>
+                    Welcome {profileData.firstName}!
+                </span>
             </div>
             <div className={styles.search_cont}>
                 <input
@@ -188,9 +191,13 @@ const Header = () => {
             </div>
             <div className={styles.right_cont}>
                 <div className={styles.right_cont_item}>
-                    <div className={styles.white_icons} onClick={handleProfileClick}>
+                    {/* <div className={styles.white_icons} onClick={handleProfileClick}>
                         {renderProfilePicture()}
-                    </div>
+                    </div> */}
+
+                    <span className={styles.white_icons} onClick={handleProfileClick}>
+                        <img src="icons/settings.svg" alt="Settings" />
+                    </span>
 
                     <span
                         className={styles.white_icons}

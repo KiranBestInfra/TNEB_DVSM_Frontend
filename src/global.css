@@ -433,6 +433,10 @@ form {
   gap: 1rem;
 }
 
+.form_row_profile{
+width: 100%;
+}
+
 .form_group {
   display: flex;
   flex-direction: column;
