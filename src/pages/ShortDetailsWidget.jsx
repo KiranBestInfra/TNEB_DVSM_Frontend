@@ -1,4 +1,4 @@
-import styles from "../styles/IndividualRegion.module.css";
+import styles from "../styles/ShortDetailsWidget.module.css";
 import LineChartTNEB from "../components/graphs/LineChartTNEB/LineChartTNEB";
 import { Link } from 'react-router-dom';
 
@@ -24,17 +24,59 @@ const graphData = {
   }
 };
 
-const IndividualRegion = ({ 
+const ShortDetailsWidget = ({ 
   region, 
   edcCount, 
   substationCount,
   feederCount,
   currentValue, 
-  previousValue 
+  previousValue,
+  pageType = 'regions' // Default to 'regions' if not specified
 }) => {
   // Calculate percentage change from the props
   const percentageChange = ((currentValue - previousValue) / previousValue * 100).toFixed(1);
   const isPositiveChange = currentValue >= previousValue;
+
+  const renderNavigationLinks = () => {
+    switch (pageType) {
+      case 'edcs':
+        return (
+          <>
+            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/substations/`} className={styles.nav_link}>
+              {substationCount} Substations
+            </Link>
+            {' / '}
+            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/`} className={styles.nav_link}>
+              {feederCount} Feeders
+            </Link>
+          </>
+        );
+      case 'substations':
+        return (
+          <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/`} className={styles.nav_link}>
+            {feederCount} Feeders
+          </Link>
+        );
+      case 'feeders':
+        return null;
+      default:
+        return (
+          <>
+            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/edcs/`} className={styles.nav_link}>
+              {edcCount} EDCs
+            </Link>
+            {' / '}
+            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/substations/`} className={styles.nav_link}>
+              {substationCount} Substations
+            </Link>
+            {' / '}
+            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/`} className={styles.nav_link}>
+              {feederCount} Feeders
+            </Link>
+          </>
+        );
+    }
+  };
 
   return (
     <div className={styles.individual_region}>
@@ -42,17 +84,7 @@ const IndividualRegion = ({
         <div className={styles.individual_region_header_left}>
           <h3 className={styles.individual_region_header_title}>{region}</h3>
           <p className={styles.navigation_links}>
-            <Link to={`/admin/edc/${region}`} className={styles.nav_link}>
-              {edcCount} EDC
-            </Link>
-            {' / '}
-            <Link to={`/admin/substations/${region}`} className={styles.nav_link}>
-              {substationCount} Substation
-            </Link>
-            {' / '}
-            <Link to={`/admin/feeder/${region}`} className={styles.nav_link}>
-              {feederCount} Feeder
-            </Link>
+            {renderNavigationLinks()}
           </p>
         </div>
         <div className={styles.individual_region_header_right}>
@@ -101,4 +133,4 @@ const IndividualRegion = ({
   );
 };
 
-export default IndividualRegion; 
+export default ShortDetailsWidget; 
