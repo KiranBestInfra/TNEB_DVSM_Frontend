@@ -1,6 +1,6 @@
 import styles from "../styles/ShortDetailsWidget.module.css";
 import LineChartTNEB from "../components/graphs/LineChartTNEB/LineChartTNEB";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Dummy data for the graph
 const graphData = {
@@ -31,11 +31,40 @@ const ShortDetailsWidget = ({
   feederCount,
   currentValue, 
   previousValue,
-  pageType = 'regions' // Default to 'regions' if not specified
+  pageType = 'regions', // Default to 'regions' if not specified
+  handleRegionClick
 }) => {
+  const navigate = useNavigate();
+  
   // Calculate percentage change from the props
   const percentageChange = ((currentValue - previousValue) / previousValue * 100).toFixed(1);
   const isPositiveChange = currentValue >= previousValue;
+
+  const handleClick = () => {
+    // Construct the appropriate URL based on pageType
+    let detailsUrl = '';
+    switch (pageType) {
+      case 'regions':
+        detailsUrl = `/admin/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+        break;
+      case 'edcs':
+        detailsUrl = `/admin/${region.toLowerCase().replace(/\s+/g, '-')}/edcs/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+        break;
+      case 'substations':
+        detailsUrl = `/admin/${region.toLowerCase().replace(/\s+/g, '-')}/substations/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+        break;
+      case 'feeders':
+        detailsUrl = `/admin/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+        break;
+      default:
+        detailsUrl = `/admin/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+    }
+    
+    navigate(detailsUrl);
+    if (handleRegionClick) {
+      handleRegionClick(region);
+    }
+  };
 
   const renderNavigationLinks = () => {
     switch (pageType) {
@@ -92,6 +121,8 @@ const ShortDetailsWidget = ({
             src="icons/click-through-rate.svg"
             alt="Click Here"
             className={styles.click_individual_region}
+            onClick={handleClick}
+            style={{ cursor: 'pointer' }}
           />
         </div>
       </div>
