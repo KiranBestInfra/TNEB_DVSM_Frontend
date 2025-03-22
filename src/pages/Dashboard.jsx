@@ -2,8 +2,9 @@ import React from 'react';
 import { useState } from "react";
 import Buttons from "../components/ui/Buttons/Buttons";
 import DatePicker from "react-datepicker";
-import styles from "../styles/Dashboard.module.css";
-
+  import styles from "../styles/Dashboard.module.css";
+  import DynamicGraph from '../components/DynamicGraph/DynamicGraph'; 
+  import { Link } from 'react-router-dom';
 const Dashboard = () => {
     const [dateRange, setDateRange] = useState({
         start: null,
@@ -15,10 +16,30 @@ const Dashboard = () => {
     const totalSubstations = 0;
     const totalMeters = 0;
 
+    const detailedGraphData = {
+        xAxis: [
+          "2025-03-16 23:59:59", "2025-03-16 23:45:00", "2025-03-16 23:30:00",
+          "2025-03-16 23:15:00", "2025-03-16 23:00:00", "2025-03-16 22:45:00",
+          "2025-03-16 22:30:00", "2025-03-16 22:15:00", "2025-03-16 22:00:00",
+          "2025-03-16 21:45:00", "2025-03-16 21:30:00", "2025-03-16 21:15:00",
+          "2025-03-16 21:00:00", "2025-03-16 20:45:00", "2025-03-16 20:30:00"
+        ],
+        series: [
+          {
+            name: 'Current Day',
+            data: [13.6, 13.2, 13.0, 12.8, 12.6, 12.4, 12.2, 12.0, 11.8, 11.6, 11.4, 11.2, 11.0, 10.8, 10.6]
+          },
+          {
+            name: 'Previous Day',
+            data: [13.2, 12.8, 12.6, 12.4, 12.2, 12.0, 11.8, 11.6, 11.4, 11.2, 11.0, 10.8, 10.6, 10.4, 10.2]
+          }
+        ]
+    };
+    
     return (
         <div className={styles.main_content}>
           <div className={styles.section_header}>
-            <h2 className="title">Dashboard</h2>
+            <h2 className="title">ashboard</h2>
             <div className={styles.action_container}>
               <div className={styles.date_range}>
                 <div className={styles.search_cont}>
@@ -67,7 +88,7 @@ const Dashboard = () => {
               <div className={styles.total_main_info}>
                 <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
-                  <p className="title">Regions</p>
+                  <p className="title"><Link to="admin/regions">Regions</Link></p>
                   <div className={styles.summary_value}>{totalRegions}</div>
                 </div>
               </div>
@@ -130,6 +151,19 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+            
+          </div>
+          
+          <div className={styles.detail_chart}>
+            <DynamicGraph
+              title="Detailed Energy Usage"
+              data={detailedGraphData}
+              seriesColors={['#3f68b2', '#ed8c22']}
+              yAxisLabel="MW"
+              showLabel={false}
+              toolbox={true}
+              height="500px"
+            />
           </div>
         </div>
     );

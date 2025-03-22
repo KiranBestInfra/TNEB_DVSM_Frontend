@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../styles/Dashboard.module.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,6 +8,7 @@ import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import ShortDetailsWidget from "./ShortDetailsWidget";
 
 const Regions = () => {
+  const navigate = useNavigate();
   const [timeframe, setTimeframe] = useState("Last 7 Days");
   const totalMeters = 1243;
   const totalRegions = 13; // Total number of regions
@@ -20,6 +22,10 @@ const Regions = () => {
 
   const handleTimeframeChange = (e) => {
     setTimeframe(e.target.value);
+  };
+
+  const handleRegionClick = (region) => {
+    navigate(`/admin/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`);
   };
 
   const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur ","Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy","Vellore","Villupuram"];
@@ -144,7 +150,6 @@ const Regions = () => {
                 onChange={(date) =>
                   setDateRange({ ...dateRange, start: date })
                 }
-                className={styles.date_input}
                 dateFormat="MMM dd, yyyy"
                 placeholderText="Start Date"
               />
@@ -159,7 +164,6 @@ const Regions = () => {
                 onChange={(date) =>
                   setDateRange({ ...dateRange, end: date })
                 }
-                className={styles.date_input}
                 dateFormat="MMM dd, yyyy"
                 placeholderText="End Date"
                 minDate={dateRange.start}
@@ -254,7 +258,10 @@ const Regions = () => {
       </div>
       <div className={styles.region_stats_container}>
         {regionName.map((region, index) => (
-          <div key={index} className={styles.individual_region_stats}>
+          <div 
+            key={index} 
+            className={styles.individual_region_stats}
+          >
             <ShortDetailsWidget
               region={region} 
               edcCount={regionEdcCounts[region.trim()]}
@@ -262,6 +269,7 @@ const Regions = () => {
               feederCount={regionFeederCounts[region.trim()]}
               currentValue={regionStats[region.trim()].currentValue}
               previousValue={regionStats[region.trim()].previousValue}
+              handleRegionClick={handleRegionClick}
             />
           </div>
         ))}
