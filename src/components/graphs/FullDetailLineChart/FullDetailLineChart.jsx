@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ReactECharts from 'echarts-for-react';
 import * as echarts from 'echarts';
 import styles from './FullDetailLineChart.module.css';
-import { formatDateMonth } from '../../../utils/globalUtils';
 
 const FullDetailLineChart = ({
     title = 'Energy Usage by Tariff Plan',
@@ -14,14 +13,12 @@ const FullDetailLineChart = ({
     height = '100%',
     className,
 }) => {
-    const availableTimeRanges = Object.keys(data);
-    const [timeRange, setTimeRange] = useState(
-        availableTimeRanges[0] || 'daily'
-    );
+    const availableTimeRanges = Object.keys(data || {});
+    const [timeRange, setTimeRange] = useState(availableTimeRanges[0] || 'daily');
     const chartRef = React.useRef(null);
 
     const getActiveData = () => {
-        return data[timeRange] || data.daily;
+        return data?.[timeRange] || { xAxis: [], series: [] };
     };
 
     const activeData = getActiveData();
@@ -36,8 +33,16 @@ const FullDetailLineChart = ({
         }
     };
 
-    const formatTooltipLabel = (params) => {
-        return params[0].axisValue;
+    //Generate X-Axis labels in 15-minute intervals
+    const generateTimeLabels = () => {
+        let labels = [];
+        for (let h = 0; h < 24; h++) {
+            for (let m = 0; m < 60; m += 15) {
+                labels.push(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`);
+            }
+        }
+        labels.push('24:00'); // Ensures last label is 24:00
+        return labels;
     };
 
     const option = {
@@ -47,33 +52,22 @@ const FullDetailLineChart = ({
                 type: 'cross',
                 label: {
                     backgroundColor: seriesColors[0],
-                    fontFamily: 'Roboto',
                     fontSize: '0.7rem',
-                    lineHeight: 1.6,
-                    borderRadius: '10',
+                    borderRadius: 10,
                     padding: [10, 6, 8, 6],
                 },
             },
             formatter: (params) => {
-                const label = formatTooltipLabel(params);
-                let result = `${label}<br/>`;
-                let total = 0;
+                let result = `${params[0].axisValue}<br/>`;
                 params.forEach((param) => {
-                    total += param.value;
                     result += `${param.marker} ${param.seriesName}: ${param.value} ${yAxisLabel}<br/>`;
                 });
                 return result;
             },
-            textStyle: {
-                fontFamily: 'Roboto',
-            },
-            borderRadius: '10',
-            padding: [8, 12, 8, 12],
         },
         legend: {
             data: activeData.series.map((item) => item.name),
             textStyle: {
-                fontFamily: 'Roboto',
                 fontSize: '0.85rem',
                 color: '#424242',
             },
@@ -81,6 +75,13 @@ const FullDetailLineChart = ({
             orient: 'horizontal',
             top: 0,
         },
+        toolbox: toolbox
+            ? {
+                  feature: {
+                      saveAsImage: { title: 'Download' },
+                  },
+              }
+            : undefined,
         grid: {
             left: '0%',
             right: '0.1%',
@@ -92,17 +93,12 @@ const FullDetailLineChart = ({
             {
                 type: 'category',
                 boundaryGap: false,
-                data: activeData.xAxis,
+                data: generateTimeLabels(),
                 axisLabel: {
-                    fontFamily: 'Roboto',
                     fontSize: '0.75rem',
                     color: '#424242',
                     rotate: 45,
                     margin: 20,
-                    letterSpacing: '-1',
-                    formatter: (value) => {
-                        return formatDateMonth(value);
-                    },
                 },
                 axisTick: {
                     show: true,
@@ -120,11 +116,9 @@ const FullDetailLineChart = ({
             {
                 type: 'value',
                 axisLabel: {
-                    fontFamily: 'Roboto',
                     formatter: `{value} ${yAxisLabel}`,
                     fontSize: '0.75rem',
                     color: '#424242',
-                    letterSpacing: '-1',
                     margin: 20,
                 },
                 axisTick: {
@@ -167,7 +161,6 @@ const FullDetailLineChart = ({
                 ? {
                       show: true,
                       position: 'top',
-                      fontFamily: 'Roboto',
                       fontSize: '0.75rem',
                   }
                 : {},
@@ -179,54 +172,36 @@ const FullDetailLineChart = ({
     };
 
     return (
-        <div
-            className={`${styles.chart_container} ${className || ''}`}
-            style={{ height, fontFamily: 'Roboto' }}>
+        <div className={`${styles.chart_container} ${className || ''}`} style={{ height }}>
             <div className={styles.chart_controls}>
                 <h3 className={styles.chart_title}>{title}</h3>
                 <div className={styles.action_cont}>
                     {availableTimeRanges.length > 1 && (
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                                className={styles.time_range_select}>
-                                {availableTimeRanges.includes('monthly') && (
-                                    <option value="monthly">Monthly</option>
-                                )}
-                                {availableTimeRanges.includes('daily') && (
-                                    <option value="daily">Daily</option>
-                                )}
-                                {availableTimeRanges.includes('yearly') && (
-                                    <option value="yearly">Yearly</option>
-                                )}
-                                {availableTimeRanges.includes('hourly') && (
-                                    <option value="hourly">Hourly</option>
-                                )}
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
-                            />
-                        </div>
+                        <select
+                            value={timeRange}
+                            onChange={(e) => setTimeRange(e.target.value)}
+                            className={styles.time_range_select}>
+                            {availableTimeRanges.map((range) => (
+                                <option key={range} value={range}>
+                                    {range.charAt(0).toUpperCase() + range.slice(1)}
+                                </option>
+                            ))}
+                        </select>
                     )}
-                    <span
-                        className={styles.icons_chart_controls}
-                        onClick={handleDownload}
-                        style={{ cursor: 'pointer' }}>
-                        <img
-                            src="icons/download-icon.svg"
-                            alt="Download chart"
-                        />
-                    </span>
+                    {/* <button onClick={handleDownload} className={styles.download_button}>
+                        <img src="icons/download-icon.svg" alt="Download chart" />
+                    </button> */}
                 </div>
             </div>
             <div className={styles.echart_container}>
-                <ReactECharts ref={chartRef} option={option} />
+                {activeData.series.length > 0 ? (
+                    <ReactECharts ref={chartRef} option={option} />
+                ) : (
+                    <p style={{ textAlign: 'center', color: '#999' }}>No data available</p>
+                )}
             </div>
         </div>
     );
 };
 
-export default FullDetailLineChart; 
+export default FullDetailLineChart;

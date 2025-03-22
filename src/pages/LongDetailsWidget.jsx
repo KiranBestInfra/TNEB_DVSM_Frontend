@@ -29,7 +29,6 @@ const detailedGraphData = {
     ]
   }
 };
-
 const LongDetailsWidget = () => {
   const navigate = useNavigate();
   const { regionId, edcId, substationId, feederId } = useParams();
@@ -75,7 +74,7 @@ const LongDetailsWidget = () => {
   return (
     <div className={styles.main_content}>
       <div className={styles.section_header}>
-        <h2 className="title">{entityName} Detailed View</h2>
+        <h2 className="title">{entityName} Region</h2>
         <div className={styles.action_container}>
           <div className={styles.date_range}>
             <div className={styles.search_cont}>
@@ -125,7 +124,7 @@ const LongDetailsWidget = () => {
               <img src="icons/electric-edc.svg" alt="EDC" className={styles.TNEB_icons}/>
             </div>
             <div className={styles.total_title_value}>
-              <span className='title'>Total EDCs</span>
+              <span className='title'>EDCs</span>
               <span className={styles.summary_value}>{stats.edcCount}</span>
             </div>
           </div>
@@ -137,7 +136,7 @@ const LongDetailsWidget = () => {
               <img src="icons/electric-factory.svg" alt="Substation" className={styles.TNEB_icons}/>
             </div>
             <div className={styles.total_title_value}>
-              <span className='title'>Total Substations</span>
+              <span className='title'>Substations</span>
               <span className={styles.summary_value}>{stats.substationCount}</span>
             </div>
             
@@ -153,7 +152,7 @@ const LongDetailsWidget = () => {
             </div>
 
             <div className={styles.total_title_value}>
-              <span className='title'>Total Feeders</span>
+              <span className='title'>Feeders</span>
               <span className={styles.summary_value}>{stats.feederCount}</span>
             </div>
             
@@ -163,7 +162,7 @@ const LongDetailsWidget = () => {
         <div className={styles.total_units_container}>
           <div className={styles.total_main_info}>
             <div className={styles.total_title_value}>
-              <span className='title'>Current Utilization</span>
+              <span className='title'>Actual Demand</span>
               <span className={`${styles.summary_value} ${isPositiveChange ? styles.positive : styles.negative}`}>
                 {stats.currentValue} MW
                 <div className={styles.percentage_change}>
@@ -186,11 +185,11 @@ const LongDetailsWidget = () => {
       <div className={styles.details_section}>
         <div className={styles.details_card}>
           <div className={styles.details_header}>
-            {/* <h3>Detailed Energy Usage</h3> */}
+            {/* <h3>Actual Demand Graph</h3> */}
           </div>
           <div className={styles.detail_chart}>
             <FullDetailLineChart
-              title="Detailed Energy Usage"
+              title="Actual Demand Graph"
               data={detailedGraphData}
               seriesColors={['#3f68b2', '#ed8c22']}
               yAxisLabel="MW"
