@@ -35,68 +35,30 @@ const Sidebar = ({ setMainTitle }) => {
     }
 
     const menuItems = [
-        // Demo Menu Items
-        {
-            title: 'Dashboard',
-            icon: 'icons/dashboard.svg',
-            link: '/user/dashboard',
-            roles: ['User'],
-        },
-        {
-            title: 'Bills',
-            icon: 'icons/bills.svg',
-            link: '/user/bills',
-            roles: ['User'],
-        },
-        {
-            title: 'Tickets',
-            icon: 'icons/book-circle-arrow-up.svg',
-            link: '/user/tickets',
-            roles: ['User'],
-        },
-        {
-            title: 'Reports',
-            icon: 'icons/reports.svg',
-            link: '/user/reports',
-            roles: ['User'],
-        },
-
         // Admin Menu Items
         {
             title: 'Dashboard',
             icon: 'icons/dashboard.svg',
             link: '/admin/dashboard',
-            roles: ['Admin', 'Super Admin'],
+            roles: ['Admin', 'Super Admin', 'User'],
         },
         {
-            title: 'Consumers',
+            title: 'Units',
             icon: 'icons/units.svg',
-            link: '/admin/consumers',
-            roles: ['Admin', 'Super Admin'],
-        },
-        {
-            title: 'Reports',
-            icon: 'icons/reports.svg',
-            link: '/admin/reports',
-            roles: ['Admin', 'Super Admin'],
-        },
-        {
-            title: 'Bills',
-            icon: 'icons/bills.svg',
-            link: '/admin/bills',
-            roles: ['Admin', 'Super Admin'],
+            link: '/admin/units',
+            roles: ['Admin', 'Super Admin', 'User'],
         },
         {
             title: 'Tickets',
             icon: 'icons/customer-service.svg',
             link: '/admin/tickets',
-            roles: ['Admin', 'Super Admin'],
+            roles: ['Admin', 'Super Admin', 'User'],
         },
         {
-            title: 'Settings',
-            icon: 'icons/settings.svg',
-            link: '/admin/settings',
-            roles: ['Admin', 'Super Admin'],
+            title: 'Account',
+            icon: 'icons/account.svg',
+            link: '/admin/account',
+            roles: ['Admin', 'Super Admin', 'User'],
         },
         {
             title: 'Emulate',

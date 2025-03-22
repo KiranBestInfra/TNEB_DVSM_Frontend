@@ -1,0 +1,229 @@
+/* Profile page styles */
+.main_content {
+     margin: 1rem 0;
+}
+
+.profile_sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.profile_form{
+    padding: 1rem;
+}
+.profile_activities{
+    padding: 1rem;
+}
+.profile_section {
+    border-radius: 1rem;
+    padding: 1.25rem;
+    border: 1px solid var(--primary-bg);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.profile_picture_container {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.profile_picture {
+    width: 6.25rem;
+    height: 6.25rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile_picture_initials {
+    width: 6.25rem;
+    height: 6.25rem;
+    border-radius: 50%;
+    background-color: var(--brand-blue);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.25rem;
+    font-weight: bold;
+}
+
+.profile_picture_actions {
+    display: flex;
+    gap: 0.625rem;
+}
+
+.upload_button {
+    cursor: pointer;
+    display: inline-block;
+    width: fit-content;
+}
+
+.upload_button:hover {
+    opacity: 0.9;
+}
+
+.input_disabled {
+    cursor: not-allowed;
+}
+
+.login_activities {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.activities_container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+.activity_section{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    border: 1px solid var(--primary-bg);
+    padding: 1rem;
+    border-radius: 1rem;
+}
+.activity_item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.profile_section_content_header{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+}
+
+
+.profile_section_content{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.profile_section_content form{
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.activity_details {
+    display: flex;
+    flex-direction: column;
+}
+
+.activity_details p {
+    margin: 0;
+    font-weight: bold;
+}
+
+.activity_details span {
+    color: var(--grey);
+    font-size: 0.9em;
+}
+
+.activity_date {
+    color: var(--grey);
+    font-size: 0.9em;
+}
+
+@media (max-width: 48rem) {
+    .profile_picture_container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile_picture_actions {
+        margin-top: 0.625rem;
+    }
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.625rem;
+}
+
+.pages_handler {
+    display: flex;
+    align-items: center;
+    gap: 0.9375rem;
+}
+
+.select_pagination {
+    padding: 0.5rem 0.75rem;
+    border: 0.0625rem solid var(--primary-bg);
+    border-radius: 1rem;
+    background-color: var(--white);
+    font-size: 0.875rem;
+    cursor: pointer;
+    outline: none;
+}
+
+.select_pagination:hover {
+    border-color: var(--primary-bg);
+}
+
+.total_pages {
+    font-size: 0.875rem;
+    white-space: nowrap;
+    color: var(--grey);
+}
+
+.paginationControls {
+    display: flex;
+    align-items: center;
+    gap: 0.9375rem;
+}
+
+.paginationButton {
+    padding: 0.5rem 1rem;
+    border: 0.0625rem solid var(--primary-bg);
+    background-color: var(--white);
+    border-radius: 1rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: var(--brand-blue);
+}
+
+.paginationButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pageInfo {
+    font-size: 0.875rem;
+    color: var(--grey);
+}
+.white_icons {
+    background-color: var(--white);
+    border-radius: 50%;
+    padding: 0.5rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: 2px solid var(--brand-blue);
+    
+}
+
+.white_icons>img {
+    height: 1rem;
+    width: 1rem;
+    filter: invert(19%) sepia(98%) saturate(1642%) hue-rotate(186deg) brightness(96%) contrast(101%);
+    
+}
+

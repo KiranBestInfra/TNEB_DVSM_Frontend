@@ -242,7 +242,7 @@
 .region_stats_grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
+    gap: 0.97rem;
     width: 100%;
 }
 

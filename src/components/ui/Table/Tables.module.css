@@ -93,7 +93,7 @@
 .paginationButton:disabled {
     font-family: 'Roboto';
     opacity: 0.5;
-    cursor: not-allowed;
+    /* cursor: not-allowed; */
 }
 
 .pageInfo {
