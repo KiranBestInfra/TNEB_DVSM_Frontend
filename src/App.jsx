@@ -20,6 +20,8 @@ import EDCs from './pages/EDCs';
 import Substations from './pages/Substations';
 import Regions from './pages/Regions';
 import Feeders from './pages/Feeders';
+import ProtectedRoute from './components/ProtectedRoute';
+import LongDetailsWidget from './pages/LongDetailsWidget';
 
 const App = () => {
     const getUserRole = () => {
@@ -62,18 +64,120 @@ const App = () => {
                                 index
                                 element={<Navigate to="dashboard" replace />}
                             />
-                            <Route path="dashboard" element={<Dashboard />} />
-                            <Route path="regions" element={<Regions />} />
-                            <Route path=":region/edcs" element={<EDCs />} />
-                            <Route path=":region/substations" element={<Substations />} />
-                            <Route path=":region/feeders" element={<Feeders />} />
+                            <Route
+                                path="dashboard"
+                                element={
+                                    <ProtectedRoute>
+                                        <Dashboard />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="regions"
+                                element={
+                                    <ProtectedRoute>
+                                        <Regions />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="regions/:regionId/details"
+                                element={
+                                    <ProtectedRoute>
+                                        <LongDetailsWidget />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/edcs"
+                                element={
+                                    <ProtectedRoute>
+                                        <EDCs />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/edcs/:edcId/details"
+                                element={
+                                    <ProtectedRoute>
+                                        <LongDetailsWidget />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/substations"
+                                element={
+                                    <ProtectedRoute>
+                                        <Substations />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/substations/:substationId/details"
+                                element={
+                                    <ProtectedRoute>
+                                        <LongDetailsWidget />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/feeders"
+                                element={
+                                    <ProtectedRoute>
+                                        <Feeders />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/feeders/:feederId/details"
+                                element={
+                                    <ProtectedRoute>
+                                        <LongDetailsWidget />
+                                    </ProtectedRoute>
+                                }
+                            />
                             <Route path="tickets">
-                                <Route index element={<Tickets />} />
-                                <Route path="new" element={<CreateTicket />} />
-                                <Route path=":id" element={<TicketDetails />} />
+                                <Route
+                                    index
+                                    element={
+                                        <ProtectedRoute>
+                                            <Tickets />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path="new"
+                                    element={
+                                        <ProtectedRoute>
+                                            <CreateTicket />
+                                        </ProtectedRoute>
+                                    }
+                                />
+                                <Route
+                                    path=":id"
+                                    element={
+                                        <ProtectedRoute>
+                                            <TicketDetails />
+                                        </ProtectedRoute>
+                                    }
+                                />
                             </Route>
-                            <Route path="account" element={<Profile />} />
-                            <Route path="emulate" element={<Load />} />
+                            <Route
+                                path="account"
+                                element={
+                                    <ProtectedRoute>
+                                        <Profile />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="emulate"
+                                element={
+                                    <ProtectedRoute>
+                                        <Load />
+                                    </ProtectedRoute>
+                                }
+                            />
                             <Route path="terms" element={<Terms />} />
                             <Route path="privacy" element={<Privacy />} />
                         </Route>

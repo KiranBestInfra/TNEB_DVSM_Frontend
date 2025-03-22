@@ -139,7 +139,6 @@ const EDCs = () => {
                 onChange={(date) =>
                   setDateRange({ ...dateRange, start: date })
                 }
-                className={styles.date_input}
                 dateFormat="MMM dd, yyyy"
                 placeholderText="Start Date"
               />
@@ -154,7 +153,6 @@ const EDCs = () => {
                 onChange={(date) =>
                   setDateRange({ ...dateRange, end: date })
                 }
-                className={styles.date_input}
                 dateFormat="MMM dd, yyyy"
                 placeholderText="End Date"
                 minDate={dateRange.start}
