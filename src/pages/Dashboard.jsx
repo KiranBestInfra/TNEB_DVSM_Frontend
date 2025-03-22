@@ -4,7 +4,8 @@ import Buttons from "../components/ui/Buttons/Buttons";
 import DatePicker from "react-datepicker";
   import styles from "../styles/Dashboard.module.css";
   import DynamicGraph from '../components/DynamicGraph/DynamicGraph'; 
-  import { Link } from 'react-router-dom';
+  import { Link,useNavigate } from 'react-router-dom';
+import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 const Dashboard = () => {
     const [dateRange, setDateRange] = useState({
         start: null,
@@ -39,7 +40,7 @@ const Dashboard = () => {
     return (
         <div className={styles.main_content}>
           <div className={styles.section_header}>
-            <h2 className="title">ashboard</h2>
+            <h2 className="title">Dashboard</h2>
             <div className={styles.action_container}>
               <div className={styles.date_range}>
                 <div className={styles.search_cont}>
@@ -82,7 +83,9 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          
+          <div className={styles.breadCrumb}>
+            <Breadcrumb/>
+          </div>
           <div className={styles.summary_section}>
             <div className={styles.total_regions_container}>
               <div className={styles.total_main_info}>
