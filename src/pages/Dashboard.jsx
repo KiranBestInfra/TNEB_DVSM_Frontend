@@ -4,6 +4,7 @@ import Buttons from "../components/ui/Buttons/Buttons";
 import DatePicker from "react-datepicker";
   import styles from "../styles/Dashboard.module.css";
   import DynamicGraph from '../components/DynamicGraph/DynamicGraph'; 
+  import { Link } from 'react-router-dom';
 const Dashboard = () => {
     const [dateRange, setDateRange] = useState({
         start: null,
@@ -38,7 +39,7 @@ const Dashboard = () => {
     return (
         <div className={styles.main_content}>
           <div className={styles.section_header}>
-            <h2 className="title">Dashboard</h2>
+            <h2 className="title">ashboard</h2>
             <div className={styles.action_container}>
               <div className={styles.date_range}>
                 <div className={styles.search_cont}>
@@ -87,7 +88,7 @@ const Dashboard = () => {
               <div className={styles.total_main_info}>
                 <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
-                  <p className="title">Regions</p>
+                  <p className="title"><Link to="admin/regions">Regions</Link></p>
                   <div className={styles.summary_value}>{totalRegions}</div>
                 </div>
               </div>
