@@ -182,7 +182,12 @@ const Regions = () => {
           </div>
         </div>
       </div>
-      <Breadcrumb />
+      <Breadcrumb 
+        items={[
+          { label: 'Home', path: '/admin' },
+          { label: 'Regions', path: '/admin/regions' }
+        ]}
+      />
       <div className={styles.summary_section}>
         <div className={styles.total_regions_container}>
           <div className={styles.total_main_info}>

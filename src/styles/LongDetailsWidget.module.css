@@ -105,9 +105,8 @@
 .percentage_change {
     display: flex;
     align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    margin-left: 8px;
+    gap: 0.5rem;
+    font-size: 1.2rem;
 }
 
 .percentage_change.positive {
@@ -274,7 +273,13 @@
     height: 100%;
     flex: 1;
 }
-
+.title_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
 .TNEB_icons {
     width: 4rem;
     height: 4rem;
@@ -292,7 +297,7 @@
 }
 
 .positive {
-    color: var(--positive);
+    color:var(--black)
 }
 
 .negative {

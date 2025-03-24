@@ -8,7 +8,7 @@ import ShortDetailsWidget from "./ShortDetailsWidget";
 
 const Feeders = () => {
   const [timeframe, setTimeframe] = useState("Last 7 Days");
-  const totalMeters = 1243;
+  const totalMeters = breadcrumb_listbreadcrumb_list;
   const totalRegions = 13; // Total number of regions
   const totalEDCs = 95; // Total number of EDCs
   const totalSubstations = 260; // Total number of substations

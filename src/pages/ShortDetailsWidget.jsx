@@ -117,13 +117,15 @@ const ShortDetailsWidget = ({
           </p>
         </div>
         <div className={styles.individual_region_header_right}>
+        <span>View Info</span>
           <img
-            src="icons/click-through-rate.svg"
+            src="icons/information.svg"
             alt="Click Here"
             className={styles.click_individual_region}
             onClick={handleClick}
             style={{ cursor: 'pointer' }}
           />
+          
         </div>
       </div>
       <div className={styles.individual_region_body}>

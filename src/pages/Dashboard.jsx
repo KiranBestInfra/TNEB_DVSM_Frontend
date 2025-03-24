@@ -2,10 +2,11 @@ import React from 'react';
 import { useState } from "react";
 import Buttons from "../components/ui/Buttons/Buttons";
 import DatePicker from "react-datepicker";
-  import styles from "../styles/Dashboard.module.css";
-  import DynamicGraph from '../components/DynamicGraph/DynamicGraph'; 
-  import { Link,useNavigate } from 'react-router-dom';
-import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
+import styles from "../styles/Dashboard.module.css";
+import DynamicGraph from '../components/DynamicGraph/DynamicGraph'; 
+import { Link } from 'react-router-dom';
+import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
+
 const Dashboard = () => {
     const [dateRange, setDateRange] = useState({
         start: null,
@@ -40,6 +41,7 @@ const Dashboard = () => {
     return (
         <div className={styles.main_content}>
           <div className={styles.section_header}>
+            <h2 className="title">Dashboard</h2>
             <h2 className="title">Dashboard</h2>
             <div className={styles.action_container}>
               <div className={styles.date_range}>
@@ -83,15 +85,19 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-          <div className={styles.breadCrumb}>
-            <Breadcrumb/>
-          </div>
+          
+          <Breadcrumb 
+            items={[
+              { label: 'Dashboard', path: '/admin/dashboard' }
+            ]}
+          />
+          
           <div className={styles.summary_section}>
             <div className={styles.total_regions_container}>
               <div className={styles.total_main_info}>
                 <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
-                  <p className="title"><Link to="admin/regions">Regions</Link></p>
+                  <p className="title"><Link to="/admin/regions">Regions</Link></p>
                   <div className={styles.summary_value}>{totalRegions}</div>
                 </div>
               </div>
