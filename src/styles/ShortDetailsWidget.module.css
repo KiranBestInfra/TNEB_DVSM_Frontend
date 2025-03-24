@@ -38,16 +38,15 @@
 
 .click_individual_region {
     border-radius: 50%;
-    padding: 0.5rem;
-    height: 2.5rem;
-    width: 2.5rem;
+    padding: 0.2rem;
+    height: 1.5rem;
+    width: 1.5rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--primary-bg);
 }
-
 .individual_region_body {
     padding: 1rem;
     background-color: var(--white);

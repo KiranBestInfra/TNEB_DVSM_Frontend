@@ -165,7 +165,7 @@ const LongDetailsWidget = () => {
               <span className='title'>Actual Demand</span>
               <span className={`${styles.summary_value} ${isPositiveChange ? styles.positive : styles.negative}`}>
                 {stats.currentValue} MW
-                <div className={styles.percentage_change} style={{ fontSize: '1.5rem' }}>
+                <div className={styles.percentage_change} style={{ fontSize: '2.5rem' }}>
                   <img
                     src={isPositiveChange ? "icons/up-right-arrow.svg" : "icons/down-right-arrow.svg"}
                     alt={isPositiveChange ? "Increase" : "Decrease"}
