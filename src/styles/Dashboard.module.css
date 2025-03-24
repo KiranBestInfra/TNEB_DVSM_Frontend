@@ -833,7 +833,7 @@ filter: brightness(0) invert(1);
 }
 
 .breadcrumb_separator {
-    color: #666;
+    color: var(--grey);
     margin: 0 0.5rem;
 }
 
@@ -871,7 +871,7 @@ filter: brightness(0) invert(1);
 
 .overview_card,
 .performance_card {
-  background: #fff;
+  background: var(--white);
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -884,7 +884,7 @@ filter: brightness(0) invert(1);
 .overview_header h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--black);
 }
 
 .overview_stats {
@@ -898,7 +898,7 @@ filter: brightness(0) invert(1);
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--white);
   border-radius: 8px;
   transition: transform 0.2s ease;
 }
@@ -919,13 +919,13 @@ filter: brightness(0) invert(1);
 
 .stat_label {
   font-size: 0.875rem;
-  color: #6c757d;
+  color: var(--grey);
 }
 
 .stat_value {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--black);
 }
 
 .performance_stats {
@@ -939,7 +939,7 @@ filter: brightness(0) invert(1);
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--white);
   border-radius: 8px;
   text-align: center;
 }
@@ -1010,7 +1010,7 @@ filter: brightness(0) invert(1);
   align-items: center;
   gap: 1rem;
   padding: 0.75rem;
-  background: #f8f9fa;
+  background: var(--white);
   border-radius: 8px;
   transition: transform 0.2s ease;
 }
@@ -1067,7 +1067,7 @@ filter: brightness(0) invert(1);
 }
 
 .active_tab {
-    color: #ffffff;
+    color: var(--white);
     border-bottom: 2px solid var(--brand-blue);
     background-color: var(--brand-blue);
     font-family: "Roboto", sans-serif;
@@ -1088,4 +1088,37 @@ filter: brightness(0) invert(1);
     border: 1px solid var(--primary-bg);
     overflow: hidden;
     flex: 1;
+    padding: 1rem;
+}
+
+.tooltip {
+    background-color: var(--white);
+    border: 1px solid var(--primary-bg);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tooltip_content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tooltip_day {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tooltip_label {
+    font-size: 0.875rem;
+    color: var(--grey);
+}
+
+.tooltip_value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--black);
 }
