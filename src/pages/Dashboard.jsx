@@ -1,19 +1,39 @@
-import React from 'react';
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Buttons from "../components/ui/Buttons/Buttons";
 import DatePicker from "react-datepicker";
 import styles from "../styles/Dashboard.module.css";
 
 const Dashboard = () => {
-    const [dateRange, setDateRange] = useState({
-        start: null,
-        end: null
+    const [dateRange, setDateRange] = useState({ start: null, end: null });
+    const [dashboardData, setDashboardData] = useState({
+      totalRegions: 0,
+      totalEdcs: 0,
+      totalSubstations: 0,
+      totalFeeders: 0,
+      commMeters: 0,
+      nonCommMeters: 0
     });
 
-    const totalRegions = 0;
-    const totalEDCs = 0;
-    const totalSubstations = 0;
-    const totalMeters = 0;
+    useEffect(() => {
+      const fetchData = async () => {
+        const response = await fetch('http://localhost:3000/api/v1/regions/widgets')
+        const data = await response.json()
+        const dashboardWidgets = data.data
+  
+        setDashboardData((prev) => ({
+          totalRegions: dashboardWidgets.totalRegions || prev.totalRegions,
+          totalEdcs: dashboardWidgets.totalEdcs || prev.totalEdcs,
+          totalSubstations: dashboardWidgets.totalSubstations || prev.totalSubstations,
+          totalFeeders: dashboardWidgets.totalFeeders || prev.totalFeeders,
+          commMeters: dashboardWidgets.commMeters || prev.commMeters,
+          nonCommMeters: dashboardWidgets.nonCommMeters || prev.nonCommMeters
+        }))
+      }
+  
+      fetchData()
+  
+    },[])
 
     return (
         <div className={styles.main_content}>
@@ -68,7 +88,7 @@ const Dashboard = () => {
                 <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
                   <p className="title">Regions</p>
-                  <div className={styles.summary_value}>{totalRegions}</div>
+                  <div className={styles.summary_value}>{dashboardData.totalRegions}</div>
                 </div>
               </div>
             </div>
@@ -77,7 +97,7 @@ const Dashboard = () => {
                 <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
                   <p className="title">EDCs</p>
-                  <div className={styles.summary_value}>{totalEDCs}</div>
+                  <div className={styles.summary_value}>{dashboardData.totalEdcs}</div>
                 </div>
               </div>
             </div>
@@ -86,7 +106,7 @@ const Dashboard = () => {
                 <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
                   <p className="title">Substations</p>
-                  <div className={styles.summary_value}>{totalSubstations}</div>
+                  <div className={styles.summary_value}>{dashboardData.totalSubstations}</div>
                 </div>
               </div>
             </div>
@@ -99,14 +119,14 @@ const Dashboard = () => {
                 />
                 <div className={styles.total_meters}>
                   <div className="title">Feeders</div>
-                  <div className={styles.summary_value}>{totalMeters}</div>
+                  <div className={styles.summary_value}>{dashboardData.totalFeeders}</div>
                 </div>
               </div>
               <div className={styles.metrics_communication_info}>
                 <div className="titles">Communication Status</div>
                 <div className={styles.overall_communication_status}>
                   <div className={styles.communication_status_container}>
-                    <div className={styles.communication_value}>942</div>
+                    <div className={styles.communication_value}>{dashboardData.commMeters}</div>
                     <div className={styles.communication_positive_percentage}>
                       <img
                         src="icons/up-right-arrow.svg"
@@ -117,7 +137,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className={styles.communication_status_container}>
-                    <div className={styles.communication_value}>301</div>
+                    <div className={styles.communication_value}>{dashboardData.nonCommMeters}</div>
                     <div className={styles.communication_negative_percentage}>
                       <img
                         src="icons/up-right-arrow.svg"
