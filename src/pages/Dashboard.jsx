@@ -42,7 +42,6 @@ const Dashboard = () => {
         <div className={styles.main_content}>
           <div className={styles.section_header}>
             <h2 className="title">Dashboard</h2>
-            <h2 className="title">Dashboard</h2>
             <div className={styles.action_container}>
               <div className={styles.date_range}>
                 <div className={styles.search_cont}>
