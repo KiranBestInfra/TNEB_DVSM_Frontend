@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/Dashboard.module.css";
 import DatePicker from "react-datepicker";
@@ -11,14 +11,54 @@ const Regions = () => {
   const navigate = useNavigate();
   const [timeframe, setTimeframe] = useState("Last 7 Days");
   const totalMeters = 1243;
-  const totalRegions = 13; // Total number of regions
-  const totalEDCs = 95; // Total number of EDCs
-  const totalSubstations = 260; // Total number of substations
+  const totalRegions = 1; // Total number of regions
+  const totalEdcs = 95; // Total number of EDCs
+  const totalSubstations = 0; // Total number of substations
   const totalFeeders = 416; // Total number of feeders
   const [dateRange, setDateRange] = useState({
     start: null,
     end: null
   });
+  const [widgetsData, setWidgetsData] = useState({
+    totalRegions: 0,
+    totalEdcs: 0,
+    totalSubstations: 0,
+    totalFeeders: 0,
+    commMeters: 0,
+    nonCommMeters: 0,
+    regionNames: [],
+    edcCount:{},
+    substationCount: {},
+    feederCount: {},
+
+
+
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('http://localhost:3000/api/v1/regions/widgets')
+      const data = await response.json()
+      const regionWidgets = data.data
+
+      setWidgetsData((prev) => ({
+        totalRegions: regionWidgets.totalRegions || prev.totalRegions,
+        totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
+        totalSubstations: regionWidgets.totalSubstations || prev.totalSubstations,
+        totalFeeders: regionWidgets.totalFeeders || prev.totalFeeders,
+        commMeters: regionWidgets.commMeters || prev.commMeters,
+        nonCommMeters: regionWidgets.nonCommMeters || prev.nonCommMeters,
+        regionNames: regionWidgets.regionNames || prev.regionNames,
+        edcCount: regionWidgets.regionEdcCounts || prev.edcCount,
+        substationCount: regionWidgets.regionSubstationCounts || prev.substationCount, // ✅ Fix
+        feederCount: regionWidgets.regionFeederCounts || prev.feederCount // ✅ Fix
+        
+      }))
+    }
+
+    fetchData()
+
+  },[])
 
   const handleTimeframeChange = (e) => {
     setTimeframe(e.target.value);
@@ -194,16 +234,16 @@ const Regions = () => {
             <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">Regions</p>
-              <div className={styles.summary_value}>{totalRegions}</div>
+              <div className={styles.summary_value}>{widgetsData.totalRegions}</div>
             </div>
           </div>
         </div>
         <div className={styles.total_edcs_container}>
           <div className={styles.total_main_info}>
-            <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
+            <img src="icons/electric-edc.svg" alt="Total EDCs" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">EDCs</p>
-              <div className={styles.summary_value}>{totalEDCs}</div>
+              <div className={styles.summary_value}>{widgetsData.totalEdcs}</div>
             </div>
           </div>
         </div>
@@ -212,7 +252,7 @@ const Regions = () => {
             <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">Substations</p>
-              <div className={styles.summary_value}>{totalSubstations}</div>
+              <div className={styles.summary_value}>{widgetsData.totalSubstations}</div>
             </div>
           </div>
         </div>
@@ -225,14 +265,14 @@ const Regions = () => {
             />
             <div className={styles.total_meters}>
               <div className="title">Feeders</div>
-              <div className={styles.summary_value}>{totalMeters}</div>
+              <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
             </div>
           </div>
           <div className={styles.metrics_communication_info}>
             <div className="titles">Communication Status</div>
             <div className={styles.overall_communication_status}>
               <div className={styles.communication_status_container}>
-                <div className={styles.communication_value}>942</div>
+                <div className={styles.communication_value}>{widgetsData.commMeters}</div>
                 <div className={styles.communication_positive_percentage}>
                   <img
                     src="icons/up-right-arrow.svg"
@@ -243,7 +283,7 @@ const Regions = () => {
                 </div>
               </div>
               <div className={styles.communication_status_container}>
-                <div className={styles.communication_value}>301</div>
+                <div className={styles.communication_value}>{widgetsData.nonCommMeters}</div>
                 <div className={styles.communication_negative_percentage}>
                   <img
                     src="icons/up-right-arrow.svg"
@@ -259,9 +299,9 @@ const Regions = () => {
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Regions <span className={styles.region_count}>{`[ ${totalRegions} ]`}</span></h2>
+        <h2 className="title">Regions <span className={styles.region_count}>{widgetsData.totalRegions}</span></h2>
       </div>
-      <div className={styles.region_stats_container}>
+    {/*  <div className={styles.region_stats_container}>
         {regionName.map((region, index) => (
           <div 
             key={index} 
@@ -278,6 +318,25 @@ const Regions = () => {
             />
           </div>
         ))}
+      </div>
+  */}
+      <div className={styles.region_stats_container}>
+        {widgetsData.regionNames && widgetsData.regionNames.length > 0 ? (
+          widgetsData.regionNames.map((region, index) => (
+            <div key={index} className={styles.individual_region_stats}>
+              <ShortDetailsWidget
+                region={region} 
+                edcCount={widgetsData.edcCount?.[region.trim()] || 0} 
+                substationCount={widgetsData.substationCount?.[region.trim()] ?? 0} 
+                feederCount={widgetsData.feederCount?.[region.trim()] ?? 0} 
+                currentValue={widgetsData.regionStats?.[region.trim()]?.currentValue || 0}
+                previousValue={widgetsData.regionStats?.[region.trim()]?.previousValue || 0}
+              />
+            </div>
+          ))
+        ) : (
+          <p>No regions available</p> // ✅ Handle empty state
+        )}
       </div>
     </div>
   );
