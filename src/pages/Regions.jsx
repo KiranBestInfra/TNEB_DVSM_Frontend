@@ -259,7 +259,7 @@ const Regions = () => {
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Regions <span className={styles.region_count}>{`[ ${totalRegions} ]`}</span></h2>
+        <h2 className="title">Regions:<span className={styles.region_count}>{`[ ${totalRegions} ]`}</span></h2>
       </div>
       <div className={styles.region_stats_container}>
         {regionName.map((region, index) => (
