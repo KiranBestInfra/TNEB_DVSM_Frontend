@@ -52,6 +52,7 @@ const Login = () => {
                 password: value.password,
                 rememberMe: value.remember,
             });
+            console.log(response);
             if (response.status === 'error') {
                 setErrors({
                     submit:
@@ -83,7 +84,7 @@ const Login = () => {
                     console.error('Error decoding token:', error);
                     return 'User';
                 }
-            }
+            } 
         } catch (error) {
             setErrors({
                 submit: error.message || 'Login failed. Please try again.',
@@ -91,7 +92,7 @@ const Login = () => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }; 
     return (
         <div className={styles.login_container}>
             <div className="logo">

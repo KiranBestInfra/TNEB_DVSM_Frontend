@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import styles from "../styles/Dashboard.module.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -17,7 +17,34 @@ const Substations = () => {
     start: null,
     end: null
   });
+  const [widgetsData, setWidgetsData] = useState({
+    totalRegions: 0,
+    totalEdcs: 0,
+    totalSubstations: 0,
+    totalFeeders: 0,
+    commMeters: 0,
+    nonCommMeters: 0  
+  });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('http://localhost:3000/api/v1/regions/widgets')
+      const data = await response.json()
+      const regionWidgets = data.data
+
+      setWidgetsData((prev) => ({
+        totalRegions: regionWidgets.totalRegions || prev.totalRegions,
+        totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
+        totalSubstations: regionWidgets.totalSubstations || prev.totalSubstations,
+        totalFeeders: regionWidgets.totalFeeders || prev.totalFeeders,
+        commMeters: regionWidgets.commMeters || prev.commMeters,
+        nonCommMeters: regionWidgets.nonCommMeters || prev.nonCommMeters          
+      }))
+    }
+
+    fetchData()
+
+  },[])
   const handleTimeframeChange = (e) => {
     setTimeframe(e.target.value);
   };
@@ -161,7 +188,7 @@ const Substations = () => {
             <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">Regions</p>
-              <div className={styles.summary_value}>{totalRegions}</div>
+              <div className={styles.summary_value}>{widgetsData.totalRegions}</div>
             </div>
           </div>
         </div>
@@ -170,7 +197,7 @@ const Substations = () => {
             <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">EDCs</p>
-              <div className={styles.summary_value}>{totalEDCs}</div>
+              <div className={styles.summary_value}>{widgetsData.totalEdcs}</div>
             </div>
           </div>
         </div>
@@ -179,7 +206,7 @@ const Substations = () => {
             <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">Substations</p>
-              <div className={styles.summary_value}>{totalSubstations}</div>
+              <div className={styles.summary_value}>{widgetsData.totalSubstations}</div>
             </div>
           </div>
         </div>
@@ -192,14 +219,14 @@ const Substations = () => {
             />
             <div className={styles.total_meters}>
               <div className="title">Feeders</div>
-              <div className={styles.summary_value}>{totalMeters}</div>
+              <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
             </div>
           </div>
           <div className={styles.metrics_communication_info}>
             <div className="titles">Communication Status</div>
             <div className={styles.overall_communication_status}>
               <div className={styles.communication_status_container}>
-                <div className={styles.communication_value}>942</div>
+                <div className={styles.communication_value}>{widgetsData.commMeters}</div>
                 <div className={styles.communication_positive_percentage}>
                   <img
                     src="icons/up-right-arrow.svg"
@@ -210,7 +237,7 @@ const Substations = () => {
                 </div>
               </div>
               <div className={styles.communication_status_container}>
-                <div className={styles.communication_value}>301</div>
+                <div className={styles.communication_value}>{widgetsData.nonCommMeters}</div>
                 <div className={styles.communication_negative_percentage}>
                   <img
                     src="icons/up-right-arrow.svg"
@@ -226,7 +253,7 @@ const Substations = () => {
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Substations <span className={styles.region_count}>{`[ ${totalSubstations} ]`}</span></h2>
+        <h2 className="title">Substations <span className={styles.region_count}>{widgetsData.totalSubstations}</span></h2>
       </div>
       <div className={styles.region_stats_container}>
         {substationNames.map((substation, index) => (
