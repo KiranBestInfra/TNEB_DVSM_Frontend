@@ -1088,7 +1088,6 @@ filter: brightness(0) invert(1);
     border: 1px solid var(--primary-bg);
     overflow: hidden;
     flex: 1;
-    padding: 2rem;
 }
 
 .tooltip {

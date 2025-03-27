@@ -70,7 +70,6 @@ const Dashboard = () => {
         <div className={styles.main_content}>
           <div className={styles.section_header}>
             <h2 className="title">Dashboard</h2>
-            <h2 className="title">Dashboard</h2>
             <div className={styles.action_container}>
               <div className={styles.date_range}>
                 <div className={styles.search_cont}>
@@ -116,7 +115,15 @@ const Dashboard = () => {
           
           <Breadcrumb 
             items={[
-              { label: 'Dashboard', path: '/admin/dashboard' }
+              { label: 'Home', path: '/admin' },
+              { label: 'Dashboard', path: '/admin/dashboard', active: true },
+              { label: 'Regions', path: '/admin/regions', active: false },
+              { label: 'Chennai', path: '/admin/chennai', active: false },
+              { label: 'Coimbatore', path: '/admin/coimbatore', active: false },
+              { label: 'Erode', path: '/admin/erode', active: false },
+              { label: 'Kancheepuram', path: '/admin/kancheepuram', active: false },
+              { label: 'Karur', path: '/admin/karur', active: false },
+              { label: 'Madurai', path: '/admin/madurai', active: false }
             ]}
           />
           

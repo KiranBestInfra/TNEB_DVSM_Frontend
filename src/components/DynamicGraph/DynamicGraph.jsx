@@ -16,7 +16,7 @@ const DynamicGraph = ({
         if (chartInstance.current) {
             const url = chartInstance.current.getDataURL();
             const link = document.createElement('a');
-            link.download = 'dynamic-chart.png';
+            link.download = `${title}.png`;
             link.href = url;
             link.click();
         }
@@ -63,9 +63,6 @@ const DynamicGraph = ({
             window.addEventListener('resize', handleResize);
 
             const option = {
-                title: {
-                    text: title
-                },
                 tooltip: {
                     trigger: 'axis',
                     formatter: function (params) {
@@ -90,7 +87,7 @@ const DynamicGraph = ({
                     top: 25,
                     textStyle: {
                         fontFamily: 'Roboto',
-                        fontSize: '0.75rem',
+                        fontSize: '0.8rem',
                         color: '#424242',
                     }
                 },
@@ -104,7 +101,12 @@ const DynamicGraph = ({
                         fontSize: '0.75rem',
                         color: '#424242',
                         letterSpacing: '-1',
-                        margin: 20,
+                        margin: 16,
+                        rotate: 45,
+                        formatter: function(value) {
+                            const date = new Date(value);
+                            return `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
+                        }
                     },
                     axisTick: {
                         show: true,
@@ -114,6 +116,7 @@ const DynamicGraph = ({
                         show: true,
                         lineStyle: {
                             color: '#424242',
+                            width: 2
                         },
                     }
                 },
@@ -146,9 +149,9 @@ const DynamicGraph = ({
                     }
                 },
                 grid: {
-                    left: '0.2%',
-                    right: '0.1%',
-                    bottom: '0%',
+                    left: '1%',
+                    right: '1%',
+                    bottom: '10%',
                     top: '13%',
                     containLabel: true,
                 },
@@ -158,7 +161,22 @@ const DynamicGraph = ({
                     showSymbol: false,
                     data: data,
                     itemStyle: {
-                        color: lineColor
+                        color: '#008cd7'
+                    },
+                    lineStyle: {
+                        width: 2
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            {
+                                offset: 0,
+                                color: '#008cd720'
+                            },
+                            {
+                                offset: 1,
+                                color: '#008cd700'
+                            }
+                        ])
                     }
                 },
                 {
@@ -167,13 +185,26 @@ const DynamicGraph = ({
                     showSymbol: false,
                     data: data.map((item, index) => ({
                         name: item.name,
-                        value: [item.value[0], index > 0 ? data[index - 1].value[1] : null]
+                        value: [item.value[0], index > 0 ? data[index - 1].value[1] + 50 : null]
                     })),
                     itemStyle: {
-                        color: '#8e8e8e'  // A muted gray color for previous day
+                        color: '#ed8c22'
                     },
                     lineStyle: {
-                        type: 'dashed'
+                        type: 'dashed',
+                        width: 1
+                    },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            {
+                                offset: 0,
+                                color: '#ed8c2210'
+                            },
+                            {
+                                offset: 1,
+                                color: '#ed8c2200'
+                            }
+                        ])
                     }
                 }]
             };
@@ -182,10 +213,9 @@ const DynamicGraph = ({
 
             // Update data periodically
             const timer = setInterval(() => {
-                // Remove oldest data point and add new one
-                data.shift();
+                // Only update the last data point
                 const newData = randomData();
-                data.push(newData);
+                data[data.length - 1] = newData;
                 
                 chartInstance.current.setOption({
                     series: [{
@@ -211,16 +241,27 @@ const DynamicGraph = ({
 
     return (
         <div className={`${styles.graph_container} ${className || ''}`} style={{ height }}>
-            <button 
-                onClick={handleDownload}
-                className={styles.download_button}
-            >
-                Download Chart
-            </button>
-            <div 
-                ref={chartRef} 
-                style={{ width: '100%', height: '400px' }} 
-            />
+            <div className={styles.chart_controls}>
+                <h3 className={styles.chart_title}>
+                    {title}
+                </h3>
+                <div className={styles.action_cont}>
+                    <span
+                        className={styles.icons_chart_controls}
+                        onClick={handleDownload}>
+                        <img
+                            src="icons/download-icon.svg"
+                            alt="Download chart"
+                        />
+                    </span>
+                </div>
+            </div>
+            <div className={styles.echart_container}>
+                <div 
+                    ref={chartRef} 
+                    className={styles.chart}
+                />
+            </div>
         </div>
     );
 };
