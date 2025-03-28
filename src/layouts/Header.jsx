@@ -20,12 +20,15 @@ const Header = () => {
     const debouncedSearchTerm = useDebounce(searchQuery, 500);
 
     // Simulated profile data - in a real app, this would come from user context/auth
-    const [profileData] = useState({
-        profilePicture: null,
-        firstName: 'John',
-        lastName: 'Doe',
-    });
+    const { user } = useAuth(); // Get user details from auth context
+    //console.log(user);
 
+    const profileData = {
+        profilePicture: user?.profilePicture || null,
+        firstName: user?.id || 'User',
+        lastName: user?.lastName || '',
+    };
+    
     const handleSearchChange = (e) => {
         const query = e.target.value;
         if (query.length === 0) {
@@ -111,9 +114,10 @@ const Header = () => {
                 try {
 
                     const response = await apiClient.get(
-                        `/search/locations?term=${debouncedSearchTerm}`
+                        `/regions/search?term=${debouncedSearchTerm}`
                     );
                     const results = response.data;
+                   // console.log(results)
                     setSearchResults(results);
                 } catch (error) {
                     console.error('Search error:', error);
@@ -178,11 +182,9 @@ const Header = () => {
                                 key={result.id}
                                 className={styles.search_result_item}
                                 onClick={() => handleResultClick(result.id)}>
-                                <span className={styles.result_type}>
-                                    {result.type}{' '}
-                                </span>
+                               
                                 <span className={styles.result_name}>
-                                    {result.name}
+                                    {result.hierarchy_name}
                                 </span>
                             </div>
                         ))}

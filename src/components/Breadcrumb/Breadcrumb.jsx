@@ -65,13 +65,9 @@ const Breadcrumb = () => {
   const buildCompleteHierarchy = (paths) => {
     const hierarchy = [];
     
-    // Special case for dashboard - show all levels
+    // Special case for dashboard - don't show extra levels
     if (paths[0] === 'dashboard') {
-      hierarchy.push({ path: 'regions', name: 'Regions', route: '/admin/regions' });
-      hierarchy.push({ path: 'edcs', name: 'EDCs', route: '/admin/regions/edcs' });
-      hierarchy.push({ path: 'substations', name: 'Substations', route: '/admin/regions/edcs/substations' });
-      hierarchy.push({ path: 'feeders', name: 'Feeders', route: '/admin/regions/edcs/substations/feeders' });
-      return hierarchy;
+      return hierarchy; // Return empty array for dashboard
     }
     
     // Find all components in the path
