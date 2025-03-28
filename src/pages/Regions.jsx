@@ -247,6 +247,7 @@ const Regions = () => {
             </div>
           </div>
         </div>
+        
         <div className={styles.total_substations_container}>
           <div className={styles.total_main_info}>
             <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
@@ -268,6 +269,7 @@ const Regions = () => {
               <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
             </div>
           </div>
+          {/*Feeder communication status*/}
           <div className={styles.metrics_communication_info}>
             <div className="titles">Communication Status</div>
             <div className={styles.overall_communication_status}>
@@ -295,11 +297,14 @@ const Regions = () => {
               </div>
             </div>
           </div>
+
+
+          
         </div>
       </div>
 
       <div className={styles.section_header}>
-        <h2 className="title">Regions <span className={styles.region_count}>{widgetsData.totalRegions}</span></h2>
+        <h2 className="title">Regions: <span className={styles.region_count}>[{widgetsData.totalRegions}]</span></h2>
       </div>
     {/*  <div className={styles.region_stats_container}>
         {regionName.map((region, index) => (

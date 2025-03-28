@@ -145,6 +145,24 @@ const LongDetailsWidget = () => {
 
         <div className={styles.total_meters_container}>
           <div className={styles.total_main_info}>
+            <div className={styles.TNEB_icons}>
+              <img src="icons/electric-meter.svg" alt="Feeder" className={styles.TNEB_icons}/>
+            </div>
+
+            <div className={styles.total_title_value}>
+              <span className='title'>District</span>
+              <span className={styles.summary_value}>{stats.feederCount}</span>
+            </div>
+            
+          </div>
+        </div>
+
+       
+
+        <div className={styles.total_units_container}>
+          <div className={styles.total_main_info}>
+              {/* Location */}
+        <div className={styles.total_main_info}>
 
 
             <div className={styles.TNEB_icons}>
@@ -152,20 +170,15 @@ const LongDetailsWidget = () => {
             </div>
 
             <div className={styles.total_title_value}>
-              <span className='title'>Feeders</span>
+              <span className='title'>Location</span>
               <span className={styles.summary_value}>{stats.feederCount}</span>
             </div>
-            
-          </div>
-        </div>
-
-        <div className={styles.total_units_container}>
-          <div className={styles.total_main_info}>
-            <div className={styles.total_title_value}>
+            </div>
+            {/* <div className={styles.total_title_value}>
               <span className='title'>Actual Demand</span>
               <span className={`${styles.summary_value} ${isPositiveChange ? styles.positive : styles.negative}`}>
                 {stats.currentValue} MW
-                <div className={styles.percentage_change} style={{ fontSize: '2.5rem' }}>
+                <div className={styles.percentage_change} >
                   <img
                     src={isPositiveChange ? "icons/up-right-arrow.svg" : "icons/down-right-arrow.svg"}
                     alt={isPositiveChange ? "Increase" : "Decrease"}
@@ -174,7 +187,36 @@ const LongDetailsWidget = () => {
                   {Math.abs(percentageChange)}%
                 </div>
               </span>
+            </div> */}
+
+            {/* Communication Your are Working here */}
+            <div className={styles.regions_communication_info}>
+            <div className="titles">Communication Status</div>
+            <div className={styles.overall_communication_status}>
+              <div className={styles.communication_status_container}>
+                <div className={styles.communication_value}>{stats.feederCount}</div>
+                <div className={styles.communication_positive_percentage}>
+                  <img
+                    src="icons/up-right-arrow.svg"
+                    alt="Positive"
+                    className={styles.communication_positive_arrow}
+                  />
+                  87%
+                </div>
+              </div>
+              <div className={styles.communication_status_container}>
+                <div className={styles.communication_value}>{stats.feederCount}</div>
+                <div className={styles.communication_negative_percentage}>
+                  <img
+                    src="icons/up-right-arrow.svg"
+                    alt="Positive"
+                    className={styles.communication_negative_arrow}
+                  />
+                  13%
+                </div>
+              </div>
             </div>
+          </div>
           </div>
         </div>
       </div>
