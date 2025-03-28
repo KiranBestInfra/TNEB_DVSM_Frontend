@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }) => {
             try {
                 const decoded = jwtDecode(accessToken);
                 setUser({
+                    id: decoded.userId, 
                     ...decoded,
                     role: (
                         decoded.role ||
