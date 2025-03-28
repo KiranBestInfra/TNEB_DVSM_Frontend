@@ -10,17 +10,41 @@ const Tickets = () => {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [filterStatus, setFilterStatus] = useState('all');
     const [filterCategory, setFilterCategory] = useState('all');
     const [filterRegion, setFilterRegion] = useState('all');
     const [filterDistrict, setFilterDistrict] = useState('all');
+    const [filterEDC, setFilterEDC] = useState('all');
+    const [filterSubstation, setFilterSubstation] = useState('all');
+    const [filterFeeder, setFilterFeeder] = useState('all');
+
+    // Mock data for EDCs, Substations, and Feeders
+    const mockEDCs = [
+        { id: 'EDC001', name: 'Chennai EDC' },
+        { id: 'EDC002', name: 'Coimbatore EDC' },
+        { id: 'EDC003', name: 'Madurai EDC' },
+        { id: 'EDC004', name: 'Trichy EDC' },
+        { id: 'EDC005', name: 'Salem EDC' }
+    ];
+
+    const mockSubstations = [
+        { id: 'SS001', name: 'Anna Nagar SS', edcId: 'EDC001' },
+        { id: 'SS002', name: 'T Nagar SS', edcId: 'EDC001' },
+        { id: 'SS003', name: 'Gandhipuram SS', edcId: 'EDC002' },
+        { id: 'SS004', name: 'Race Course SS', edcId: 'EDC002' },
+        { id: 'SS005', name: 'Goripalayam SS', edcId: 'EDC003' },
+        { id: 'SS006', name: 'Thirunagar SS', edcId: 'EDC003' },
+        { id: 'SS007', name: 'Srirangam SS', edcId: 'EDC004' },
+        { id: 'SS008', name: 'Woraiyur SS', edcId: 'EDC004' },
+        { id: 'SS009', name: 'Hasthampatti SS', edcId: 'EDC005' },
+        { id: 'SS010', name: 'Fairlands SS', edcId: 'EDC005' }
+    ];
 
     // Mock data for tickets
     const mockTickets = [
         {
             id: 'TKT-001',
             subject: 'Meter not communicating',
-            category: 'Technical Issue',
+            category: 'General Issue',
             description: 'Customer reported that their smart meter stopped sending readings for the last 3 days.',
             status: 'open',
             priority: 'high',
@@ -59,7 +83,7 @@ const Tickets = () => {
         {
             id: 'TKT-004',
             subject: 'Data synchronization issue',
-            category: 'Data Issue',
+            category: 'Technical Issue',
             description: 'Meter readings not syncing with the central database for the last 24 hours.',
             status: 'open',
             priority: 'low',
@@ -100,10 +124,6 @@ const Tickets = () => {
 
                 let filteredTickets = [...allTickets];
 
-                // Apply filters
-                if (filterStatus !== 'all') {
-                    filteredTickets = filteredTickets.filter(ticket => ticket.status === filterStatus);
-                }
                 if (filterCategory !== 'all') {
                     filteredTickets = filteredTickets.filter(ticket => ticket.category === filterCategory);
                 }
@@ -112,6 +132,15 @@ const Tickets = () => {
                 }
                 if (filterDistrict !== 'all') {
                     filteredTickets = filteredTickets.filter(ticket => ticket.district === filterDistrict);
+                }
+                if (filterEDC !== 'all') {
+                    filteredTickets = filteredTickets.filter(ticket => ticket.edcId === filterEDC);
+                }
+                if (filterSubstation !== 'all') {
+                    filteredTickets = filteredTickets.filter(ticket => ticket.substationId === filterSubstation);
+                }
+                if (filterFeeder !== 'all') {
+                    filteredTickets = filteredTickets.filter(ticket => ticket.feederId === filterFeeder);
                 }
 
                 // Default sort by latest updated date
@@ -124,7 +153,7 @@ const Tickets = () => {
         };
 
         fetchTickets();
-    }, [filterStatus, filterCategory, filterRegion, filterDistrict]);
+    }, [filterCategory, filterRegion, filterDistrict, filterEDC, filterSubstation, filterFeeder]);
 
     const handleCreateTicket = () => {
         navigate('/admin/tickets/new');
@@ -141,10 +170,6 @@ const Tickets = () => {
         alert(`Ticket ${ticket.id} would be deleted in a real application`);
     };
 
-    const handleFilterChange = (e) => {
-        setFilterStatus(e.target.value);
-    };
-
     const handleCategoryFilterChange = (e) => {
         setFilterCategory(e.target.value);
     };
@@ -155,6 +180,21 @@ const Tickets = () => {
 
     const handleDistrictFilterChange = (e) => {
         setFilterDistrict(e.target.value);
+    };
+
+    const handleEDCFilterChange = (e) => {
+        setFilterEDC(e.target.value);
+        setFilterSubstation('all');
+        setFilterFeeder('all');
+    };
+
+    const handleSubstationFilterChange = (e) => {
+        setFilterSubstation(e.target.value);
+        setFilterFeeder('all');
+    };
+
+    const handleFeederFilterChange = (e) => {
+        setFilterFeeder(e.target.value);
     };
 
     const handlePageChange = (page) => {
@@ -235,6 +275,12 @@ const Tickets = () => {
     const getCriticalTickets = () =>
         mockTickets.filter(ticket => ticket.priority === 'critical').length;
 
+    // Get filtered substations based on selected EDC
+    const getFilteredSubstations = () => {
+        if (filterEDC === 'all') return mockSubstations;
+        return mockSubstations.filter(sub => sub.edcId === filterEDC);
+    };
+
     return (
         <div className={styles.tickets_container}>
             <div className={styles.tickets_header}>
@@ -274,21 +320,10 @@ const Tickets = () => {
                     <div className={styles.widget_label}>Critical Tickets</div>
                 </div>
             </div>
-
+            {/* Tickets Filters */}
             <div className={styles.tickets_filters}>
-                <div className={styles.filter_item}>
-                    <select
-                        value={filterStatus}
-                        onChange={handleFilterChange}
-                        className={styles.select_with_arrow}
-                    >
-                        <option value="all">Select Status</option>
-                        <option value="open">Open</option>
-                        <option value="pending">Pending</option>
-                        <option value="closed">Closed</option>
-                    </select>
-                </div>
-
+             
+                {/* Category Filter */}
                 <div className={styles.filter_item}>
                     <select
                         value={filterCategory}
@@ -301,7 +336,7 @@ const Tickets = () => {
                         ))}
                     </select>
                 </div>
-
+                {/* Region Filter */}
                 <div className={styles.filter_item}>
                     <select
                         value={filterRegion}
@@ -314,7 +349,7 @@ const Tickets = () => {
                         ))}
                     </select>
                 </div>
-
+                {/* District Filter */}
                 <div className={styles.filter_item}>
                     <select
                         value={filterDistrict}
@@ -325,6 +360,46 @@ const Tickets = () => {
                         {getUniqueDistricts().map(district => (
                             <option key={district} value={district}>{district}</option>
                         ))}
+                    </select>
+                </div>
+
+                {/* New EDC Filter */}
+                <div className={styles.filter_item}>
+                    <select
+                        value={filterEDC}
+                        onChange={handleEDCFilterChange}
+                        className={styles.select_with_arrow}
+                    >
+                        <option value="all">Select EDC</option>
+                        {mockEDCs.map(edc => (
+                            <option key={edc.id} value={edc.id}>{edc.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* New Substation Filter */}
+                <div className={styles.filter_item}>
+                    <select
+                        value={filterSubstation}
+                        onChange={handleSubstationFilterChange}
+                        className={styles.select_with_arrow}
+                    >
+                        <option value="all">Select Substation</option>
+                        {getFilteredSubstations().map(sub => (
+                            <option key={sub.id} value={sub.id}>{sub.name}</option>
+                        ))}
+                    </select>
+                </div>
+
+                {/* New Feeder Filter */}
+                <div className={styles.filter_item}>
+                    <select
+                        value={filterFeeder}
+                        onChange={handleFeederFilterChange}
+                        className={styles.select_with_arrow}
+                        disabled={true}
+                    >
+                        <option value="all">Select Feeder</option>
                     </select>
                 </div>
             </div>

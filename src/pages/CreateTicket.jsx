@@ -73,6 +73,18 @@ const TicketDetails = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        
+        // Add validation for mobile number
+        if (name === 'mobile') {
+            // Only allow numbers
+            const numbersOnly = value.replace(/[^0-9]/g, '');
+            setFormData(prev => ({
+                ...prev,
+                [name]: numbersOnly
+            }));
+            return;
+        }
+
         setFormData(prev => ({
             ...prev,
             [name]: value
@@ -186,8 +198,8 @@ const TicketDetails = () => {
                                 type="text"
                                 name="consumer_name"
                                 value={formData.consumer_name}
+                                onChange={handleInputChange}
                                 className={styles.form_input}
-                                disabled
                                 placeholder="Consumer Name"
                             />
                         </div>
@@ -201,8 +213,8 @@ const TicketDetails = () => {
                                 type="email"
                                 name="email"
                                 value={formData.email}
+                                onChange={handleInputChange}
                                 className={styles.form_input}
-                                disabled
                                 placeholder="Email"
                             />
                         </div>
@@ -213,9 +225,12 @@ const TicketDetails = () => {
                                 type="tel"
                                 name="mobile"
                                 value={formData.mobile}
+                                onChange={handleInputChange}
                                 className={styles.form_input}
-                                disabled
                                 placeholder="Mobile"
+                                pattern="[0-9]*"
+                                inputMode="numeric"
+                                maxLength="10"
                             />
                         </div>
                     </div>
