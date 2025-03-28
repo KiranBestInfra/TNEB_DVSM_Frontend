@@ -1,4 +1,3 @@
-
 import { Link, useLocation } from 'react-router-dom';
 import styles from './Breadcrumb.module.css';
 
@@ -6,8 +5,8 @@ const Breadcrumb = () => {
   const location = useLocation();
   const pathnames = location.pathname.split('/').filter((x) => x);
 
-  // Don't show breadcrumb on dashboard page or root path
-  if (pathnames.length === 0 || pathnames[0] === 'dashboard' || location.pathname === '/') {
+  // Only hide breadcrumb on root path
+  if (pathnames.length === 0 || location.pathname === '/') {
     return null;
   }
 
@@ -65,6 +64,15 @@ const Breadcrumb = () => {
   // Build the complete hierarchy path
   const buildCompleteHierarchy = (paths) => {
     const hierarchy = [];
+    
+    // Special case for dashboard - show all levels
+    if (paths[0] === 'dashboard') {
+      hierarchy.push({ path: 'regions', name: 'Regions', route: '/admin/regions' });
+      hierarchy.push({ path: 'edcs', name: 'EDCs', route: '/admin/regions/edcs' });
+      hierarchy.push({ path: 'substations', name: 'Substations', route: '/admin/regions/edcs/substations' });
+      hierarchy.push({ path: 'feeders', name: 'Feeders', route: '/admin/regions/edcs/substations/feeders' });
+      return hierarchy;
+    }
     
     // Find all components in the path
     const region = paths.find(p => p === 'chennai' || p === 'coimbatore' || p === 'erode' || 

@@ -167,13 +167,7 @@ const Profile = () => {
 
     const renderProfileForm = () => (
         <div className={styles.profile_section_content}>
-              {error && (
-                    <div className="form_row">
-                        <div style={{ color: 'red', marginBottom: '1rem' }}>
-                            {error}
-                        </div>
-                    </div>
-                )}
+           
                 <div className={styles.profile_section_content_header}>
                  <span
                         className={styles.white_icons}
@@ -184,6 +178,16 @@ const Profile = () => {
                         />
                     </span>
                    <h2>Change Password</h2>
+                   
+                </div>
+                <div>
+                {error && (
+                    <div className="form_row">
+                        <div style={{ color: 'red', marginBottom: '1rem' }}>
+                            {error}
+                        </div>
+                    </div>
+                )}
                 </div>
             <form onSubmit={handleChangePassword}>
            
