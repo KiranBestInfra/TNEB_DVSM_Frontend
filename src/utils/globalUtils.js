@@ -100,3 +100,8 @@ export function convertToIST(dateString) {
 
     return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 }
+export const Name = (user, plural = false) => {
+    return user?.locationHierarchy === 8
+        ? `DTR${plural ? 's' : ''}`
+        : `Consumer${plural ? 's' : ''}`;
+};
