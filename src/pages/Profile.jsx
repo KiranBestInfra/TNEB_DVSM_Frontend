@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import Buttons from "../components/ui/Buttons/Buttons";
 import styles from "../styles/Profile.module.css";
+import { useAuth } from '../components/AuthProvider';
 import { useNavigate } from "react-router-dom";
+import { Name } from '../utils/globalUtils';
+
 
 const Profile = () => {
     const navigate = useNavigate();
+
+    const { user } = useAuth();
+    const name = Name(user, false);
+    console.log(name);
 
     // State
     const [profileData, setProfileData] = useState({
