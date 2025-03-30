@@ -1,26 +1,20 @@
 import { useState } from "react";
 import styles from "../styles/Dashboard.module.css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Buttons from "../components/ui/Buttons/Buttons";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import ShortDetailsWidget from "./ShortDetailsWidget";
 
 const Feeders = () => {
-  const [timeframe, setTimeframe] = useState("Last 7 Days");
+  const [timeRange, setTimeRange] = useState('Daily');
   const totalMeters = breadcrumb_listbreadcrumb_list;
   const totalRegions = 13; // Total number of regions
   const totalEDCs = 95; // Total number of EDCs
   const totalSubstations = 260; // Total number of substations
   const totalFeeders = 416; // Total number of feeders
-  const [dateRange, setDateRange] = useState({
+  /* const [dateRange, setDateRange] = useState({
     start: null,
     end: null
-  });
-
-  const handleTimeframeChange = (e) => {
-    setTimeframe(e.target.value);
-  };
+  }); */
 
   // Replace EDC data with Feeder data
   const feederNames = [
@@ -113,7 +107,7 @@ const Feeders = () => {
       <div className={styles.section_header}>
         <h2 className="title">Feeders</h2>
         <div className={styles.action_container}>
-          <div className={styles.date_range}>
+          {/* <div className={styles.date_range}>
             <div className={styles.search_cont}>
               <DatePicker
                 selected={dateRange.start}
@@ -143,6 +137,31 @@ const Feeders = () => {
               <span className="icons icon_placement">
                 <img src="icons/date.svg" alt="Calendar" />
               </span>
+            </div>
+            <Buttons
+              label="Get Reports"
+              variant="primary"
+              alt="GetReports"
+              icon="icons/reports.svg"
+              iconPosition="left"
+            />
+          </div> */}
+          <div className={styles.action_cont}>
+            <div className={styles.time_range_select_dropdown}>
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className={styles.time_range_select}>
+                <option value="Daily">Daily</option>
+                <option value="Monthly">Monthly</option>
+                <option value="PreviousMonth">Previous Month</option>
+                <option value="Year">Year</option>
+              </select>
+              <img
+                src="icons/arrow-down.svg"
+                alt="Select Time"
+                className={styles.time_range_select_dropdown_icon}
+              />
             </div>
             <Buttons
               label="Get Reports"

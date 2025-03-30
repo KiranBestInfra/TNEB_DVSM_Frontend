@@ -2,8 +2,6 @@ import styles from "../styles/LongDetailsWidget.module.css";
 import FullDetailLineChart from "../components/graphs/FullDetailLineChart/FullDetailLineChart";
 import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Buttons from "../components/ui/Buttons/Buttons";
 import { useState } from "react";
 
@@ -32,10 +30,11 @@ const detailedGraphData = {
 const LongDetailsWidget = () => {
   const navigate = useNavigate();
   const { regionId, edcId, substationId, feederId } = useParams();
-  const [dateRange, setDateRange] = useState({
+  const [timeRange, setTimeRange] = useState('Daily');
+  /* const [dateRange, setDateRange] = useState({
     start: null,
     end: null
-  });
+  }); */
   
   // Determine the type of view based on URL parameters
   let viewType = 'regions';
@@ -76,7 +75,7 @@ const LongDetailsWidget = () => {
       <div className={styles.section_header}>
         <h2 className="title">{entityName} Region</h2>
         <div className={styles.action_container}>
-          <div className={styles.date_range}>
+          {/* <div className={styles.date_range}>
             <div className={styles.search_cont}>
               <DatePicker
                 selected={dateRange.start}
@@ -109,7 +108,32 @@ const LongDetailsWidget = () => {
               label="Get Reports"
               variant="primary"
               alt="GetReports"
-              icon="/icons/reports.svg"
+              icon="icons/reports.svg"
+              iconPosition="left"
+            />
+          </div> */}
+          <div className={styles.action_cont}>
+            <div className={styles.time_range_select_dropdown}>
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className={styles.time_range_select}>
+                <option value="Daily">Daily</option>
+                <option value="Monthly">Monthly</option>
+                <option value="PreviousMonth">Previous Month</option>
+                <option value="Year">Year</option>
+              </select>
+              <img
+                src="icons/arrow-down.svg"
+                alt="Select Time"
+                className={styles.time_range_select_dropdown_icon}
+              />
+            </div>
+            <Buttons
+              label="Get Reports"
+              variant="primary"
+              alt="GetReports"
+              icon="icons/reports.svg"
               iconPosition="left"
             />
           </div>
