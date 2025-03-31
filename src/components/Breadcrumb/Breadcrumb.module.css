@@ -16,7 +16,7 @@
 .breadcrumb_item {
   display: flex;
   align-items: center;
-  color: #666;
+  color: var(--grey);
   font-size: 1rem;
 }
 
@@ -32,13 +32,13 @@
 }
 
 .breadcrumb_current {
-  color: #374151;
+  color: var(--black);
   font-weight: 500;
 }
 
 .breadcrumb_separator {
   margin: 0 0.5rem;
-  color: #9ca3af;
+  color: var;
 }
 
 @media screen and (max-width: 768px) {

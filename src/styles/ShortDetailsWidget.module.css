@@ -34,18 +34,47 @@
     flex-direction: row;
     align-items: center;
     gap: 0.5rem;
+    position: relative;
 }
 
 .click_individual_region {
     border-radius: 50%;
-    padding: 0.5rem;
-    height: 2.5rem;
-    width: 2.5rem;
+    padding: 0.2rem;
+    height: 2rem;
+    width: 2rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: var(--primary-bg);
+    position: relative;
+}
+
+.click_individual_region img {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: var(--black);
+    color: var(--white);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.click_individual_region:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
 }
 
 .individual_region_body {

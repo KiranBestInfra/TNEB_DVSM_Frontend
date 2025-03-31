@@ -120,7 +120,7 @@ const LineBarChart = ({
         }
     };
 
-    const handleDownload = () => {
+    const hanfvdleDownload = () => {
         if (chartRef.current) {
             const base64 = chartRef.current.getEchartsInstance().getDataURL();
             const link = document.createElement('a');

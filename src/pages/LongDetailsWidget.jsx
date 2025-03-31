@@ -2,8 +2,6 @@ import styles from "../styles/LongDetailsWidget.module.css";
 import FullDetailLineChart from "../components/graphs/FullDetailLineChart/FullDetailLineChart";
 import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Buttons from "../components/ui/Buttons/Buttons";
 import { useState } from "react";
 
@@ -29,14 +27,14 @@ const detailedGraphData = {
     ]
   }
 };
-
 const LongDetailsWidget = () => {
   const navigate = useNavigate();
   const { regionId, edcId, substationId, feederId } = useParams();
-  const [dateRange, setDateRange] = useState({
+  const [timeRange, setTimeRange] = useState('Daily');
+  /* const [dateRange, setDateRange] = useState({
     start: null,
     end: null
-  });
+  }); */
   
   // Determine the type of view based on URL parameters
   let viewType = 'regions';
@@ -75,9 +73,9 @@ const LongDetailsWidget = () => {
   return (
     <div className={styles.main_content}>
       <div className={styles.section_header}>
-        <h2 className="title">{entityName} Detailed View</h2>
+        <h2 className="title">{entityName} Region</h2>
         <div className={styles.action_container}>
-          <div className={styles.date_range}>
+          {/* <div className={styles.date_range}>
             <div className={styles.search_cont}>
               <DatePicker
                 selected={dateRange.start}
@@ -110,7 +108,32 @@ const LongDetailsWidget = () => {
               label="Get Reports"
               variant="primary"
               alt="GetReports"
-              icon="/icons/reports.svg"
+              icon="icons/reports.svg"
+              iconPosition="left"
+            />
+          </div> */}
+          <div className={styles.action_cont}>
+            <div className={styles.time_range_select_dropdown}>
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className={styles.time_range_select}>
+                <option value="Daily">Daily</option>
+                <option value="Monthly">Monthly</option>
+                <option value="PreviousMonth">Previous Month</option>
+                <option value="Year">Year</option>
+              </select>
+              <img
+                src="icons/arrow-down.svg"
+                alt="Select Time"
+                className={styles.time_range_select_dropdown_icon}
+              />
+            </div>
+            <Buttons
+              label="Get Reports"
+              variant="primary"
+              alt="GetReports"
+              icon="icons/reports.svg"
               iconPosition="left"
             />
           </div>
@@ -125,7 +148,7 @@ const LongDetailsWidget = () => {
               <img src="icons/electric-edc.svg" alt="EDC" className={styles.TNEB_icons}/>
             </div>
             <div className={styles.total_title_value}>
-              <span className='title'>Total EDCs</span>
+              <span className='title'>EDCs</span>
               <span className={styles.summary_value}>{stats.edcCount}</span>
             </div>
           </div>
@@ -137,7 +160,7 @@ const LongDetailsWidget = () => {
               <img src="icons/electric-factory.svg" alt="Substation" className={styles.TNEB_icons}/>
             </div>
             <div className={styles.total_title_value}>
-              <span className='title'>Total Substations</span>
+              <span className='title'>Substations</span>
               <span className={styles.summary_value}>{stats.substationCount}</span>
             </div>
             
@@ -146,6 +169,24 @@ const LongDetailsWidget = () => {
 
         <div className={styles.total_meters_container}>
           <div className={styles.total_main_info}>
+            <div className={styles.TNEB_icons}>
+              <img src="icons/electric-meter.svg" alt="Feeder" className={styles.TNEB_icons}/>
+            </div>
+
+            <div className={styles.total_title_value}>
+              <span className='title'>District</span>
+              <span className={styles.summary_value}>{stats.feederCount}</span>
+            </div>
+            
+          </div>
+        </div>
+
+       
+
+        <div className={styles.total_units_container}>
+          <div className={styles.total_main_info}>
+              {/* Location */}
+        <div className={styles.total_main_info}>
 
 
             <div className={styles.TNEB_icons}>
@@ -153,20 +194,15 @@ const LongDetailsWidget = () => {
             </div>
 
             <div className={styles.total_title_value}>
-              <span className='title'>Total Feeders</span>
+              <span className='title'>Location</span>
               <span className={styles.summary_value}>{stats.feederCount}</span>
             </div>
-            
-          </div>
-        </div>
-
-        <div className={styles.total_units_container}>
-          <div className={styles.total_main_info}>
-            <div className={styles.total_title_value}>
-              <span className='title'>Current Utilization</span>
+            </div>
+            {/* <div className={styles.total_title_value}>
+              <span className='title'>Actual Demand</span>
               <span className={`${styles.summary_value} ${isPositiveChange ? styles.positive : styles.negative}`}>
                 {stats.currentValue} MW
-                <div className={styles.percentage_change}>
+                <div className={styles.percentage_change} >
                   <img
                     src={isPositiveChange ? "icons/up-right-arrow.svg" : "icons/down-right-arrow.svg"}
                     alt={isPositiveChange ? "Increase" : "Decrease"}
@@ -175,10 +211,36 @@ const LongDetailsWidget = () => {
                   {Math.abs(percentageChange)}%
                 </div>
               </span>
+            </div> */}
+
+            {/* Communication Your are Working here */}
+            <div className={styles.regions_communication_info}>
+            <div className="titles">Communication Status</div>
+            <div className={styles.overall_communication_status}>
+              <div className={styles.communication_status_container}>
+                <div className={styles.communication_value}>{stats.feederCount}</div>
+                <div className={styles.communication_positive_percentage}>
+                  <img
+                    src="icons/up-right-arrow.svg"
+                    alt="Positive"
+                    className={styles.communication_positive_arrow}
+                  />
+                  87%
+                </div>
+              </div>
+              <div className={styles.communication_status_container}>
+                <div className={styles.communication_value}>{stats.feederCount}</div>
+                <div className={styles.communication_negative_percentage}>
+                  <img
+                    src="icons/up-right-arrow.svg"
+                    alt="Positive"
+                    className={styles.communication_negative_arrow}
+                  />
+                  13%
+                </div>
+              </div>
             </div>
-            <div className={styles.TNEB_icons}>
-              <img src="icons/units.svg" alt="Units" />
-            </div>
+          </div>
           </div>
         </div>
       </div>
@@ -186,11 +248,11 @@ const LongDetailsWidget = () => {
       <div className={styles.details_section}>
         <div className={styles.details_card}>
           <div className={styles.details_header}>
-            {/* <h3>Detailed Energy Usage</h3> */}
+            {/* <h3>Actual Demand Graph</h3> */}
           </div>
           <div className={styles.detail_chart}>
             <FullDetailLineChart
-              title="Detailed Energy Usage"
+              title="Actual Demand Graph"
               data={detailedGraphData}
               seriesColors={['#3f68b2', '#ed8c22']}
               yAxisLabel="MW"
