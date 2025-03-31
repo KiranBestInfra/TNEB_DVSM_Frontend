@@ -1,30 +1,24 @@
 import { useState , useEffect} from "react";
 import styles from "../styles/Dashboard.module.css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import Buttons from "../components/ui/Buttons/Buttons";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import ShortDetailsWidget from "./ShortDetailsWidget";
 
 const EDCs = () => {
-  const [timeframe, setTimeframe] = useState("Last 7 Days");
+  const [timeRange, setTimeRange] = useState('Daily');
   const totalMeters = 1243;
   const totalRegions = 13; // Total number of regions
   const totalEDCs = 95; // Total number of EDCs
   const totalSubstations = 260; // Total number of substations
   const totalFeeders = 416; // Total number of feeders
-  const [dateRange, setDateRange] = useState({
-    start: null,
-    end: null
-  });
   const [widgetsData, setWidgetsData] = useState({
-        totalRegions: 0,
-        totalEdcs: 0,
-        totalSubstations: 0,
-        totalFeeders: 0,
-        commMeters: 0,
-        nonCommMeters: 0  
-      });
+    totalRegions: 0,
+    totalEdcs: 0,
+    totalSubstations: 0,
+    totalFeeders: 0,
+    commMeters: 0,
+    nonCommMeters: 0  
+  });
     
       useEffect(() => {
         const fetchData = async () => {
@@ -46,10 +40,6 @@ const EDCs = () => {
     
       },[])
     
-
-  const handleTimeframeChange = (e) => {
-    setTimeframe(e.target.value);
-  };
 
   // Replace region data with EDC data
   const edcNames = [
@@ -161,34 +151,22 @@ const EDCs = () => {
       <div className={styles.section_header}>
         <h2 className="title">EDCs</h2>
         <div className={styles.action_container}>
-          <div className={styles.date_range}>
-            <div className={styles.search_cont}>
-              <DatePicker
-                selected={dateRange.start}
-                onChange={(date) =>
-                  setDateRange({ ...dateRange, start: date })
-                }
-                dateFormat="MMM dd, yyyy"
-                placeholderText="Start Date"
+          <div className={styles.action_cont}>
+            <div className={styles.time_range_select_dropdown}>
+              <select
+                value={timeRange}
+                onChange={(e) => setTimeRange(e.target.value)}
+                className={styles.time_range_select}>
+                <option value="Daily">Daily</option>
+                <option value="Monthly">Monthly</option>
+                <option value="PreviousMonth">Previous Month</option>
+                <option value="Year">Year</option>
+              </select>
+              <img
+                src="icons/arrow-down.svg"
+                alt="Select Time"
+                className={styles.time_range_select_dropdown_icon}
               />
-              <span className="icons icon_placement">
-                <img src="icons/date.svg" alt="Calendar" />
-              </span>
-            </div>
-
-            <div className={styles.search_cont}>
-              <DatePicker
-                selected={dateRange.end}
-                onChange={(date) =>
-                  setDateRange({ ...dateRange, end: date })
-                }
-                dateFormat="MMM dd, yyyy"
-                placeholderText="End Date"
-                minDate={dateRange.start}
-              />
-              <span className="icons icon_placement">
-                <img src="icons/date.svg" alt="Calendar" />
-              </span>
             </div>
             <Buttons
               label="Get Reports"
