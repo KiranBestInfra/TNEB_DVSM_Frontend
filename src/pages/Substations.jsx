@@ -29,8 +29,13 @@ const Substations = () => {
         commMeters: 0,
         nonCommMeters: 0,
         substationNames: [],
+        regionSubstationCount: 0,
     });
+    const [timeRange, setTimeRange] = useState('Daily'); // Default value
 
+    const handleTimeRangeChange = (e) => {
+        setTimeRange(e.target.value);
+    };
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch(
@@ -55,37 +60,39 @@ const Substations = () => {
         fetchData();
     }, []);
     useEffect(() => {
-        console.log('region', region);
+        console.log('Selected region:', region);
         if (!region) return;
 
-        const substationNames = async () => {
+        const fetchSubstations = async () => {
             try {
-                // const response = await fetch(
-                //     `http://localhost:3000/api/v1/edcs/widgets/${region}/substations`
-                // );
+                console.log(`Fetching substations for region: ${region}`);
+
                 const response = await apiClient.get(
                     `/edcs/widgets/${region}/substations`
                 );
-                const data = response;
-                console.log('Fetched Substation Data:', data);
 
-                setWidgetsData((prev) => ({
-                    ...prev,
-                    substationNames: data.data?.substationNames || [],
-                }));
+                console.log('Raw API Response:', response);
+
+                // Check if API response structure is correct
+                const substationData = response.data?.substationNames || [];
+
+                console.log(
+                    'Total substations fetched:',
+                    substationData.length
+                );
+                console.log('Substation Names:', substationData);
+
+                setWidgetsData({
+                    substationNames: substationData,
+                    regionSubstationCount: substationData.length,
+                });
             } catch (error) {
-                console.error('Error fetching EDC names:', error);
+                console.error('Error fetching substation names:', error);
             }
         };
 
-        substationNames();
+        fetchSubstations();
     }, [region]);
-
-    console.log('widgetsData', widgetsData);
-
-    const handleRegionClick = (region) => {
-        setSelectedRegion(region); // Set region when clicked
-    };
 
     const handleTimeframeChange = (e) => {
         setTimeframe(e.target.value);
@@ -211,12 +218,12 @@ const Substations = () => {
         },
     };
 
-  return (
-    <div className={styles.main_content}>
-      <div className={styles.section_header}>
-        <h2 className="title">Substations</h2>
-        <div className={styles.action_container}>
-          {/* <div className={styles.date_range}>
+    return (
+        <div className={styles.main_content}>
+            <div className={styles.section_header}>
+                <h2 className="title">Substations</h2>
+                <div className={styles.action_container}>
+                    {/* <div className={styles.date_range}>
             <div className={styles.search_cont}>
               <DatePicker
                 selected={dateRange.start}
@@ -255,109 +262,153 @@ const Substations = () => {
               iconPosition="left"
             />
           </div> */}
-          <div className={styles.action_cont}>
-            <div className={styles.time_range_select_dropdown}>
-              <select
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
-                className={styles.time_range_select}>
-                <option value="Daily">Daily</option>
-                <option value="Monthly">Monthly</option>
-                <option value="PreviousMonth">Previous Month</option>
-                <option value="Year">Year</option>
-              </select>
-              <img
-                src="icons/arrow-down.svg"
-                alt="Select Time"
-                className={styles.time_range_select_dropdown_icon}
-              />
-            </div>
-            <Buttons
-              label="Get Reports"
-              variant="primary"
-              alt="GetReports"
-              icon="icons/reports.svg"
-              iconPosition="left"
-            />
-          </div>
-        </div>
-      </div>
-      <Breadcrumb />
-      <div className={styles.summary_section}>
-        <div className={styles.total_regions_container}>
-          <div className={styles.total_main_info}>
-            <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
-            <div className={styles.total_title_value}>
-              <p className="title">Regions</p>
-              <div className={styles.summary_value}>{widgetsData.totalRegions}</div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.total_edcs_container}>
-          <div className={styles.total_main_info}>
-            <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
-            <div className={styles.total_title_value}>
-              <p className="title">EDCs</p>
-              <div className={styles.summary_value}>{widgetsData.totalEdcs}</div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.total_substations_container}>
-          <div className={styles.total_main_info}>
-            <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
-            <div className={styles.total_title_value}>
-              <p className="title">Substations</p>
-              <div className={styles.summary_value}>{widgetsData.totalSubstations}</div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.total_meters_container}>
-          <div className={styles.total_meters_main_info}>
-            <img
-              src="icons/electric-meter.svg"
-              alt="Total Meters"
-              className={styles.TNEB_icons}
-            />
-            <div className={styles.total_meters}>
-              <div className="title">Feeders</div>
-              <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
-            </div>
-          </div>
-          <div className={styles.metrics_communication_info}>
-            <div className="titles">Communication Status</div>
-            <div className={styles.overall_communication_status}>
-              <div className={styles.communication_status_container}>
-                <div className={styles.communication_value}>{widgetsData.commMeters}</div>
-                <div className={styles.communication_positive_percentage}>
-                  <img
-                    src="icons/up-right-arrow.svg"
-                    alt="Positive"
-                    className={styles.communication_positive_arrow}
-                  />
-                  87%
+                    <div className={styles.action_cont}>
+                        <div className={styles.time_range_select_dropdown}>
+                            <select
+                                value={timeRange}
+                                onChange={(e) => setTimeRange(e.target.value)}
+                                className={styles.time_range_select}>
+                                <option value="Daily">Daily</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="PreviousMonth">
+                                    Previous Month
+                                </option>
+                                <option value="Year">Year</option>
+                            </select>
+                            <img
+                                src="icons/arrow-down.svg"
+                                alt="Select Time"
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
+                            />
+                        </div>
+                        <Buttons
+                            label="Get Reports"
+                            variant="primary"
+                            alt="GetReports"
+                            icon="icons/reports.svg"
+                            iconPosition="left"
+                        />
+                    </div>
                 </div>
-              </div>
-              <div className={styles.communication_status_container}>
-                <div className={styles.communication_value}>{widgetsData.nonCommMeters}</div>
-                <div className={styles.communication_negative_percentage}>
-                  <img
-                    src="icons/up-right-arrow.svg"
-                    alt="Positive"
-                    className={styles.communication_negative_arrow}
-                  />
-                  13%
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
+            <Breadcrumb />
+            <div className={styles.summary_section}>
+                <div className={styles.total_regions_container}>
+                    <div className={styles.total_main_info}>
+                        <img
+                            src="icons/office.svg"
+                            alt="Total Regions"
+                            className={styles.TNEB_icons}
+                        />
+                        <div className={styles.total_title_value}>
+                            <p className="title">Regions</p>
+                            <div className={styles.summary_value}>
+                                {widgetsData.totalRegions}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.total_edcs_container}>
+                    <div className={styles.total_main_info}>
+                        <img
+                            src="icons/electric-edc.svg"
+                            alt="Total Region"
+                            className={styles.TNEB_icons}
+                        />
+                        <div className={styles.total_title_value}>
+                            <p className="title">EDCs</p>
+                            <div className={styles.summary_value}>
+                                {widgetsData.totalEdcs}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.total_substations_container}>
+                    <div className={styles.total_main_info}>
+                        <img
+                            src="icons/electric-factory.svg"
+                            alt="Total Substations"
+                            className={styles.TNEB_icons}
+                        />
+                        <div className={styles.total_title_value}>
+                            <p className="title">Substations</p>
+                            <div className={styles.summary_value}>
+                                {widgetsData.totalSubstations}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className={styles.total_meters_container}>
+                    <div className={styles.total_meters_main_info}>
+                        <img
+                            src="icons/electric-meter.svg"
+                            alt="Total Meters"
+                            className={styles.TNEB_icons}
+                        />
+                        <div className={styles.total_meters}>
+                            <div className="title">Feeders</div>
+                            <div className={styles.summary_value}>
+                                {widgetsData.totalFeeders}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.metrics_communication_info}>
+                        <div className="titles">Communication Status</div>
+                        <div className={styles.overall_communication_status}>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
+                                <div className={styles.communication_value}>
+                                    {widgetsData.commMeters}
+                                </div>
+                                <div
+                                    className={
+                                        styles.communication_positive_percentage
+                                    }>
+                                    <img
+                                        src="icons/up-right-arrow.svg"
+                                        alt="Positive"
+                                        className={
+                                            styles.communication_positive_arrow
+                                        }
+                                    />
+                                    87%
+                                </div>
+                            </div>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
+                                <div className={styles.communication_value}>
+                                    {widgetsData.nonCommMeters}
+                                </div>
+                                <div
+                                    className={
+                                        styles.communication_negative_percentage
+                                    }>
+                                    <img
+                                        src="icons/up-right-arrow.svg"
+                                        alt="Positive"
+                                        className={
+                                            styles.communication_negative_arrow
+                                        }
+                                    />
+                                    13%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div className={styles.section_header}>
                 <h2 className="title">
                     Substations{' '}
                     <span className={styles.region_count}>
-                        {widgetsData.totalSubstations}
+                        {widgetsData.regionSubstationCount}
                     </span>
                 </h2>
             </div>
