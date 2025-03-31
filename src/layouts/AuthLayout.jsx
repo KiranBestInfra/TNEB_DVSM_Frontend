@@ -102,7 +102,7 @@ const AuthLayout = ({ children }) => {
                     <div className={styles.form_footer}>
                         <div className={styles.form_support}>
                             Need Help?{' '}
-                            <a href="/">
+                            <a href="https://biems.co.in/contact">
                                 Contact Support
                             </a>
                         </div>
