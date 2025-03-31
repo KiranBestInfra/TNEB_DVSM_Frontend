@@ -83,20 +83,16 @@ const App = () => {
                             <Route
                                 path="regions/:regionId/details"
                                 element={
-                                   
-                                        <ProtectedRoute>
-                                            <LongDetailsWidget />
-                                        </ProtectedRoute>
-                                   
+                                    <ProtectedRoute>
+                                        <LongDetailsWidget />
+                                    </ProtectedRoute>
                                 }
                             />
                             <Route
                                 path=":region/edcs"
                                 element={
-                                  
-                                      
-                                        <ProtectedRoute>
-                                              <EDCs />
+                                    <ProtectedRoute>
+                                        <EDCs />
                                     </ProtectedRoute>
                                 }
                             />
