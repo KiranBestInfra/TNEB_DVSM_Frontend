@@ -14,7 +14,8 @@ const Dashboard = () => {
   // Determine base route from URL path (admin or user)
   const location = window.location.pathname;
   const isUserRoute = location.includes('/user/');
-  const baseRoute = isUserRoute ? '/user' : '/admin';
+  const isBiUserRoute = location.includes('/bi/user/');
+  const baseRoute = isBiUserRoute ? '/bi/user' : (isUserRoute ? '/user' : '/admin');
 
   const [timeRange, setTimeRange] = useState('Daily');
   const [widgetsData, setWidgetsData] = useState({
@@ -128,7 +129,7 @@ const Dashboard = () => {
                 className={styles.time_range_select}>
                 <option value="Daily">Daily</option>
                 <option value="Monthly">Monthly</option>
-                <option value="PreviousMonth">Last30days</option>
+                <option value="PreviousMonth">Last 30 Days</option>
                 <option value="PreviousMonth">Last Week</option>
                 <option value="Year">Year</option>
               </select>
@@ -151,8 +152,7 @@ const Dashboard = () => {
 
       <Breadcrumb
         items={[
-          { label: 'Home', path: region && region !== 'undefined' ? `/user/${region}/dashboard` : '/admin' },
-          { label: 'Dashboard', path: region && region !== 'undefined' ? `/user/${region}/dashboard` : '/admin/dashboard', active: true }
+          { label: 'Dashboard', path: region && region !== 'undefined' ? `${baseRoute}/${region}/dashboard` : `${baseRoute}/dashboard` }
         ]}
       />
 

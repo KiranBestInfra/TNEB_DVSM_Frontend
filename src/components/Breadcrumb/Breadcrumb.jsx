@@ -1,13 +1,124 @@
 import { Link, useLocation } from 'react-router-dom';
 import styles from './Breadcrumb.module.css';
 
-const Breadcrumb = () => {
+const Breadcrumb = ({ items }) => {
   const location = useLocation();
+
+  // For region user pages, we want to customize breadcrumbs
+  // Need to handle both /bi/user/ and /user/ paths for region users
+  const pathSegments = location.pathname.split('/').filter(x => x);
+  const isRegionUserPath = location.pathname.includes('/bi/user/') ||
+    (pathSegments[0] === 'user' &&
+      pathSegments.length >= 2 &&
+      !['admin', 'regions', 'edcs', 'substations', 'feeders'].includes(pathSegments[1]));
+
+  console.log('Breadcrumb - Path:', location.pathname);
+  console.log('Breadcrumb - Is Region User Path:', isRegionUserPath);
+  console.log('Breadcrumb - Custom Items:', items);
+
+  // If items are passed directly, use them instead of building from the URL
+  if (items && items.length) {
+    console.log('Breadcrumb - Using provided items:', items);
+    return (
+      <nav className={styles.breadcrumb} aria-label="breadcrumb">
+        <ol className={styles.breadcrumb_list}>
+          {items.map((item, index) => {
+            const isLast = index === items.length - 1;
+            return (
+              <li key={index} className={styles.breadcrumb_item}>
+                {isLast ? (
+                  <span className={styles.breadcrumb_current}>{item.label}</span>
+                ) : (
+                  <>
+                    <Link to={item.path} className={styles.breadcrumb_link}>
+                      {item.label}
+                    </Link>
+                    <span className={styles.breadcrumb_separator}>/</span>
+                  </>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+    );
+  }
+
+  // Original code for auto-generated breadcrumbs from URL
   const pathnames = location.pathname.split('/').filter((x) => x);
+  console.log('Breadcrumb - Path segments:', pathnames);
 
   // Only hide breadcrumb on root path
   if (pathnames.length === 0 || location.pathname === '/') {
     return null;
+  }
+
+  // Filter out 'admin', 'user', and 'bi' from pathnames for cleaner breadcrumb
+  const filteredPathnames = pathnames.filter(name => name !== 'admin' && name !== 'user' && name !== 'bi');
+  console.log('Breadcrumb - Filtered path segments:', filteredPathnames);
+
+  // For region user paths, we want a custom breadcrumb for any non-explicit paths
+  if (isRegionUserPath && !items) {
+    // Find the region in the path
+    const region = pathnames.find(p => p === 'chennai' || p === 'coimbatore' || p === 'erode' ||
+      p === 'kancheepuram' || p === 'karur' || p === 'madurai' ||
+      p === 'thanjavur' || p === 'thiruvallur' || p === 'tirunelveli' ||
+      p === 'tiruvannamalai' || p === 'trichy' || p === 'vellore' ||
+      p === 'villupuram');
+
+    if (region) {
+      // Get current page type (edcs, substations, etc)
+      const pagePath = pathnames[pathnames.length - 1];
+      const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
+
+      // Detect the base route
+      const baseRoute = location.pathname.includes('/bi/user/') ? '/bi/user' : '/user';
+
+      const customItems = [
+        { label: 'Dashboard', path: `${baseRoute}/dashboard` }
+      ];
+
+      // Add region name
+      customItems.push({
+        label: `Region : ${formattedRegionName}`,
+        path: `${baseRoute}/${region}/dashboard`
+      });
+
+      // If we're on a specific page type (EDCs, substations, etc) add it
+      if (pagePath === 'edcs' || pagePath === 'substations' || pagePath === 'feeders') {
+        const pageLabel = pagePath.charAt(0).toUpperCase() + pagePath.slice(1);
+        customItems.push({
+          label: pageLabel,
+          path: `${baseRoute}/${region}/${pagePath}`
+        });
+      }
+
+      console.log('Breadcrumb - Generated special items for region user:', customItems);
+
+      return (
+        <nav className={styles.breadcrumb} aria-label="breadcrumb">
+          <ol className={styles.breadcrumb_list}>
+            {customItems.map((item, index) => {
+              const isLast = index === customItems.length - 1;
+              return (
+                <li key={index} className={styles.breadcrumb_item}>
+                  {isLast ? (
+                    <span className={styles.breadcrumb_current}>{item.label}</span>
+                  ) : (
+                    <>
+                      <Link to={item.path} className={styles.breadcrumb_link}>
+                        {item.label}
+                      </Link>
+                      <span className={styles.breadcrumb_separator}>/</span>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      );
+    }
   }
 
   const getBreadcrumbName = (path, index, allPaths) => {
@@ -36,7 +147,9 @@ const Breadcrumb = () => {
       path === 'thanjavur' || path === 'thiruvallur' || path === 'tirunelveli' ||
       path === 'tiruvannamalai' || path === 'trichy' || path === 'vellore' ||
       path === 'villupuram') {
-      return `Region: ${path.charAt(0).toUpperCase() + path.slice(1)}`;
+      return isRegionUserPath ?
+        `Region : ${path.charAt(0).toUpperCase() + path.slice(1)}` :
+        `Region: ${path.charAt(0).toUpperCase() + path.slice(1)}`;
     }
 
     // Handle EDC names
@@ -58,12 +171,13 @@ const Breadcrumb = () => {
     return routeMap[path] || path.charAt(0).toUpperCase() + path.slice(1);
   };
 
-  // Filter out 'admin' and 'user' from pathnames for cleaner breadcrumb
-  const filteredPathnames = pathnames.filter(name => name !== 'admin' && name !== 'user');
-
   // Determine if we're in a user route
   const isUserRoute = pathnames.includes('user');
-  const baseRoute = isUserRoute ? '/user' : '/admin';
+  const baseRoute = isUserRoute ?
+    (isRegionUserPath ?
+      (location.pathname.includes('/bi/user/') ? '/bi/user' : '/user')
+      : '/user')
+    : '/admin';
 
   // Build the complete hierarchy path
   const buildCompleteHierarchy = (paths) => {
@@ -72,6 +186,37 @@ const Breadcrumb = () => {
     // Special case for dashboard - don't show extra levels
     if (paths[0] === 'dashboard') {
       return hierarchy; // Return empty array for dashboard
+    }
+
+    // If we're in a bi/user path, we need special handling
+    if (isRegionUserPath) {
+      // Find the region in the path
+      const region = paths.find(p => p === 'chennai' || p === 'coimbatore' || p === 'erode' ||
+        p === 'kancheepuram' || p === 'karur' || p === 'madurai' ||
+        p === 'thanjavur' || p === 'thiruvallur' || p === 'tirunelveli' ||
+        p === 'tiruvannamalai' || p === 'trichy' || p === 'vellore' ||
+        p === 'villupuram');
+
+      if (region) {
+        // For region user, we ONLY add the region directly, without the "Regions" parent
+        hierarchy.push({
+          path: region,
+          name: `Region : ${region.charAt(0).toUpperCase() + region.slice(1)}`,
+          route: `${baseRoute}/${region}/dashboard`
+        });
+      }
+
+      // Check if we have EDCs or Substations in the path
+      const currentPage = paths[paths.length - 1];
+      if (currentPage === 'edcs' || currentPage === 'substations' || currentPage === 'feeders') {
+        hierarchy.push({
+          path: currentPage,
+          name: getBreadcrumbName(currentPage),
+          route: `${baseRoute}/${region}/${currentPage}`
+        });
+      }
+
+      return hierarchy;
     }
 
     // Check if this is a direct route (edcs, substations, etc.)
@@ -103,8 +248,10 @@ const Breadcrumb = () => {
 
     const currentPage = paths[paths.length - 1];
 
-    // Always add Regions first
-    hierarchy.push({ path: 'regions', name: 'Regions', route: `${baseRoute}/regions` });
+    // Skip adding Regions for region user paths
+    if (!isRegionUserPath) {
+      hierarchy.push({ path: 'regions', name: 'Regions', route: `${baseRoute}/regions` });
+    }
 
     // Add Region if found
     if (region) {

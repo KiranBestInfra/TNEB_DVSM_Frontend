@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -20,12 +20,15 @@ const EDCs = () => {
         end: null,
     });
     const { region } = useParams();
-    // console.log(region);
+    const location = useLocation();
 
-    // Determine base route from URL path (admin or user)
-    const location = window.location.pathname;
-    const isUserRoute = location.includes('/user/');
-    const baseRoute = isUserRoute ? '/user' : '/admin';
+    // Determine if this is a region user path
+    const isRegionUser = location.pathname.includes('/bi/user/') ||
+        (location.pathname.includes('/user/') &&
+            !location.pathname.includes('/admin/'));
+    const currentBaseRoute = isRegionUser ?
+        (location.pathname.includes('/bi/user/') ? '/bi/user' : '/user') :
+        (location.pathname.includes('/user/') ? '/user' : '/admin');
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -255,6 +258,41 @@ const EDCs = () => {
         },
     };
 
+    // Build breadcrumb items based on current path
+    const getBreadcrumbItems = () => {
+        if (isRegionUser && region) {
+            // Format region name with first letter capitalized
+            const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
+
+            // Region user breadcrumb - showing only Dashboard -> Region -> EDCs
+            return [
+                { label: 'Dashboard', path: '/bi/user/dashboard' },
+                { label: `Region : ${formattedRegionName}`, path: `/bi/user/${region}/dashboard` },
+                { label: 'EDCs', path: `/bi/user/${region}/edcs` }
+            ];
+        } else {
+            // Standard admin or user breadcrumb
+            const items = [
+                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` }
+            ];
+
+            if (region) {
+                items.push({ label: 'Regions', path: `${currentBaseRoute}/regions` });
+                items.push({
+                    label: region.charAt(0).toUpperCase() + region.slice(1),
+                    path: `${currentBaseRoute}/${region}`
+                });
+            }
+
+            items.push({
+                label: 'EDCs',
+                path: region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`
+            });
+
+            return items;
+        }
+    };
+
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
@@ -299,7 +337,7 @@ const EDCs = () => {
                     </div>
                 </div>
             </div>
-            <Breadcrumb />
+            <Breadcrumb items={getBreadcrumbItems()} />
             <div className={styles.summary_section}>
                 <div className={styles.total_regions_container}>
                     <div className={styles.total_main_info}>
@@ -310,7 +348,7 @@ const EDCs = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={`${baseRoute}/regions`}>
+                                <Link to={`${currentBaseRoute}/regions`}>
                                     Regions
                                 </Link>
                             </p>
@@ -329,7 +367,7 @@ const EDCs = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`}>
+                                <Link to={region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`}>
                                     EDCs
                                 </Link>
                             </p>
@@ -348,7 +386,7 @@ const EDCs = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`}>
+                                <Link to={region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`}>
                                     Substations
                                 </Link>
                             </p>
@@ -367,7 +405,7 @@ const EDCs = () => {
                         />
                         <div className={styles.total_meters}>
                             <div className="title">
-                                <Link to={region ? `${baseRoute}/${region}/feeders` : `${baseRoute}/feeders`}>
+                                <Link to={region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`}>
                                     Feeders
                                 </Link>
                             </div>

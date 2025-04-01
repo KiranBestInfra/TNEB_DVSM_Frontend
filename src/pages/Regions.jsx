@@ -1,5 +1,5 @@
-import { useState , useEffect} from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import styles from "../styles/Dashboard.module.css";
 import Buttons from "../components/ui/Buttons/Buttons";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
@@ -7,6 +7,7 @@ import ShortDetailsWidget from "./ShortDetailsWidget";
 
 const Regions = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [timeRange, setTimeRange] = useState('Daily');
   const totalMeters = 1243;
   const totalRegions = 1; // Total number of regions
@@ -25,12 +26,10 @@ const Regions = () => {
     commMeters: 0,
     nonCommMeters: 0,
     regionNames: [],
-    edcCount:{},
+    edcCount: {},
     substationCount: {},
     feederCount: {},
-
-
-
+    regionStats: {}
   });
 
   useEffect(() => {
@@ -48,22 +47,46 @@ const Regions = () => {
         nonCommMeters: regionWidgets.nonCommMeters || prev.nonCommMeters,
         regionNames: regionWidgets.regionNames || prev.regionNames,
         edcCount: regionWidgets.regionEdcCounts || prev.edcCount,
-        substationCount: regionWidgets.regionSubstationCounts || prev.substationCount, // ✅ Fix
-        feederCount: regionWidgets.regionFeederCounts || prev.feederCount // ✅ Fix
-        
+        substationCount: regionWidgets.regionSubstationCounts || prev.substationCount,
+        feederCount: regionWidgets.regionFeederCounts || prev.feederCount,
+        regionStats: regionWidgets.regionStats || prev.regionStats
       }))
     }
 
     fetchData()
 
-  },[])
+  }, [])
 
   const handleRegionClick = (region) => {
     navigate(`/admin/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`);
   };
 
-  const regionName = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur ","Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy","Vellore","Villupuram"];
-  
+  // Check if we're in a region user path
+  const isRegionUser = location.pathname.includes('/bi/user/') ||
+    (location.pathname.includes('/user/') &&
+      !location.pathname.includes('/admin/'));
+  const currentRegionName = isRegionUser ?
+    location.pathname.split('/').filter(x => x)[1] || '' :
+    '';
+  const baseRoute = location.pathname.includes('/bi/user/') ?
+    '/bi/user' :
+    (location.pathname.includes('/user/') ? '/user' : '/admin');
+
+  // List of all region names
+  const regionNames = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur", "Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy", "Vellore", "Villupuram"];
+
+  const handleEdcClick = () => {
+    if (isRegionUser && currentRegionName) {
+      navigate(`${baseRoute}/${currentRegionName}/edcs`);
+    }
+  };
+
+  const handleSubstationClick = () => {
+    if (isRegionUser && currentRegionName) {
+      navigate(`${baseRoute}/${currentRegionName}/substations`);
+    }
+  };
+
   // EDC counts for each region
   const regionEdcCounts = {
     "Chennai": 8,
@@ -172,6 +195,44 @@ const Regions = () => {
     }
   };
 
+  // Get the current page from the URL
+  const currentPath = location.pathname.split('/');
+  const currentPage = currentPath[currentPath.length - 1];
+
+  // Build breadcrumb items based on current path
+  const getBreadcrumbItems = () => {
+    if (!isRegionUser) {
+      return [
+        { label: 'Regions', path: '/admin/regions' }
+      ];
+    }
+
+    // Format region name with first letter capitalized
+    const formattedRegionName = currentRegionName.charAt(0).toUpperCase() + currentRegionName.slice(1);
+
+    // Base items for region user
+    const items = [
+      { label: 'Dashboard', path: `${baseRoute}/dashboard` }
+    ];
+
+    // Add Region to breadcrumb if we're on a region page
+    if (currentRegionName) {
+      items.push({ label: `Region : ${formattedRegionName}`, path: `${baseRoute}/${currentRegionName}/dashboard` });
+    }
+
+    // Add EDCs to breadcrumb if on EDCs page
+    if (currentPage === 'edcs') {
+      items.push({ label: 'EDCs', path: `${baseRoute}/${currentRegionName}/edcs` });
+    }
+
+    // Add Substations to breadcrumb if on Substations page
+    if (currentPage === 'substations') {
+      items.push({ label: 'Substations', path: `${baseRoute}/${currentRegionName}/substations` });
+    }
+
+    return items;
+  };
+
   return (
     <div className={styles.main_content}>
       <div className={styles.section_header}>
@@ -204,12 +265,9 @@ const Regions = () => {
           </div>
         </div>
       </div>
-      <Breadcrumb 
-        items={[
-          { label: 'Home', path: '/admin' },
-          { label: 'Regions', path: '/admin/regions' }
-        ]}
-      />
+
+      <Breadcrumb items={getBreadcrumbItems()} />
+
       <div className={styles.summary_section}>
         <div className={styles.total_regions_container}>
           <div className={styles.total_main_info}>
@@ -220,21 +278,43 @@ const Regions = () => {
             </div>
           </div>
         </div>
-        <div className={styles.total_edcs_container}>
+        <div
+          className={styles.total_edcs_container}
+          onClick={handleEdcClick}
+          style={isRegionUser ? { cursor: 'pointer' } : {}}
+          title={isRegionUser ? "Click to view EDCs" : ""}
+        >
           <div className={styles.total_main_info}>
             <img src="icons/electric-edc.svg" alt="Total EDCs" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
-              <p className="title">EDCs</p>
+              <p className="title">
+                {isRegionUser ? (
+                  <span style={{ color: "var(--brand-blue)" }}>EDCs {isRegionUser && <span style={{ fontSize: '0.8rem' }}>🔗</span>}</span>
+                ) : (
+                  "EDCs"
+                )}
+              </p>
               <div className={styles.summary_value}>{widgetsData.totalEdcs}</div>
             </div>
           </div>
         </div>
-        
-        <div className={styles.total_substations_container}>
+
+        <div
+          className={styles.total_substations_container}
+          onClick={handleSubstationClick}
+          style={isRegionUser ? { cursor: 'pointer' } : {}}
+          title={isRegionUser ? "Click to view Substations" : ""}
+        >
           <div className={styles.total_main_info}>
             <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
-              <p className="title">Substations</p>
+              <p className="title">
+                {isRegionUser ? (
+                  <span style={{ color: "var(--brand-blue)" }}>Substations {isRegionUser && <span style={{ fontSize: '0.8rem' }}>🔗</span>}</span>
+                ) : (
+                  "Substations"
+                )}
+              </p>
               <div className={styles.summary_value}>{widgetsData.totalSubstations}</div>
             </div>
           </div>
@@ -279,43 +359,21 @@ const Regions = () => {
               </div>
             </div>
           </div>
-
-
-          
         </div>
       </div>
 
       <div className={styles.section_header}>
         <h2 className="title">Regions: <span className={styles.region_count}>[{widgetsData.totalRegions}]</span></h2>
       </div>
-    {/*  <div className={styles.region_stats_container}>
-        {regionName.map((region, index) => (
-          <div 
-            key={index} 
-            className={styles.individual_region_stats}
-          >
-            <ShortDetailsWidget
-              region={region} 
-              edcCount={regionEdcCounts[region.trim()]}
-              substationCount={regionSubstationCounts[region.trim()]}
-              feederCount={regionFeederCounts[region.trim()]}
-              currentValue={regionStats[region.trim()].currentValue}
-              previousValue={regionStats[region.trim()].previousValue}
-              handleRegionClick={handleRegionClick}
-            />
-          </div>
-        ))}
-      </div>
-  */}
       <div className={styles.region_stats_container}>
         {widgetsData.regionNames && widgetsData.regionNames.length > 0 ? (
           widgetsData.regionNames.map((region, index) => (
             <div key={index} className={styles.individual_region_stats}>
               <ShortDetailsWidget
-                region={region} 
-                edcCount={widgetsData.edcCount?.[region.trim()] || 0} 
-                substationCount={widgetsData.substationCount?.[region.trim()] ?? 0} 
-                feederCount={widgetsData.feederCount?.[region.trim()] ?? 0} 
+                region={region}
+                edcCount={widgetsData.edcCount?.[region.trim()] || 0}
+                substationCount={widgetsData.substationCount?.[region.trim()] ?? 0}
+                feederCount={widgetsData.feederCount?.[region.trim()] ?? 0}
                 currentValue={widgetsData.regionStats?.[region.trim()]?.currentValue || 0}
                 previousValue={widgetsData.regionStats?.[region.trim()]?.previousValue || 0}
               />
