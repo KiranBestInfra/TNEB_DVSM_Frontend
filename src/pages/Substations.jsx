@@ -30,6 +30,7 @@ const Substations = () => {
         nonCommMeters: 0,
         substationNames: [],
         regionSubstationCount: 0,
+        substationFeederCounts: 0,
     });
     const [timeRange, setTimeRange] = useState('Daily'); // Default value
 
@@ -75,6 +76,8 @@ const Substations = () => {
 
                 // Check if API response structure is correct
                 const substationData = response.data?.substationNames || [];
+                const feederCounts =
+                    response.data?.substationFeederCounts || {}; // Extract feeder counts
 
                 console.log(
                     'Total substations fetched:',
@@ -85,6 +88,7 @@ const Substations = () => {
                 setWidgetsData({
                     substationNames: substationData,
                     regionSubstationCount: substationData.length,
+                    substationFeederCounts: feederCounts, // Store feeder counts
                 });
             } catch (error) {
                 console.error('Error fetching substation names:', error);
@@ -422,7 +426,9 @@ const Substations = () => {
                               <ShortDetailsWidget
                                   region={substation}
                                   feederCount={
-                                      substationFeederCounts?.[substation] || 0
+                                      widgetsData.substationFeederCounts?.[
+                                          substation
+                                      ] || 0
                                   }
                                   currentValue={
                                       substationStats[substation]?.currentValue
