@@ -94,11 +94,19 @@
     font-size: 0.9rem;
 }
 
+.echart_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
 .loading_spinner {
-    width: 30px;
-    height: 30px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #3f68b2;
+    width: 1.8rem;
+    height: 1.8rem;
+    border: 3px solid var(--white);
+    border-top: 3px solid var(--brand-blue);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 10px;

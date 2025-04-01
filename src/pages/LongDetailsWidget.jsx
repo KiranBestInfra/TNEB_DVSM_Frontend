@@ -9,14 +9,15 @@ import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 
 const LongDetailsWidget = () => {
-    const { regionId, edcId, substationId, feederId } = useParams();
+    const { regionId, region, edcId, substationId, feederId } = useParams();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
     });
 
-    let entityId = regionId;
+    let entityId = regionId || region;
+    console.log('LongDetailsWidget - Region ID:', regionId);
 
     if (feederId) {
         entityId = feederId;

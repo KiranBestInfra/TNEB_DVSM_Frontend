@@ -108,19 +108,27 @@ const Dashboard = () => {
 
             <Breadcrumb
                 items={[
-                    { label: 'Dashboard', path: region && region !== 'undefined' ? `${baseRoute}/${region}/dashboard` : `${baseRoute}/dashboard` }
+                    {
+                        label: 'Dashboard',
+                        path:
+                            region && region !== 'undefined'
+                                ? `${baseRoute}/${region}/dashboard`
+                                : `${baseRoute}/dashboard`,
+                    },
                 ]}
             />
 
             <div className={styles.summary_section}>
                 <div className={styles.total_regions_container}>
                     <div className={styles.total_main_info}>
-                        <img src="/bi/icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
+                        <img
+                            src="/bi/icons/office.svg"
+                            alt="Total Regions"
+                            className={styles.TNEB_icons}
+                        />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={`${baseRoute}/regions`}>
-                                    Regions
-                                </Link>
+                                <Link to={`${baseRoute}/regions`}>Regions</Link>
                             </p>
                             <div className={styles.summary_value}>{widgetsData.totalRegions}</div>
                         </div>
@@ -128,27 +136,49 @@ const Dashboard = () => {
                 </div>
                 <div className={styles.total_edcs_container}>
                     <div className={styles.total_main_info}>
-                        <img src="/bi/icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
+                        <img
+                            src="/bi/icons/electric-edc.svg"
+                            alt="Total Region"
+                            className={styles.TNEB_icons}
+                        />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${baseRoute}/${region}/edcs`
+                                            : `${baseRoute}/edcs`
+                                    }>
                                     EDCs
                                 </Link>
                             </p>
-                            <div className={styles.summary_value}>{widgetsData.totalEdcs}</div>
+                            <div className={styles.summary_value}>
+                                {widgetsData.totalEdcs}
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
-                        <img src="/bi/icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
+                        <img
+                            src="/bi/icons/electric-factory.svg"
+                            alt="Total Substations"
+                            className={styles.TNEB_icons}
+                        />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${baseRoute}/${region}/substations`
+                                            : `${baseRoute}/substations`
+                                    }>
                                     Substations
                                 </Link>
                             </p>
-                            <div className={styles.summary_value}>{widgetsData.totalSubstations}</div>
+                            <div className={styles.summary_value}>
+                                {widgetsData.totalSubstations}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -161,10 +191,16 @@ const Dashboard = () => {
                         />
                         <div className={styles.total_meters}>
                             <div className="title">
-                                <Link to={region ? `${baseRoute}/${region}/feeders` : `${baseRoute}/feeders`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${baseRoute}/${region}/feeders`
+                                            : `${baseRoute}/feeders`
+                                    }>
                                     Feeders
                                 </Link>
                             </div>
+                           
                             <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
                         </div>
                     </div>
