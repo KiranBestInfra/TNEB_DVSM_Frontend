@@ -76,7 +76,9 @@ const Substations = () => {
         totalFeeders: 0,
         commMeters: 0,
         nonCommMeters: 0,
+        regionSubstationCount: 0,
         substationNames: [],
+        substationFeederCounts: {},
     });
 
     useEffect(() => {
@@ -108,18 +110,19 @@ const Substations = () => {
 
         const substationNames = async () => {
             try {
-                // const response = await fetch(
-                //     `http://localhost:3000/api/v1/edcs/widgets/${region}/substations`
-                // );
                 const response = await apiClient.get(
                     `/edcs/widgets/${region}/substations`
                 );
                 const data = response;
-                console.log('Fetched Substation Data:', data);
 
+                console.log('Fetched Substation Data:', data);
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.substationNames || [],
+                    regionSubstationCount:
+                        data.data?.substationNames?.length || 0,
+                    substationFeederCounts:
+                        data.data?.substationFeederCounts || {}, // Add feeder counts
                 }));
             } catch (error) {
                 console.error('Error fetching EDC names:', error);
@@ -128,7 +131,6 @@ const Substations = () => {
 
         substationNames();
     }, [region]);
-
     console.log('widgetsData', widgetsData);
 
     const handleRegionClick = (region) => {
@@ -506,7 +508,7 @@ const Substations = () => {
                         <h2 className="title">
                             Substations{' '}
                             <span className={styles.region_count}>
-                                {widgetsData.totalSubstations}
+                                {widgetsData.regionSubstationCount}
                             </span>
                         </h2>
                     </div>
@@ -522,11 +524,7 @@ const Substations = () => {
                                           }>
                                           <ShortDetailsWidget
                                               region={substation}
-                                              feederCount={
-                                                  substationFeederCounts?.[
-                                                      substation
-                                                  ] || 0
-                                              }
+                                              feederCount= {widgetsData.substationFeederCounts?.[substation] || 0}
                                               currentValue={
                                                   substationStats[substation]
                                                       ?.currentValue
