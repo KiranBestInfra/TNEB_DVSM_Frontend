@@ -179,7 +179,17 @@ const LongDetailsWidget = () => {
           </div>
         </div>
       </div>
-      <Breadcrumb />
+
+      {isUserRoute ? (
+        <Breadcrumb
+          items={[
+            { label: 'Dashboard', path: `/user/${entityId}/dashboard` },
+            { label: `Region : ${entityName}`, path: `/user/${entityId}/dashboard` }
+          ]}
+        />
+      ) : (
+        <Breadcrumb />
+      )}
 
       <div className={styles.performance_stats}>
         <div className={styles.total_edcs_container}>
