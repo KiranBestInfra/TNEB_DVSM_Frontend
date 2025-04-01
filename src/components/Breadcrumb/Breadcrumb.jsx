@@ -31,17 +31,17 @@ const Breadcrumb = () => {
     };
 
     // Handle region names
-    if (path === 'chennai' || path === 'coimbatore' || path === 'erode' || 
-        path === 'kancheepuram' || path === 'karur' || path === 'madurai' || 
-        path === 'thanjavur' || path === 'thiruvallur' || path === 'tirunelveli' || 
-        path === 'tiruvannamalai' || path === 'trichy' || path === 'vellore' || 
-        path === 'villupuram') {
+    if (path === 'chennai' || path === 'coimbatore' || path === 'erode' ||
+      path === 'kancheepuram' || path === 'karur' || path === 'madurai' ||
+      path === 'thanjavur' || path === 'thiruvallur' || path === 'tirunelveli' ||
+      path === 'tiruvannamalai' || path === 'trichy' || path === 'vellore' ||
+      path === 'villupuram') {
       return `Region: ${path.charAt(0).toUpperCase() + path.slice(1)}`;
     }
 
     // Handle EDC names
     if (path.includes('-north') || path.includes('-south') || path.includes('-east') || path.includes('-west') ||
-        path.includes('-central') || path.includes('-rural') || path.includes('-urban')) {
+      path.includes('-central') || path.includes('-rural') || path.includes('-urban')) {
       return `EDC: ${path.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`;
     }
 
@@ -64,65 +64,79 @@ const Breadcrumb = () => {
   // Build the complete hierarchy path
   const buildCompleteHierarchy = (paths) => {
     const hierarchy = [];
-    
+
     // Special case for dashboard - don't show extra levels
     if (paths[0] === 'dashboard') {
       return hierarchy; // Return empty array for dashboard
     }
-    
+
+    // Check if this is a direct route (edcs, substations, etc.)
+    const isDirectRoute = paths.some(p => ['edcs', 'substations'].includes(p));
+
+    if (isDirectRoute) {
+      // For direct routes, just add the current page
+      const currentPage = paths[paths.length - 1];
+      hierarchy.push({
+        path: currentPage,
+        name: getBreadcrumbName(currentPage),
+        route: `/admin/${currentPage}`
+      });
+      return hierarchy;
+    }
+
     // Find all components in the path
-    const region = paths.find(p => p === 'chennai' || p === 'coimbatore' || p === 'erode' || 
-                                 p === 'kancheepuram' || p === 'karur' || p === 'madurai' || 
-                                 p === 'thanjavur' || p === 'thiruvallur' || p === 'tirunelveli' || 
-                                 p === 'tiruvannamalai' || p === 'trichy' || p === 'vellore' || 
-                                 p === 'villupuram');
-    
-    const edc = paths.find(p => p.includes('-north') || p.includes('-south') || p.includes('-east') || 
-                              p.includes('-west') || p.includes('-central') || p.includes('-rural') || 
-                              p.includes('-urban'));
-    
+    const region = paths.find(p => p === 'chennai' || p === 'coimbatore' || p === 'erode' ||
+      p === 'kancheepuram' || p === 'karur' || p === 'madurai' ||
+      p === 'thanjavur' || p === 'thiruvallur' || p === 'tirunelveli' ||
+      p === 'tiruvannamalai' || p === 'trichy' || p === 'vellore' ||
+      p === 'villupuram');
+
+    const edc = paths.find(p => p.includes('-north') || p.includes('-south') || p.includes('-east') ||
+      p.includes('-west') || p.includes('-central') || p.includes('-rural') ||
+      p.includes('-urban'));
+
     const substation = paths.find(p => p.includes('-ss') || p.includes('-substation'));
-    
+
     const currentPage = paths[paths.length - 1];
 
     // Always add Regions first
     hierarchy.push({ path: 'regions', name: 'Regions', route: '/admin/regions' });
-    
+
     // Add Region if found
     if (region) {
       hierarchy.push({ path: region, name: getBreadcrumbName(region), route: `/admin/${region}` });
     }
-    
+
     // Add EDCs if we have a region
     if (region) {
       hierarchy.push({ path: 'edcs', name: 'EDCs', route: `/admin/${region}/edcs` });
     }
-    
+
     // Add EDC if found
     if (edc) {
       hierarchy.push({ path: edc, name: getBreadcrumbName(edc), route: `/admin/${region}/${edc}` });
     }
-    
+
     // Add Substations if we have an EDC
     if (edc) {
       hierarchy.push({ path: 'substations', name: 'Substations', route: `/admin/${region}/${edc}/substations` });
     }
-    
+
     // Add Substation if found
     if (substation) {
       hierarchy.push({ path: substation, name: getBreadcrumbName(substation), route: `/admin/${region}/${edc}/${substation}` });
     }
-    
+
     // Add Feeders if we have a substation
     if (substation) {
       hierarchy.push({ path: 'feeders', name: 'Feeders', route: `/admin/${region}/${edc}/${substation}/feeders` });
     }
 
     // Add current page if it's not already included
-    if (['feeders', 'substations', 'edcs'].includes(currentPage) && 
-        !hierarchy.some(item => item.path === currentPage)) {
-      hierarchy.push({ 
-        path: currentPage, 
+    if (['feeders', 'substations', 'edcs'].includes(currentPage) &&
+      !hierarchy.some(item => item.path === currentPage)) {
+      hierarchy.push({
+        path: currentPage,
         name: getBreadcrumbName(currentPage),
         route: `/admin/${region}/${edc}/${substation}/${currentPage}`
       });

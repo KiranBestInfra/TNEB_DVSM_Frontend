@@ -18,28 +18,18 @@ const ProtectedRoute = ({ children }) => {
 
     try {
         const decoded = jwtDecode(accessToken);
+        // All users with valid tokens can access admin routes
+        // We'll handle specific permissions at component level if needed
+
+        // For backward compatibility, still redirect admins away from user routes
         const userRole = decoded.role || decoded.Role || decoded.user_role;
         const isAdmin =
             userRole.toLowerCase().includes('admin') ||
             userRole.toLowerCase().includes('demo');
-
-        // Check if user is trying to access admin routes
-        const isAdminRoute = location.pathname.startsWith('/admin');
         const isUserRoute = location.pathname.startsWith('/user');
 
-        // Get the base route (e.g., /admin/consumers/view/123 -> admin)
-        const baseRoute = location.pathname.split('/')[1];
-
-        // Redirect logic based on role and route
-        if (isAdmin) {
-            if (isUserRoute) {
-                return <Navigate to="/admin/dashboard" replace state={{ from: location }} />;
-            }
-        } else {
-            if (isAdminRoute || baseRoute === 'admin') {
-                console.log('Non-admin user attempting to access admin route:', location.pathname);
-                return <Navigate to="/user/dashboard" replace state={{ from: location }} />;
-            }
+        if (isAdmin && isUserRoute) {
+            return <Navigate to="/admin/dashboard" replace state={{ from: location }} />;
         }
 
         return children;

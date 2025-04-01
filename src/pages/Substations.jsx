@@ -1,4 +1,4 @@
-import { useState , useEffect} from "react";
+import { useState, useEffect } from "react";
 import styles from "../styles/Dashboard.module.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -6,13 +6,41 @@ import Buttons from "../components/ui/Buttons/Buttons";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import ShortDetailsWidget from "./ShortDetailsWidget";
 
+const ErrorBoundary = ({ children }) => {
+  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const handleError = (error) => {
+      console.error("Caught error:", error);
+      setHasError(true);
+      setError(error);
+    };
+
+    window.addEventListener('error', handleError);
+    return () => window.removeEventListener('error', handleError);
+  }, []);
+
+  if (hasError) {
+    return (
+      <div style={{ padding: "20px", color: "red", background: "#ffeeee", border: "1px solid red" }}>
+        <h2>Something went wrong</h2>
+        <p>{error?.message || "Unknown error"}</p>
+        <button onClick={() => window.history.back()}>Go Back</button>
+      </div>
+    );
+  }
+
+  return children;
+};
+
 const Substations = () => {
-  const [timeframe, setTimeframe] = useState("Last 7 Days");
+  const [timeRange, setTimeRange] = useState("Daily");
   const totalMeters = 1243;
-  const totalRegions = 13; // Total number of regions
-  const totalEDCs = 95; // Total number of EDCs
-  const totalSubstations = 260; // Total number of substations
-  const totalFeeders = 416; // Total number of feeders
+  const totalRegions = 13;
+  const totalEDCs = 95;
+  const totalSubstations = 260;
+  const totalFeeders = 416;
   const [dateRange, setDateRange] = useState({
     start: null,
     end: null
@@ -23,7 +51,7 @@ const Substations = () => {
     totalSubstations: 0,
     totalFeeders: 0,
     commMeters: 0,
-    nonCommMeters: 0  
+    nonCommMeters: 0
   });
 
   useEffect(() => {
@@ -38,26 +66,21 @@ const Substations = () => {
         totalSubstations: regionWidgets.totalSubstations || prev.totalSubstations,
         totalFeeders: regionWidgets.totalFeeders || prev.totalFeeders,
         commMeters: regionWidgets.commMeters || prev.commMeters,
-        nonCommMeters: regionWidgets.nonCommMeters || prev.nonCommMeters          
+        nonCommMeters: regionWidgets.nonCommMeters || prev.nonCommMeters
       }))
     }
 
     fetchData()
 
-  },[])
-  const handleTimeframeChange = (e) => {
-    setTimeframe(e.target.value);
-  };
+  }, [])
 
-  // Replace EDC data with Substation data
   const substationNames = [
     "Adyar SS", "Velachery SS", "T Nagar SS", "Mylapore SS",
     "Anna Nagar SS", "Porur SS", "Ambattur SS", "Perambur SS",
     "Guindy SS", "Kodambakkam SS", "Royapuram SS", "Thiruvanmiyur SS",
     "Kilpauk SS", "Egmore SS", "Nungambakkam SS"
   ];
-  
-  // Substation feeder counts
+
   const substationFeederCounts = {
     "Adyar SS": 8,
     "Velachery SS": 6,
@@ -76,7 +99,6 @@ const Substations = () => {
     "Nungambakkam SS": 6
   };
 
-  // Substation consumption stats (in MVA)
   const substationStats = {
     "Adyar SS": { currentValue: 42, previousValue: 38 },
     "Velachery SS": { currentValue: 35, previousValue: 32 },
@@ -95,7 +117,6 @@ const Substations = () => {
     "Nungambakkam SS": { currentValue: 38, previousValue: 35 }
   };
 
-  // Sample data for the LineChart
   const graphData = {
     daily: {
       xAxis: [
@@ -135,166 +156,151 @@ const Substations = () => {
     }
   };
 
-  return (
-    <div className={styles.main_content}>
-      <div className={styles.section_header}>
-        <h2 className="title">Substations</h2>
-        <div className={styles.action_container}>
-          {/* <div className={styles.date_range}>
-            <div className={styles.search_cont}>
-              <DatePicker
-                selected={dateRange.start}
-                onChange={(date) =>
-                  setDateRange({ ...dateRange, start: date })
-                }
-                className={styles.date_input}
-                dateFormat="MMM dd, yyyy"
-                placeholderText="Start Date"
-              />
-              <span className="icons icon_placement">
-                <img src="icons/date.svg" alt="Calendar" />
-              </span>
-            </div>
-
-            <div className={styles.search_cont}>
-              <DatePicker
-                selected={dateRange.end}
-                onChange={(date) =>
-                  setDateRange({ ...dateRange, end: date })
-                }
-                className={styles.date_input}
-                dateFormat="MMM dd, yyyy"
-                placeholderText="End Date"
-                minDate={dateRange.start}
-              />
-              <span className="icons icon_placement">
-                <img src="icons/date.svg" alt="Calendar" />
-              </span>
-            </div>
-            <Buttons
-              label="Get Reports"
-              variant="primary"
-              alt="GetReports"
-              icon="icons/reports.svg"
-              iconPosition="left"
-            />
-          </div> */}
-          <div className={styles.action_cont}>
-            <div className={styles.time_range_select_dropdown}>
-              <select
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
-                className={styles.time_range_select}>
-                <option value="Daily">Daily</option>
-                <option value="Monthly">Monthly</option>
-                <option value="PreviousMonth">Previous Month</option>
-                <option value="Year">Year</option>
-              </select>
-              <img
-                src="icons/arrow-down.svg"
-                alt="Select Time"
-                className={styles.time_range_select_dropdown_icon}
-              />
-            </div>
-            <Buttons
-              label="Get Reports"
-              variant="primary"
-              alt="GetReports"
-              icon="icons/reports.svg"
-              iconPosition="left"
-            />
-          </div>
-        </div>
-      </div>
-      <Breadcrumb />
-      <div className={styles.summary_section}>
-        <div className={styles.total_regions_container}>
-          <div className={styles.total_main_info}>
-            <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
-            <div className={styles.total_title_value}>
-              <p className="title">Regions</p>
-              <div className={styles.summary_value}>{widgetsData.totalRegions}</div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.total_edcs_container}>
-          <div className={styles.total_main_info}>
-            <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
-            <div className={styles.total_title_value}>
-              <p className="title">EDCs</p>
-              <div className={styles.summary_value}>{widgetsData.totalEdcs}</div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.total_substations_container}>
-          <div className={styles.total_main_info}>
-            <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
-            <div className={styles.total_title_value}>
-              <p className="title">Substations</p>
-              <div className={styles.summary_value}>{widgetsData.totalSubstations}</div>
-            </div>
-          </div>
-        </div>
-        <div className={styles.total_meters_container}>
-          <div className={styles.total_meters_main_info}>
-            <img
-              src="icons/electric-meter.svg"
-              alt="Total Meters"
-              className={styles.TNEB_icons}
-            />
-            <div className={styles.total_meters}>
-              <div className="title">Feeders</div>
-              <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
-            </div>
-          </div>
-          <div className={styles.metrics_communication_info}>
-            <div className="titles">Communication Status</div>
-            <div className={styles.overall_communication_status}>
-              <div className={styles.communication_status_container}>
-                <div className={styles.communication_value}>{widgetsData.commMeters}</div>
-                <div className={styles.communication_positive_percentage}>
+  try {
+    console.log("Rendering Substations component, timeRange:", timeRange);
+    return (
+      <ErrorBoundary>
+        <div className={styles.main_content}>
+          <div className={styles.section_header}>
+            <h2 className="title">Substations</h2>
+            <div className={styles.action_container}>
+              <div className={styles.action_cont}>
+                <div className={styles.time_range_select_dropdown}>
+                  <select
+                    value={timeRange}
+                    onChange={(e) => setTimeRange(e.target.value)}
+                    className={styles.time_range_select}>
+                    <option value="Daily">Daily</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="PreviousMonth">Previous Month</option>
+                    <option value="Year">Year</option>
+                  </select>
                   <img
-                    src="icons/up-right-arrow.svg"
-                    alt="Positive"
-                    className={styles.communication_positive_arrow}
+                    src="/bi/icons/arrow-down.svg"
+                    alt="Select Time"
+                    className={styles.time_range_select_dropdown_icon}
                   />
-                  87%
+                </div>
+                <Buttons
+                  label="Get Reports"
+                  variant="primary"
+                  alt="GetReports"
+                  icon="/bi/icons/reports.svg"
+                  iconPosition="left"
+                />
+              </div>
+            </div>
+          </div>
+          <Breadcrumb
+            items={[
+              { label: 'Home', path: '/admin' },
+              { label: 'Dashboard', path: '/admin/dashboard', active: false },
+              { label: 'Regions', path: '/admin/regions', active: false },
+              { label: 'Kancheepuram', path: '/admin/kancheepuram', active: false },
+              { label: 'Substations', path: '/admin/kancheepuram/substations', active: true }
+            ]}
+          />
+          <div className={styles.summary_section}>
+            <div className={styles.total_regions_container}>
+              <div className={styles.total_main_info}>
+                <img src="/bi/icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
+                <div className={styles.total_title_value}>
+                  <p className="title">Regions</p>
+                  <div className={styles.summary_value}>{widgetsData.totalRegions}</div>
                 </div>
               </div>
-              <div className={styles.communication_status_container}>
-                <div className={styles.communication_value}>{widgetsData.nonCommMeters}</div>
-                <div className={styles.communication_negative_percentage}>
-                  <img
-                    src="icons/up-right-arrow.svg"
-                    alt="Positive"
-                    className={styles.communication_negative_arrow}
-                  />
-                  13%
+            </div>
+            <div className={styles.total_edcs_container}>
+              <div className={styles.total_main_info}>
+                <img src="/bi/icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
+                <div className={styles.total_title_value}>
+                  <p className="title">EDCs</p>
+                  <div className={styles.summary_value}>{widgetsData.totalEdcs}</div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.total_substations_container}>
+              <div className={styles.total_main_info}>
+                <img src="/bi/icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
+                <div className={styles.total_title_value}>
+                  <p className="title">Substations</p>
+                  <div className={styles.summary_value}>{widgetsData.totalSubstations}</div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.total_meters_container}>
+              <div className={styles.total_meters_main_info}>
+                <img
+                  src="/bi/icons/electric-meter.svg"
+                  alt="Total Meters"
+                  className={styles.TNEB_icons}
+                />
+                <div className={styles.total_meters}>
+                  <div className="title">Feeders</div>
+                  <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
+                </div>
+              </div>
+              <div className={styles.metrics_communication_info}>
+                <div className="titles">Communication Status</div>
+                <div className={styles.overall_communication_status}>
+                  <div className={styles.communication_status_container}>
+                    <div className={styles.communication_value}>{widgetsData.commMeters}</div>
+                    <div className={styles.communication_positive_percentage}>
+                      <img
+                        src="/bi/icons/up-right-arrow.svg"
+                        alt="Positive"
+                        className={styles.communication_positive_arrow}
+                      />
+                      87%
+                    </div>
+                  </div>
+                  <div className={styles.communication_status_container}>
+                    <div className={styles.communication_value}>{widgetsData.nonCommMeters}</div>
+                    <div className={styles.communication_negative_percentage}>
+                      <img
+                        src="/bi/icons/up-right-arrow.svg"
+                        alt="Positive"
+                        className={styles.communication_negative_arrow}
+                      />
+                      13%
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className={styles.section_header}>
-        <h2 className="title">Substations <span className={styles.region_count}>{widgetsData.totalSubstations}</span></h2>
-      </div>
-      <div className={styles.region_stats_container}>
-        {substationNames.map((substation, index) => (
-          <div key={index} className={styles.individual_region_stats}>
-            <ShortDetailsWidget
-              region={substation} 
-              feederCount={substationFeederCounts[substation]}
-              currentValue={substationStats[substation].currentValue}
-              previousValue={substationStats[substation].previousValue}
-              pageType="substations"
-            />
+          <div className={styles.section_header}>
+            <h2 className="title">Substations <span className={styles.region_count}>{widgetsData.totalSubstations}</span></h2>
           </div>
-        ))}
+          <div className={styles.region_stats_container}>
+            {substationNames.map((substation, index) => (
+              <div key={index} className={styles.individual_region_stats}>
+                <ShortDetailsWidget
+                  region={substation}
+                  feederCount={substationFeederCounts[substation]}
+                  edcCount={0}
+                  substationCount={0}
+                  currentValue={substationStats[substation].currentValue}
+                  previousValue={substationStats[substation].previousValue}
+                  pageType="substations"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </ErrorBoundary>
+    );
+  } catch (error) {
+    console.error("Error rendering Substations component:", error);
+    return (
+      <div style={{ padding: "20px", color: "red", background: "#ffeeee", border: "1px solid red" }}>
+        <h2>Error rendering Substations component</h2>
+        <p>{error.message}</p>
+        <button onClick={() => window.history.back()}>Go Back</button>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default Substations;
