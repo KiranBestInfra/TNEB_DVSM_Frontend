@@ -77,14 +77,32 @@ const Login = () => {
                     const role =
                         decoded.role || decoded.Role || decoded.user_role;
 
-                    return role.toLowerCase().includes('admin')
-                        ? navigate('/admin/dashboard')
-                        : navigate('/user/dashboard');
+                    if (role.toLowerCase().includes('admin')) {
+                        navigate('/admin/dashboard');
+                    } else {
+                        // For region users, get their region and redirect to that specific region
+                        let region = decoded.region || decoded.Region || null;
+
+                        // If no region in token, check if it's in userId (in case it follows a pattern)
+                        if (!region && decoded.userId && decoded.userId.includes('_')) {
+                            // Try to extract region from userId
+                            const possibleRegion = decoded.userId.split('_')[0].toLowerCase();
+                            console.log('Login - Extracted possible region from userId:', possibleRegion);
+                            region = possibleRegion;
+                        }
+
+                        // Set a default region if none is found
+                        region = region ? region.toLowerCase() : 'kancheepuram';
+                        console.log('Login - Redirecting to region:', region);
+
+                        navigate(`/user/${region}/dashboard`);
+                    }
+                    return;
                 } catch (error) {
                     console.error('Error decoding token:', error);
                     return 'User';
                 }
-            } 
+            }
         } catch (error) {
             setErrors({
                 submit: error.message || 'Login failed. Please try again.',
@@ -92,7 +110,7 @@ const Login = () => {
         } finally {
             setIsLoading(false);
         }
-    }; 
+    };
     return (
         <div className={styles.login_container}>
             <div className="logo">

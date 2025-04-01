@@ -109,7 +109,14 @@ const LineChartTNEB = ({
             className={`${styles.chart_container} ${className || ''}`}
             style={{ fontFamily: 'Roboto' }}>
             <div className={styles.echart_container}>
-                <ReactECharts ref={chartRef} option={option} />
+                {data.series.length > 0 ? (
+                    <ReactECharts ref={chartRef} option={option} />
+                ) : (
+                    <div className={styles.loading_container}>
+                        <div className={styles.loading_spinner}></div>
+                        <p>Loading data...</p>
+                    </div>
+                )}
             </div>
         </div>
     );

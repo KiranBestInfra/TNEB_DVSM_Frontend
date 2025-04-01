@@ -1,20 +1,26 @@
 import { useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import styles from "../styles/Dashboard.module.css";
 import Buttons from "../components/ui/Buttons/Buttons";
 import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import ShortDetailsWidget from "./ShortDetailsWidget";
+import { Link } from "react-router-dom";
 
 const Feeders = () => {
   const [timeRange, setTimeRange] = useState('Daily');
-  const totalMeters = 416;
+  const totalMeters = 1243;
   const totalRegions = 13; // Total number of regions
   const totalEDCs = 95; // Total number of EDCs
   const totalSubstations = 260; // Total number of substations
   const totalFeeders = 416; // Total number of feeders
-  /* const [dateRange, setDateRange] = useState({
-    start: null,
-    end: null
-  }); */
+
+  const { region } = useParams();
+  console.log('Feeders - Region from params:', region);
+
+  // Determine base route from URL path (admin or user)
+  const location = window.location.pathname;
+  const isUserRoute = location.includes('/user/');
+  const baseRoute = isUserRoute ? '/user' : '/admin';
 
   // Replace EDC data with Feeder data
   const feederNames = [
@@ -23,7 +29,7 @@ const Feeders = () => {
     "Guindy Feeder 9", "Kodambakkam Feeder 10", "Royapuram Feeder 11", "Thiruvanmiyur Feeder 12",
     "Kilpauk Feeder 13", "Egmore Feeder 14", "Nungambakkam Feeder 15"
   ];
-  
+
   // Feeder meter counts
   const feederMeterCounts = {
     "Adyar Feeder 1": 45,
@@ -179,7 +185,11 @@ const Feeders = () => {
           <div className={styles.total_main_info}>
             <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
-              <p className="title">Regions</p>
+              <p className="title">
+                <Link to={`${baseRoute}/regions`}>
+                  Regions
+                </Link>
+              </p>
               <div className={styles.summary_value}>{totalRegions}</div>
             </div>
           </div>
@@ -188,7 +198,11 @@ const Feeders = () => {
           <div className={styles.total_main_info}>
             <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
-              <p className="title">EDCs</p>
+              <p className="title">
+                <Link to={region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`}>
+                  EDCs
+                </Link>
+              </p>
               <div className={styles.summary_value}>{totalEDCs}</div>
             </div>
           </div>
@@ -197,7 +211,11 @@ const Feeders = () => {
           <div className={styles.total_main_info}>
             <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
-              <p className="title">Substations</p>
+              <p className="title">
+                <Link to={region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`}>
+                  Substations
+                </Link>
+              </p>
               <div className={styles.summary_value}>{totalSubstations}</div>
             </div>
           </div>
@@ -251,7 +269,7 @@ const Feeders = () => {
         {feederNames.map((feeder, index) => (
           <div key={index} className={styles.individual_region_stats}>
             <ShortDetailsWidget
-              region={feeder} 
+              region={feeder}
               feederCount={feederMeterCounts[feeder]}
               currentValue={feederStats[feeder].currentValue}
               previousValue={feederStats[feeder].previousValue}

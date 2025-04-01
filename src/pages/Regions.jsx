@@ -1,55 +1,110 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
-import { apiClient } from '../api/client.js';
-import useWebSocket from '../hooks/useWebSocket';
+import { apiClient } from '../api/client';
 
 const Regions = () => {
     const navigate = useNavigate();
     const [timeRange, setTimeRange] = useState('Daily');
-    const [widgetsData, setWidgetsData] = useState({
-        totalRegions: 0,
-        totalEdcs: 0,
-        totalSubstations: 0,
-        totalFeeders: 0,
-        commMeters: 0,
-        nonCommMeters: 0,
-        regionNames: [],
-        edcCount: {},
-        substationCount: {},
-        feederCount: {},
-        regionDemandData: {},
-        regionStats: {},
+    const [socket, setSocket] = useState(null);
+    const cacheTimeoutRef = useRef(null);
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedDemandData = localStorage.getItem('regionDemandData');
+        const savedTimestamp = localStorage.getItem('regionDemandTimestamp');
+
+        if (savedDemandData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    regionNames: [],
+                    edcCount: {},
+                    substationCount: {},
+                    feederCount: {},
+                    regionDemandData: JSON.parse(savedDemandData),
+                    regionStats: {},
+                };
+            }
+        }
+
+        return {
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            regionNames: [],
+            edcCount: {},
+            substationCount: {},
+            feederCount: {},
+            regionDemandData: {},
+            regionStats: {},
+        };
     });
 
-    const handleWebSocketMessage = (data) => {
-        if (data.type === 'regionUpdate') {
-            setWidgetsData((prevData) => ({
-                ...prevData,
-                regionDemandData: {
-                    ...prevData.regionDemandData,
-                    [data.region]: data.graphData,
-                },
-            }));
-        }
-    };
+    useEffect(() => {
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        setSocket(newSocket);
 
-    const { sendMessage } = useWebSocket(
-        `ws://your-websocket-server/regions-data`,
-        handleWebSocketMessage
-    );
+        newSocket.on('connect', () => {
+            console.log('Connected to socket server');
+        });
+
+        newSocket.on('regionUpdate', (data) => {
+            setWidgetsData((prevData) => {
+                const newData = {
+                    ...prevData,
+                    regionDemandData: {
+                        ...prevData.regionDemandData,
+                        [data.region]: data.graphData,
+                    },
+                };
+                localStorage.setItem(
+                    'regionDemandData',
+                    JSON.stringify(newData.regionDemandData)
+                );
+                localStorage.setItem(
+                    'regionDemandTimestamp',
+                    Date.now().toString()
+                );
+                return newData;
+            });
+
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+            cacheTimeoutRef.current = setTimeout(() => {
+                localStorage.removeItem('regionDemandData');
+                localStorage.removeItem('regionDemandTimestamp');
+            }, 30000);
+        });
+
+        return () => {
+            newSocket.close();
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+        };
+    }, []);
 
     useEffect(() => {
-        if (widgetsData.regionNames.length > 0) {
-            sendMessage({
-                type: 'subscribe',
+        if (socket && widgetsData.regionNames.length > 0) {
+            socket.emit('subscribe', {
                 regions: widgetsData.regionNames,
             });
         }
-    }, [widgetsData.regionNames, sendMessage]);
+    }, [widgetsData.regionNames, socket]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -70,15 +125,76 @@ const Regions = () => {
                 substationCount:
                     data.regionSubstationCounts || prev.substationCount,
                 feederCount: data.regionFeederCounts || prev.feederCount,
-                regionDemandData:
-                    data.regionDemandData || prev.regionDemandData,
-                // regionStats: data.regionStats || prev.regionStats,
+                regionDemandData: prev.regionDemandData,
+                // regionStats: prev.regionStats,
             }));
         };
 
         fetchData();
     }, []);
 
+    const isRegionUser =
+        location.pathname.includes('/bi/user/') ||
+        (location.pathname.includes('/user/') &&
+            !location.pathname.includes('/admin/'));
+    const currentRegionName = isRegionUser
+        ? location.pathname.split('/').filter((x) => x)[1] || ''
+        : '';
+    const baseRoute = location.pathname.includes('/bi/user/')
+        ? '/bi/user'
+        : location.pathname.includes('/user/')
+        ? '/user'
+        : '/admin';
+
+    const handleEdcClick = () => {
+        if (isRegionUser && currentRegionName) {
+            navigate(`${baseRoute}/${currentRegionName}/edcs`);
+        }
+    };
+
+    const handleSubstationClick = () => {
+        if (isRegionUser && currentRegionName) {
+            navigate(`${baseRoute}/${currentRegionName}/substations`);
+        }
+    };
+
+    const currentPath = location.pathname.split('/');
+    const currentPage = currentPath[currentPath.length - 1];
+
+    const getBreadcrumbItems = () => {
+        if (!isRegionUser) {
+            return [{ label: 'Regions', path: '/admin/regions' }];
+        }
+
+        const formattedRegionName =
+            currentRegionName.charAt(0).toUpperCase() +
+            currentRegionName.slice(1);
+
+        const items = [{ label: 'Dashboard', path: `${baseRoute}/dashboard` }];
+
+        if (currentRegionName) {
+            items.push({
+                label: `Region : ${formattedRegionName}`,
+                path: `${baseRoute}/${currentRegionName}/dashboard`,
+            });
+        }
+
+        if (currentPage === 'edcs') {
+            items.push({
+                label: 'EDCs',
+                path: `${baseRoute}/${currentRegionName}/edcs`,
+            });
+        }
+
+        if (currentPage === 'substations') {
+            items.push({
+                label: 'Substations',
+                path: `${baseRoute}/${currentRegionName}/substations`,
+            });
+        }
+
+        return items;
+    };
 
     return (
         <div className={styles.main_content}>
@@ -116,12 +232,9 @@ const Regions = () => {
                     </div>
                 </div>
             </div>
-            <Breadcrumb
-                items={[
-                    { label: 'Home', path: '/admin' },
-                    { label: 'Regions', path: '/admin/regions' },
-                ]}
-            />
+
+            <Breadcrumb items={getBreadcrumbItems()} />
+
             <div className={styles.summary_section}>
                 <div className={styles.total_regions_container}>
                     <div className={styles.total_main_info}>
@@ -138,7 +251,11 @@ const Regions = () => {
                         </div>
                     </div>
                 </div>
-                <div className={styles.total_edcs_container}>
+                <div
+                    className={styles.total_edcs_container}
+                    onClick={handleEdcClick}
+                    style={isRegionUser ? { cursor: 'pointer' } : {}}
+                    title={isRegionUser ? 'Click to view EDCs' : ''}>
                     <div className={styles.total_main_info}>
                         <img
                             src="icons/electric-edc.svg"
@@ -146,14 +263,34 @@ const Regions = () => {
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">EDCs</p>
+                            <p className="title">
+                                {isRegionUser ? (
+                                    <span
+                                        style={{ color: 'var(--brand-blue)' }}>
+                                        EDCs{' '}
+                                        {isRegionUser && (
+                                            <span
+                                                style={{ fontSize: '0.8rem' }}>
+                                                🔗
+                                            </span>
+                                        )}
+                                    </span>
+                                ) : (
+                                    'EDCs'
+                                )}
+                            </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalEdcs}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className={styles.total_substations_container}>
+
+                <div
+                    className={styles.total_substations_container}
+                    onClick={handleSubstationClick}
+                    style={isRegionUser ? { cursor: 'pointer' } : {}}
+                    title={isRegionUser ? 'Click to view Substations' : ''}>
                     <div className={styles.total_main_info}>
                         <img
                             src="icons/electric-factory.svg"
@@ -161,7 +298,22 @@ const Regions = () => {
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">Substations</p>
+                            <p className="title">
+                                {isRegionUser ? (
+                                    <span
+                                        style={{ color: 'var(--brand-blue)' }}>
+                                        Substations{' '}
+                                        {isRegionUser && (
+                                            <span
+                                                style={{ fontSize: '0.8rem' }}>
+                                                🔗
+                                            </span>
+                                        )}
+                                    </span>
+                                ) : (
+                                    'Substations'
+                                )}
+                            </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalSubstations}
                             </div>
@@ -182,6 +334,7 @@ const Regions = () => {
                             </div>
                         </div>
                     </div>
+                    {/*Feeder communication status*/}
                     <div className={styles.metrics_communication_info}>
                         <div className="titles">Communication Status</div>
                         <div className={styles.overall_communication_status}>

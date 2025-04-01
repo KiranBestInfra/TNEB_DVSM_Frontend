@@ -1,4 +1,6 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Buttons from '../components/ui/Buttons/Buttons';
 import styles from '../styles/Dashboard.module.css';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
@@ -237,12 +239,12 @@ const Dashboard = () => {
             <div className={styles.detail_chart}>
                 <DynamicGraph
                     title="Detailed Energy Usage"
-                    height="500px"
-                    yAxisLabel="MW"
                     data={graphData}
                     seriesColors={['#3f68b2', '#ed8c22']}
+                    yAxisLabel="MW"
                     showLabel={false}
                     toolbox={true}
+                    height="500px"
                 />
             </div>
         </div>

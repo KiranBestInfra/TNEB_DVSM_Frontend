@@ -1,6 +1,6 @@
 import styles from '../styles/ShortDetailsWidget.module.css';
 import LineChartTNEB from '../components/graphs/LineChartTNEB/LineChartTNEB';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // const graphData = {
@@ -38,8 +38,13 @@ const ShortDetailsWidget = ({
         series: [],
     },
 }) => {
-    console.log(graphData);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    // Determine if we're in a user route
+    const isUserRoute = location.pathname.includes('/user/');
+    const baseRoute = isUserRoute ? '/user' : '/admin';
+
     // Calculate percentage change from the props
     const percentageChange = (
         ((currentValue - previousValue) / previousValue) *
@@ -52,33 +57,33 @@ const ShortDetailsWidget = ({
         let detailsUrl = '';
         switch (pageType) {
             case 'regions':
-                detailsUrl = `/admin/regions/${region
+                detailsUrl = `${baseRoute}/regions/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/details`;
                 break;
             case 'edcs':
-                detailsUrl = `/admin/${region
+                detailsUrl = `${baseRoute}/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/edcs/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/details`;
                 break;
             case 'substations':
-                detailsUrl = `/admin/${region
+                detailsUrl = `${baseRoute}/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/substations/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/details`;
                 break;
             case 'feeders':
-                detailsUrl = `/admin/${region
+                detailsUrl = `${baseRoute}/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/feeders/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/details`;
                 break;
             default:
-                detailsUrl = `/admin/regions/${region
+                detailsUrl = `${baseRoute}/regions/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/details`;
         }
@@ -95,7 +100,7 @@ const ShortDetailsWidget = ({
                 return (
                     <>
                         <Link
-                            to={`/admin/${region
+                            to={`${baseRoute}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/substations/`}
                             className={styles.nav_link}>
@@ -103,7 +108,7 @@ const ShortDetailsWidget = ({
                         </Link>
                         {' / '}
                         <Link
-                            to={`/admin/${region
+                            to={`${baseRoute}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/feeders/`}
                             className={styles.nav_link}>
@@ -114,7 +119,7 @@ const ShortDetailsWidget = ({
             case 'substations':
                 return (
                     <Link
-                        to={`/admin/${region
+                        to={`${baseRoute}/${region
                             .toLowerCase()
                             .replace(/\s+/g, '-')}/feeders/`}
                         className={styles.nav_link}>
@@ -127,7 +132,7 @@ const ShortDetailsWidget = ({
                 return (
                     <>
                         <Link
-                            to={`/admin/${region
+                            to={`${baseRoute}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/edcs/`}
                             className={styles.nav_link}>
@@ -135,7 +140,7 @@ const ShortDetailsWidget = ({
                         </Link>
                         {' / '}
                         <Link
-                            to={`/admin/${region
+                            to={`${baseRoute}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/substations/`}
                             className={styles.nav_link}>
@@ -143,7 +148,7 @@ const ShortDetailsWidget = ({
                         </Link>
                         {' / '}
                         <Link
-                            to={`/admin/${region
+                            to={`${baseRoute}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/feeders/`}
                             className={styles.nav_link}>

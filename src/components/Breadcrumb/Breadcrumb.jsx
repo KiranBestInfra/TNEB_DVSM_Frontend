@@ -1,13 +1,124 @@
 import { Link, useLocation } from 'react-router-dom';
 import styles from './Breadcrumb.module.css';
 
-const Breadcrumb = () => {
+const Breadcrumb = ({ items }) => {
   const location = useLocation();
+
+  // For region user pages, we want to customize breadcrumbs
+  // Need to handle both /bi/user/ and /user/ paths for region users
+  const pathSegments = location.pathname.split('/').filter(x => x);
+  const isRegionUserPath = location.pathname.includes('/bi/user/') ||
+    (pathSegments[0] === 'user' &&
+      pathSegments.length >= 2 &&
+      !['admin', 'regions', 'edcs', 'substations', 'feeders'].includes(pathSegments[1]));
+
+  console.log('Breadcrumb - Path:', location.pathname);
+  console.log('Breadcrumb - Is Region User Path:', isRegionUserPath);
+  console.log('Breadcrumb - Custom Items:', items);
+
+  // If items are passed directly, use them instead of building from the URL
+  if (items && items.length) {
+    console.log('Breadcrumb - Using provided items:', items);
+    return (
+      <nav className={styles.breadcrumb} aria-label="breadcrumb">
+        <ol className={styles.breadcrumb_list}>
+          {items.map((item, index) => {
+            const isLast = index === items.length - 1;
+            return (
+              <li key={index} className={styles.breadcrumb_item}>
+                {isLast ? (
+                  <span className={styles.breadcrumb_current}>{item.label}</span>
+                ) : (
+                  <>
+                    <Link to={item.path} className={styles.breadcrumb_link}>
+                      {item.label}
+                    </Link>
+                    <span className={styles.breadcrumb_separator}>/</span>
+                  </>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+    );
+  }
+
+  // Original code for auto-generated breadcrumbs from URL
   const pathnames = location.pathname.split('/').filter((x) => x);
+  console.log('Breadcrumb - Path segments:', pathnames);
 
   // Only hide breadcrumb on root path
   if (pathnames.length === 0 || location.pathname === '/') {
     return null;
+  }
+
+  // Filter out 'admin', 'user', and 'bi' from pathnames for cleaner breadcrumb
+  const filteredPathnames = pathnames.filter(name => name !== 'admin' && name !== 'user' && name !== 'bi');
+  console.log('Breadcrumb - Filtered path segments:', filteredPathnames);
+
+  // For region user paths, we want a custom breadcrumb for any non-explicit paths
+  if (isRegionUserPath && !items) {
+    // Find the region in the path
+    const region = pathnames.find(p => p === 'chennai' || p === 'coimbatore' || p === 'erode' ||
+      p === 'kancheepuram' || p === 'karur' || p === 'madurai' ||
+      p === 'thanjavur' || p === 'thiruvallur' || p === 'tirunelveli' ||
+      p === 'tiruvannamalai' || p === 'trichy' || p === 'vellore' ||
+      p === 'villupuram');
+
+    if (region) {
+      // Get current page type (edcs, substations, etc)
+      const pagePath = pathnames[pathnames.length - 1];
+      const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
+
+      // Detect the base route
+      const baseRoute = location.pathname.includes('/bi/user/') ? '/bi/user' : '/user';
+
+      const customItems = [
+        { label: 'Dashboard', path: `${baseRoute}/dashboard` }
+      ];
+
+      // Add region name
+      customItems.push({
+        label: `Region : ${formattedRegionName}`,
+        path: `${baseRoute}/${region}/dashboard`
+      });
+
+      // If we're on a specific page type (EDCs, substations, etc) add it
+      if (pagePath === 'edcs' || pagePath === 'substations' || pagePath === 'feeders') {
+        const pageLabel = pagePath.charAt(0).toUpperCase() + pagePath.slice(1);
+        customItems.push({
+          label: pageLabel,
+          path: `${baseRoute}/${region}/${pagePath}`
+        });
+      }
+
+      console.log('Breadcrumb - Generated special items for region user:', customItems);
+
+      return (
+        <nav className={styles.breadcrumb} aria-label="breadcrumb">
+          <ol className={styles.breadcrumb_list}>
+            {customItems.map((item, index) => {
+              const isLast = index === customItems.length - 1;
+              return (
+                <li key={index} className={styles.breadcrumb_item}>
+                  {isLast ? (
+                    <span className={styles.breadcrumb_current}>{item.label}</span>
+                  ) : (
+                    <>
+                      <Link to={item.path} className={styles.breadcrumb_link}>
+                        {item.label}
+                      </Link>
+                      <span className={styles.breadcrumb_separator}>/</span>
+                    </>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      );
+    }
   }
 
   const getBreadcrumbName = (path, index, allPaths) => {
@@ -31,17 +142,19 @@ const Breadcrumb = () => {
     };
 
     // Handle region names
-    if (path === 'chennai' || path === 'coimbatore' || path === 'erode' || 
-        path === 'kancheepuram' || path === 'karur' || path === 'madurai' || 
-        path === 'thanjavur' || path === 'thiruvallur' || path === 'tirunelveli' || 
-        path === 'tiruvannamalai' || path === 'trichy' || path === 'vellore' || 
-        path === 'villupuram') {
-      return `Region: ${path.charAt(0).toUpperCase() + path.slice(1)}`;
+    if (path === 'chennai' || path === 'coimbatore' || path === 'erode' ||
+      path === 'kancheepuram' || path === 'karur' || path === 'madurai' ||
+      path === 'thanjavur' || path === 'thiruvallur' || path === 'tirunelveli' ||
+      path === 'tiruvannamalai' || path === 'trichy' || path === 'vellore' ||
+      path === 'villupuram') {
+      return isRegionUserPath ?
+        `Region : ${path.charAt(0).toUpperCase() + path.slice(1)}` :
+        `Region: ${path.charAt(0).toUpperCase() + path.slice(1)}`;
     }
 
     // Handle EDC names
     if (path.includes('-north') || path.includes('-south') || path.includes('-east') || path.includes('-west') ||
-        path.includes('-central') || path.includes('-rural') || path.includes('-urban')) {
+      path.includes('-central') || path.includes('-rural') || path.includes('-urban')) {
       return `EDC: ${path.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}`;
     }
 
@@ -58,73 +171,125 @@ const Breadcrumb = () => {
     return routeMap[path] || path.charAt(0).toUpperCase() + path.slice(1);
   };
 
-  // Filter out 'admin' from pathnames
-  const filteredPathnames = pathnames.filter(name => name !== 'admin');
+  // Determine if we're in a user route
+  const isUserRoute = pathnames.includes('user');
+  const baseRoute = isUserRoute ?
+    (isRegionUserPath ?
+      (location.pathname.includes('/bi/user/') ? '/bi/user' : '/user')
+      : '/user')
+    : '/admin';
 
   // Build the complete hierarchy path
   const buildCompleteHierarchy = (paths) => {
     const hierarchy = [];
-    
+
     // Special case for dashboard - don't show extra levels
     if (paths[0] === 'dashboard') {
       return hierarchy; // Return empty array for dashboard
     }
-    
+
+    // If we're in a bi/user path, we need special handling
+    if (isRegionUserPath) {
+      // Find the region in the path
+      const region = paths.find(p => p === 'chennai' || p === 'coimbatore' || p === 'erode' ||
+        p === 'kancheepuram' || p === 'karur' || p === 'madurai' ||
+        p === 'thanjavur' || p === 'thiruvallur' || p === 'tirunelveli' ||
+        p === 'tiruvannamalai' || p === 'trichy' || p === 'vellore' ||
+        p === 'villupuram');
+
+      if (region) {
+        // For region user, we ONLY add the region directly, without the "Regions" parent
+        hierarchy.push({
+          path: region,
+          name: `Region : ${region.charAt(0).toUpperCase() + region.slice(1)}`,
+          route: `${baseRoute}/${region}/dashboard`
+        });
+      }
+
+      // Check if we have EDCs or Substations in the path
+      const currentPage = paths[paths.length - 1];
+      if (currentPage === 'edcs' || currentPage === 'substations' || currentPage === 'feeders') {
+        hierarchy.push({
+          path: currentPage,
+          name: getBreadcrumbName(currentPage),
+          route: `${baseRoute}/${region}/${currentPage}`
+        });
+      }
+
+      return hierarchy;
+    }
+
+    // Check if this is a direct route (edcs, substations, etc.)
+    const isDirectRoute = paths.some(p => ['edcs', 'substations'].includes(p));
+
+    if (isDirectRoute) {
+      // For direct routes, just add the current page
+      const currentPage = paths[paths.length - 1];
+      hierarchy.push({
+        path: currentPage,
+        name: getBreadcrumbName(currentPage),
+        route: `${baseRoute}/${currentPage}`
+      });
+      return hierarchy;
+    }
+
     // Find all components in the path
-    const region = paths.find(p => p === 'chennai' || p === 'coimbatore' || p === 'erode' || 
-                                 p === 'kancheepuram' || p === 'karur' || p === 'madurai' || 
-                                 p === 'thanjavur' || p === 'thiruvallur' || p === 'tirunelveli' || 
-                                 p === 'tiruvannamalai' || p === 'trichy' || p === 'vellore' || 
-                                 p === 'villupuram');
-    
-    const edc = paths.find(p => p.includes('-north') || p.includes('-south') || p.includes('-east') || 
-                              p.includes('-west') || p.includes('-central') || p.includes('-rural') || 
-                              p.includes('-urban'));
-    
+    const region = paths.find(p => p === 'chennai' || p === 'coimbatore' || p === 'erode' ||
+      p === 'kancheepuram' || p === 'karur' || p === 'madurai' ||
+      p === 'thanjavur' || p === 'thiruvallur' || p === 'tirunelveli' ||
+      p === 'tiruvannamalai' || p === 'trichy' || p === 'vellore' ||
+      p === 'villupuram');
+
+    const edc = paths.find(p => p.includes('-north') || p.includes('-south') || p.includes('-east') ||
+      p.includes('-west') || p.includes('-central') || p.includes('-rural') ||
+      p.includes('-urban'));
+
     const substation = paths.find(p => p.includes('-ss') || p.includes('-substation'));
-    
+
     const currentPage = paths[paths.length - 1];
 
-    // Always add Regions first
-    hierarchy.push({ path: 'regions', name: 'Regions', route: '/admin/regions' });
-    
+    // Skip adding Regions for region user paths
+    if (!isRegionUserPath) {
+      hierarchy.push({ path: 'regions', name: 'Regions', route: `${baseRoute}/regions` });
+    }
+
     // Add Region if found
     if (region) {
-      hierarchy.push({ path: region, name: getBreadcrumbName(region), route: `/admin/${region}` });
+      hierarchy.push({ path: region, name: getBreadcrumbName(region), route: `${baseRoute}/${region}` });
     }
-    
+
     // Add EDCs if we have a region
     if (region) {
-      hierarchy.push({ path: 'edcs', name: 'EDCs', route: `/admin/${region}/edcs` });
+      hierarchy.push({ path: 'edcs', name: 'EDCs', route: `${baseRoute}/${region}/edcs` });
     }
-    
+
     // Add EDC if found
     if (edc) {
-      hierarchy.push({ path: edc, name: getBreadcrumbName(edc), route: `/admin/${region}/${edc}` });
+      hierarchy.push({ path: edc, name: getBreadcrumbName(edc), route: `${baseRoute}/${region}/${edc}` });
     }
-    
+
     // Add Substations if we have an EDC
     if (edc) {
-      hierarchy.push({ path: 'substations', name: 'Substations', route: `/admin/${region}/${edc}/substations` });
+      hierarchy.push({ path: 'substations', name: 'Substations', route: `${baseRoute}/${region}/${edc}/substations` });
     }
-    
+
     // Add Substation if found
     if (substation) {
-      hierarchy.push({ path: substation, name: getBreadcrumbName(substation), route: `/admin/${region}/${edc}/${substation}` });
+      hierarchy.push({ path: substation, name: getBreadcrumbName(substation), route: `${baseRoute}/${region}/${edc}/${substation}` });
     }
-    
+
     // Add Feeders if we have a substation
     if (substation) {
-      hierarchy.push({ path: 'feeders', name: 'Feeders', route: `/admin/${region}/${edc}/${substation}/feeders` });
+      hierarchy.push({ path: 'feeders', name: 'Feeders', route: `${baseRoute}/${region}/${edc}/${substation}/feeders` });
     }
 
     // Add current page if it's not already included
-    if (['feeders', 'substations', 'edcs'].includes(currentPage) && 
-        !hierarchy.some(item => item.path === currentPage)) {
-      hierarchy.push({ 
-        path: currentPage, 
+    if (['feeders', 'substations', 'edcs'].includes(currentPage) &&
+      !hierarchy.some(item => item.path === currentPage)) {
+      hierarchy.push({
+        path: currentPage,
         name: getBreadcrumbName(currentPage),
-        route: `/admin/${region}/${edc}/${substation}/${currentPage}`
+        route: `${baseRoute}/${region}/${edc}/${substation}/${currentPage}`
       });
     }
 
@@ -137,7 +302,7 @@ const Breadcrumb = () => {
     <nav className={styles.breadcrumb} aria-label="breadcrumb">
       <ol className={styles.breadcrumb_list}>
         <li className={styles.breadcrumb_item}>
-          <Link to="/dashboard" className={styles.breadcrumb_link}>
+          <Link to={`${baseRoute}/dashboard`} className={styles.breadcrumb_link}>
             Dashboard
           </Link>
           {completeHierarchyPath.length > 0 && <span className={styles.breadcrumb_separator}>/</span>}
