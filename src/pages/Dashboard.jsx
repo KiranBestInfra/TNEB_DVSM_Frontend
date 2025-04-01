@@ -127,9 +127,9 @@ const Dashboard = () => {
                 value={timeRange}
                 onChange={(e) => setTimeRange(e.target.value)}
                 className={styles.time_range_select}>
+                <option value="Last30days">Last 30 Days</option>
                 <option value="Daily">Daily</option>
                 <option value="Monthly">Monthly</option>
-                <option value="PreviousMonth">Last 30 Days</option>
                 <option value="PreviousMonth">Last Week</option>
                 <option value="Year">Year</option>
               </select>
@@ -139,13 +139,13 @@ const Dashboard = () => {
                 className={styles.time_range_select_dropdown_icon}
               />
             </div>
-            <Buttons
+            {/* <Buttons
               label="Get Reports"
               variant="primary"
               alt="GetReports"
               icon="/bi/icons/reports.svg"
               iconPosition="left"
-            />
+            /> */}
           </div>
         </div>
       </div>

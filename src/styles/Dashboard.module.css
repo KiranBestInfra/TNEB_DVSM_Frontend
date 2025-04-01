@@ -22,7 +22,7 @@
     gap: 1rem;
     flex-direction: row;
 }
-
+/*Dropdown for time range*/
 .time_range_select_dropdown {
     position: relative;
 }
