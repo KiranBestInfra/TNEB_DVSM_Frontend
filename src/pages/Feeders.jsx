@@ -6,7 +6,7 @@ import ShortDetailsWidget from "./ShortDetailsWidget";
 
 const Feeders = () => {
   const [timeRange, setTimeRange] = useState('Daily');
-  const totalMeters = breadcrumb_listbreadcrumb_list;
+  const totalMeters = 416;
   const totalRegions = 13; // Total number of regions
   const totalEDCs = 95; // Total number of EDCs
   const totalSubstations = 260; // Total number of substations

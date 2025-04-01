@@ -11,7 +11,6 @@ const DynamicGraph = ({
     yAxisLabel = 'Value',
     refreshInterval = 15000,
 }) => {
-    console.log(data);
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
 
@@ -35,14 +34,6 @@ const DynamicGraph = ({
 
             window.addEventListener('resize', handleResize);
 
-            const timeLabels = data.xAxis.map((timestamp) => {
-                const date = new Date(timestamp);
-                return `${date.getHours()}:${String(date.getMinutes()).padStart(
-                    2,
-                    '0'
-                )}`;
-            });
-
             const option = {
                 tooltip: {
                     trigger: 'axis',
@@ -57,12 +48,7 @@ const DynamicGraph = ({
                     padding: [8, 12],
                     formatter: function (params) {
                         const timeLabel = params[0].axisValue;
-                        const date = new Date(data.xAxis[params[0].dataIndex]);
-                        const formattedDate = `${date.getDate()}/${
-                            date.getMonth() + 1
-                        }/${date.getFullYear()} - ${timeLabel}`;
-
-                        let tooltipText = `<div style="font-weight: bold; margin-bottom: 8px;">${formattedDate}</div>`;
+                        let tooltipText = `<div style="font-weight: bold; margin-bottom: 8px;">${timeLabel}</div>`;
 
                         params.forEach((param) => {
                             tooltipText += `<div style="display: flex; align-items: center; margin: 3px 0;">
@@ -118,7 +104,7 @@ const DynamicGraph = ({
                 },
                 xAxis: {
                     type: 'category',
-                    data: timeLabels,
+                    data: data.xAxis.map((time) => time.slice(0, 5)),
                     boundaryGap: false,
                     splitLine: {
                         show: true,

@@ -46,7 +46,6 @@ const Dashboard = () => {
             try {
                 const response = await apiClient.get('/regions/graph/demand');
                 const data = response.data;
-                console.log(data);
                 setGraphData({
                     xAxis: data.xAxis || [],
                     series: data.series || [],

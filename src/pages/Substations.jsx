@@ -258,8 +258,8 @@ const Substations = () => {
           <div className={styles.action_cont}>
             <div className={styles.time_range_select_dropdown}>
               <select
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
+                value={timeframe}
+                onChange={(e) => setTimeframe(e.target.value)}
                 className={styles.time_range_select}>
                 <option value="Daily">Daily</option>
                 <option value="Monthly">Monthly</option>

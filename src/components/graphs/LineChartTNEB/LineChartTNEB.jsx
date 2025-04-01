@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactECharts from 'echarts-for-react';
-import * as echarts from 'echarts';
+import PropTypes from 'prop-types';
 import styles from './LineChartTNEB.module.css';
-import { formatDateMonth } from '../../../utils/globalUtils';
 
 const LineChartTNEB = ({
     title = 'Energy Usage by Tariff Plan',
@@ -15,7 +14,6 @@ const LineChartTNEB = ({
     className,
 }) => {
     const chartRef = React.useRef(null);
-    const activeData = data.daily;
 
     const formatTooltipLabel = (params) => {
         return params[0].axisValue;
@@ -23,7 +21,6 @@ const LineChartTNEB = ({
 
     const option = {
         tooltip: {
-            
             trigger: 'axis',
             axisPointer: {
                 type: 'cross',
@@ -38,11 +35,8 @@ const LineChartTNEB = ({
                 },
             },
             formatter: (params) => {
-                const label = formatTooltipLabel(params);
                 let result = ``;
-                let total = 0;
                 params.forEach((param) => {
-                    total += param.value;
                     result += `${param.seriesName}<br/>${param.value} ${yAxisLabel}<br/>`;
                 });
                 return result;
@@ -54,7 +48,7 @@ const LineChartTNEB = ({
             padding: [5, 0, 5, 5],
         },
         legend: {
-            show: false
+            show: false,
         },
         grid: {
             left: '0%',
@@ -68,7 +62,7 @@ const LineChartTNEB = ({
                 show: false,
                 type: 'category',
                 boundaryGap: false,
-                data: activeData.xAxis,
+                data: data.xAxis,
             },
         ],
         yAxis: [
@@ -77,7 +71,7 @@ const LineChartTNEB = ({
                 type: 'value',
             },
         ],
-        series: activeData.series.map((item, index) => ({
+        series: data.series.map((item, index) => ({
             name: item.name,
             type: 'line',
             smooth: true,
@@ -119,6 +113,25 @@ const LineChartTNEB = ({
             </div>
         </div>
     );
+};
+
+LineChartTNEB.propTypes = {
+    title: PropTypes.string,
+    data: PropTypes.shape({
+        xAxis: PropTypes.arrayOf(PropTypes.string).isRequired,
+        series: PropTypes.arrayOf(
+            PropTypes.shape({
+                name: PropTypes.string.isRequired,
+                data: PropTypes.arrayOf(PropTypes.number).isRequired,
+            })
+        ).isRequired,
+    }).isRequired,
+    seriesColors: PropTypes.arrayOf(PropTypes.string),
+    yAxisLabel: PropTypes.string,
+    showLabel: PropTypes.bool,
+    toolbox: PropTypes.bool,
+    height: PropTypes.string,
+    className: PropTypes.string,
 };
 
 export default LineChartTNEB;
