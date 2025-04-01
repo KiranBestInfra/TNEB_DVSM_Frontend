@@ -18,10 +18,12 @@ const ProtectedRoute = ({ children }) => {
 
     try {
         const decoded = jwtDecode(accessToken);
-        // All users with valid tokens can access admin routes
-        // We'll handle specific permissions at component level if needed
+        // All users with valid tokens can access all routes
+        // We'll handle specific permissions at component level
 
-        // For backward compatibility, still redirect admins away from user routes
+        // For backward compatibility, we used to redirect admins away from user routes
+        // But now we allow admins to access both admin and user routes
+        /*
         const userRole = decoded.role || decoded.Role || decoded.user_role;
         const isAdmin =
             userRole.toLowerCase().includes('admin') ||
@@ -31,6 +33,7 @@ const ProtectedRoute = ({ children }) => {
         if (isAdmin && isUserRoute) {
             return <Navigate to="/admin/dashboard" replace state={{ from: location }} />;
         }
+        */
 
         return children;
     } catch (error) {

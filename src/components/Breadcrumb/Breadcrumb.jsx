@@ -58,8 +58,12 @@ const Breadcrumb = () => {
     return routeMap[path] || path.charAt(0).toUpperCase() + path.slice(1);
   };
 
-  // Filter out 'admin' from pathnames
-  const filteredPathnames = pathnames.filter(name => name !== 'admin');
+  // Filter out 'admin' and 'user' from pathnames for cleaner breadcrumb
+  const filteredPathnames = pathnames.filter(name => name !== 'admin' && name !== 'user');
+
+  // Determine if we're in a user route
+  const isUserRoute = pathnames.includes('user');
+  const baseRoute = isUserRoute ? '/user' : '/admin';
 
   // Build the complete hierarchy path
   const buildCompleteHierarchy = (paths) => {
@@ -79,7 +83,7 @@ const Breadcrumb = () => {
       hierarchy.push({
         path: currentPage,
         name: getBreadcrumbName(currentPage),
-        route: `/admin/${currentPage}`
+        route: `${baseRoute}/${currentPage}`
       });
       return hierarchy;
     }
@@ -100,36 +104,36 @@ const Breadcrumb = () => {
     const currentPage = paths[paths.length - 1];
 
     // Always add Regions first
-    hierarchy.push({ path: 'regions', name: 'Regions', route: '/admin/regions' });
+    hierarchy.push({ path: 'regions', name: 'Regions', route: `${baseRoute}/regions` });
 
     // Add Region if found
     if (region) {
-      hierarchy.push({ path: region, name: getBreadcrumbName(region), route: `/admin/${region}` });
+      hierarchy.push({ path: region, name: getBreadcrumbName(region), route: `${baseRoute}/${region}` });
     }
 
     // Add EDCs if we have a region
     if (region) {
-      hierarchy.push({ path: 'edcs', name: 'EDCs', route: `/admin/${region}/edcs` });
+      hierarchy.push({ path: 'edcs', name: 'EDCs', route: `${baseRoute}/${region}/edcs` });
     }
 
     // Add EDC if found
     if (edc) {
-      hierarchy.push({ path: edc, name: getBreadcrumbName(edc), route: `/admin/${region}/${edc}` });
+      hierarchy.push({ path: edc, name: getBreadcrumbName(edc), route: `${baseRoute}/${region}/${edc}` });
     }
 
     // Add Substations if we have an EDC
     if (edc) {
-      hierarchy.push({ path: 'substations', name: 'Substations', route: `/admin/${region}/${edc}/substations` });
+      hierarchy.push({ path: 'substations', name: 'Substations', route: `${baseRoute}/${region}/${edc}/substations` });
     }
 
     // Add Substation if found
     if (substation) {
-      hierarchy.push({ path: substation, name: getBreadcrumbName(substation), route: `/admin/${region}/${edc}/${substation}` });
+      hierarchy.push({ path: substation, name: getBreadcrumbName(substation), route: `${baseRoute}/${region}/${edc}/${substation}` });
     }
 
     // Add Feeders if we have a substation
     if (substation) {
-      hierarchy.push({ path: 'feeders', name: 'Feeders', route: `/admin/${region}/${edc}/${substation}/feeders` });
+      hierarchy.push({ path: 'feeders', name: 'Feeders', route: `${baseRoute}/${region}/${edc}/${substation}/feeders` });
     }
 
     // Add current page if it's not already included
@@ -138,7 +142,7 @@ const Breadcrumb = () => {
       hierarchy.push({
         path: currentPage,
         name: getBreadcrumbName(currentPage),
-        route: `/admin/${region}/${edc}/${substation}/${currentPage}`
+        route: `${baseRoute}/${region}/${edc}/${substation}/${currentPage}`
       });
     }
 
@@ -151,7 +155,7 @@ const Breadcrumb = () => {
     <nav className={styles.breadcrumb} aria-label="breadcrumb">
       <ol className={styles.breadcrumb_list}>
         <li className={styles.breadcrumb_item}>
-          <Link to="/dashboard" className={styles.breadcrumb_link}>
+          <Link to={`${baseRoute}/dashboard`} className={styles.breadcrumb_link}>
             Dashboard
           </Link>
           {completeHierarchyPath.length > 0 && <span className={styles.breadcrumb_separator}>/</span>}

@@ -1,6 +1,6 @@
 import styles from "../styles/LongDetailsWidget.module.css";
 import FullDetailLineChart from "../components/graphs/FullDetailLineChart/FullDetailLineChart";
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Buttons from "../components/ui/Buttons/Buttons";
 import { useState, useEffect } from "react";
@@ -106,6 +106,10 @@ const LongDetailsWidget = () => {
   const percentageChange = ((stats.currentValue - stats.previousValue) / stats.previousValue * 100).toFixed(1);
   const isPositiveChange = stats.currentValue >= stats.previousValue;
 
+  // Determine if we're in admin or user route
+  const isUserRoute = location.pathname.includes('/user/');
+  const baseRoute = isUserRoute ? '/user' : '/admin';
+
   return (
     <div className={styles.main_content}>
       <div className={styles.section_header}>
@@ -184,7 +188,11 @@ const LongDetailsWidget = () => {
               <img src="/bi/icons/electric-edc.svg" alt="EDC" className={styles.TNEB_icons} />
             </div>
             <div className={styles.total_title_value}>
-              <span className='title'>EDCs</span>
+              <span className='title'>
+                <Link to={entityId ? `${baseRoute}/${entityId}/edcs` : `${baseRoute}/edcs`}>
+                  EDCs
+                </Link>
+              </span>
               <span className={styles.summary_value}>{stats.edcCount}</span>
             </div>
           </div>
@@ -196,10 +204,13 @@ const LongDetailsWidget = () => {
               <img src="/bi/icons/electric-factory.svg" alt="Substation" className={styles.TNEB_icons} />
             </div>
             <div className={styles.total_title_value}>
-              <span className='title'>Substations</span>
+              <span className='title'>
+                <Link to={entityId ? `${baseRoute}/${entityId}/substations` : `${baseRoute}/substations`}>
+                  Substations
+                </Link>
+              </span>
               <span className={styles.summary_value}>{stats.substationCount}</span>
             </div>
-
           </div>
         </div>
 
@@ -210,14 +221,15 @@ const LongDetailsWidget = () => {
             </div>
 
             <div className={styles.total_title_value}>
-              <span className='title'>District</span>
+              <span className='title'>
+                <Link to={entityId ? `${baseRoute}/${entityId}/feeders` : `${baseRoute}/feeders`}>
+                  Feeders
+                </Link>
+              </span>
               <span className={styles.summary_value}>{stats.feederCount}</span>
             </div>
-
           </div>
         </div>
-
-
 
         <div className={styles.total_units_container}>
           <div className={styles.total_main_info}>
