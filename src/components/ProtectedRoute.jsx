@@ -25,6 +25,11 @@ const ProtectedRoute = ({ children }) => {
         // But now we allow admins to access both admin and user routes
         /*
         const userRole = decoded.role || decoded.Role || decoded.user_role;
+        const userRoleId = decoded.user_role_id || decoded.Role_Id || decoded.user_roleid;
+        //console.log('userRole:', userRole);
+       // console.log('userRoleId:', userRoleId);
+
+
         const isAdmin =
             userRole.toLowerCase().includes('admin') ||
             userRole.toLowerCase().includes('demo');
