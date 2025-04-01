@@ -1,6 +1,6 @@
 import styles from "../styles/ShortDetailsWidget.module.css";
 import LineChartTNEB from "../components/graphs/LineChartTNEB/LineChartTNEB";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 // Dummy data for the graph
 const graphData = {
@@ -24,18 +24,23 @@ const graphData = {
   }
 };
 
-const ShortDetailsWidget = ({ 
-  region, 
-  edcCount, 
+const ShortDetailsWidget = ({
+  region,
+  edcCount,
   substationCount,
   feederCount,
-  currentValue, 
+  currentValue,
   previousValue,
   pageType = 'regions', // Default to 'regions' if not specified
   handleRegionClick
 }) => {
   const navigate = useNavigate();
-  
+  const location = useLocation();
+
+  // Determine if we're in a user route
+  const isUserRoute = location.pathname.includes('/user/');
+  const baseRoute = isUserRoute ? '/user' : '/admin';
+
   // Calculate percentage change from the props
   const percentageChange = ((currentValue - previousValue) / previousValue * 100).toFixed(1);
   const isPositiveChange = currentValue >= previousValue;
@@ -45,21 +50,21 @@ const ShortDetailsWidget = ({
     let detailsUrl = '';
     switch (pageType) {
       case 'regions':
-        detailsUrl = `/admin/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+        detailsUrl = `${baseRoute}/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
         break;
       case 'edcs':
-        detailsUrl = `/admin/${region.toLowerCase().replace(/\s+/g, '-')}/edcs/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+        detailsUrl = `${baseRoute}/${region.toLowerCase().replace(/\s+/g, '-')}/edcs/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
         break;
       case 'substations':
-        detailsUrl = `/admin/${region.toLowerCase().replace(/\s+/g, '-')}/substations/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+        detailsUrl = `${baseRoute}/${region.toLowerCase().replace(/\s+/g, '-')}/substations/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
         break;
       case 'feeders':
-        detailsUrl = `/admin/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+        detailsUrl = `${baseRoute}/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
         break;
       default:
-        detailsUrl = `/admin/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
+        detailsUrl = `${baseRoute}/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`;
     }
-    
+
     navigate(detailsUrl);
     if (handleRegionClick) {
       handleRegionClick(region);
@@ -71,18 +76,18 @@ const ShortDetailsWidget = ({
       case 'edcs':
         return (
           <>
-            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/substations/`} className={styles.nav_link}>
+            <Link to={`${baseRoute}/${region.toLowerCase().replace(/\s+/g, '-')}/substations/`} className={styles.nav_link}>
               {substationCount} Substations
             </Link>
             {' / '}
-            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/`} className={styles.nav_link}>
+            <Link to={`${baseRoute}/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/`} className={styles.nav_link}>
               {feederCount} Feeders
             </Link>
           </>
         );
       case 'substations':
         return (
-          <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/`} className={styles.nav_link}>
+          <Link to={`${baseRoute}/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/`} className={styles.nav_link}>
             {feederCount} Feeders
           </Link>
         );
@@ -91,15 +96,15 @@ const ShortDetailsWidget = ({
       default:
         return (
           <>
-            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/edcs/`} className={styles.nav_link}>
+            <Link to={`${baseRoute}/${region.toLowerCase().replace(/\s+/g, '-')}/edcs/`} className={styles.nav_link}>
               {edcCount} EDCs
             </Link>
             {' / '}
-            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/substations/`} className={styles.nav_link}>
+            <Link to={`${baseRoute}/${region.toLowerCase().replace(/\s+/g, '-')}/substations/`} className={styles.nav_link}>
               {substationCount} Substations
             </Link>
             {' / '}
-            <Link to={`/admin/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/`} className={styles.nav_link}>
+            <Link to={`${baseRoute}/${region.toLowerCase().replace(/\s+/g, '-')}/feeders/`} className={styles.nav_link}>
               {feederCount} Feeders
             </Link>
           </>
@@ -117,15 +122,15 @@ const ShortDetailsWidget = ({
           </p>
         </div>
         <div className={styles.individual_region_header_right}>
-        <span>View Info</span>
-          <img
-            src="icons/information.svg"
-            alt="Click Here"
-            className={styles.click_individual_region}
-            onClick={handleClick}
-            style={{ cursor: 'pointer' }}
-          />
-          
+          <div className={styles.click_individual_region}>
+            <img
+              src="icons/information.svg"
+              alt="Click Here"
+              onClick={handleClick}
+              style={{ cursor: 'pointer' }}
+            />
+            <div className={styles.tooltip}>View Information</div>
+          </div>
         </div>
       </div>
       <div className={styles.individual_region_body}>
