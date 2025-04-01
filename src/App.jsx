@@ -243,7 +243,7 @@ const App = () => {
             }
 
             console.log('DefaultRedirect - Redirecting to region:', region);
-            return <Navigate to={`/admin/regions/${region}/details`} replace />;
+            return <Navigate to={`/user/${region}/dashboard`} replace />;
         }
 
         // Default case - redirect to dashboard
@@ -305,7 +305,7 @@ const App = () => {
             if (region && region.toLowerCase() !== userRegion) {
                 console.log('RegionsProtectedRoute - Region mismatch. User region:', userRegion, 'URL region:', region);
                 console.log('RegionsProtectedRoute - Redirecting to user\'s region details');
-                return <Navigate to={`/admin/regions/${userRegion}/details`} replace />;
+                return <Navigate to={`/user/${userRegion}/dashboard`} replace />;
             }
 
             console.log('RegionsProtectedRoute - Region match, allowing access');
@@ -411,16 +411,16 @@ const App = () => {
             }
 
             console.log('RegionRedirect - Redirecting to region:', userRegion);
-            return <Navigate to={`/admin/regions/${userRegion}/details`} replace />;
+            return <Navigate to={`/user/${userRegion}/dashboard`} replace />;
         }
 
         // Ensure region is standardized to lowercase
         const safeRegion = region.toLowerCase();
         console.log('RegionRedirect - Using region from URL:', safeRegion);
-        return <Navigate to={`/admin/regions/${safeRegion}/details`} replace />;
+        return <Navigate to={`/user/${safeRegion}/dashboard`} replace />;
     };
 
-    // Add this new component for Region User routing
+    // Update RegionUserRoute to handle the new URL pattern
     const RegionUserRoute = ({ children }) => {
         const { user } = useAuth();
         const location = useLocation();
@@ -438,7 +438,7 @@ const App = () => {
         // Allowed paths for Region Users
         const isAllowedPath =
             location.pathname === "/admin/dashboard" ||
-            (location.pathname.includes("/admin/regions/") && location.pathname.includes("/details"));
+            location.pathname.includes("/user/") && location.pathname.includes("/dashboard");
 
         // If Region User is trying to access a non-allowed path, redirect to their region detail page
         if (isRegionUser && !isAllowedPath) {
@@ -475,7 +475,7 @@ const App = () => {
             }
 
             console.log('RegionUserRoute - Redirecting to region:', userRegion);
-            return <Navigate to={`/admin/regions/${userRegion}/details`} replace />;
+            return <Navigate to={`/user/${userRegion}/dashboard`} replace />;
         }
 
         // For Admin users or allowed paths, just render the children
@@ -638,28 +638,19 @@ const App = () => {
                                 element={<DefaultRedirect />}
                             />
                             <Route
-                                path="regions"
-                                element={<RegionsProtectedRoute />}
-                            >
-                                <Route
-                                    index
-                                    element={<Navigate to="/admin/dashboard" replace />}
-                                />
-                                <Route
-                                    path=":region/details"
-                                    element={<RegionRedirect />}
-                                />
-                            </Route>
+                                path=":region/dashboard"
+                                element={
+                                    <ProtectedRoute>
+                                        <LongDetailsWidget />
+                                    </ProtectedRoute>
+                                }
+                            />
                             <Route
                                 path=":region"
                                 element={<RegionRedirect />}
                             />
                             <Route
-                                path=":region/dashboard"
-                                element={<RegionRedirect />}
-                            />
-                            <Route
-                                path=":region/details"
+                                path="regions/:region/details"
                                 element={<RegionRedirect />}
                             />
                         </Route>

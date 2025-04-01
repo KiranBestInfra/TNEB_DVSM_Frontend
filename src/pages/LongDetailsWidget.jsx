@@ -1,9 +1,9 @@
 import styles from "../styles/LongDetailsWidget.module.css";
 import FullDetailLineChart from "../components/graphs/FullDetailLineChart/FullDetailLineChart";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Buttons from "../components/ui/Buttons/Buttons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Dummy data for the detailed graph
 const detailedGraphData = {
@@ -29,6 +29,7 @@ const detailedGraphData = {
 };
 const LongDetailsWidget = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { region, regionId, edcId, substationId, feederId } = useParams();
   const [timeRange, setTimeRange] = useState('Daily');
   /* const [dateRange, setDateRange] = useState({
@@ -36,13 +37,19 @@ const LongDetailsWidget = () => {
     end: null
   }); */
 
-  // Determine the type of view based on URL parameters
+  // Determine the type of view based on URL parameters and pathname
   let viewType = 'regions';
   let entityId = regionId || region;
 
   console.log('LongDetailsWidget - URL params:', { region, regionId, edcId, substationId, feederId });
+  console.log('LongDetailsWidget - Current path:', location.pathname);
 
-  if (feederId) {
+  // If we're in the user route with region/dashboard pattern, make sure we use 'regions' viewType
+  if (location.pathname.includes('/user/') && location.pathname.includes('/dashboard')) {
+    viewType = 'regions';
+    entityId = region;
+    console.log('LongDetailsWidget - Using new URL pattern with region:', entityId);
+  } else if (feederId) {
     viewType = 'feeders';
     entityId = feederId;
   } else if (substationId) {
