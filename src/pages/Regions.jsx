@@ -142,19 +142,18 @@ const Regions = () => {
         );
     };
 
-  // Check if we're in a region user path
-  const isRegionUser = location.pathname.includes('/bi/user/') ||
-    (location.pathname.includes('/user/') &&
-      !location.pathname.includes('/admin/'));
-  const currentRegionName = isRegionUser ?
-    location.pathname.split('/').filter(x => x)[1] || '' :
-    '';
-  const baseRoute = location.pathname.includes('/bi/user/') ?
-    '/bi/user' :
-    (location.pathname.includes('/user/') ? '/user' : '/admin');
-
-  // List of all region names
-  const regionNames = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur", "Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy", "Vellore", "Villupuram"];
+    const isRegionUser =
+        location.pathname.includes('/user/') ||
+        (location.pathname.includes('/user/') &&
+            !location.pathname.includes('/admin/'));
+    const currentRegionName = isRegionUser
+        ? location.pathname.split('/').filter((x) => x)[1] || ''
+        : '';
+    const baseRoute = location.pathname.includes('/user/')
+        ? '/user'
+        : location.pathname.includes('/user/')
+            ? '/user'
+            : '/admin';
 
     const handleEdcClick = () => {
         if (isRegionUser && currentRegionName) {
@@ -173,34 +172,32 @@ const Regions = () => {
 
     const getBreadcrumbItems = () => {
         if (!isRegionUser) {
-            return [{ label: 'Regions', path: '/admin/regions' }];
+            return [
+                { label: 'Regions', path: '/admin/regions' }
+            ];
         }
 
-        const formattedRegionName =
-            currentRegionName.charAt(0).toUpperCase() +
-            currentRegionName.slice(1);
+        // Format region name with first letter capitalized
+        const formattedRegionName = currentRegionName.charAt(0).toUpperCase() + currentRegionName.slice(1);
 
-        const items = [{ label: 'Dashboard', path: `${baseRoute}/dashboard` }];
+        // Base items for region user
+        const items = [
+            { label: 'Dashboard', path: `${baseRoute}/dashboard` }
+        ];
 
+        // Add Region to breadcrumb if we're on a region page
         if (currentRegionName) {
-            items.push({
-                label: `Region : ${formattedRegionName}`,
-                path: `${baseRoute}/${currentRegionName}/dashboard`,
-            });
+            items.push({ label: `Region : ${formattedRegionName}`, path: `${baseRoute}/${currentRegionName}/dashboard` });
         }
 
+        // Add EDCs to breadcrumb if on EDCs page
         if (currentPage === 'edcs') {
-            items.push({
-                label: 'EDCs',
-                path: `${baseRoute}/${currentRegionName}/edcs`,
-            });
+            items.push({ label: 'EDCs', path: `${baseRoute}/${currentRegionName}/edcs` });
         }
 
+        // Add Substations to breadcrumb if on Substations page
         if (currentPage === 'substations') {
-            items.push({
-                label: 'Substations',
-                path: `${baseRoute}/${currentRegionName}/substations`,
-            });
+            items.push({ label: 'Substations', path: `${baseRoute}/${currentRegionName}/substations` });
         }
 
         return items;
@@ -402,7 +399,7 @@ const Regions = () => {
 
             <div className={styles.region_stats_container}>
                 {widgetsData.regionNames &&
-                widgetsData.regionNames.length > 0 ? (
+                    widgetsData.regionNames.length > 0 ? (
                     widgetsData.regionNames.map((region, index) => (
                         <div
                             key={index}
@@ -414,7 +411,7 @@ const Regions = () => {
                                 }
                                 substationCount={
                                     widgetsData.substationCount?.[
-                                        region.trim()
+                                    region.trim()
                                     ] ?? 0
                                 }
                                 feederCount={
@@ -431,7 +428,7 @@ const Regions = () => {
                                 }
                                 graphData={
                                     widgetsData.regionDemandData?.[
-                                        region.trim()
+                                    region.trim()
                                     ] ?? {
                                         xAxis: [],
                                         series: [],
