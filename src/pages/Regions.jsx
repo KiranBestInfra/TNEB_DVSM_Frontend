@@ -110,41 +110,44 @@ const Regions = () => {
         const fetchData = async () => {
             const response = await apiClient.get('/regions/widgets');
             const data = response.data;
-            console.log(data);
 
-            setWidgetsData((prev) => ({
-                totalRegions: data.totalRegions || prev.totalRegions,
-                totalEdcs: data.totalEdcs || prev.totalEdcs,
-                totalSubstations:
-                    data.totalSubstations || prev.totalSubstations,
-                totalFeeders: data.totalFeeders || prev.totalFeeders,
-                commMeters: data.commMeters || prev.commMeters,
-                nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
-                regionNames: data.regionNames || prev.regionNames,
-                edcCount: data.regionEdcCounts || prev.edcCount,
-                substationCount:
-                    data.regionSubstationCounts || prev.substationCount,
-                feederCount: data.regionFeederCounts || prev.feederCount,
-                regionDemandData: prev.regionDemandData,
-                // regionStats: prev.regionStats,
-            }));
-        };
+      setWidgetsData((prev) => ({
+          totalRegions: data.totalRegions || prev.totalRegions,
+          totalEdcs: data.totalEdcs || prev.totalEdcs,
+          totalSubstations: data.totalSubstations || prev.totalSubstations,
+          totalFeeders: data.totalFeeders || prev.totalFeeders,
+          commMeters: data.commMeters || prev.commMeters,
+          nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
+          regionNames: data.regionNames || prev.regionNames,
+          edcCount: data.regionEdcCounts || prev.edcCount,
+          substationCount: data.regionSubstationCounts || prev.substationCount,
+          feederCount: data.regionFeederCounts || prev.feederCount,
+        //   regionDemandData: prev.regionDemandData,
+          // regionStats: prev.regionStats,
+      }));
+    }
 
-        fetchData();
-    }, []);
+    fetchData()
 
-    const isRegionUser =
-        location.pathname.includes('/bi/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
-    const currentRegionName = isRegionUser
-        ? location.pathname.split('/').filter((x) => x)[1] || ''
-        : '';
-    const baseRoute = location.pathname.includes('/bi/user/')
-        ? '/bi/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+  }, [])
+
+  const handleRegionClick = (region) => {
+    navigate(`/admin/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`);
+  };
+
+  // Check if we're in a region user path
+  const isRegionUser = location.pathname.includes('/user/') ||
+    (location.pathname.includes('/user/') &&
+      !location.pathname.includes('/admin/'));
+  const currentRegionName = isRegionUser ?
+    location.pathname.split('/').filter(x => x)[1] || '' :
+    '';
+  const baseRoute = location.pathname.includes('/user/') ?
+    '/user' :
+    (location.pathname.includes('/user/') ? '/user' : '/admin');
+
+  // List of all region names
+  const regionNames = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur", "Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy", "Vellore", "Villupuram"];
 
     const handleEdcClick = () => {
         if (isRegionUser && currentRegionName) {
