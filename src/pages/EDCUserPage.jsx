@@ -7,23 +7,15 @@ import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
 
-const EDCs = () => {
+const EDCUserPage = () => {
     const [timeRange, setTimeRange] = useState('Daily');
-    const totalMeters = 1243;
-    const totalRegions = 13; // Total number of regions
-    const totalEDCs = 95; // Total number of EDCs
-    const totalSubstations = 260; // Total number of substations
-    const totalFeeders = 416; // Total number of feeders
     const { region } = useParams();
     const location = useLocation();
 
     // Determine if this is a region user path
-    const isRegionUser = location.pathname.includes('/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser ?
-        (location.pathname.includes('/user/') ? '/user' : '/user') :
-        (location.pathname.includes('/user/') ? '/user' : '/admin');
+    const isRegionUser = location.pathname.includes('/user/') &&
+        !location.pathname.includes('/admin/');
+    const currentBaseRoute = '/user';
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -54,7 +46,6 @@ const EDCs = () => {
                 commMeters: regionWidgets.commMeters || prev.commMeters,
                 nonCommMeters:
                     regionWidgets.nonCommMeters || prev.nonCommMeters,
-                //edcNames: prev.edcNames,
             }));
         };
 
@@ -62,7 +53,6 @@ const EDCs = () => {
     }, []);
 
     useEffect(() => {
-        console.log('region', region);
         if (!region) return;
 
         const fetchEdcNames = async () => {
@@ -71,55 +61,22 @@ const EDCs = () => {
                     `http://localhost:3000/api/v1/edcs/widgets/${region}`
                 );
                 const data = await response.json();
-                console.log('Fetched EDC & Substation Data:', data); // Log to check response
 
                 setWidgetsData((prev) => ({
                     ...prev,
-                    edcNames: data.data?.edcNames || [], // Ensure safe access
+                    edcNames: data.data?.edcNames || [],
                     regionEdcCount: data.data?.edcNames?.length || 0,
-                    substationNames: data.data?.substationNames || [], // Added line
+                    substationNames: data.data?.substationNames || [],
                     regionSubstationCount:
-                        data.data?.substationNames?.length || 0, // Added line
+                        data.data?.substationNames?.length || 0,
                 }));
             } catch (error) {
-                console.error(
-                    'Error fetching EDC names:',
-                    error
-                );
+                console.error('Error fetching EDC names:', error);
             }
         };
 
         fetchEdcNames();
     }, [region]);
-
-    console.log('widgetsData', widgetsData);
-
-    const handleRegionClick = (region) => {
-        setSelectedRegion(region); // Set region when clicked
-    };
-
-    const handleTimeframeChange = (e) => {
-        setTimeframe(e.target.value);
-    };
-
-    // Replace region data with EDC data
-    const edcNames = [
-        'Chennai North',
-        'Chennai South',
-        'Chennai Central',
-        'Chennai West',
-        'Coimbatore North',
-        'Coimbatore South',
-        'Madurai Urban',
-        'Madurai Rural',
-        'Trichy Urban',
-        'Trichy Rural',
-        'Thanjavur',
-        'Villupuram',
-        'Vellore',
-        'Salem',
-        'Erode',
-    ];
 
     // EDC substation counts
     const edcSubstationCounts = {
@@ -178,101 +135,20 @@ const EDCs = () => {
         'Erode': { currentValue: 330, previousValue: 300 },
     };
 
-    // Sample data for the LineChart
-    const graphData = {
-        daily: {
-            xAxis: [
-                '2025-03-16 23:59:59',
-                '2025-03-16 08:30:00',
-                '2025-03-16 08:15:00',
-                '2025-03-16 08:00:00',
-                '2025-03-16 07:45:00',
-                '2025-03-16 07:30:00',
-                '2025-03-16 07:15:00',
-                '2025-03-16 07:00:00',
-                '2025-03-16 06:45:00',
-                '2025-03-16 06:30:00',
-                '2025-03-16 06:15:00',
-                '2025-03-16 06:00:00',
-                '2025-03-16 05:45:00',
-                '2025-03-16 05:30:00',
-                '2025-03-16 05:15:00',
-                '2025-03-16 05:00:00',
-                '2025-03-16 04:45:00',
-                '2025-03-16 04:30:00',
-                '2025-03-16 04:15:00',
-                '2025-03-16 04:00:00',
-                '2025-03-16 03:45:00',
-                '2025-03-16 03:30:00',
-                '2025-03-16 03:15:00',
-                '2025-03-16 03:00:00',
-                '2025-03-16 02:45:00',
-                '2025-03-16 02:30:00',
-                '2025-03-16 02:15:00',
-                '2025-03-16 02:00:00',
-                '2025-03-16 01:45:00',
-                '2025-03-16 01:30:00',
-                '2025-03-16 01:15:00',
-                '2025-03-16 01:00:00',
-                '2025-03-16 00:45:00',
-                '2025-03-16 00:30:00',
-                '2025-03-16 00:15:00',
-            ],
-            series: [
-                {
-                    name: 'Current Day',
-                    data: [
-                        13.6, 12.0, 11.2, 11.2, 11.6, 10.4, 12.0, 10.8, 12.4,
-                        12.0, 12.8, 13.6, 12.4, 13.6, 12.0, 13.6, 12.8, 13.2,
-                        13.6, 12.4, 14.0, 12.4, 14.0, 12.4, 13.6, 12.8, 13.2,
-                        14.0, 12.8, 14.0, 12.4, 13.6, 12.4, 13.6, 12.4,
-                    ],
-                },
-                {
-                    name: 'Previous Day',
-                    data: [
-                        13.2, 10.8, 10.0, 11.2, 10.8, 10.8, 11.6, 10.8, 12.0,
-                        11.6, 13.2, 12.8, 13.2, 14.0, 12.8, 14.4, 13.2, 14.8,
-                        13.6, 14.4, 14.8, 13.2, 14.8, 13.2, 14.4, 13.2, 14.4,
-                        13.6, 13.6, 14.4, 13.2, 14.4, 12.8, 14.4, 12.8,
-                    ],
-                },
-            ],
-        },
-    };
-
     // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
         if (isRegionUser && region) {
-            // Format region name with first letter capitalized
             const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
-
-            // Region user breadcrumb - showing only Dashboard -> Region -> EDCs
             return [
                 { label: 'Dashboard', path: '/user/dashboard' },
                 { label: `Region : ${formattedRegionName}`, path: `/user/${region}/dashboard` },
                 { label: 'EDCs', path: `/user/${region}/edcs` }
             ];
         } else {
-            // Standard admin or user breadcrumb
-            const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` }
+            return [
+                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'EDCs', path: `${currentBaseRoute}/edcs` }
             ];
-
-            if (region) {
-                items.push({ label: 'Regions', path: `${currentBaseRoute}/regions` });
-                items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`
-                });
-            }
-
-            items.push({
-                label: 'EDCs',
-                path: region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`
-            });
-
-            return items;
         }
     };
 
@@ -299,13 +175,6 @@ const EDCs = () => {
                                 className={styles.time_range_select_dropdown_icon}
                             />
                         </div>
-                        {/* <Buttons
-                            label="Get Reports"
-                            variant="primary"
-                            alt="GetReports"
-                            icon="icons/reports.svg"
-                            iconPosition="left"
-                        /> */}
                     </div>
                 </div>
             </div>
@@ -389,44 +258,28 @@ const EDCs = () => {
                     <div className={styles.metrics_communication_info}>
                         <div className="titles">Communication Status</div>
                         <div className={styles.overall_communication_status}>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
+                            <div className={styles.communication_status_container}>
                                 <div className={styles.communication_value}>
                                     {widgetsData.commMeters}
                                 </div>
-                                <div
-                                    className={
-                                        styles.communication_positive_percentage
-                                    }>
+                                <div className={styles.communication_positive_percentage}>
                                     <img
                                         src="icons/up-right-arrow.svg"
                                         alt="Positive"
-                                        className={
-                                            styles.communication_positive_arrow
-                                        }
+                                        className={styles.communication_positive_arrow}
                                     />
                                     87%
                                 </div>
                             </div>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
+                            <div className={styles.communication_status_container}>
                                 <div className={styles.communication_value}>
                                     {widgetsData.nonCommMeters}
                                 </div>
-                                <div
-                                    className={
-                                        styles.communication_negative_percentage
-                                    }>
+                                <div className={styles.communication_negative_percentage}>
                                     <img
                                         src="icons/up-right-arrow.svg"
                                         alt="Positive"
-                                        className={
-                                            styles.communication_negative_arrow
-                                        }
+                                        className={styles.communication_negative_arrow}
                                     />
                                     13%
                                 </div>
@@ -474,4 +327,4 @@ const EDCs = () => {
     );
 };
 
-export default EDCs;
+export default EDCUserPage; 

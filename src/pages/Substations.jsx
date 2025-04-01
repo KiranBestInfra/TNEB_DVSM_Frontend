@@ -54,11 +54,11 @@ const Substations = () => {
   const location = useLocation();
 
   // Determine if this is a region user path
-  const isRegionUser = location.pathname.includes('/user/') ||
+  const isRegionUser = location.pathname.includes('/bi/user/') ||
     (location.pathname.includes('/user/') &&
       !location.pathname.includes('/admin/'));
   const currentBaseRoute = isRegionUser ?
-    (location.pathname.includes('/user/') ? '/user' : '/user') :
+    (location.pathname.includes('/bi/user/') ? '/bi/user' : '/user') :
     (location.pathname.includes('/user/') ? '/user' : '/admin');
 
   const [widgetsData, setWidgetsData] = useState({
@@ -306,18 +306,18 @@ const Substations = () => {
                     <option value="Year">Year</option>
                   </select>
                   <img
-                    src="icons/arrow-down.svg"
+                    src="/bi/icons/arrow-down.svg"
                     alt="Select Time"
                     className={styles.time_range_select_dropdown_icon}
                   />
                 </div>
-                <Buttons
+                {/* <Buttons
                   label="Get Reports"
                   variant="primary"
                   alt="GetReports"
-                  icon="icons/reports.svg"
+                  icon="/bi/icons/reports.svg"
                   iconPosition="left"
-                />
+                /> */}
               </div>
             </div>
           </div>
@@ -325,7 +325,7 @@ const Substations = () => {
           <div className={styles.summary_section}>
             <div className={styles.total_regions_container}>
               <div className={styles.total_main_info}>
-                <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
+                <img src="/bi/icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
                   <p className="title">
                     <Link to={`${currentBaseRoute}/regions`}>
@@ -338,7 +338,7 @@ const Substations = () => {
             </div>
             <div className={styles.total_edcs_container}>
               <div className={styles.total_main_info}>
-                <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
+                <img src="/bi/icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
                   <p className="title">
                     <Link to={region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`}>
@@ -351,7 +351,7 @@ const Substations = () => {
             </div>
             <div className={styles.total_substations_container}>
               <div className={styles.total_main_info}>
-                <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
+                <img src="/bi/icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
                   <p className="title">
                     <Link to={region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`}>
@@ -365,7 +365,7 @@ const Substations = () => {
             <div className={styles.total_meters_container}>
               <div className={styles.total_meters_main_info}>
                 <img
-                  src="icons/electric-meter.svg"
+                  src="/bi/icons/electric-meter.svg"
                   alt="Total Meters"
                   className={styles.TNEB_icons}
                 />
@@ -385,7 +385,7 @@ const Substations = () => {
                     <div className={styles.communication_value}>{widgetsData.commMeters}</div>
                     <div className={styles.communication_positive_percentage}>
                       <img
-                        src="icons/up-right-arrow.svg"
+                        src="/bi/icons/up-right-arrow.svg"
                         alt="Positive"
                         className={styles.communication_positive_arrow}
                       />
@@ -396,7 +396,7 @@ const Substations = () => {
                     <div className={styles.communication_value}>{widgetsData.nonCommMeters}</div>
                     <div className={styles.communication_negative_percentage}>
                       <img
-                        src="icons/up-right-arrow.svg"
+                        src="/bi/icons/up-right-arrow.svg"
                         alt="Positive"
                         className={styles.communication_negative_arrow}
                       />

@@ -62,14 +62,14 @@ const Regions = () => {
   };
 
   // Check if we're in a region user path
-  const isRegionUser = location.pathname.includes('/user/') ||
+  const isRegionUser = location.pathname.includes('/bi/user/') ||
     (location.pathname.includes('/user/') &&
       !location.pathname.includes('/admin/'));
   const currentRegionName = isRegionUser ?
     location.pathname.split('/').filter(x => x)[1] || '' :
     '';
-  const baseRoute = location.pathname.includes('/user/') ?
-    '/user' :
+  const baseRoute = location.pathname.includes('/bi/user/') ?
+    '/bi/user' :
     (location.pathname.includes('/user/') ? '/user' : '/admin');
 
   // List of all region names
@@ -255,13 +255,13 @@ const Regions = () => {
                 className={styles.time_range_select_dropdown_icon}
               />
             </div>
-            <Buttons
+            {/* <Buttons
               label="Get Reports"
               variant="primary"
               alt="GetReports"
               icon="icons/reports.svg"
               iconPosition="left"
-            />
+            /> */}
           </div>
         </div>
       </div>

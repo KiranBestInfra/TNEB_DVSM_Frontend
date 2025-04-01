@@ -7,13 +7,8 @@ import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
 
-const EDCs = () => {
+const FeedersUserPage = () => {
     const [timeRange, setTimeRange] = useState('Daily');
-    const totalMeters = 1243;
-    const totalRegions = 13; // Total number of regions
-    const totalEDCs = 95; // Total number of EDCs
-    const totalSubstations = 260; // Total number of substations
-    const totalFeeders = 416; // Total number of feeders
     const { region } = useParams();
     const location = useLocation();
 
@@ -26,14 +21,13 @@ const EDCs = () => {
         (location.pathname.includes('/user/') ? '/user' : '/admin');
 
     const [widgetsData, setWidgetsData] = useState({
-        totalRegions: 0,
         totalEdcs: 0,
         totalSubstations: 0,
         totalFeeders: 0,
         commMeters: 0,
         nonCommMeters: 0,
-        edcNames: [],
-        regionEdcCount: 0,
+        feederNames: [],
+        regionFeederCount: 0,
     });
 
     useEffect(() => {
@@ -46,7 +40,6 @@ const EDCs = () => {
 
             setWidgetsData((prev) => ({
                 ...prev,
-                totalRegions: regionWidgets.totalRegions || prev.totalRegions,
                 totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
                 totalSubstations:
                     regionWidgets.totalSubstations || prev.totalSubstations,
@@ -54,7 +47,6 @@ const EDCs = () => {
                 commMeters: regionWidgets.commMeters || prev.commMeters,
                 nonCommMeters:
                     regionWidgets.nonCommMeters || prev.nonCommMeters,
-                //edcNames: prev.edcNames,
             }));
         };
 
@@ -65,180 +57,68 @@ const EDCs = () => {
         console.log('region', region);
         if (!region) return;
 
-        const fetchEdcNames = async () => {
+        const fetchFeederNames = async () => {
             try {
                 const response = await fetch(
                     `http://localhost:3000/api/v1/edcs/widgets/${region}`
                 );
                 const data = await response.json();
-                console.log('Fetched EDC & Substation Data:', data); // Log to check response
+                console.log('Fetched Feeder Data:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
-                    edcNames: data.data?.edcNames || [], // Ensure safe access
-                    regionEdcCount: data.data?.edcNames?.length || 0,
-                    substationNames: data.data?.substationNames || [], // Added line
-                    regionSubstationCount:
-                        data.data?.substationNames?.length || 0, // Added line
+                    feederNames: data.data?.feederNames || [],
+                    regionFeederCount: data.data?.feederNames?.length || 0,
                 }));
             } catch (error) {
                 console.error(
-                    'Error fetching EDC names:',
+                    'Error fetching feeder names:',
                     error
                 );
             }
         };
 
-        fetchEdcNames();
+        fetchFeederNames();
     }, [region]);
 
     console.log('widgetsData', widgetsData);
 
-    const handleRegionClick = (region) => {
-        setSelectedRegion(region); // Set region when clicked
+    // Feeder meter counts
+    const feederMeterCounts = {
+        "Adyar Feeder 1": 45,
+        "Velachery Feeder 2": 38,
+        "T Nagar Feeder 3": 42,
+        "Mylapore Feeder 4": 35,
+        "Anna Nagar Feeder 5": 40,
+        "Porur Feeder 6": 32,
+        "Ambattur Feeder 7": 36,
+        "Perambur Feeder 8": 34,
+        "Guindy Feeder 9": 41,
+        "Kodambakkam Feeder 10": 37,
+        "Royapuram Feeder 11": 33,
+        "Thiruvanmiyur Feeder 12": 39,
+        "Kilpauk Feeder 13": 35,
+        "Egmore Feeder 14": 31,
+        "Nungambakkam Feeder 15": 38
     };
 
-    const handleTimeframeChange = (e) => {
-        setTimeframe(e.target.value);
-    };
-
-    // Replace region data with EDC data
-    const edcNames = [
-        'Chennai North',
-        'Chennai South',
-        'Chennai Central',
-        'Chennai West',
-        'Coimbatore North',
-        'Coimbatore South',
-        'Madurai Urban',
-        'Madurai Rural',
-        'Trichy Urban',
-        'Trichy Rural',
-        'Thanjavur',
-        'Villupuram',
-        'Vellore',
-        'Salem',
-        'Erode',
-    ];
-
-    // EDC substation counts
-    const edcSubstationCounts = {
-        'Chennai North': 18,
-        'Chennai South': 22,
-        'Chennai Central': 20,
-        'Chennai West': 15,
-        'Coimbatore North': 16,
-        'Coimbatore South': 19,
-        'Madurai Urban': 17,
-        'Madurai Rural': 14,
-        'Trichy Urban': 15,
-        'Trichy Rural': 13,
-        'Thanjavur': 16,
-        'Villupuram': 14,
-        'Vellore': 17,
-        'Salem': 18,
-        'Erode': 16,
-    };
-
-    // EDC feeder counts
-    const edcFeederCounts = {
-        'Chennai North': 35,
-        'Chennai South': 42,
-        'Chennai Central': 38,
-        'Chennai West': 32,
-        'Coimbatore North': 28,
-        'Coimbatore South': 34,
-        'Madurai Urban': 30,
-        'Madurai Rural': 25,
-        'Trichy Urban': 28,
-        'Trichy Rural': 24,
-        'Thanjavur': 29,
-        'Villupuram': 26,
-        'Vellore': 31,
-        'Salem': 33,
-        'Erode': 29,
-    };
-
-    // EDC consumption stats
-    const edcStats = {
-        'Chennai North': { currentValue: 380, previousValue: 350 },
-        'Chennai South': { currentValue: 420, previousValue: 390 },
-        'Chennai Central': { currentValue: 390, previousValue: 360 },
-        'Chennai West': { currentValue: 360, previousValue: 340 },
-        'Coimbatore North': { currentValue: 340, previousValue: 310 },
-        'Coimbatore South': { currentValue: 370, previousValue: 350 },
-        'Madurai Urban': { currentValue: 350, previousValue: 320 },
-        'Madurai Rural': { currentValue: 310, previousValue: 290 },
-        'Trichy Urban': { currentValue: 330, previousValue: 300 },
-        'Trichy Rural': { currentValue: 290, previousValue: 270 },
-        'Thanjavur': { currentValue: 320, previousValue: 300 },
-        'Villupuram': { currentValue: 300, previousValue: 280 },
-        'Vellore': { currentValue: 340, previousValue: 310 },
-        'Salem': { currentValue: 350, previousValue: 320 },
-        'Erode': { currentValue: 330, previousValue: 300 },
-    };
-
-    // Sample data for the LineChart
-    const graphData = {
-        daily: {
-            xAxis: [
-                '2025-03-16 23:59:59',
-                '2025-03-16 08:30:00',
-                '2025-03-16 08:15:00',
-                '2025-03-16 08:00:00',
-                '2025-03-16 07:45:00',
-                '2025-03-16 07:30:00',
-                '2025-03-16 07:15:00',
-                '2025-03-16 07:00:00',
-                '2025-03-16 06:45:00',
-                '2025-03-16 06:30:00',
-                '2025-03-16 06:15:00',
-                '2025-03-16 06:00:00',
-                '2025-03-16 05:45:00',
-                '2025-03-16 05:30:00',
-                '2025-03-16 05:15:00',
-                '2025-03-16 05:00:00',
-                '2025-03-16 04:45:00',
-                '2025-03-16 04:30:00',
-                '2025-03-16 04:15:00',
-                '2025-03-16 04:00:00',
-                '2025-03-16 03:45:00',
-                '2025-03-16 03:30:00',
-                '2025-03-16 03:15:00',
-                '2025-03-16 03:00:00',
-                '2025-03-16 02:45:00',
-                '2025-03-16 02:30:00',
-                '2025-03-16 02:15:00',
-                '2025-03-16 02:00:00',
-                '2025-03-16 01:45:00',
-                '2025-03-16 01:30:00',
-                '2025-03-16 01:15:00',
-                '2025-03-16 01:00:00',
-                '2025-03-16 00:45:00',
-                '2025-03-16 00:30:00',
-                '2025-03-16 00:15:00',
-            ],
-            series: [
-                {
-                    name: 'Current Day',
-                    data: [
-                        13.6, 12.0, 11.2, 11.2, 11.6, 10.4, 12.0, 10.8, 12.4,
-                        12.0, 12.8, 13.6, 12.4, 13.6, 12.0, 13.6, 12.8, 13.2,
-                        13.6, 12.4, 14.0, 12.4, 14.0, 12.4, 13.6, 12.8, 13.2,
-                        14.0, 12.8, 14.0, 12.4, 13.6, 12.4, 13.6, 12.4,
-                    ],
-                },
-                {
-                    name: 'Previous Day',
-                    data: [
-                        13.2, 10.8, 10.0, 11.2, 10.8, 10.8, 11.6, 10.8, 12.0,
-                        11.6, 13.2, 12.8, 13.2, 14.0, 12.8, 14.4, 13.2, 14.8,
-                        13.6, 14.4, 14.8, 13.2, 14.8, 13.2, 14.4, 13.2, 14.4,
-                        13.6, 13.6, 14.4, 13.2, 14.4, 12.8, 14.4, 12.8,
-                    ],
-                },
-            ],
-        },
+    // Feeder consumption stats
+    const feederStats = {
+        "Adyar Feeder 1": { currentValue: 850, previousValue: 780 },
+        "Velachery Feeder 2": { currentValue: 720, previousValue: 680 },
+        "T Nagar Feeder 3": { currentValue: 920, previousValue: 850 },
+        "Mylapore Feeder 4": { currentValue: 780, previousValue: 720 },
+        "Anna Nagar Feeder 5": { currentValue: 820, previousValue: 760 },
+        "Porur Feeder 6": { currentValue: 680, previousValue: 620 },
+        "Ambattur Feeder 7": { currentValue: 740, previousValue: 680 },
+        "Perambur Feeder 8": { currentValue: 700, previousValue: 650 },
+        "Guindy Feeder 9": { currentValue: 840, previousValue: 780 },
+        "Kodambakkam Feeder 10": { currentValue: 760, previousValue: 700 },
+        "Royapuram Feeder 11": { currentValue: 680, previousValue: 620 },
+        "Thiruvanmiyur Feeder 12": { currentValue: 800, previousValue: 740 },
+        "Kilpauk Feeder 13": { currentValue: 720, previousValue: 660 },
+        "Egmore Feeder 14": { currentValue: 640, previousValue: 580 },
+        "Nungambakkam Feeder 15": { currentValue: 780, previousValue: 720 }
     };
 
     // Build breadcrumb items based on current path
@@ -247,11 +127,11 @@ const EDCs = () => {
             // Format region name with first letter capitalized
             const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
 
-            // Region user breadcrumb - showing only Dashboard -> Region -> EDCs
+            // Region user breadcrumb - showing only Dashboard -> Region -> Feeders
             return [
                 { label: 'Dashboard', path: '/user/dashboard' },
                 { label: `Region : ${formattedRegionName}`, path: `/user/${region}/dashboard` },
-                { label: 'EDCs', path: `/user/${region}/edcs` }
+                { label: 'Feeders', path: `/user/${region}/feeders` }
             ];
         } else {
             // Standard admin or user breadcrumb
@@ -268,8 +148,8 @@ const EDCs = () => {
             }
 
             items.push({
-                label: 'EDCs',
-                path: region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`
+                label: 'Feeders',
+                path: region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`
             });
 
             return items;
@@ -279,7 +159,7 @@ const EDCs = () => {
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">EDCs</h2>
+                <h2 className="title">Feeders</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -299,37 +179,11 @@ const EDCs = () => {
                                 className={styles.time_range_select_dropdown_icon}
                             />
                         </div>
-                        {/* <Buttons
-                            label="Get Reports"
-                            variant="primary"
-                            alt="GetReports"
-                            icon="icons/reports.svg"
-                            iconPosition="left"
-                        /> */}
                     </div>
                 </div>
             </div>
             <Breadcrumb items={getBreadcrumbItems()} />
             <div className={styles.summary_section}>
-                <div className={styles.total_regions_container}>
-                    <div className={styles.total_main_info}>
-                        <img
-                            src="icons/office.svg"
-                            alt="Total Regions"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_title_value}>
-                            <p className="title">
-                                <Link to={`${currentBaseRoute}/regions`}>
-                                    Regions
-                                </Link>
-                            </p>
-                            <div className={styles.summary_value}>
-                                {widgetsData.totalRegions}
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div className={styles.total_edcs_container}>
                     <div className={styles.total_main_info}>
                         <img
@@ -438,40 +292,37 @@ const EDCs = () => {
 
             <div className={styles.section_header}>
                 <h2 className="title">
-                    EDCs:{' '}
+                    Feeders:{' '}
                     <span className={styles.region_count}>
-                        [{widgetsData.regionEdcCount}]
+                        [{widgetsData.regionFeederCount}]
                     </span>
                 </h2>
             </div>
             <div className={styles.region_stats_container}>
-                {widgetsData.edcNames && widgetsData.edcNames.length > 0 ? (
-                    widgetsData.edcNames.map((edc, index) => (
+                {widgetsData.feederNames && widgetsData.feederNames.length > 0 ? (
+                    widgetsData.feederNames.map((feeder, index) => (
                         <div
                             key={index}
                             className={styles.individual_region_stats}>
                             <ShortDetailsWidget
-                                region={edc}
-                                substationCount={
-                                    edcSubstationCounts?.[edc] || 0
-                                }
-                                feederCount={edcFeederCounts?.[edc] || 0}
+                                region={feeder}
+                                feederCount={feederMeterCounts?.[feeder] || 0}
                                 currentValue={
-                                    edcStats?.[edc]?.currentValue || 0
+                                    feederStats?.[feeder]?.currentValue || 0
                                 }
                                 previousValue={
-                                    edcStats?.[edc]?.previousValue || 0
+                                    feederStats?.[feeder]?.previousValue || 0
                                 }
-                                pageType="edcs"
+                                pageType="feeders"
                             />
                         </div>
                     ))
                 ) : (
-                    <p>No EDCs available for this region.</p>
+                    <p>No feeders available for this region.</p>
                 )}
             </div>
         </div>
     );
 };
 
-export default EDCs;
+export default FeedersUserPage; 

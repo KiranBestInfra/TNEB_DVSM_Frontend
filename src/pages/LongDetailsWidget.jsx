@@ -233,9 +233,8 @@ const LongDetailsWidget = () => {
 
             <div className={styles.total_title_value}>
               <span className='title'>
-                <Link to={entityId ? `${baseRoute}/${entityId}/feeders` : `${baseRoute}/feeders`}>
-                  Feeders
-                </Link>
+              District
+               
               </span>
               <span className={styles.summary_value}>{stats.feederCount}</span>
             </div>
@@ -253,7 +252,10 @@ const LongDetailsWidget = () => {
               </div>
 
               <div className={styles.total_title_value}>
-                <span className='title'>Location</span>
+                <span className='title'>
+                <Link to={entityId ? `${baseRoute}/${entityId}/feeders` : `${baseRoute}/feeders`}>
+                Feeder
+                  </Link></span>
                 <span className={styles.summary_value}>{stats.feederCount}</span>
               </div>
             </div>
