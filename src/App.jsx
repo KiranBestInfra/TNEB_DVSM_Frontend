@@ -239,6 +239,7 @@ const App = () => {
             if (!region) {
                 console.error('DefaultRedirect - CRITICAL: Unable to determine region for Region User');
                 alert('Unable to determine your region. Please contact your administrator.');
+                // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
 
@@ -246,7 +247,7 @@ const App = () => {
             return <Navigate to={`/user/${region}/dashboard`} replace />;
         }
 
-        // Default case - redirect to dashboard
+        // Default case - redirect to admin dashboard
         return <Navigate to="/admin/dashboard" replace />;
     };
 
@@ -298,6 +299,7 @@ const App = () => {
             if (!userRegion) {
                 console.error('RegionsProtectedRoute - CRITICAL: Unable to determine user region');
                 alert('Unable to determine your region. Please contact your administrator.');
+                // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
 
@@ -407,6 +409,7 @@ const App = () => {
             if (!userRegion) {
                 console.error('RegionRedirect - CRITICAL: Unable to determine region');
                 alert('Unable to determine your region. Please contact your administrator.');
+                // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
 
@@ -438,7 +441,12 @@ const App = () => {
         // Allowed paths for Region Users
         const isAllowedPath =
             location.pathname === "/admin/dashboard" ||
-            location.pathname.includes("/user/") && location.pathname.includes("/dashboard");
+            (location.pathname.includes("/user/") && (
+                location.pathname.includes("/dashboard") ||
+                location.pathname.includes("/edcs") ||
+                location.pathname.includes("/substations") ||
+                location.pathname.includes("/feeders")
+            ));
 
         // If Region User is trying to access a non-allowed path, redirect to their region detail page
         if (isRegionUser && !isAllowedPath) {
@@ -471,6 +479,7 @@ const App = () => {
             if (!userRegion) {
                 console.error('RegionUserRoute - CRITICAL: Unable to determine region');
                 alert('Unable to determine your region. Please contact your administrator.');
+                // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
 
@@ -639,6 +648,54 @@ const App = () => {
                             />
                             <Route
                                 path=":region/dashboard"
+                                element={
+                                    <ProtectedRoute>
+                                        <LongDetailsWidget />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/edcs"
+                                element={
+                                    <ProtectedRoute>
+                                        <EDCs />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/edcs/:edcId/details"
+                                element={
+                                    <ProtectedRoute>
+                                        <LongDetailsWidget />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/substations"
+                                element={
+                                    <ProtectedRoute>
+                                        <Substations />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/substations/:substationId/details"
+                                element={
+                                    <ProtectedRoute>
+                                        <LongDetailsWidget />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/feeders"
+                                element={
+                                    <ProtectedRoute>
+                                        <Feeders />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path=":region/feeders/:feederId/details"
                                 element={
                                     <ProtectedRoute>
                                         <LongDetailsWidget />

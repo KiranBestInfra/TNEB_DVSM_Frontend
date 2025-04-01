@@ -11,6 +11,11 @@ const Dashboard = () => {
   const { region } = useParams();
   console.log('Dashboard - Region from params:', region);
 
+  // Determine base route from URL path (admin or user)
+  const location = window.location.pathname;
+  const isUserRoute = location.includes('/user/');
+  const baseRoute = isUserRoute ? '/user' : '/admin';
+
   const [timeRange, setTimeRange] = useState('Daily');
   const [widgetsData, setWidgetsData] = useState({
     totalRegions: 0,
@@ -157,7 +162,7 @@ const Dashboard = () => {
             <img src="/bi/icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">
-                <Link to="/admin/regions">
+                <Link to={`${baseRoute}/regions`}>
                   Regions
                 </Link>
               </p>
@@ -170,7 +175,7 @@ const Dashboard = () => {
             <img src="/bi/icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">
-                <Link to="/admin/edcs">
+                <Link to={region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`}>
                   EDCs
                 </Link>
               </p>
@@ -183,7 +188,7 @@ const Dashboard = () => {
             <img src="/bi/icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">
-                <Link to="/admin/substations">
+                <Link to={region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`}>
                   Substations
                 </Link>
               </p>
@@ -199,7 +204,11 @@ const Dashboard = () => {
               className={styles.TNEB_icons}
             />
             <div className={styles.total_meters}>
-              <div className="title">Feeders</div>
+              <div className="title">
+                <Link to={region ? `${baseRoute}/${region}/feeders` : `${baseRoute}/feeders`}>
+                  Feeders
+                </Link>
+              </div>
               <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
             </div>
           </div>

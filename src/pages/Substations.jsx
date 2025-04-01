@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -52,6 +52,12 @@ const Substations = () => {
   });
   const { region } = useParams();
   console.log(region);
+
+  // Determine base route from URL path (admin or user)
+  const location = window.location.pathname;
+  const isUserRoute = location.includes('/user/');
+  const baseRoute = isUserRoute ? '/user' : '/admin';
+
   const [widgetsData, setWidgetsData] = useState({
     totalRegions: 0,
     totalEdcs: 0,
@@ -279,11 +285,14 @@ const Substations = () => {
           </div>
           <Breadcrumb
             items={[
-              { label: 'Home', path: '/admin' },
-              { label: 'Dashboard', path: '/admin/dashboard', active: false },
-              { label: 'Regions', path: '/admin/regions', active: false },
-              { label: 'Kancheepuram', path: '/admin/kancheepuram', active: false },
-              { label: 'Substations', path: '/admin/kancheepuram/substations', active: true }
+              { label: 'Home', path: `${baseRoute}` },
+              { label: 'Dashboard', path: `${baseRoute}/dashboard`, active: false },
+              { label: 'Regions', path: `${baseRoute}/regions`, active: false },
+              {
+                label: region ? region.charAt(0).toUpperCase() + region.slice(1) : 'Region',
+                path: region ? `${baseRoute}/${region}` : `${baseRoute}/regions`, active: false
+              },
+              { label: 'Substations', path: region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`, active: true }
             ]}
           />
           <div className={styles.summary_section}>
@@ -291,7 +300,11 @@ const Substations = () => {
               <div className={styles.total_main_info}>
                 <img src="/bi/icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
-                  <p className="title">Regions</p>
+                  <p className="title">
+                    <Link to={`${baseRoute}/regions`}>
+                      Regions
+                    </Link>
+                  </p>
                   <div className={styles.summary_value}>{widgetsData.totalRegions}</div>
                 </div>
               </div>
@@ -300,7 +313,11 @@ const Substations = () => {
               <div className={styles.total_main_info}>
                 <img src="/bi/icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
-                  <p className="title">EDCs</p>
+                  <p className="title">
+                    <Link to={region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`}>
+                      EDCs
+                    </Link>
+                  </p>
                   <div className={styles.summary_value}>{widgetsData.totalEdcs}</div>
                 </div>
               </div>
@@ -309,7 +326,11 @@ const Substations = () => {
               <div className={styles.total_main_info}>
                 <img src="/bi/icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
-                  <p className="title">Substations</p>
+                  <p className="title">
+                    <Link to={region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`}>
+                      Substations
+                    </Link>
+                  </p>
                   <div className={styles.summary_value}>{widgetsData.totalSubstations}</div>
                 </div>
               </div>
@@ -322,7 +343,11 @@ const Substations = () => {
                   className={styles.TNEB_icons}
                 />
                 <div className={styles.total_meters}>
-                  <div className="title">Feeders</div>
+                  <div className="title">
+                    <Link to={region ? `${baseRoute}/${region}/feeders` : `${baseRoute}/feeders`}>
+                      Feeders
+                    </Link>
+                  </div>
                   <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
                 </div>
               </div>
