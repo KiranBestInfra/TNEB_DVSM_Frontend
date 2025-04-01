@@ -296,7 +296,7 @@ const Feeders = () => {
 
             <div className={styles.section_header}>
                 <h2 className="title">
-                    Feeders{' '}
+                    Feeders:{' '}
                     <span
                         className={
                             styles.region_count
