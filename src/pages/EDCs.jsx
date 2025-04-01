@@ -11,10 +11,10 @@ import { apiClient } from '../api/client';
 const EDCs = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
     const totalMeters = 1243;
-    const totalRegions = 13; // Total number of regions
-    const totalEDCs = 95; // Total number of EDCs
-    const totalSubstations = 260; // Total number of substations
-    const totalFeeders = 416; // Total number of feeders
+    const totalRegions = 13;
+    const totalEDCs = 95;
+    const totalSubstations = 260;
+    const totalFeeders = 416;
     const [dateRange, setDateRange] = useState({
         start: null,
         end: null,
@@ -91,7 +91,7 @@ const EDCs = () => {
 
                 setWidgetsData((prev) => ({
                     ...prev,
-                    edcNames: data.data?.edcNames || [], // Ensure safe access
+                    edcNames: data.data?.edcNames || [],
                     regionEdcCount: data.data?.edcNames?.length || 0,
                     substationNames: data.data?.substationNames || [], // Added line
                     // regionSubstationCount:
@@ -102,6 +102,7 @@ const EDCs = () => {
                     feederCount: data.data?.feederCounts || {},
                 }));
             } catch (error) {
+                console.error('Error fetching EDC names:', error);
                 console.error('Error fetching EDC names:', error);
             }
         };
@@ -150,11 +151,11 @@ const EDCs = () => {
         'Madurai Rural': 14,
         'Trichy Urban': 15,
         'Trichy Rural': 13,
-        'Thanjavur': 16,
-        'Villupuram': 14,
-        'Vellore': 17,
-        'Salem': 18,
-        'Erode': 16,
+        Thanjavur: 16,
+        Villupuram: 14,
+        Vellore: 17,
+        Salem: 18,
+        Erode: 16,
     };
 
     // EDC feeder counts
@@ -169,11 +170,11 @@ const EDCs = () => {
         'Madurai Rural': 25,
         'Trichy Urban': 28,
         'Trichy Rural': 24,
-        'Thanjavur': 29,
-        'Villupuram': 26,
-        'Vellore': 31,
-        'Salem': 33,
-        'Erode': 29,
+        Thanjavur: 29,
+        Villupuram: 26,
+        Vellore: 31,
+        Salem: 33,
+        Erode: 29,
     };
 
     // EDC consumption stats
@@ -188,11 +189,11 @@ const EDCs = () => {
         'Madurai Rural': { currentValue: 310, previousValue: 290 },
         'Trichy Urban': { currentValue: 330, previousValue: 300 },
         'Trichy Rural': { currentValue: 290, previousValue: 270 },
-        'Thanjavur': { currentValue: 320, previousValue: 300 },
-        'Villupuram': { currentValue: 300, previousValue: 280 },
-        'Vellore': { currentValue: 340, previousValue: 310 },
-        'Salem': { currentValue: 350, previousValue: 320 },
-        'Erode': { currentValue: 330, previousValue: 300 },
+        Thanjavur: { currentValue: 320, previousValue: 300 },
+        Villupuram: { currentValue: 300, previousValue: 280 },
+        Vellore: { currentValue: 340, previousValue: 310 },
+        Salem: { currentValue: 350, previousValue: 320 },
+        Erode: { currentValue: 330, previousValue: 300 },
     };
 
     // Sample data for the LineChart

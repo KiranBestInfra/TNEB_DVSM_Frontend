@@ -117,7 +117,6 @@ const Header = () => {
                         `/regions/search?term=${debouncedSearchTerm}`
                     );
                     const results = response.data;
-                   // console.log(results)
                     setSearchResults(results);
                 } catch (error) {
                     console.error('Search error:', error);
