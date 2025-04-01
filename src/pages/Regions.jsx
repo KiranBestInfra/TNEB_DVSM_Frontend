@@ -177,43 +177,6 @@ const Regions = () => {
       <div className={styles.section_header}>
         <h2 className="title">Regions</h2>
         <div className={styles.action_container}>
-          {/* <div className={styles.date_range}>
-            <div className={styles.search_cont}>
-              <DatePicker
-                selected={dateRange.start}
-                onChange={(date) =>
-                  setDateRange({ ...dateRange, start: date })
-                }
-                dateFormat="MMM dd, yyyy"
-                placeholderText="Start Date"
-              />
-              <span className="icons icon_placement">
-                <img src="icons/date.svg" alt="Calendar" />
-              </span>
-            </div>
-
-            <div className={styles.search_cont}>
-              <DatePicker
-                selected={dateRange.end}
-                onChange={(date) =>
-                  setDateRange({ ...dateRange, end: date })
-                }
-                dateFormat="MMM dd, yyyy"
-                placeholderText="End Date"
-                minDate={dateRange.start}
-              />
-              <span className="icons icon_placement">
-                <img src="icons/date.svg" alt="Calendar" />
-              </span>
-            </div>
-            <Buttons
-              label="Get Reports"
-              variant="primary"
-              alt="GetReports"
-              icon="icons/reports.svg"
-              iconPosition="left"
-            />
-          </div> */}
           <div className={styles.action_cont}>
             <div className={styles.time_range_select_dropdown}>
               <select

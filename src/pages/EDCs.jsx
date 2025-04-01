@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -21,6 +21,11 @@ const EDCs = () => {
     });
     const { region } = useParams();
     // console.log(region);
+
+    // Determine base route from URL path (admin or user)
+    const location = window.location.pathname;
+    const isUserRoute = location.includes('/user/');
+    const baseRoute = isUserRoute ? '/user' : '/admin';
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -304,7 +309,11 @@ const EDCs = () => {
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">Regions</p>
+                            <p className="title">
+                                <Link to={`${baseRoute}/regions`}>
+                                    Regions
+                                </Link>
+                            </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalRegions}
                             </div>
@@ -319,7 +328,11 @@ const EDCs = () => {
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">EDCs</p>
+                            <p className="title">
+                                <Link to={region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`}>
+                                    EDCs
+                                </Link>
+                            </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalEdcs}
                             </div>
@@ -334,7 +347,11 @@ const EDCs = () => {
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">Substations</p>
+                            <p className="title">
+                                <Link to={region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`}>
+                                    Substations
+                                </Link>
+                            </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalSubstations}
                             </div>
@@ -349,7 +366,11 @@ const EDCs = () => {
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_meters}>
-                            <div className="title">Feeders</div>
+                            <div className="title">
+                                <Link to={region ? `${baseRoute}/${region}/feeders` : `${baseRoute}/feeders`}>
+                                    Feeders
+                                </Link>
+                            </div>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalFeeders}
                             </div>
