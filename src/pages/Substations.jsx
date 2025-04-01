@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -51,12 +51,15 @@ const Substations = () => {
     end: null,
   });
   const { region } = useParams();
-  console.log(region);
+  const location = useLocation();
 
-  // Determine base route from URL path (admin or user)
-  const location = window.location.pathname;
-  const isUserRoute = location.includes('/user/');
-  const baseRoute = isUserRoute ? '/user' : '/admin';
+  // Determine if this is a region user path
+  const isRegionUser = location.pathname.includes('/bi/user/') ||
+    (location.pathname.includes('/user/') &&
+      !location.pathname.includes('/admin/'));
+  const currentBaseRoute = isRegionUser ?
+    (location.pathname.includes('/bi/user/') ? '/bi/user' : '/user') :
+    (location.pathname.includes('/user/') ? '/user' : '/admin');
 
   const [widgetsData, setWidgetsData] = useState({
     totalRegions: 0,
@@ -248,6 +251,41 @@ const Substations = () => {
     },
   };
 
+  // Build breadcrumb items based on current path
+  const getBreadcrumbItems = () => {
+    if (isRegionUser && region) {
+      // Format region name with first letter capitalized
+      const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
+
+      // Region user breadcrumb - showing only Dashboard -> Region -> Substations
+      return [
+        { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+        { label: `Region : ${formattedRegionName}`, path: `${currentBaseRoute}/${region}/dashboard` },
+        { label: 'Substations', path: `${currentBaseRoute}/${region}/substations` }
+      ];
+    } else {
+      // Standard admin or user breadcrumb
+      const items = [
+        { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` }
+      ];
+
+      if (region) {
+        items.push({ label: 'Regions', path: `${currentBaseRoute}/regions` });
+        items.push({
+          label: region.charAt(0).toUpperCase() + region.slice(1),
+          path: `${currentBaseRoute}/${region}`
+        });
+      }
+
+      items.push({
+        label: 'Substations',
+        path: region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`
+      });
+
+      return items;
+    }
+  };
+
   try {
     console.log("Rendering Substations component, timeRange:", timeframe);
     return (
@@ -283,25 +321,14 @@ const Substations = () => {
               </div>
             </div>
           </div>
-          <Breadcrumb
-            items={[
-              { label: 'Home', path: `${baseRoute}` },
-              { label: 'Dashboard', path: `${baseRoute}/dashboard`, active: false },
-              { label: 'Regions', path: `${baseRoute}/regions`, active: false },
-              {
-                label: region ? region.charAt(0).toUpperCase() + region.slice(1) : 'Region',
-                path: region ? `${baseRoute}/${region}` : `${baseRoute}/regions`, active: false
-              },
-              { label: 'Substations', path: region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`, active: true }
-            ]}
-          />
+          <Breadcrumb items={getBreadcrumbItems()} />
           <div className={styles.summary_section}>
             <div className={styles.total_regions_container}>
               <div className={styles.total_main_info}>
                 <img src="/bi/icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
                   <p className="title">
-                    <Link to={`${baseRoute}/regions`}>
+                    <Link to={`${currentBaseRoute}/regions`}>
                       Regions
                     </Link>
                   </p>
@@ -314,7 +341,7 @@ const Substations = () => {
                 <img src="/bi/icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
                   <p className="title">
-                    <Link to={region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`}>
+                    <Link to={region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`}>
                       EDCs
                     </Link>
                   </p>
@@ -327,7 +354,7 @@ const Substations = () => {
                 <img src="/bi/icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
                 <div className={styles.total_title_value}>
                   <p className="title">
-                    <Link to={region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`}>
+                    <Link to={region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`}>
                       Substations
                     </Link>
                   </p>
@@ -344,7 +371,7 @@ const Substations = () => {
                 />
                 <div className={styles.total_meters}>
                   <div className="title">
-                    <Link to={region ? `${baseRoute}/${region}/feeders` : `${baseRoute}/feeders`}>
+                    <Link to={region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`}>
                       Feeders
                     </Link>
                   </div>
