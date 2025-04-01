@@ -58,7 +58,7 @@ const AuthLayout = ({ children }) => {
                 <Buttons
                     label="Accept"
                     onClick={() => {
-                        window.location.href = '/bi/auth/login';
+                        window.location.href = '/auth/login';
                     }}
                     variant="primarysmall"
                     alt="Accept"

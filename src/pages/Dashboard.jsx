@@ -14,8 +14,8 @@ const Dashboard = () => {
   // Determine base route from URL path (admin or user)
   const location = window.location.pathname;
   const isUserRoute = location.includes('/user/');
-  const isBiUserRoute = location.includes('/bi/user/');
-  const baseRoute = isBiUserRoute ? '/bi/user' : (isUserRoute ? '/user' : '/admin');
+  const isBiUserRoute = location.includes('/user/');
+  const baseRoute = isBiUserRoute ? '/user' : (isUserRoute ? '/user' : '/admin');
 
   const [timeRange, setTimeRange] = useState('Daily');
   const [widgetsData, setWidgetsData] = useState({
@@ -134,7 +134,7 @@ const Dashboard = () => {
                 <option value="Year">Year</option>
               </select>
               <img
-                src="/bi/icons/arrow-down.svg"
+                src="/icons/arrow-down.svg"
                 alt="Select Time"
                 className={styles.time_range_select_dropdown_icon}
               />
@@ -143,7 +143,7 @@ const Dashboard = () => {
               label="Get Reports"
               variant="primary"
               alt="GetReports"
-              icon="/bi/icons/reports.svg"
+              icon="/icons/reports.svg"
               iconPosition="left"
             />
           </div>
@@ -159,7 +159,7 @@ const Dashboard = () => {
       <div className={styles.summary_section}>
         <div className={styles.total_regions_container}>
           <div className={styles.total_main_info}>
-            <img src="/bi/icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
+            <img src="/icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">
                 <Link to={`${baseRoute}/regions`}>
@@ -172,7 +172,7 @@ const Dashboard = () => {
         </div>
         <div className={styles.total_edcs_container}>
           <div className={styles.total_main_info}>
-            <img src="/bi/icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
+            <img src="/icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">
                 <Link to={region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`}>
@@ -185,7 +185,7 @@ const Dashboard = () => {
         </div>
         <div className={styles.total_substations_container}>
           <div className={styles.total_main_info}>
-            <img src="/bi/icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
+            <img src="/icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">
                 <Link to={region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`}>
@@ -199,7 +199,7 @@ const Dashboard = () => {
         <div className={styles.total_meters_container}>
           <div className={styles.total_meters_main_info}>
             <img
-              src="/bi/icons/electric-meter.svg"
+              src="/icons/electric-meter.svg"
               alt="Total Meters"
               className={styles.TNEB_icons}
             />
@@ -219,7 +219,7 @@ const Dashboard = () => {
                 <div className={styles.communication_value}>{widgetsData.commMeters}</div>
                 <div className={styles.communication_positive_percentage}>
                   <img
-                    src="/bi/icons/up-right-arrow.svg"
+                    src="/icons/up-right-arrow.svg"
                     alt="Positive"
                     className={styles.communication_positive_arrow}
                   />
@@ -230,7 +230,7 @@ const Dashboard = () => {
                 <div className={styles.communication_value}>{widgetsData.nonCommMeters}</div>
                 <div className={styles.communication_negative_percentage}>
                   <img
-                    src="/bi/icons/up-right-arrow.svg"
+                    src="/icons/up-right-arrow.svg"
                     alt="Positive"
                     className={styles.communication_negative_arrow}
                   />
