@@ -110,7 +110,7 @@ const ChennaiCentralPage = () => {
                                 </span>
                             </div>
                         </div>
-                        
+
                         <div className={styles.commincation_status}>
                             <p className={styles.stat_number}>{area.communicated + area.nonCommunication}</p>
                             <div className={styles.communication_status_container}>
@@ -159,7 +159,7 @@ const ChennaiCentralPage = () => {
                         onClick={() => navigate(-1)}
                         className={styles.back_button}
                     >
-                        <img src="/icons/arrow-left.svg" alt="Back" style={{ width: '24px', height: '24px' }} />
+                        <img src="icons/arrow-left.svg" alt="Back" style={{ width: '24px', height: '24px' }} />
                         <span>Back to Region</span>
                     </button>
                 </div>
