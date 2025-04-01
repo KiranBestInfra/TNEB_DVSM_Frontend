@@ -129,7 +129,7 @@ const Dashboard = () => {
                 className={styles.time_range_select}>
                 <option value="Daily">Daily</option>
                 <option value="Monthly">Monthly</option>
-                <option value="PreviousMonth">Last30days</option>
+                <option value="PreviousMonth">Last 30 Days</option>
                 <option value="PreviousMonth">Last Week</option>
                 <option value="Year">Year</option>
               </select>
