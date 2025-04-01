@@ -35,6 +35,10 @@ const App = () => {
                 const decoded = jwtDecode(accessToken);
                 const role =
                     decoded.role || decoded.Role || decoded.user_role || 'User';
+                    const userRoleId = decoded.user_role_id || decoded.Role_Id || decoded.user_roleid;
+                    console.log('role:', role);
+
+                    console.log('userRoleId:', userRoleId);
                 return role.toLowerCase().includes('admin') ? 'Admin' : 'User';
             } catch (error) {
                 console.error('Error decoding token:', error);
