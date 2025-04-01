@@ -6,6 +6,7 @@ import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
+import { Link } from 'react-router-dom';
 
 const LongDetailsWidget = () => {
     const { regionId, edcId, substationId, feederId } = useParams();
@@ -24,6 +25,12 @@ const LongDetailsWidget = () => {
     } else if (edcId) {
         entityId = edcId;
     }
+
+    const baseRoute = location.pathname.includes('/user/')
+        ? '/user'
+        : location.pathname.includes('/user/')
+        ? '/user'
+        : '/admin';
 
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -92,72 +99,109 @@ const LongDetailsWidget = () => {
             </div>
             <Breadcrumb />
 
-      <div className={styles.performance_stats}>
-        <div className={styles.total_edcs_container}>
-          <div className={styles.total_main_info}>
-            <div className={styles.TNEB_icons}>
-              <img src="icons/electric-edc.svg" alt="EDC" className={styles.TNEB_icons} />
-            </div>
-            <div className={styles.total_title_value}>
-              <span className='title'>
-                <Link to={entityId ? `${baseRoute}/${entityId}/edcs` : `${baseRoute}/edcs`}>
-                  EDCs
-                </Link>
-              </span>
-              <span className={styles.summary_value}>{stats.edcCount}</span>
-            </div>
-          </div>
-        </div>
+            <div className={styles.performance_stats}>
+                <div className={styles.total_edcs_container}>
+                    <div className={styles.total_main_info}>
+                        <div className={styles.TNEB_icons}>
+                            <img
+                                src="icons/electric-edc.svg"
+                                alt="EDC"
+                                className={styles.TNEB_icons}
+                            />
+                        </div>
+                        <div className={styles.total_title_value}>
+                            <span className="title">
+                                <Link
+                                    to={
+                                        entityId
+                                            ? `${baseRoute}/${entityId}/edcs`
+                                            : `${baseRoute}/edcs`
+                                    }>
+                                    EDCs
+                                </Link>
+                            </span>
+                            <span className={styles.summary_value}>
+                                {stats.edcCount}
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
-        <div className={styles.total_substations_container}>
-          <div className={styles.total_main_info}>
-            <div className={styles.TNEB_icons}>
-              <img src="icons/electric-factory.svg" alt="Substation" className={styles.TNEB_icons} />
-            </div>
-            <div className={styles.total_title_value}>
-              <span className='title'>
-                <Link to={entityId ? `${baseRoute}/${entityId}/substations` : `${baseRoute}/substations`}>
-                  Substations
-                </Link>
-              </span>
-              <span className={styles.summary_value}>{stats.substationCount}</span>
-            </div>
-          </div>
-        </div>
+                <div className={styles.total_substations_container}>
+                    <div className={styles.total_main_info}>
+                        <div className={styles.TNEB_icons}>
+                            <img
+                                src="icons/electric-factory.svg"
+                                alt="Substation"
+                                className={styles.TNEB_icons}
+                            />
+                        </div>
+                        <div className={styles.total_title_value}>
+                            <span className="title">
+                                <Link
+                                    to={
+                                        entityId
+                                            ? `${baseRoute}/${entityId}/substations`
+                                            : `${baseRoute}/substations`
+                                    }>
+                                    Substations
+                                </Link>
+                            </span>
+                            <span className={styles.summary_value}>
+                                {stats.substationCount}
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
-        <div className={styles.total_meters_container}>
-          <div className={styles.total_main_info}>
-            <div className={styles.TNEB_icons}>
-              <img src="icons/electric-meter.svg" alt="Feeder" className={styles.TNEB_icons} />
-            </div>
+                <div className={styles.total_meters_container}>
+                    <div className={styles.total_main_info}>
+                        <div className={styles.TNEB_icons}>
+                            <img
+                                src="icons/electric-meter.svg"
+                                alt="Feeder"
+                                className={styles.TNEB_icons}
+                            />
+                        </div>
 
-            <div className={styles.total_title_value}>
-              <span className='title'>
-                <Link to={entityId ? `${baseRoute}/${entityId}/feeders` : `${baseRoute}/feeders`}>
-                  Feeders
-                </Link>
-              </span>
-              <span className={styles.summary_value}>{stats.feederCount}</span>
-            </div>
-          </div>
-        </div>
+                        <div className={styles.total_title_value}>
+                            <span className="title">
+                                <Link
+                                    to={
+                                        entityId
+                                            ? `${baseRoute}/${entityId}/feeders`
+                                            : `${baseRoute}/feeders`
+                                    }>
+                                    Feeders
+                                </Link>
+                            </span>
+                            <span className={styles.summary_value}>
+                                {stats.feederCount}
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
-        <div className={styles.total_units_container}>
-          <div className={styles.total_main_info}>
-            {/* Location */}
-            <div className={styles.total_main_info}>
+                <div className={styles.total_units_container}>
+                    <div className={styles.total_main_info}>
+                        {/* Location */}
+                        <div className={styles.total_main_info}>
+                            <div className={styles.TNEB_icons}>
+                                <img
+                                    src="icons/electric-meter.svg"
+                                    alt="Feeder"
+                                    className={styles.TNEB_icons}
+                                />
+                            </div>
 
-
-              <div className={styles.TNEB_icons}>
-                <img src="icons/electric-meter.svg" alt="Feeder" className={styles.TNEB_icons} />
-              </div>
-
-              <div className={styles.total_title_value}>
-                <span className='title'>Location</span>
-                <span className={styles.summary_value}>{stats.feederCount}</span>
-              </div>
-            </div>
-            {/* <div className={styles.total_title_value}>
+                            <div className={styles.total_title_value}>
+                                <span className="title">Location</span>
+                                <span className={styles.summary_value}>
+                                    {stats.feederCount}
+                                </span>
+                            </div>
+                        </div>
+                        {/* <div className={styles.total_title_value}>
               <span className='title'>Actual Demand</span>
               <span className={`${styles.summary_value} ${isPositiveChange ? styles.positive : styles.negative}`}>
                 {stats.currentValue} MW
@@ -172,37 +216,58 @@ const LongDetailsWidget = () => {
               </span>
             </div> */}
 
-            {/* Communication Your are Working here */}
-            <div className={styles.regions_communication_info}>
-              <div className="titles">Communication Status</div>
-              <div className={styles.overall_communication_status}>
-                <div className={styles.communication_status_container}>
-                  <div className={styles.communication_value}>{stats.feederCount}</div>
-                  <div className={styles.communication_positive_percentage}>
-                    <img
-                      src="icons/up-right-arrow.svg"
-                      alt="Positive"
-                      className={styles.communication_positive_arrow}
-                    />
-                    87%
-                  </div>
+                        {/* Communication Your are Working here */}
+                        <div className={styles.regions_communication_info}>
+                            <div className="titles">Communication Status</div>
+                            <div
+                                className={styles.overall_communication_status}>
+                                <div
+                                    className={
+                                        styles.communication_status_container
+                                    }>
+                                    <div className={styles.communication_value}>
+                                        {stats.feederCount}
+                                    </div>
+                                    <div
+                                        className={
+                                            styles.communication_positive_percentage
+                                        }>
+                                        <img
+                                            src="icons/up-right-arrow.svg"
+                                            alt="Positive"
+                                            className={
+                                                styles.communication_positive_arrow
+                                            }
+                                        />
+                                        87%
+                                    </div>
+                                </div>
+                                <div
+                                    className={
+                                        styles.communication_status_container
+                                    }>
+                                    <div className={styles.communication_value}>
+                                        {stats.feederCount}
+                                    </div>
+                                    <div
+                                        className={
+                                            styles.communication_negative_percentage
+                                        }>
+                                        <img
+                                            src="icons/up-right-arrow.svg"
+                                            alt="Positive"
+                                            className={
+                                                styles.communication_negative_arrow
+                                            }
+                                        />
+                                        13%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className={styles.communication_status_container}>
-                  <div className={styles.communication_value}>{stats.feederCount}</div>
-                  <div className={styles.communication_negative_percentage}>
-                    <img
-                      src="icons/up-right-arrow.svg"
-                      alt="Positive"
-                      className={styles.communication_negative_arrow}
-                    />
-                    13%
-                  </div>
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
 
             <div className={styles.details_section}>
                 <div className={styles.details_card}>
