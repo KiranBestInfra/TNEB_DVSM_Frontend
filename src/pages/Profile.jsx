@@ -4,6 +4,8 @@ import styles from "../styles/Profile.module.css";
 import { useAuth } from '../components/AuthProvider';
 import { useNavigate } from "react-router-dom";
 import { Name } from '../utils/globalUtils';
+import axios from 'axios';
+import { apiClient } from '../api/client';
 
 
 const Profile = () => {
@@ -11,7 +13,6 @@ const Profile = () => {
 
     const { user } = useAuth();
     const name = Name(user, false);
-    console.log(name);
 
     // State
     const [profileData, setProfileData] = useState({
@@ -55,13 +56,29 @@ const Profile = () => {
     const totalPages = Math.ceil(loginActivities.length / activitiesPerPage);
 
     // Handlers
-    const handleProfilePictureUpload = (event) => {
+    const handleProfilePictureUpload = async (event) => {
         const file = event.target.files[0];
         if (file) {
-            setProfileData(prev => ({
-                ...prev,
-                profilePicture: URL.createObjectURL(file)
-            }));
+            try {
+                const formData = new FormData();
+                formData.append('image', file);
+
+                axios.defaults.withCredentials = true;
+                const response =  axios.post('http://localhost:3000/api/v1/profile/edit/image', formData, {
+                    // headers: {
+                    //     'Content-Type': 'multipart/form-data'
+                    // }
+                });
+
+                
+                setProfileData(prev => ({
+                    ...prev,
+                    profilePicture: response.imageUrl || URL.createObjectURL(file)
+                }));
+            } catch (error) {
+                console.error('Error uploading profile picture:', error);
+                
+            }
         }
     };
 
@@ -122,7 +139,7 @@ const Profile = () => {
 
     // Render
     const renderProfilePicture = () => {
-        const initials = `${profileData.firstName[0]}${profileData.lastName[0]}`;
+        const initials = user?.userId ? user.userId.slice(0, 2).toUpperCase() : '';
 
         return (
             <div className={styles.profile_picture_container}>
