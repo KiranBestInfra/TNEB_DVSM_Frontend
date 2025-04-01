@@ -5,9 +5,9 @@ const Breadcrumb = ({ items }) => {
   const location = useLocation();
 
   // For region user pages, we want to customize breadcrumbs
-  // Need to handle both /bi/user/ and /user/ paths for region users
+  // Need to handle both /user/ and /user/ paths for region users
   const pathSegments = location.pathname.split('/').filter(x => x);
-  const isRegionUserPath = location.pathname.includes('/bi/user/') ||
+  const isRegionUserPath = location.pathname.includes('/user/') ||
     (pathSegments[0] === 'user' &&
       pathSegments.length >= 2 &&
       !['admin', 'regions', 'edcs', 'substations', 'feeders'].includes(pathSegments[1]));
@@ -72,7 +72,7 @@ const Breadcrumb = ({ items }) => {
       const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
 
       // Detect the base route
-      const baseRoute = location.pathname.includes('/bi/user/') ? '/bi/user' : '/user';
+      const baseRoute = location.pathname.includes('/user/') ? '/user' : '/user';
 
       const customItems = [
         { label: 'Dashboard', path: `${baseRoute}/dashboard` }
@@ -175,7 +175,7 @@ const Breadcrumb = ({ items }) => {
   const isUserRoute = pathnames.includes('user');
   const baseRoute = isUserRoute ?
     (isRegionUserPath ?
-      (location.pathname.includes('/bi/user/') ? '/bi/user' : '/user')
+      (location.pathname.includes('/user/') ? '/user' : '/user')
       : '/user')
     : '/admin';
 

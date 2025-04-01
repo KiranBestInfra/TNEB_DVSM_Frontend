@@ -56,18 +56,13 @@ const Substations = () => {
     const { region } = useParams();
     const location = useLocation();
 
-    // Determine if this is a region user path
-    const isRegionUser =
-        location.pathname.includes('/bi/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser
-        ? location.pathname.includes('/bi/user/')
-            ? '/bi/user'
-            : '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+  // Determine if this is a region user path
+  const isRegionUser = location.pathname.includes('/user/') ||
+    (location.pathname.includes('/user/') &&
+      !location.pathname.includes('/admin/'));
+  const currentBaseRoute = isRegionUser ?
+    (location.pathname.includes('/user/') ? '/user' : '/user') :
+    (location.pathname.includes('/user/') ? '/user' : '/admin');
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -308,201 +303,127 @@ const Substations = () => {
         }
     };
 
-    try {
-        console.log('Rendering Substations component, timeRange:', timeframe);
-        return (
-            <ErrorBoundary>
-                <div className={styles.main_content}>
-                    <div className={styles.section_header}>
-                        <h2 className="title">Substations</h2>
-                        <div className={styles.action_container}>
-                            <div className={styles.action_cont}>
-                                <div
-                                    className={
-                                        styles.time_range_select_dropdown
-                                    }>
-                                    <select
-                                        value={timeframe}
-                                        onChange={handleTimeframeChange}
-                                        className={styles.time_range_select}>
-                                        <option value="Daily">Daily</option>
-                                        <option value="Monthly">Monthly</option>
-                                        <option value="PreviousMonth">
-                                            Previous Month
-                                        </option>
-                                        <option value="Year">Year</option>
-                                    </select>
-                                    <img
-                                        src="/bi/icons/arrow-down.svg"
-                                        alt="Select Time"
-                                        className={
-                                            styles.time_range_select_dropdown_icon
-                                        }
-                                    />
-                                </div>
-                                <Buttons
-                                    label="Get Reports"
-                                    variant="primary"
-                                    alt="GetReports"
-                                    icon="/bi/icons/reports.svg"
-                                    iconPosition="left"
-                                />
-                            </div>
-                        </div>
+  try {
+    console.log("Rendering Substations component, timeRange:", timeframe);
+    return (
+      <ErrorBoundary>
+        <div className={styles.main_content}>
+          <div className={styles.section_header}>
+            <h2 className="title">Substations</h2>
+            <div className={styles.action_container}>
+              <div className={styles.action_cont}>
+                <div className={styles.time_range_select_dropdown}>
+                  <select
+                    value={timeframe}
+                    onChange={handleTimeframeChange}
+                    className={styles.time_range_select}>
+                    <option value="Daily">Daily</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="PreviousMonth">Previous Month</option>
+                    <option value="Year">Year</option>
+                  </select>
+                  <img
+                    src="icons/arrow-down.svg"
+                    alt="Select Time"
+                    className={styles.time_range_select_dropdown_icon}
+                  />
+                </div>
+                <Buttons
+                  label="Get Reports"
+                  variant="primary"
+                  alt="GetReports"
+                  icon="icons/reports.svg"
+                  iconPosition="left"
+                />
+              </div>
+            </div>
+          </div>
+          <Breadcrumb items={getBreadcrumbItems()} />
+          <div className={styles.summary_section}>
+            <div className={styles.total_regions_container}>
+              <div className={styles.total_main_info}>
+                <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
+                <div className={styles.total_title_value}>
+                  <p className="title">
+                    <Link to={`${currentBaseRoute}/regions`}>
+                      Regions
+                    </Link>
+                  </p>
+                  <div className={styles.summary_value}>{widgetsData.totalRegions}</div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.total_edcs_container}>
+              <div className={styles.total_main_info}>
+                <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
+                <div className={styles.total_title_value}>
+                  <p className="title">
+                    <Link to={region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`}>
+                      EDCs
+                    </Link>
+                  </p>
+                  <div className={styles.summary_value}>{widgetsData.totalEdcs}</div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.total_substations_container}>
+              <div className={styles.total_main_info}>
+                <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
+                <div className={styles.total_title_value}>
+                  <p className="title">
+                    <Link to={region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`}>
+                      Substations
+                    </Link>
+                  </p>
+                  <div className={styles.summary_value}>{widgetsData.totalSubstations}</div>
+                </div>
+              </div>
+            </div>
+            <div className={styles.total_meters_container}>
+              <div className={styles.total_meters_main_info}>
+                <img
+                  src="icons/electric-meter.svg"
+                  alt="Total Meters"
+                  className={styles.TNEB_icons}
+                />
+                <div className={styles.total_meters}>
+                  <div className="title">
+                    <Link to={region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`}>
+                      Feeders
+                    </Link>
+                  </div>
+                  <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
+                </div>
+              </div>
+              <div className={styles.metrics_communication_info}>
+                <div className="titles">Communication Status</div>
+                <div className={styles.overall_communication_status}>
+                  <div className={styles.communication_status_container}>
+                    <div className={styles.communication_value}>{widgetsData.commMeters}</div>
+                    <div className={styles.communication_positive_percentage}>
+                      <img
+                        src="icons/up-right-arrow.svg"
+                        alt="Positive"
+                        className={styles.communication_positive_arrow}
+                      />
+                      87%
                     </div>
-                    <Breadcrumb items={getBreadcrumbItems()} />
-                    <div className={styles.summary_section}>
-                        <div className={styles.total_regions_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="/bi/icons/office.svg"
-                                    alt="Total Regions"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link
-                                            to={`${currentBaseRoute}/regions`}>
-                                            Regions
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalRegions}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_edcs_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="/bi/icons/electric-edc.svg"
-                                    alt="Total Region"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link
-                                            to={
-                                                region
-                                                    ? `${currentBaseRoute}/${region}/edcs`
-                                                    : `${currentBaseRoute}/edcs`
-                                            }>
-                                            EDCs
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalEdcs}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_substations_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="/bi/icons/electric-factory.svg"
-                                    alt="Total Substations"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link
-                                            to={
-                                                region
-                                                    ? `${currentBaseRoute}/${region}/substations`
-                                                    : `${currentBaseRoute}/substations`
-                                            }>
-                                            Substations
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalSubstations}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_meters_container}>
-                            <div className={styles.total_meters_main_info}>
-                                <img
-                                    src="/bi/icons/electric-meter.svg"
-                                    alt="Total Meters"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_meters}>
-                                    <div className="title">
-                                        <Link
-                                            to={
-                                                region
-                                                    ? `${currentBaseRoute}/${region}/feeders`
-                                                    : `${currentBaseRoute}/feeders`
-                                            }>
-                                            Feeders
-                                        </Link>
-                                    </div>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalFeeders}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={styles.metrics_communication_info}>
-                                <div className="titles">
-                                    Communication Status
-                                </div>
-                                <div
-                                    className={
-                                        styles.overall_communication_status
-                                    }>
-                                    <div
-                                        className={
-                                            styles.communication_status_container
-                                        }>
-                                        <div
-                                            className={
-                                                styles.communication_value
-                                            }>
-                                            {widgetsData.commMeters}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles.communication_positive_percentage
-                                            }>
-                                            <img
-                                                src="/bi/icons/up-right-arrow.svg"
-                                                alt="Positive"
-                                                className={
-                                                    styles.communication_positive_arrow
-                                                }
-                                            />
-                                            87%
-                                        </div>
-                                    </div>
-                                    <div
-                                        className={
-                                            styles.communication_status_container
-                                        }>
-                                        <div
-                                            className={
-                                                styles.communication_value
-                                            }>
-                                            {widgetsData.nonCommMeters}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles.communication_negative_percentage
-                                            }>
-                                            <img
-                                                src="/bi/icons/up-right-arrow.svg"
-                                                alt="Positive"
-                                                className={
-                                                    styles.communication_negative_arrow
-                                                }
-                                            />
-                                            13%
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                  </div>
+                  <div className={styles.communication_status_container}>
+                    <div className={styles.communication_value}>{widgetsData.nonCommMeters}</div>
+                    <div className={styles.communication_negative_percentage}>
+                      <img
+                        src="icons/up-right-arrow.svg"
+                        alt="Positive"
+                        className={styles.communication_negative_arrow}
+                      />
+                      13%
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
                     <div className={styles.section_header}>
                         <h2 className="title">

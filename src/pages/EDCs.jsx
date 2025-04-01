@@ -23,11 +23,11 @@ const EDCs = () => {
     const location = useLocation();
 
     // Determine if this is a region user path
-    const isRegionUser = location.pathname.includes('/bi/user/') ||
+    const isRegionUser = location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
     const currentBaseRoute = isRegionUser ?
-        (location.pathname.includes('/bi/user/') ? '/bi/user' : '/user') :
+        (location.pathname.includes('/user/') ? '/user' : '/user') :
         (location.pathname.includes('/user/') ? '/user' : '/admin');
 
     const [widgetsData, setWidgetsData] = useState({
@@ -266,9 +266,9 @@ const EDCs = () => {
 
             // Region user breadcrumb - showing only Dashboard -> Region -> EDCs
             return [
-                { label: 'Dashboard', path: '/bi/user/dashboard' },
-                { label: `Region : ${formattedRegionName}`, path: `/bi/user/${region}/dashboard` },
-                { label: 'EDCs', path: `/bi/user/${region}/edcs` }
+                { label: 'Dashboard', path: '/user/dashboard' },
+                { label: `Region : ${formattedRegionName}`, path: `/user/${region}/dashboard` },
+                { label: 'EDCs', path: `/user/${region}/edcs` }
             ];
         } else {
             // Standard admin or user breadcrumb
