@@ -18,14 +18,11 @@ import CreateTicket from './pages/CreateTicket';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import EDCs from './pages/EDCs';
-import EDCUserPage from './pages/EDCUserPage';
 import Substations from './pages/Substations';
 import Regions from './pages/Regions';
 import Feeders from './pages/Feeders';
 import ProtectedRoute from './components/ProtectedRoute';
 import LongDetailsWidget from './pages/LongDetailsWidget';
-import SubstationsUserPage from './pages/SubstationsUserPage';
-import FeedersUserPage from './pages/FeedersUserPage';
 
 const App = () => {
     // Add a useEffect to log localStorage on initial render
@@ -238,20 +235,20 @@ const App = () => {
                 }
             }
 
-            // If we still don't have a valid region, show error and redirect to user dashboard
+            // If we still don't have a valid region, show error and redirect to dashboard
             if (!region) {
                 console.error('DefaultRedirect - CRITICAL: Unable to determine region for Region User');
                 alert('Unable to determine your region. Please contact your administrator.');
-                // Use user dashboard as fallback
-                return <Navigate to="/user/dashboard" replace />;
+                // Use admin dashboard as fallback
+                return <Navigate to="/admin/dashboard" replace />;
             }
 
             console.log('DefaultRedirect - Redirecting to region:', region);
             return <Navigate to={`/user/${region}/dashboard`} replace />;
         }
 
-        // Default case - redirect to user dashboard
-        return <Navigate to="/user/dashboard" replace />;
+        // Default case - redirect to admin dashboard
+        return <Navigate to="/admin/dashboard" replace />;
     };
 
     const RegionsProtectedRoute = () => {
@@ -545,17 +542,17 @@ const App = () => {
                             <Route
                                 path="edcs"
                                 element={
-                                    <ProtectedRoute>
+                                    <RegionUserRoute>
                                         <EDCs />
-                                    </ProtectedRoute>
+                                    </RegionUserRoute>
                                 }
                             />
                             <Route
                                 path=":region/edcs"
                                 element={
-                                    <ProtectedRoute>
+                                    <RegionUserRoute>
                                         <EDCs />
-                                    </ProtectedRoute>
+                                    </RegionUserRoute>
                                 }
                             />
                             <Route
@@ -569,25 +566,25 @@ const App = () => {
                             <Route
                                 path="substations"
                                 element={
-                                    <ProtectedRoute>
+                                    <RegionUserRoute>
                                         <Substations />
-                                    </ProtectedRoute>
+                                    </RegionUserRoute>
                                 }
                             />
                             <Route
                                 path=":region/substations"
                                 element={
-                                    <ProtectedRoute>
-                                        <SubstationsUserPage />
-                                    </ProtectedRoute>
+                                    <RegionUserRoute>
+                                        <Substations />
+                                    </RegionUserRoute>
                                 }
                             />
                             <Route
                                 path=":region/feeders"
                                 element={
-                                    <ProtectedRoute>
-                                        <FeedersUserPage />
-                                    </ProtectedRoute>
+                                    <RegionUserRoute>
+                                        <Feeders />
+                                    </RegionUserRoute>
                                 }
                             />
                             <Route
@@ -661,7 +658,7 @@ const App = () => {
                                 path=":region/edcs"
                                 element={
                                     <ProtectedRoute>
-                                        <EDCUserPage />
+                                        <EDCs />
                                     </ProtectedRoute>
                                 }
                             />
@@ -677,7 +674,7 @@ const App = () => {
                                 path=":region/substations"
                                 element={
                                     <ProtectedRoute>
-                                        <SubstationsUserPage />
+                                        <Substations />
                                     </ProtectedRoute>
                                 }
                             />
@@ -693,7 +690,7 @@ const App = () => {
                                 path=":region/feeders"
                                 element={
                                     <ProtectedRoute>
-                                        <FeedersUserPage />
+                                        <Feeders />
                                     </ProtectedRoute>
                                 }
                             />

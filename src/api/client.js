@@ -27,12 +27,11 @@ class ApiClient {
         this.cache = new Map();
         this.defaultCacheOptions = {
             enabled: true,
-            ttl: 5 * 60 * 1000, 
-            useLocalStorage: true,
+            ttl: 5 * 60 * 1000,
+            useLocalStorage: false,
             storageKey: 'api_cache',
         };
     }
-
 
     _generateCacheKey(endpoint, options) {
         const { method, body } = options;
@@ -42,7 +41,6 @@ class ApiClient {
         return `${method}:${url}${body ? `:${JSON.stringify(body)}` : ''}`;
     }
 
-  
     _setCacheItem(key, data, ttl) {
         if (!key) return;
 
@@ -104,7 +102,6 @@ class ApiClient {
         return cacheItem.data;
     }
 
-   
     _removeCacheItem(key) {
         if (!key) return;
 
@@ -155,7 +152,6 @@ class ApiClient {
         return this;
     }
 
-   
     clearCache(endpointPattern = null) {
         if (this.defaultCacheOptions.useLocalStorage) {
             try {
