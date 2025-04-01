@@ -15,11 +15,13 @@ const Regions = () => {
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('regionDemandData');
         const savedTimestamp = localStorage.getItem('regionDemandTimestamp');
+        console.log('savedDemandData', savedDemandData);
 
         if (savedDemandData && savedTimestamp) {
             const timestamp = parseInt(savedTimestamp);
             const now = Date.now();
             if (now - timestamp < 30000) {
+                const parsedDemandData = JSON.parse(savedDemandData);
                 return {
                     totalRegions: 0,
                     totalEdcs: 0,
@@ -27,11 +29,11 @@ const Regions = () => {
                     totalFeeders: 0,
                     commMeters: 0,
                     nonCommMeters: 0,
-                    regionNames: [],
+                    regionNames: Object.keys(parsedDemandData),
                     edcCount: {},
                     substationCount: {},
                     feederCount: {},
-                    regionDemandData: JSON.parse(savedDemandData),
+                    regionDemandData: parsedDemandData,
                     regionStats: {},
                 };
             }
@@ -111,43 +113,47 @@ const Regions = () => {
             const response = await apiClient.get('/regions/widgets');
             const data = response.data;
 
-      setWidgetsData((prev) => ({
-          totalRegions: data.totalRegions || prev.totalRegions,
-          totalEdcs: data.totalEdcs || prev.totalEdcs,
-          totalSubstations: data.totalSubstations || prev.totalSubstations,
-          totalFeeders: data.totalFeeders || prev.totalFeeders,
-          commMeters: data.commMeters || prev.commMeters,
-          nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
-          regionNames: data.regionNames || prev.regionNames,
-          edcCount: data.regionEdcCounts || prev.edcCount,
-          substationCount: data.regionSubstationCounts || prev.substationCount,
-          feederCount: data.regionFeederCounts || prev.feederCount,
-        //   regionDemandData: prev.regionDemandData,
-          // regionStats: prev.regionStats,
-      }));
-    }
+            setWidgetsData((prev) => ({
+                totalRegions: data.totalRegions || prev.totalRegions,
+                totalEdcs: data.totalEdcs || prev.totalEdcs,
+                totalSubstations:
+                    data.totalSubstations || prev.totalSubstations,
+                totalFeeders: data.totalFeeders || prev.totalFeeders,
+                commMeters: data.commMeters || prev.commMeters,
+                nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
+                regionNames: data.regionNames || prev.regionNames,
+                edcCount: data.regionEdcCounts || prev.edcCount,
+                substationCount:
+                    data.regionSubstationCounts || prev.substationCount,
+                feederCount: data.regionFeederCounts || prev.feederCount,
+                //   regionDemandData: prev.regionDemandData,
+                // regionStats: prev.regionStats,
+            }));
+        };
 
-    fetchData()
+        fetchData();
+    }, []);
 
-  }, [])
+    const handleRegionClick = (region) => {
+        navigate(
+            `/admin/regions/${region
+                .toLowerCase()
+                .replace(/\s+/g, '-')}/details`
+        );
+    };
 
-  const handleRegionClick = (region) => {
-    navigate(`/admin/regions/${region.toLowerCase().replace(/\s+/g, '-')}/details`);
-  };
-
-  // Check if we're in a region user path
-  const isRegionUser = location.pathname.includes('/user/') ||
-    (location.pathname.includes('/user/') &&
-      !location.pathname.includes('/admin/'));
-  const currentRegionName = isRegionUser ?
-    location.pathname.split('/').filter(x => x)[1] || '' :
-    '';
-  const baseRoute = location.pathname.includes('/user/') ?
-    '/user' :
-    (location.pathname.includes('/user/') ? '/user' : '/admin');
-
-  // List of all region names
-  const regionNames = ["Chennai", "Coimbatore", "Erode", "Kancheepuram", "Karur", "Madurai", "Thanjavur", "Thiruvallur", "Tirunelveli", "Tiruvannamalai", "Trichy", "Vellore", "Villupuram"];
+    const isRegionUser =
+        location.pathname.includes('/user/') ||
+        (location.pathname.includes('/user/') &&
+            !location.pathname.includes('/admin/'));
+    const currentRegionName = isRegionUser
+        ? location.pathname.split('/').filter((x) => x)[1] || ''
+        : '';
+    const baseRoute = location.pathname.includes('/user/')
+        ? '/user'
+        : location.pathname.includes('/user/')
+        ? '/user'
+        : '/admin';
 
     const handleEdcClick = () => {
         if (isRegionUser && currentRegionName) {

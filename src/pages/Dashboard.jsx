@@ -36,16 +36,6 @@ const Dashboard = () => {
         nonCommMeters: 0,
     });
 
-    // Determine base route from URL path (admin or user)
-    const location = window.location.pathname;
-    const isUserRoute = location.includes('/user/');
-    const isBiUserRoute = location.includes('/user/');
-    const baseRoute = isBiUserRoute
-        ? '/user'
-        : isUserRoute
-        ? '/user'
-        : '/admin';
-
     useEffect(() => {
         const fetchData = async () => {
             const response = await apiClient.get('/regions/widgets');
