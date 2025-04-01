@@ -79,7 +79,7 @@ const CreateTicket = () => {
             {error && (
                 <div className="error">
                     <span className="error_icon">
-                        <img src="/icons/error-mark.svg" alt="warning" />
+                        <img src="icons/error-mark.svg" alt="warning" />
                     </span>
                     {error}
                 </div>
