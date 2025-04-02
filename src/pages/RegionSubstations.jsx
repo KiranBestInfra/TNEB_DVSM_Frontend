@@ -45,7 +45,6 @@ const RegionSubstations = () => {
     const { region } = useParams();
     const location = useLocation();
 
-    // Determine if this is a region user path
     const isRegionUser =
         location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
@@ -127,7 +126,6 @@ const RegionSubstations = () => {
         setTimeframe(e.target.value);
     };
 
-    // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
         if (isRegionUser && region) {
             const formattedRegionName =
