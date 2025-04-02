@@ -11,8 +11,6 @@ import { apiClient } from '../api/client';
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
     const [error, setError] = useState(null);
-    const [hasError, setHasError] = useState(false);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const handleError = (error) => {
