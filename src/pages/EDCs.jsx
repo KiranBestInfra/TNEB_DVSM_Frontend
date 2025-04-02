@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
+import { apiClient } from '../api/client';
 
 const EDCs = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
@@ -127,26 +128,38 @@ const EDCs = () => {
 
         const fetchEdcNames = async () => {
             try {
-                const response = await fetch(
-                    `http://localhost:3000/api/v1/edcs/widgets/${region}`
-                );
-                const data = await response.json();
-                console.log('Fetched EDC & Substation Data:', data);
+                // const response = await fetch(
+                //     `http://localhost:3000/api/v1/edcs/widgets/${region}`
+                // );
+                // const data = await response.json();
+                const response = await apiClient.get(`/edcs/widgets/${region}`);
+                const data = response;
+                console.log('Fetched EDC data:', data); // Log to check response
+                const edcSubstationCounts =
+                    data.data?.substationCounts?.reduce((acc, edc) => {
+                        acc[edc.edc_name] = edc.substation_count;
+                        return acc;
+                    }, {}) || {};
+                // const edcFeederCounts =
+                //     data.data?.feederCounts?.reduce((acc, edc) => {
+                //         acc[edc.edc_name] = edc.feeder_count;
+                //         return acc;
+                //     }, {}) || {};
 
                 setWidgetsData((prev) => ({
                     ...prev,
                     edcNames: data.data?.edcNames || [],
                     regionEdcCount: data.data?.edcNames?.length || 0,
-                    totalSubstations: data.data?.totalSubstations || 0,
-                    totalFeeders: data.data?.totalFeeders || 0,
-                    commMeters: data.data?.commMeters || 0,
-                    nonCommMeters: data.data?.nonCommMeters || 0,
-                    edcSubstationCounts: data.data?.edcSubstationCounts || {},
-                    edcFeederCounts: data.data?.edcFeederCounts || {},
-                    edcStats: data.data?.edcStats || {},
-                    edcDemandData: data.data?.edcDemandData || {}
+                    substationNames: data.data?.substationNames || [], // Added line
+                    // regionSubstationCount:
+                    //     data.data?.substationNames?.length || 0, // Added line
+                    //SubstationCount: data.data?.substationCounts || [],
+                    substationCount: edcSubstationCounts,
+                    //feederCount: edcFeederCounts, // Store feeder count
+                    feederCount: data.data?.feederCounts || {},
                 }));
             } catch (error) {
+                console.error('Error fetching EDC names:', error);
                 console.error('Error fetching EDC names:', error);
             }
         };
@@ -526,9 +539,12 @@ const EDCs = () => {
                             <ShortDetailsWidget
                                 region={edc}
                                 substationCount={
-                                    edcSubstationCounts?.[edc] || 0
+                                    widgetsData.substationCount?.[edc] || 0
                                 }
-                                feederCount={edcFeederCounts?.[edc] || 0}
+                                // feederCount={edcFeederCounts?.[edc] || 0}
+                                feederCount={
+                                    widgetsData.feederCount?.[edc] || 0
+                                }
                                 currentValue={
                                     edcStats?.[edc]?.currentValue || 0
                                 }
