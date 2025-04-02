@@ -18,16 +18,16 @@ const ErrorBoundary = ({ children }) => {
             setHasError(true);
             setError(error);
         };
-    useEffect(() => {
-        const handleError = (error) => {
-            console.error('Caught error:', error);
-            setHasError(true);
-            setError(error);
-        };
+        useEffect(() => {
+            const handleError = (error) => {
+                console.error('Caught error:', error);
+                setHasError(true);
+                setError(error);
+            };
 
-        window.addEventListener('error', handleError);
-        return () => window.removeEventListener('error', handleError);
-    }, []);
+            window.addEventListener('error', handleError);
+            return () => window.removeEventListener('error', handleError);
+        }, []);
         window.addEventListener('error', handleError);
         return () => window.removeEventListener('error', handleError);
     }, []);
@@ -81,7 +81,6 @@ const Substations = () => {
     const { region } = useParams();
     const location = useLocation();
 
-
     // Determine if this is a region user path
     const isRegionUser =
         location.pathname.includes('/user/') ||
@@ -116,35 +115,29 @@ const Substations = () => {
     //         const regionWidgets = data.data;
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/v1/regions/widgets'
-            );
-            const data = await response.json();
-            const regionWidgets = data.data;
+            try {
+                const response = await fetch(
+                    'http://localhost:3000/api/v1/regions/widgets'
+                );
+                const data = await response.json();
+                const regionWidgets = data.data;
 
-            setWidgetsData((prev) => ({
-                ...prev,
-                totalRegions: regionWidgets.totalRegions || prev.totalRegions,
-                totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
-                totalSubstations:
-                    regionWidgets.totalSubstations || prev.totalSubstations,
-                totalFeeders: regionWidgets.totalFeeders || prev.totalFeeders,
-                commMeters: regionWidgets.commMeters || prev.commMeters,
-                nonCommMeters:
-                    regionWidgets.nonCommMeters || prev.nonCommMeters,
-            }));
-        };
-            setWidgetsData((prev) => ({
-                ...prev,
-                totalRegions: regionWidgets.totalRegions || prev.totalRegions,
-                totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
-                totalSubstations:
-                    regionWidgets.totalSubstations || prev.totalSubstations,
-                totalFeeders: regionWidgets.totalFeeders || prev.totalFeeders,
-                commMeters: regionWidgets.commMeters || prev.commMeters,
-                nonCommMeters:
-                    regionWidgets.nonCommMeters || prev.nonCommMeters,
-            }));
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    totalRegions:
+                        regionWidgets.totalRegions || prev.totalRegions,
+                    totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
+                    totalSubstations:
+                        regionWidgets.totalSubstations || prev.totalSubstations,
+                    totalFeeders:
+                        regionWidgets.totalFeeders || prev.totalFeeders,
+                    commMeters: regionWidgets.commMeters || prev.commMeters,
+                    nonCommMeters:
+                        regionWidgets.nonCommMeters || prev.nonCommMeters,
+                }));
+            } catch (error) {
+                console.error('Error fetching widget data:', error);
+            }
         };
 
         fetchData();
@@ -186,35 +179,10 @@ const Substations = () => {
     const handleRegionClick = (region) => {
         setSelectedRegion(region); // Set region when clicked
     };
-    const handleRegionClick = (region) => {
-        setSelectedRegion(region); // Set region when clicked
-    };
-
-    const handleTimeframeChange = (e) => {
-        setTimeframe(e.target.value);
-    };
     const handleTimeframeChange = (e) => {
         setTimeframe(e.target.value);
     };
 
-    // Replace EDC data with Substation data
-    const substationNames = [
-        'Adyar SS',
-        'Velachery SS',
-        'T Nagar SS',
-        'Mylapore SS',
-        'Anna Nagar SS',
-        'Porur SS',
-        'Ambattur SS',
-        'Perambur SS',
-        'Guindy SS',
-        'Kodambakkam SS',
-        'Royapuram SS',
-        'Thiruvanmiyur SS',
-        'Kilpauk SS',
-        'Egmore SS',
-        'Nungambakkam SS',
-    ];
     // Replace EDC data with Substation data
     const substationNames = [
         'Adyar SS',
@@ -252,43 +220,7 @@ const Substations = () => {
         'Egmore SS': 4,
         'Nungambakkam SS': 6,
     };
-    // Substation feeder counts
-    const substationFeederCounts = {
-        'Adyar SS': 8,
-        'Velachery SS': 6,
-        'T Nagar SS': 7,
-        'Mylapore SS': 5,
-        'Anna Nagar SS': 6,
-        'Porur SS': 4,
-        'Ambattur SS': 5,
-        'Perambur SS': 6,
-        'Guindy SS': 7,
-        'Kodambakkam SS': 5,
-        'Royapuram SS': 4,
-        'Thiruvanmiyur SS': 6,
-        'Kilpauk SS': 5,
-        'Egmore SS': 4,
-        'Nungambakkam SS': 6,
-    };
 
-    // Substation consumption stats (in MVA)
-    const substationStats = {
-        'Adyar SS': { currentValue: 42, previousValue: 38 },
-        'Velachery SS': { currentValue: 35, previousValue: 32 },
-        'T Nagar SS': { currentValue: 45, previousValue: 41 },
-        'Mylapore SS': { currentValue: 38, previousValue: 35 },
-        'Anna Nagar SS': { currentValue: 40, previousValue: 37 },
-        'Porur SS': { currentValue: 32, previousValue: 29 },
-        'Ambattur SS': { currentValue: 36, previousValue: 33 },
-        'Perambur SS': { currentValue: 34, previousValue: 31 },
-        'Guindy SS': { currentValue: 41, previousValue: 38 },
-        'Kodambakkam SS': { currentValue: 37, previousValue: 34 },
-        'Royapuram SS': { currentValue: 33, previousValue: 30 },
-        'Thiruvanmiyur SS': { currentValue: 39, previousValue: 36 },
-        'Kilpauk SS': { currentValue: 35, previousValue: 32 },
-        'Egmore SS': { currentValue: 31, previousValue: 28 },
-        'Nungambakkam SS': { currentValue: 38, previousValue: 35 },
-    };
     // Substation consumption stats (in MVA)
     const substationStats = {
         'Adyar SS': { currentValue: 42, previousValue: 38 },
@@ -370,68 +302,6 @@ const Substations = () => {
             ],
         },
     };
-    // Sample data for the LineChart
-    const graphData = {
-        daily: {
-            xAxis: [
-                '2025-03-16 23:59:59',
-                '2025-03-16 08:30:00',
-                '2025-03-16 08:15:00',
-                '2025-03-16 08:00:00',
-                '2025-03-16 07:45:00',
-                '2025-03-16 07:30:00',
-                '2025-03-16 07:15:00',
-                '2025-03-16 07:00:00',
-                '2025-03-16 06:45:00',
-                '2025-03-16 06:30:00',
-                '2025-03-16 06:15:00',
-                '2025-03-16 06:00:00',
-                '2025-03-16 05:45:00',
-                '2025-03-16 05:30:00',
-                '2025-03-16 05:15:00',
-                '2025-03-16 05:00:00',
-                '2025-03-16 04:45:00',
-                '2025-03-16 04:30:00',
-                '2025-03-16 04:15:00',
-                '2025-03-16 04:00:00',
-                '2025-03-16 03:45:00',
-                '2025-03-16 03:30:00',
-                '2025-03-16 03:15:00',
-                '2025-03-16 03:00:00',
-                '2025-03-16 02:45:00',
-                '2025-03-16 02:30:00',
-                '2025-03-16 02:15:00',
-                '2025-03-16 02:00:00',
-                '2025-03-16 01:45:00',
-                '2025-03-16 01:30:00',
-                '2025-03-16 01:15:00',
-                '2025-03-16 01:00:00',
-                '2025-03-16 00:45:00',
-                '2025-03-16 00:30:00',
-                '2025-03-16 00:15:00',
-            ],
-            series: [
-                {
-                    name: 'Current Day',
-                    data: [
-                        13.6, 12.0, 11.2, 11.2, 11.6, 10.4, 12.0, 10.8, 12.4,
-                        12.0, 12.8, 13.6, 12.4, 13.6, 12.0, 13.6, 12.8, 13.2,
-                        13.6, 12.4, 14.0, 12.4, 14.0, 12.4, 13.6, 12.8, 13.2,
-                        14.0, 12.8, 14.0, 12.4, 13.6, 12.4, 13.6, 12.4,
-                    ],
-                },
-                {
-                    name: 'Previous Day',
-                    data: [
-                        13.2, 10.8, 10.0, 11.2, 10.8, 10.8, 11.6, 10.8, 12.0,
-                        11.6, 13.2, 12.8, 13.2, 14.0, 12.8, 14.4, 13.2, 14.8,
-                        13.6, 14.4, 14.8, 13.2, 14.8, 13.2, 14.4, 13.2, 14.4,
-                        13.6, 13.6, 14.4, 13.2, 14.4, 12.8, 14.4, 12.8,
-                    ],
-                },
-            ],
-        },
-    };
 
     // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
@@ -439,30 +309,7 @@ const Substations = () => {
             // Format region name with first letter capitalized
             const formattedRegionName =
                 region.charAt(0).toUpperCase() + region.slice(1);
-    // Build breadcrumb items based on current path
-    const getBreadcrumbItems = () => {
-        if (isRegionUser && region) {
-            // Format region name with first letter capitalized
-            const formattedRegionName =
-                region.charAt(0).toUpperCase() + region.slice(1);
 
-            // Region user breadcrumb - showing only Dashboard -> Region -> Substations
-            return [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
-                {
-                    label: `Region : ${formattedRegionName}`,
-                    path: `${currentBaseRoute}/${region}/dashboard`,
-                },
-                {
-                    label: 'Substations',
-                    path: `${currentBaseRoute}/${region}/substations`,
-                },
-            ];
-        } else {
-            // Standard admin or user breadcrumb
-            const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
-            ];
             // Region user breadcrumb - showing only Dashboard -> Region -> Substations
             return [
                 { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
@@ -491,16 +338,6 @@ const Substations = () => {
                     path: `${currentBaseRoute}/${region}`,
                 });
             }
-            if (region) {
-                items.push({
-                    label: 'Regions',
-                    path: `${currentBaseRoute}/regions`,
-                });
-                items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`,
-                });
-            }
 
             items.push({
                 label: 'Substations',
@@ -508,16 +345,6 @@ const Substations = () => {
                     ? `${currentBaseRoute}/${region}/substations`
                     : `${currentBaseRoute}/substations`,
             });
-            items.push({
-                label: 'Substations',
-                path: region
-                    ? `${currentBaseRoute}/${region}/substations`
-                    : `${currentBaseRoute}/substations`,
-            });
-
-            return items;
-        }
-    };
             return items;
         }
     };
@@ -738,7 +565,12 @@ const Substations = () => {
                                           }>
                                           <ShortDetailsWidget
                                               region={substation}
-                                              feederCount= {widgetsData.substationFeederCounts?.[substation] || 0}
+                                              feederCount={
+                                                  widgetsData
+                                                      .substationFeederCounts?.[
+                                                      substation
+                                                  ] || 0
+                                              }
                                               currentValue={
                                                   substationStats[substation]
                                                       ?.currentValue
