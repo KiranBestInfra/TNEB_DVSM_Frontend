@@ -18,16 +18,8 @@ const ErrorBoundary = ({ children }) => {
             setHasError(true);
             setError(error);
         };
-        useEffect(() => {
-            const handleError = (error) => {
-                console.error('Caught error:', error);
-                setHasError(true);
-                setError(error);
-            };
 
-            window.addEventListener('error', handleError);
-            return () => window.removeEventListener('error', handleError);
-        }, []);
+           
         window.addEventListener('error', handleError);
         return () => window.removeEventListener('error', handleError);
     }, []);
@@ -102,7 +94,7 @@ const Substations = () => {
         commMeters: 0,
         nonCommMeters: 0,
         regionSubstationCount: 0,
-        substationNames: [],
+        substationNames: {},
         substationFeederCounts: {},
     });
 
@@ -142,11 +134,7 @@ const Substations = () => {
 
         fetchData();
     }, []);
-    useEffect(() => {
-        console.log('region', region);
-        if (!region) return;
-        fetchData();
-    }, []);
+    
     useEffect(() => {
         console.log('region', region);
         if (!region) return;
