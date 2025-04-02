@@ -752,6 +752,14 @@ const App = () => {
                                 }
                             />
                             <Route
+                                path=":region/:edcs/substations"
+                                element={
+                                    <ProtectedRoute>
+                                        <Substations />
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
                                 path=":region/edcs/:edcId/details"
                                 element={
                                     <ProtectedRoute>
