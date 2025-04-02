@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -42,6 +43,8 @@ const ErrorBoundary = ({ children }) => {
 
 const RegionSubstations = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
+    const [socket, setSocket] = useState(null);
+    const cacheTimeoutRef = useRef(null);
     const { region } = useParams();
     const location = useLocation();
 
@@ -57,17 +60,95 @@ const RegionSubstations = () => {
         ? '/user'
         : '/admin';
 
-    const [widgetsData, setWidgetsData] = useState({
-        totalRegions: 0,
-        totalEdcs: 0,
-        totalSubstations: 0,
-        totalFeeders: 0,
-        commMeters: 0,
-        nonCommMeters: 0,
-        regionSubstationCount: 0,
-        substationNames: {},
-        substationFeederCounts: {},
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedDemandData = localStorage.getItem('substationDemandData');
+        const savedTimestamp = localStorage.getItem('substationDemandTimestamp');
+
+        if (savedDemandData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedDemandData = JSON.parse(savedDemandData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    substationNames: Object.keys(parsedDemandData),
+                    regionSubstationCount: 0,
+                    substationFeederCounts: {},
+                    substationDemandData: parsedDemandData,
+                };
+            }
+        }
+
+        return {
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            substationNames: [],
+            regionSubstationCount: 0,
+            substationFeederCounts: {},
+            substationDemandData: {},
+        };
     });
+
+    // Socket initialization
+    useEffect(() => {
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        setSocket(newSocket);
+
+        newSocket.on('connect', () => {
+            console.log('Connected to socket server');
+        });
+
+        newSocket.on('substationUpdate', (data) => {
+            console.log('substationUpdate', data);
+            setWidgetsData((prevData) => {
+                const newData = {
+                    ...prevData,
+                    substationDemandData: {
+                        ...prevData.substationDemandData,
+                        [data.substation]: data.graphData,
+                    },
+                };
+                localStorage.setItem('substationDemandData', JSON.stringify(newData.substationDemandData));
+                localStorage.setItem('substationDemandTimestamp', Date.now().toString());
+                return newData;
+            });
+
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+            cacheTimeoutRef.current = setTimeout(() => {
+                localStorage.removeItem('substationDemandData');
+                localStorage.removeItem('substationDemandTimestamp');
+            }, 30000);
+        });
+
+        return () => {
+            newSocket.close();
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    console.log('widgetsData', widgetsData);
+
+    useEffect(() => {
+        
+        if (socket && widgetsData.substationNames.length > 0) {
+            socket.emit('subscribeSubstation', {
+                substations: widgetsData.substationNames,
+            });
+        }
+    }, [widgetsData.substationNames, socket]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -392,6 +473,14 @@ const RegionSubstations = () => {
                                               currentValue={0}
                                               previousValue={0}
                                               pageType="substations"
+                                              graphData={   
+                                                  widgetsData.substationDemandData?.[
+                                                      substation
+                                                  ] || {
+                                                        xAxis: [],
+                                                        series: [],
+                                                  }
+                                              }
                                           />
                                       </div>
                                   )
