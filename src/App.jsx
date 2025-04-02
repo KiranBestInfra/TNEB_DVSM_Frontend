@@ -1,4 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate, useLocation, useParams, Outlet } from 'react-router-dom';
+import {
+    BrowserRouter,
+    Routes,
+    Route,
+    Navigate,
+    useLocation,
+    useParams,
+    Outlet,
+} from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Login from './pages/Login';
 import AdminLayout from './layouts/AdminLayout';
@@ -31,9 +39,14 @@ const App = () => {
             const loginInfo = localStorage.getItem('loginInfo');
             if (loginInfo) {
                 const parsedInfo = JSON.parse(loginInfo);
-                console.log('App - Initial localStorage loginInfo:', parsedInfo);
-                console.log('App - User region from localStorage:',
-                    parsedInfo?.user?.region || parsedInfo?.region);
+                console.log(
+                    'App - Initial localStorage loginInfo:',
+                    parsedInfo
+                );
+                console.log(
+                    'App - User region from localStorage:',
+                    parsedInfo?.user?.region || parsedInfo?.region
+                );
             } else {
                 console.log('App - No loginInfo in localStorage');
             }
@@ -53,11 +66,13 @@ const App = () => {
                 const decoded = jwtDecode(accessToken);
                 console.log('Decoded token:', decoded);
 
-                let regionValue = decoded.region ||
+                let regionValue =
+                    decoded.region ||
                     decoded.Region ||
                     decoded.regionId ||
                     decoded.RegionId ||
-                    decoded.region_id || null;
+                    decoded.region_id ||
+                    null;
 
                 if (regionValue) {
                     regionValue = regionValue.toLowerCase();
@@ -65,52 +80,84 @@ const App = () => {
 
                 console.log('Initial region value from token:', regionValue);
 
-                if (!regionValue && decoded.userId && decoded.userId.includes('_REG')) {
+                if (
+                    !regionValue &&
+                    decoded.userId &&
+                    decoded.userId.includes('_REG')
+                ) {
                     regionValue = decoded.userId.split('_REG')[0].toLowerCase();
                     console.log('Extracted region from userId:', regionValue);
                 }
 
-                let circleValue = decoded.circle ||
+                let circleValue =
+                    decoded.circle ||
                     decoded.Circle ||
                     decoded.circleId ||
                     decoded.CircleId ||
-                    decoded.circle_id || null;
+                    decoded.circle_id ||
+                    null;
 
-                if (!circleValue && decoded.userId && decoded.userId.includes('_EDC')) {
+                if (
+                    !circleValue &&
+                    decoded.userId &&
+                    decoded.userId.includes('_EDC')
+                ) {
                     circleValue = decoded.userId.split('_EDC')[0].toLowerCase();
                     console.log('Extracted circle from userId:', circleValue);
 
                     if (!regionValue) {
                         const circleToRegionMap = {
-                            'central': 'kancheepuram',
-                            'north': 'tiruvannamalai',
+                            central: 'kancheepuram',
+                            north: 'tiruvannamalai',
                         };
-                        regionValue = circleToRegionMap[circleValue.toLowerCase()] || 'kancheepuram';
+                        regionValue =
+                            circleToRegionMap[circleValue.toLowerCase()] ||
+                            'kancheepuram';
                         console.log('Mapped circle to region:', regionValue);
                     }
                 }
 
-                let substationValue = decoded.substation ||
+                let substationValue =
+                    decoded.substation ||
                     decoded.Substation ||
                     decoded.substationId ||
                     decoded.SubstationId ||
-                    decoded.substation_id || null;
+                    decoded.substation_id ||
+                    null;
 
-                if (!substationValue && decoded.userId && decoded.userId.includes('_SUB')) {
-                    substationValue = decoded.userId.split('_SUB')[0].toLowerCase();
-                    console.log('Extracted substation from userId:', substationValue);
+                if (
+                    !substationValue &&
+                    decoded.userId &&
+                    decoded.userId.includes('_SUB')
+                ) {
+                    substationValue = decoded.userId
+                        .split('_SUB')[0]
+                        .toLowerCase();
+                    console.log(
+                        'Extracted substation from userId:',
+                        substationValue
+                    );
 
                     if (!regionValue) {
                         const substationToRegionMap = {
-                            'central_sub1': 'kancheepuram',
-                            'north_sub1': 'tiruvannamalai',
+                            central_sub1: 'kancheepuram',
+                            north_sub1: 'tiruvannamalai',
                         };
-                        regionValue = substationToRegionMap[substationValue.toLowerCase()] || 'kancheepuram';
-                        console.log('Mapped substation to region:', regionValue);
+                        regionValue =
+                            substationToRegionMap[
+                                substationValue.toLowerCase()
+                            ] || 'kancheepuram';
+                        console.log(
+                            'Mapped substation to region:',
+                            regionValue
+                        );
                     }
                 }
 
-                console.log('Extracted region value after userId processing:', regionValue);
+                console.log(
+                    'Extracted region value after userId processing:',
+                    regionValue
+                );
                 console.log('Extracted circle value:', circleValue);
                 console.log('Extracted substation value:', substationValue);
 
@@ -120,24 +167,34 @@ const App = () => {
                 if (loginInfo) {
                     try {
                         parsedLoginInfo = JSON.parse(loginInfo);
-                        console.log('Login info from localStorage:', parsedLoginInfo);
+                        console.log(
+                            'Login info from localStorage:',
+                            parsedLoginInfo
+                        );
                     } catch (e) {
                         console.error('Error parsing login info:', e);
                     }
                 }
 
-                const regionFromStorage = parsedLoginInfo?.user?.region ||
-                    parsedLoginInfo?.region || null;
+                const regionFromStorage =
+                    parsedLoginInfo?.user?.region ||
+                    parsedLoginInfo?.region ||
+                    null;
                 console.log('Region from localStorage:', regionFromStorage);
 
-                const circleFromStorage = parsedLoginInfo?.user?.circle ||
-                    parsedLoginInfo?.circle || null;
-                const substationFromStorage = parsedLoginInfo?.user?.substation ||
-                    parsedLoginInfo?.substation || null;
+                const circleFromStorage =
+                    parsedLoginInfo?.user?.circle ||
+                    parsedLoginInfo?.circle ||
+                    null;
+                const substationFromStorage =
+                    parsedLoginInfo?.user?.substation ||
+                    parsedLoginInfo?.substation ||
+                    null;
 
                 const finalRegion = regionValue || regionFromStorage;
                 const finalCircle = circleValue || circleFromStorage;
-                const finalSubstation = substationValue || substationFromStorage;
+                const finalSubstation =
+                    substationValue || substationFromStorage;
 
                 console.log('Final region value:', finalRegion);
                 console.log('Final circle value:', finalCircle);
@@ -145,11 +202,15 @@ const App = () => {
 
                 return {
                     roleId: decoded.role_id || decoded.RoleId || 0,
-                    roleName: decoded.role || decoded.Role || decoded.user_role || 'User',
+                    roleName:
+                        decoded.role ||
+                        decoded.Role ||
+                        decoded.user_role ||
+                        'User',
                     region: finalRegion,
                     circle: finalCircle,
                     substation: finalSubstation,
-                    userId: decoded.userId || decoded.UserId || null
+                    userId: decoded.userId || decoded.UserId || null,
                 };
             } catch (error) {
                 console.error('Error decoding token:', error);
@@ -171,7 +232,10 @@ const App = () => {
             return <Navigate to="/admin/dashboard" replace />;
         }
 
-        if (user.roleId === 2 || user.roleName?.toLowerCase() === 'region user') {
+        if (
+            user.roleId === 2 ||
+            user.roleName?.toLowerCase() === 'region user'
+        ) {
             // Determine the region from user information
             let region = null;
 
@@ -179,35 +243,51 @@ const App = () => {
             if (user.userId) {
                 // Check if userId is in circle format: region_circlename
                 if (user.userId.includes('_')) {
-                    const circleFromUserId = user.userId.split('_')[1].toLowerCase();
-                    console.log('DefaultRedirect - Circle from userId:', circleFromUserId);
+                    const circleFromUserId = user.userId
+                        .split('_')[1]
+                        .toLowerCase();
+                    console.log(
+                        'DefaultRedirect - Circle from userId:',
+                        circleFromUserId
+                    );
 
                     // Map circle names to their corresponding regions
                     const circleToRegionMap = {
-                        'central': null, // No default mapping
+                        central: null, // No default mapping
                         // Add other circle-to-region mappings as needed
                     };
 
                     region = circleToRegionMap[circleFromUserId];
                     if (region) {
-                        console.log('DefaultRedirect - Found region from circle mapping:', region);
+                        console.log(
+                            'DefaultRedirect - Found region from circle mapping:',
+                            region
+                        );
                     }
                 }
 
                 // Check if userId is in substation format: region_substationname
                 if (!region && user.userId.includes('_sub')) {
-                    const substationFromUserId = user.userId.split('_')[1].toLowerCase();
-                    console.log('DefaultRedirect - Substation from userId:', substationFromUserId);
+                    const substationFromUserId = user.userId
+                        .split('_')[1]
+                        .toLowerCase();
+                    console.log(
+                        'DefaultRedirect - Substation from userId:',
+                        substationFromUserId
+                    );
 
                     // Map substation names to their corresponding regions
                     const substationToRegionMap = {
-                        'central_sub1': null, // No default mapping
+                        central_sub1: null, // No default mapping
                         // Add other substation-to-region mappings as needed
                     };
 
                     region = substationToRegionMap[substationFromUserId];
                     if (region) {
-                        console.log('DefaultRedirect - Found region from substation mapping:', region);
+                        console.log(
+                            'DefaultRedirect - Found region from substation mapping:',
+                            region
+                        );
                     }
                 }
             }
@@ -215,7 +295,10 @@ const App = () => {
             // If region is still not found, try to get it directly from the user object
             if (!region && user.region) {
                 region = user.region.toLowerCase();
-                console.log('DefaultRedirect - Found region from user.region:', region);
+                console.log(
+                    'DefaultRedirect - Found region from user.region:',
+                    region
+                );
             }
 
             // If still not found, try to get from localStorage
@@ -224,21 +307,33 @@ const App = () => {
                     const loginInfo = localStorage.getItem('loginInfo');
                     if (loginInfo) {
                         const parsedLoginInfo = JSON.parse(loginInfo);
-                        region = parsedLoginInfo?.user?.region || parsedLoginInfo?.region;
+                        region =
+                            parsedLoginInfo?.user?.region ||
+                            parsedLoginInfo?.region;
                         if (region) {
                             region = region.toLowerCase();
-                            console.log('DefaultRedirect - Found region from localStorage:', region);
+                            console.log(
+                                'DefaultRedirect - Found region from localStorage:',
+                                region
+                            );
                         }
                     }
                 } catch (e) {
-                    console.error('DefaultRedirect - Error parsing loginInfo from localStorage:', e);
+                    console.error(
+                        'DefaultRedirect - Error parsing loginInfo from localStorage:',
+                        e
+                    );
                 }
             }
 
             // If we still don't have a valid region, show error and redirect to dashboard
             if (!region) {
-                console.error('DefaultRedirect - CRITICAL: Unable to determine region for Region User');
-                alert('Unable to determine your region. Please contact your administrator.');
+                console.error(
+                    'DefaultRedirect - CRITICAL: Unable to determine region for Region User'
+                );
+                alert(
+                    'Unable to determine your region. Please contact your administrator.'
+                );
                 // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
@@ -255,10 +350,17 @@ const App = () => {
         const { user } = useAuth();
         const { region } = useParams();
 
-        console.log('RegionsProtectedRoute - User:', user, 'URL region param:', region);
+        console.log(
+            'RegionsProtectedRoute - User:',
+            user,
+            'URL region param:',
+            region
+        );
 
         if (!user) {
-            console.log('RegionsProtectedRoute - No user, redirecting to login');
+            console.log(
+                'RegionsProtectedRoute - No user, redirecting to login'
+            );
             return <Navigate to="/login" replace />;
         }
 
@@ -269,13 +371,19 @@ const App = () => {
         }
 
         // For region users, check if they're trying to access their own region
-        if (user.roleId === 2 || user.roleName?.toLowerCase() === 'region user') {
+        if (
+            user.roleId === 2 ||
+            user.roleName?.toLowerCase() === 'region user'
+        ) {
             let userRegion = null;
 
             // Get the user's region from user object
             if (user.region) {
                 userRegion = user.region.toLowerCase();
-                console.log('RegionsProtectedRoute - Found region from user object:', userRegion);
+                console.log(
+                    'RegionsProtectedRoute - Found region from user object:',
+                    userRegion
+                );
             }
 
             // If not found, try to get from localStorage
@@ -284,38 +392,63 @@ const App = () => {
                     const loginInfo = localStorage.getItem('loginInfo');
                     if (loginInfo) {
                         const parsedLoginInfo = JSON.parse(loginInfo);
-                        userRegion = parsedLoginInfo?.user?.region || parsedLoginInfo?.region;
+                        userRegion =
+                            parsedLoginInfo?.user?.region ||
+                            parsedLoginInfo?.region;
                         if (userRegion) {
                             userRegion = userRegion.toLowerCase();
-                            console.log('RegionsProtectedRoute - Found region from localStorage:', userRegion);
+                            console.log(
+                                'RegionsProtectedRoute - Found region from localStorage:',
+                                userRegion
+                            );
                         }
                     }
                 } catch (e) {
-                    console.error('RegionsProtectedRoute - Error getting region from localStorage:', e);
+                    console.error(
+                        'RegionsProtectedRoute - Error getting region from localStorage:',
+                        e
+                    );
                 }
             }
 
             // If we still don't have a region, alert and redirect to dashboard
             if (!userRegion) {
-                console.error('RegionsProtectedRoute - CRITICAL: Unable to determine user region');
-                alert('Unable to determine your region. Please contact your administrator.');
+                console.error(
+                    'RegionsProtectedRoute - CRITICAL: Unable to determine user region'
+                );
+                alert(
+                    'Unable to determine your region. Please contact your administrator.'
+                );
                 // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
 
             // Check if URL region param matches user's region
             if (region && region.toLowerCase() !== userRegion) {
-                console.log('RegionsProtectedRoute - Region mismatch. User region:', userRegion, 'URL region:', region);
-                console.log('RegionsProtectedRoute - Redirecting to user\'s region details');
-                return <Navigate to={`/user/${userRegion}/dashboard`} replace />;
+                console.log(
+                    'RegionsProtectedRoute - Region mismatch. User region:',
+                    userRegion,
+                    'URL region:',
+                    region
+                );
+                console.log(
+                    "RegionsProtectedRoute - Redirecting to user's region details"
+                );
+                return (
+                    <Navigate to={`/user/${userRegion}/dashboard`} replace />
+                );
             }
 
-            console.log('RegionsProtectedRoute - Region match, allowing access');
+            console.log(
+                'RegionsProtectedRoute - Region match, allowing access'
+            );
             return <Outlet />;
         }
 
         // Default case - redirect to dashboard
-        console.log('RegionsProtectedRoute - User role not recognized, redirecting to dashboard');
+        console.log(
+            'RegionsProtectedRoute - User role not recognized, redirecting to dashboard'
+        );
         return <Navigate to="/admin/dashboard" replace />;
     };
 
@@ -323,20 +456,31 @@ const App = () => {
         const userInfo = getUserRole();
         const location = useLocation();
 
-        if (userInfo.roleId === 143 || userInfo.roleName.toUpperCase() === 'SUBSTATION_USER') {
+        if (
+            userInfo.roleId === 143 ||
+            userInfo.roleName.toUpperCase() === 'SUBSTATION_USER'
+        ) {
             let substation = userInfo.substation;
             let region = userInfo.region;
 
-            if (!substation && userInfo.userId && userInfo.userId.includes('_SUB')) {
+            if (
+                !substation &&
+                userInfo.userId &&
+                userInfo.userId.includes('_SUB')
+            ) {
                 substation = userInfo.userId.split('_SUB')[0].toLowerCase();
-                console.log('SubstationsProtectedRoute - Extracted substation from userId:', substation);
+                console.log(
+                    'SubstationsProtectedRoute - Extracted substation from userId:',
+                    substation
+                );
 
                 if (!region) {
                     const substationToRegionMap = {
-                        'central_sub1': 'kancheepuram',
-                        'north_sub1': 'tiruvannamalai',
+                        central_sub1: 'kancheepuram',
+                        north_sub1: 'tiruvannamalai',
                     };
-                    region = substationToRegionMap[substation] || 'kancheepuram';
+                    region =
+                        substationToRegionMap[substation] || 'kancheepuram';
                 }
             }
 
@@ -346,22 +490,37 @@ const App = () => {
                     if (loginInfo) {
                         const parsedLoginInfo = JSON.parse(loginInfo);
                         if (!substation) {
-                            substation = parsedLoginInfo?.user?.substation || parsedLoginInfo?.substation;
+                            substation =
+                                parsedLoginInfo?.user?.substation ||
+                                parsedLoginInfo?.substation;
                         }
                         if (!region) {
-                            region = parsedLoginInfo?.user?.region || parsedLoginInfo?.region;
+                            region =
+                                parsedLoginInfo?.user?.region ||
+                                parsedLoginInfo?.region;
                         }
                     }
                 } catch (e) {
-                    console.error('Error parsing login info in SubstationsProtectedRoute:', e);
+                    console.error(
+                        'Error parsing login info in SubstationsProtectedRoute:',
+                        e
+                    );
                 }
             }
 
             substation = substation || 'default';
             region = region || 'kancheepuram';
 
-            console.log(`Redirecting SUBSTATION_USER from substations list to their substation: ${substation} in region: ${region}`);
-            return <Navigate to={`/admin/${region}/substations/${substation}/details`} replace state={{ from: location }} />;
+            console.log(
+                `Redirecting SUBSTATION_USER from substations list to their substation: ${substation} in region: ${region}`
+            );
+            return (
+                <Navigate
+                    to={`/admin/${region}/substations/${substation}/details`}
+                    replace
+                    state={{ from: location }}
+                />
+            );
         }
 
         return <ProtectedRoute>{children}</ProtectedRoute>;
@@ -371,7 +530,12 @@ const App = () => {
         const { user } = useAuth();
         const { region } = useParams();
 
-        console.log('RegionRedirect - User:', user, 'URL region param:', region);
+        console.log(
+            'RegionRedirect - User:',
+            user,
+            'URL region param:',
+            region
+        );
 
         if (!user) {
             console.log('RegionRedirect - No user, redirecting to login');
@@ -385,7 +549,10 @@ const App = () => {
             // Try to get region from user object
             if (user.region) {
                 userRegion = user.region.toLowerCase();
-                console.log('RegionRedirect - Found region from user object:', userRegion);
+                console.log(
+                    'RegionRedirect - Found region from user object:',
+                    userRegion
+                );
             }
 
             // If not found, try to get from localStorage
@@ -394,21 +561,33 @@ const App = () => {
                     const loginInfo = localStorage.getItem('loginInfo');
                     if (loginInfo) {
                         const parsedLoginInfo = JSON.parse(loginInfo);
-                        userRegion = parsedLoginInfo?.user?.region || parsedLoginInfo?.region;
+                        userRegion =
+                            parsedLoginInfo?.user?.region ||
+                            parsedLoginInfo?.region;
                         if (userRegion) {
                             userRegion = userRegion.toLowerCase();
-                            console.log('RegionRedirect - Found region from localStorage:', userRegion);
+                            console.log(
+                                'RegionRedirect - Found region from localStorage:',
+                                userRegion
+                            );
                         }
                     }
                 } catch (e) {
-                    console.error('RegionRedirect - Error getting region from localStorage:', e);
+                    console.error(
+                        'RegionRedirect - Error getting region from localStorage:',
+                        e
+                    );
                 }
             }
 
             // If we still don't have a valid region, alert and redirect to dashboard
             if (!userRegion) {
-                console.error('RegionRedirect - CRITICAL: Unable to determine region');
-                alert('Unable to determine your region. Please contact your administrator.');
+                console.error(
+                    'RegionRedirect - CRITICAL: Unable to determine region'
+                );
+                alert(
+                    'Unable to determine your region. Please contact your administrator.'
+                );
                 // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
@@ -428,7 +607,12 @@ const App = () => {
         const { user } = useAuth();
         const location = useLocation();
 
-        console.log('RegionUserRoute - User:', user, 'Location:', location.pathname);
+        console.log(
+            'RegionUserRoute - User:',
+            user,
+            'Location:',
+            location.pathname
+        );
 
         if (!user) {
             console.log('RegionUserRoute - No user, redirecting to login');
@@ -436,17 +620,17 @@ const App = () => {
         }
 
         // Check if the user is a Region User
-        const isRegionUser = user.roleId === 2 || user.roleName?.toLowerCase() === 'region user';
+        const isRegionUser =
+            user.roleId === 2 || user.roleName?.toLowerCase() === 'region user';
 
         // Allowed paths for Region Users
         const isAllowedPath =
-            location.pathname === "/admin/dashboard" ||
-            (location.pathname.includes("/user/") && (
-                location.pathname.includes("/dashboard") ||
-                location.pathname.includes("/edcs") ||
-                location.pathname.includes("/substations") ||
-                location.pathname.includes("/feeders")
-            ));
+            location.pathname === '/admin/dashboard' ||
+            (location.pathname.includes('/user/') &&
+                (location.pathname.includes('/dashboard') ||
+                    location.pathname.includes('/edcs') ||
+                    location.pathname.includes('/substations') ||
+                    location.pathname.includes('/feeders')));
 
         // If Region User is trying to access a non-allowed path, redirect to their region detail page
         if (isRegionUser && !isAllowedPath) {
@@ -455,7 +639,10 @@ const App = () => {
             // Try to get region from user object
             if (user.region) {
                 userRegion = user.region.toLowerCase();
-                console.log('RegionUserRoute - Found region from user object:', userRegion);
+                console.log(
+                    'RegionUserRoute - Found region from user object:',
+                    userRegion
+                );
             }
 
             // If not found, try to get from localStorage
@@ -464,21 +651,33 @@ const App = () => {
                     const loginInfo = localStorage.getItem('loginInfo');
                     if (loginInfo) {
                         const parsedLoginInfo = JSON.parse(loginInfo);
-                        userRegion = parsedLoginInfo?.user?.region || parsedLoginInfo?.region;
+                        userRegion =
+                            parsedLoginInfo?.user?.region ||
+                            parsedLoginInfo?.region;
                         if (userRegion) {
                             userRegion = userRegion.toLowerCase();
-                            console.log('RegionUserRoute - Found region from localStorage:', userRegion);
+                            console.log(
+                                'RegionUserRoute - Found region from localStorage:',
+                                userRegion
+                            );
                         }
                     }
                 } catch (e) {
-                    console.error('RegionUserRoute - Error getting region from localStorage:', e);
+                    console.error(
+                        'RegionUserRoute - Error getting region from localStorage:',
+                        e
+                    );
                 }
             }
 
             // If we still don't have a valid region, alert and redirect to dashboard
             if (!userRegion) {
-                console.error('RegionUserRoute - CRITICAL: Unable to determine region');
-                alert('Unable to determine your region. Please contact your administrator.');
+                console.error(
+                    'RegionUserRoute - CRITICAL: Unable to determine region'
+                );
+                alert(
+                    'Unable to determine your region. Please contact your administrator.'
+                );
                 // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
@@ -503,10 +702,7 @@ const App = () => {
                         <Route index element={<DefaultRedirect />} />
 
                         <Route path="admin">
-                            <Route
-                                index
-                                element={<DefaultRedirect />}
-                            />
+                            <Route index element={<DefaultRedirect />} />
                             <Route
                                 path="dashboard"
                                 element={
@@ -596,6 +792,14 @@ const App = () => {
                                 }
                             />
                             <Route
+                                path="feeders"
+                                element={
+                                    <RegionUserRoute>
+                                        <Feeders />
+                                    </RegionUserRoute>
+                                }
+                            />
+                            <Route
                                 path=":region/feeders/:feederId/details"
                                 element={
                                     <ProtectedRoute>
@@ -650,10 +854,7 @@ const App = () => {
                         </Route>
 
                         <Route path="user">
-                            <Route
-                                index
-                                element={<DefaultRedirect />}
-                            />
+                            <Route index element={<DefaultRedirect />} />
                             <Route
                                 path=":region/dashboard"
                                 element={
