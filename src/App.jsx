@@ -5,9 +5,9 @@ import {
     Navigate,
     useLocation,
     useParams,
-    Outlet,
 } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Login from './pages/Login';
 import AdminLayout from './layouts/AdminLayout';
 import AuthLayout from './layouts/AuthLayout';
@@ -30,10 +30,20 @@ import Substations from './pages/Substations';
 import Regions from './pages/Regions';
 import Feeders from './pages/Feeders';
 import ProtectedRoute from './components/ProtectedRoute';
-import LongDetailsWidget from './pages/LongDetailsWidget';
+import RegionDetails from './pages/RegionDetails';
+import EdcDetails from './pages/EdcDetails';
+import SubstationDetails from './pages/SubstationDetails';
+import FeederDetails from './pages/FeederDetails';
+import UserRegionDashboard from './pages/UserRegionDashboard';
+import RegionEdcs from './pages/RegionEdcs';
+import EdcSubstations from './pages/EdcSubstations';
+import RegionSubstations from './pages/RegionSubstations';
+import RegionFeeders from './pages/RegionFeeders';
+import UserEdcDashboard from './pages/UserEdcDashboard';
+import UserSubstationDashboard from './pages/UserSubstationDashboard';
+import EdcFeeders from './pages/EdcFeeders';
 
 const App = () => {
-    // Add a useEffect to log localStorage on initial render
     useEffect(() => {
         try {
             const loginInfo = localStorage.getItem('loginInfo');
@@ -236,12 +246,9 @@ const App = () => {
             user.roleId === 2 ||
             user.roleName?.toLowerCase() === 'region user'
         ) {
-            // Determine the region from user information
             let region = null;
 
-            // Try to get the region from the userId (in case it's a circle or substation format)
             if (user.userId) {
-                // Check if userId is in circle format: region_circlename
                 if (user.userId.includes('_')) {
                     const circleFromUserId = user.userId
                         .split('_')[1]
@@ -251,10 +258,8 @@ const App = () => {
                         circleFromUserId
                     );
 
-                    // Map circle names to their corresponding regions
                     const circleToRegionMap = {
-                        central: null, // No default mapping
-                        // Add other circle-to-region mappings as needed
+                        central: null,
                     };
 
                     region = circleToRegionMap[circleFromUserId];
@@ -266,7 +271,6 @@ const App = () => {
                     }
                 }
 
-                // Check if userId is in substation format: region_substationname
                 if (!region && user.userId.includes('_sub')) {
                     const substationFromUserId = user.userId
                         .split('_')[1]
@@ -276,10 +280,8 @@ const App = () => {
                         substationFromUserId
                     );
 
-                    // Map substation names to their corresponding regions
                     const substationToRegionMap = {
-                        central_sub1: null, // No default mapping
-                        // Add other substation-to-region mappings as needed
+                        central_sub1: null,
                     };
 
                     region = substationToRegionMap[substationFromUserId];
@@ -292,7 +294,6 @@ const App = () => {
                 }
             }
 
-            // If region is still not found, try to get it directly from the user object
             if (!region && user.region) {
                 region = user.region.toLowerCase();
                 console.log(
@@ -301,7 +302,6 @@ const App = () => {
                 );
             }
 
-            // If still not found, try to get from localStorage
             if (!region) {
                 try {
                     const loginInfo = localStorage.getItem('loginInfo');
@@ -326,7 +326,6 @@ const App = () => {
                 }
             }
 
-            // If we still don't have a valid region, show error and redirect to dashboard
             if (!region) {
                 console.error(
                     'DefaultRedirect - CRITICAL: Unable to determine region for Region User'
@@ -334,7 +333,6 @@ const App = () => {
                 alert(
                     'Unable to determine your region. Please contact your administrator.'
                 );
-                // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
 
@@ -342,188 +340,7 @@ const App = () => {
             return <Navigate to={`/user/${region}/dashboard`} replace />;
         }
 
-        // Default case - redirect to admin dashboard
         return <Navigate to="/admin/dashboard" replace />;
-    };
-
-    const RegionsProtectedRoute = () => {
-        const { user } = useAuth();
-        const { region } = useParams();
-
-        console.log(
-            'RegionsProtectedRoute - User:',
-            user,
-            'URL region param:',
-            region
-        );
-
-        if (!user) {
-            console.log(
-                'RegionsProtectedRoute - No user, redirecting to login'
-            );
-            return <Navigate to="/login" replace />;
-        }
-
-        // For admin users, allow access to all regions
-        if (user.roleId === 1 || user.roleName?.toLowerCase() === 'admin') {
-            console.log('RegionsProtectedRoute - Admin user, allowing access');
-            return <Outlet />;
-        }
-
-        // For region users, check if they're trying to access their own region
-        if (
-            user.roleId === 2 ||
-            user.roleName?.toLowerCase() === 'region user'
-        ) {
-            let userRegion = null;
-
-            // Get the user's region from user object
-            if (user.region) {
-                userRegion = user.region.toLowerCase();
-                console.log(
-                    'RegionsProtectedRoute - Found region from user object:',
-                    userRegion
-                );
-            }
-
-            // If not found, try to get from localStorage
-            if (!userRegion) {
-                try {
-                    const loginInfo = localStorage.getItem('loginInfo');
-                    if (loginInfo) {
-                        const parsedLoginInfo = JSON.parse(loginInfo);
-                        userRegion =
-                            parsedLoginInfo?.user?.region ||
-                            parsedLoginInfo?.region;
-                        if (userRegion) {
-                            userRegion = userRegion.toLowerCase();
-                            console.log(
-                                'RegionsProtectedRoute - Found region from localStorage:',
-                                userRegion
-                            );
-                        }
-                    }
-                } catch (e) {
-                    console.error(
-                        'RegionsProtectedRoute - Error getting region from localStorage:',
-                        e
-                    );
-                }
-            }
-
-            // If we still don't have a region, alert and redirect to dashboard
-            if (!userRegion) {
-                console.error(
-                    'RegionsProtectedRoute - CRITICAL: Unable to determine user region'
-                );
-                alert(
-                    'Unable to determine your region. Please contact your administrator.'
-                );
-                // Use admin dashboard as fallback
-                return <Navigate to="/admin/dashboard" replace />;
-            }
-
-            // Check if URL region param matches user's region
-            if (region && region.toLowerCase() !== userRegion) {
-                console.log(
-                    'RegionsProtectedRoute - Region mismatch. User region:',
-                    userRegion,
-                    'URL region:',
-                    region
-                );
-                console.log(
-                    "RegionsProtectedRoute - Redirecting to user's region details"
-                );
-                return (
-                    <Navigate to={`/user/${userRegion}/dashboard`} replace />
-                );
-            }
-
-            console.log(
-                'RegionsProtectedRoute - Region match, allowing access'
-            );
-            return <Outlet />;
-        }
-
-        // Default case - redirect to dashboard
-        console.log(
-            'RegionsProtectedRoute - User role not recognized, redirecting to dashboard'
-        );
-        return <Navigate to="/admin/dashboard" replace />;
-    };
-
-    const SubstationsProtectedRoute = ({ children }) => {
-        const userInfo = getUserRole();
-        const location = useLocation();
-
-        if (
-            userInfo.roleId === 143 ||
-            userInfo.roleName.toUpperCase() === 'SUBSTATION_USER'
-        ) {
-            let substation = userInfo.substation;
-            let region = userInfo.region;
-
-            if (
-                !substation &&
-                userInfo.userId &&
-                userInfo.userId.includes('_SUB')
-            ) {
-                substation = userInfo.userId.split('_SUB')[0].toLowerCase();
-                console.log(
-                    'SubstationsProtectedRoute - Extracted substation from userId:',
-                    substation
-                );
-
-                if (!region) {
-                    const substationToRegionMap = {
-                        central_sub1: 'kancheepuram',
-                        north_sub1: 'tiruvannamalai',
-                    };
-                    region =
-                        substationToRegionMap[substation] || 'kancheepuram';
-                }
-            }
-
-            if (!substation || !region) {
-                try {
-                    const loginInfo = localStorage.getItem('loginInfo');
-                    if (loginInfo) {
-                        const parsedLoginInfo = JSON.parse(loginInfo);
-                        if (!substation) {
-                            substation =
-                                parsedLoginInfo?.user?.substation ||
-                                parsedLoginInfo?.substation;
-                        }
-                        if (!region) {
-                            region =
-                                parsedLoginInfo?.user?.region ||
-                                parsedLoginInfo?.region;
-                        }
-                    }
-                } catch (e) {
-                    console.error(
-                        'Error parsing login info in SubstationsProtectedRoute:',
-                        e
-                    );
-                }
-            }
-
-            substation = substation || 'default';
-            region = region || 'kancheepuram';
-
-            console.log(
-                `Redirecting SUBSTATION_USER from substations list to their substation: ${substation} in region: ${region}`
-            );
-            return (
-                <Navigate
-                    to={`/admin/${region}/substations/${substation}/details`}
-                    replace
-                    state={{ from: location }}
-                />
-            );
-        }
-
-        return <ProtectedRoute>{children}</ProtectedRoute>;
     };
 
     const RegionRedirect = () => {
@@ -542,11 +359,9 @@ const App = () => {
             return <Navigate to="/login" replace />;
         }
 
-        // If region is 'dashboard' or undefined, we need to get it from the user info
         if (!region || region === 'dashboard' || region === 'undefined') {
             let userRegion = null;
 
-            // Try to get region from user object
             if (user.region) {
                 userRegion = user.region.toLowerCase();
                 console.log(
@@ -555,7 +370,6 @@ const App = () => {
                 );
             }
 
-            // If not found, try to get from localStorage
             if (!userRegion) {
                 try {
                     const loginInfo = localStorage.getItem('loginInfo');
@@ -580,7 +394,6 @@ const App = () => {
                 }
             }
 
-            // If we still don't have a valid region, alert and redirect to dashboard
             if (!userRegion) {
                 console.error(
                     'RegionRedirect - CRITICAL: Unable to determine region'
@@ -588,7 +401,6 @@ const App = () => {
                 alert(
                     'Unable to determine your region. Please contact your administrator.'
                 );
-                // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
 
@@ -596,13 +408,11 @@ const App = () => {
             return <Navigate to={`/user/${userRegion}/dashboard`} replace />;
         }
 
-        // Ensure region is standardized to lowercase
         const safeRegion = region.toLowerCase();
         console.log('RegionRedirect - Using region from URL:', safeRegion);
         return <Navigate to={`/user/${safeRegion}/dashboard`} replace />;
     };
 
-    // Update RegionUserRoute to handle the new URL pattern
     const RegionUserRoute = ({ children }) => {
         const { user } = useAuth();
         const location = useLocation();
@@ -619,11 +429,9 @@ const App = () => {
             return <Navigate to="/login" replace />;
         }
 
-        // Check if the user is a Region User
         const isRegionUser =
             user.roleId === 2 || user.roleName?.toLowerCase() === 'region user';
 
-        // Allowed paths for Region Users
         const isAllowedPath =
             location.pathname === '/admin/dashboard' ||
             (location.pathname.includes('/user/') &&
@@ -632,11 +440,9 @@ const App = () => {
                     location.pathname.includes('/substations') ||
                     location.pathname.includes('/feeders')));
 
-        // If Region User is trying to access a non-allowed path, redirect to their region detail page
         if (isRegionUser && !isAllowedPath) {
             let userRegion = null;
 
-            // Try to get region from user object
             if (user.region) {
                 userRegion = user.region.toLowerCase();
                 console.log(
@@ -645,7 +451,6 @@ const App = () => {
                 );
             }
 
-            // If not found, try to get from localStorage
             if (!userRegion) {
                 try {
                     const loginInfo = localStorage.getItem('loginInfo');
@@ -670,7 +475,6 @@ const App = () => {
                 }
             }
 
-            // If we still don't have a valid region, alert and redirect to dashboard
             if (!userRegion) {
                 console.error(
                     'RegionUserRoute - CRITICAL: Unable to determine region'
@@ -678,7 +482,6 @@ const App = () => {
                 alert(
                     'Unable to determine your region. Please contact your administrator.'
                 );
-                // Use admin dashboard as fallback
                 return <Navigate to="/admin/dashboard" replace />;
             }
 
@@ -686,8 +489,166 @@ const App = () => {
             return <Navigate to={`/user/${userRegion}/dashboard`} replace />;
         }
 
-        // For Admin users or allowed paths, just render the children
         return <ProtectedRoute>{children}</ProtectedRoute>;
+    };
+
+    RegionUserRoute.propTypes = {
+        children: PropTypes.node.isRequired,
+    };
+
+    const EdcRedirect = () => {
+        const { user } = useAuth();
+        const { edc } = useParams();
+
+        console.log('EdcRedirect - User:', user, 'URL edc param:', edc);
+
+        if (!user) {
+            console.log('EdcRedirect - No user, redirecting to login');
+            return <Navigate to="/login" replace />;
+        }
+
+        if (!edc || edc === 'dashboard' || edc === 'undefined') {
+            let userEdc = null;
+
+            if (user.circle) {
+                userEdc = user.circle.toLowerCase();
+                console.log(
+                    'EdcRedirect - Found edc from user object:',
+                    userEdc
+                );
+            }
+
+            if (!userEdc) {
+                try {
+                    const loginInfo = localStorage.getItem('loginInfo');
+                    if (loginInfo) {
+                        const parsedLoginInfo = JSON.parse(loginInfo);
+                        userEdc =
+                            parsedLoginInfo?.user?.circle ||
+                            parsedLoginInfo?.circle;
+                        if (userEdc) {
+                            userEdc = userEdc.toLowerCase();
+                            console.log(
+                                'EdcRedirect - Found edc from localStorage:',
+                                userEdc
+                            );
+                        }
+                    }
+                } catch (e) {
+                    console.error(
+                        'EdcRedirect - Error getting edc from localStorage:',
+                        e
+                    );
+                }
+            }
+
+            if (!userEdc) {
+                console.error(
+                    'EdcRedirect - CRITICAL: Unable to determine edc'
+                );
+                alert(
+                    'Unable to determine your EDC. Please contact your administrator.'
+                );
+                return <Navigate to="/admin/dashboard" replace />;
+            }
+
+            console.log('EdcRedirect - Redirecting to edc:', userEdc);
+            return <Navigate to={`/user/edc/${userEdc}/dashboard`} replace />;
+        }
+
+        const safeEdc = edc.toLowerCase();
+        console.log('EdcRedirect - Using edc from URL:', safeEdc);
+        return <Navigate to={`/user/edc/${safeEdc}/dashboard`} replace />;
+    };
+
+    const SubstationRedirect = () => {
+        const { user } = useAuth();
+        const { substation } = useParams();
+
+        console.log(
+            'SubstationRedirect - User:',
+            user,
+            'URL substation param:',
+            substation
+        );
+
+        if (!user) {
+            console.log('SubstationRedirect - No user, redirecting to login');
+            return <Navigate to="/login" replace />;
+        }
+
+        if (
+            !substation ||
+            substation === 'dashboard' ||
+            substation === 'undefined'
+        ) {
+            let userSubstation = null;
+
+            if (user.substation) {
+                userSubstation = user.substation.toLowerCase();
+                console.log(
+                    'SubstationRedirect - Found substation from user object:',
+                    userSubstation
+                );
+            }
+
+            if (!userSubstation) {
+                try {
+                    const loginInfo = localStorage.getItem('loginInfo');
+                    if (loginInfo) {
+                        const parsedLoginInfo = JSON.parse(loginInfo);
+                        userSubstation =
+                            parsedLoginInfo?.user?.substation ||
+                            parsedLoginInfo?.substation;
+                        if (userSubstation) {
+                            userSubstation = userSubstation.toLowerCase();
+                            console.log(
+                                'SubstationRedirect - Found substation from localStorage:',
+                                userSubstation
+                            );
+                        }
+                    }
+                } catch (e) {
+                    console.error(
+                        'SubstationRedirect - Error getting substation from localStorage:',
+                        e
+                    );
+                }
+            }
+
+            if (!userSubstation) {
+                console.error(
+                    'SubstationRedirect - CRITICAL: Unable to determine substation'
+                );
+                alert(
+                    'Unable to determine your substation. Please contact your administrator.'
+                );
+                return <Navigate to="/admin/dashboard" replace />;
+            }
+
+            console.log(
+                'SubstationRedirect - Redirecting to substation:',
+                userSubstation
+            );
+            return (
+                <Navigate
+                    to={`/user/substation/${userSubstation}/dashboard`}
+                    replace
+                />
+            );
+        }
+
+        const safeSubstation = substation.toLowerCase();
+        console.log(
+            'SubstationRedirect - Using substation from URL:',
+            safeSubstation
+        );
+        return (
+            <Navigate
+                to={`/user/substation/${safeSubstation}/dashboard`}
+                replace
+            />
+        );
     };
 
     return (
@@ -701,39 +662,13 @@ const App = () => {
                     <Route path="/" element={<AdminLayout />}>
                         <Route index element={<DefaultRedirect />} />
 
-                        <Route path="admin">
+                        <Route path="admin" element={<ProtectedRoute />}>
                             <Route index element={<DefaultRedirect />} />
-                            <Route
-                                path="dashboard"
-                                element={
-                                    <ProtectedRoute>
-                                        <Dashboard />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path="regions"
-                                element={
-                                    <ProtectedRoute>
-                                        <Regions />
-                                    </ProtectedRoute>
-                                }
-                            />
+                            <Route path="dashboard" element={<Dashboard />} />
+                            <Route path="regions" element={<Regions />} />
                             <Route
                                 path="regions/:region"
-                                element={
-                                    <ProtectedRoute>
-                                        <LongDetailsWidget />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path="regions/:regionId/details"
-                                element={
-                                    <ProtectedRoute>
-                                        <LongDetailsWidget />
-                                    </ProtectedRoute>
-                                }
+                                element={<RegionDetails />}
                             />
                             <Route
                                 path="edcs"
@@ -741,30 +676,6 @@ const App = () => {
                                     <RegionUserRoute>
                                         <EDCs />
                                     </RegionUserRoute>
-                                }
-                            />
-                            <Route
-                                path=":region/edcs"
-                                element={
-                                    <RegionUserRoute>
-                                        <EDCs />
-                                    </RegionUserRoute>
-                                }
-                            />
-                            <Route
-                                path=":region/:edcs/substations"
-                                element={
-                                    <ProtectedRoute>
-                                        <Substations />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path=":region/edcs/:edcId/details"
-                                element={
-                                    <ProtectedRoute>
-                                        <LongDetailsWidget />
-                                    </ProtectedRoute>
                                 }
                             />
                             <Route
@@ -776,22 +687,6 @@ const App = () => {
                                 }
                             />
                             <Route
-                                path=":region/substations"
-                                element={
-                                    <RegionUserRoute>
-                                        <Substations />
-                                    </RegionUserRoute>
-                                }
-                            />
-                            <Route
-                                path=":region/feeders"
-                                element={
-                                    <RegionUserRoute>
-                                        <Feeders />
-                                    </RegionUserRoute>
-                                }
-                            />
-                            <Route
                                 path="feeders"
                                 element={
                                     <RegionUserRoute>
@@ -799,117 +694,73 @@ const App = () => {
                                     </RegionUserRoute>
                                 }
                             />
-                            <Route
-                                path=":region/feeders/:feederId/details"
-                                element={
-                                    <ProtectedRoute>
-                                        <LongDetailsWidget />
-                                    </ProtectedRoute>
-                                }
-                            />
                             <Route path="tickets">
-                                <Route
-                                    index
-                                    element={
-                                        <ProtectedRoute>
-                                            <Tickets />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path="new"
-                                    element={
-                                        <ProtectedRoute>
-                                            <CreateTicket />
-                                        </ProtectedRoute>
-                                    }
-                                />
-                                <Route
-                                    path=":id"
-                                    element={
-                                        <ProtectedRoute>
-                                            <TicketDetails />
-                                        </ProtectedRoute>
-                                    }
-                                />
+                                <Route index element={<Tickets />} />
+                                <Route path="new" element={<CreateTicket />} />
+                                <Route path=":id" element={<TicketDetails />} />
                             </Route>
-                            <Route
-                                path="account"
-                                element={
-                                    <ProtectedRoute>
-                                        <Profile />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path="emulate"
-                                element={
-                                    <ProtectedRoute>
-                                        <Load />
-                                    </ProtectedRoute>
-                                }
-                            />
+                            <Route path="account" element={<Profile />} />
+                            <Route path="emulate" element={<Load />} />
                             <Route path="terms" element={<Terms />} />
                             <Route path="privacy" element={<Privacy />} />
-                        </Route>
 
-                        <Route path="user">
-                            <Route index element={<DefaultRedirect />} />
-                            <Route
-                                path=":region/dashboard"
-                                element={
-                                    <ProtectedRoute>
-                                        <LongDetailsWidget />
-                                    </ProtectedRoute>
-                                }
-                            />
                             <Route
                                 path=":region/edcs"
-                                element={
-                                    <ProtectedRoute>
-                                        <EDCs />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path=":region/edcs/:edcId/details"
-                                element={
-                                    <ProtectedRoute>
-                                        <LongDetailsWidget />
-                                    </ProtectedRoute>
-                                }
+                                element={<RegionEdcs />}
                             />
                             <Route
                                 path=":region/substations"
-                                element={
-                                    <ProtectedRoute>
-                                        <Substations />
-                                    </ProtectedRoute>
-                                }
-                            />
-                            <Route
-                                path=":region/substations/:substationId/details"
-                                element={
-                                    <ProtectedRoute>
-                                        <LongDetailsWidget />
-                                    </ProtectedRoute>
-                                }
+                                element={<RegionSubstations />}
                             />
                             <Route
                                 path=":region/feeders"
-                                element={
-                                    <ProtectedRoute>
-                                        <Feeders />
-                                    </ProtectedRoute>
-                                }
+                                element={<RegionFeeders />}
+                            />
+
+                            {/*  */}
+                            <Route
+                                path=":region/edcs/:edcId/details"
+                                element={<EdcDetails />}
+                            />
+                            <Route
+                                path=":region/:edcs/substations"
+                                element={<EdcSubstations />}
                             />
                             <Route
                                 path=":region/feeders/:feederId/details"
-                                element={
-                                    <ProtectedRoute>
-                                        <LongDetailsWidget />
-                                    </ProtectedRoute>
-                                }
+                                element={<FeederDetails />}
+                            />
+                        </Route>
+
+                        <Route path="user/region" element={<ProtectedRoute />}>
+                            <Route index element={<DefaultRedirect />} />
+                            <Route
+                                path=":region/dashboard"
+                                element={<UserRegionDashboard />}
+                            />
+                            <Route
+                                path=":region/edcs"
+                                element={<RegionEdcs />}
+                            />
+                            <Route
+                                path=":region/edcs/:edcId/details"
+                                element={<EdcDetails />}
+                            />
+                            <Route
+                                path=":region/substations"
+                                element={<RegionSubstations />}
+                            />
+                            <Route
+                                path=":region/substations/:substationId/details"
+                                element={<SubstationDetails />}
+                            />
+                            <Route
+                                path=":region/feeders"
+                                element={<RegionFeeders />}
+                            />
+                            <Route
+                                path=":region/feeders/:feederId/details"
+                                element={<FeederDetails />}
                             />
                             <Route
                                 path=":region"
@@ -918,6 +769,53 @@ const App = () => {
                             <Route
                                 path="regions/:region/details"
                                 element={<RegionRedirect />}
+                            />
+                        </Route>
+
+                        <Route path="user/edc" element={<ProtectedRoute />}>
+                            <Route index element={<DefaultRedirect />} />
+                            <Route
+                                path=":edc/dashboard"
+                                element={<UserEdcDashboard />}
+                            />
+                            <Route
+                                path=":edc/substations"
+                                element={<EdcSubstations />}
+                            />
+                            <Route
+                                path=":edc/substations/:substationId/details"
+                                element={<SubstationDetails />}
+                            />
+                            <Route
+                                path=":edc/feeders"
+                                element={<EdcFeeders />}
+                            />
+                            <Route
+                                path=":edc/feeders/:feederId/details"
+                                element={<FeederDetails />}
+                            />
+                            <Route path=":edc" element={<EdcRedirect />} />
+                        </Route>
+
+                        <Route
+                            path="user/substation"
+                            element={<ProtectedRoute />}>
+                            <Route index element={<DefaultRedirect />} />
+                            <Route
+                                path=":substation/dashboard"
+                                element={<UserSubstationDashboard />}
+                            />
+                            <Route
+                                path=":substation/feeders"
+                                element={<RegionFeeders />}
+                            />
+                            <Route
+                                path=":substation/feeders/:feederId/details"
+                                element={<FeederDetails />}
+                            />
+                            <Route
+                                path=":substation"
+                                element={<SubstationRedirect />}
                             />
                         </Route>
 

@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+import { apiClient } from '../api/client';
 import styles from '../styles/TicketDetails.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
-
-const BASE_URL = 'http://localhost:3000/api/v1/tickets';
 
 const TicketDetails = () => {
     const { id } = useParams();
@@ -22,7 +20,7 @@ const TicketDetails = () => {
             const fetchTicket = async () => {
                 try {
                     setLoading(true);
-                    const res = await axios.get(`${BASE_URL}/${id}`);
+                    const res = await apiClient.get(`/tickets/${id}`);
                     const data = res.data;
 
                     // Normalize API fields to match UI logic
@@ -36,7 +34,7 @@ const TicketDetails = () => {
                         region: data.Region,
                         createdAt: data.CreatedAt || new Date().toISOString(),
                         updatedAt: data.LastUpdated || new Date().toISOString(),
-                        createdBy: data.ConsumerName || 'User'
+                        createdBy: data.ConsumerName || 'User',
                     };
 
                     setTicket(formattedTicket);
@@ -56,17 +54,19 @@ const TicketDetails = () => {
         if (!statusChange || !ticket || statusChange === ticket.status) return;
 
         try {
-            const res = await axios.patch(`${BASE_URL}/${ticket.id}`, {
-                Status: statusChange.charAt(0).toUpperCase() + statusChange.slice(1)
+            const res = await apiClient.patch(`/tickets/${ticket.id}`, {
+                Status:
+                    statusChange.charAt(0).toUpperCase() +
+                    statusChange.slice(1),
             });
 
             const updatedStatus = res.data.Status.toLowerCase();
 
             // Update UI state
-            setTicket(prev => ({
+            setTicket((prev) => ({
                 ...prev,
                 status: updatedStatus,
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date().toISOString(),
             }));
 
             const newActivity = {
@@ -74,10 +74,10 @@ const TicketDetails = () => {
                 type: 'status',
                 author: 'Admin User',
                 text: `Ticket status changed to "${updatedStatus}"`,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             };
 
-            setActivities(prev => [...prev, newActivity]);
+            setActivities((prev) => [...prev, newActivity]);
             setStatusChange('');
         } catch (error) {
             console.error('Failed to update status:', error);
@@ -93,10 +93,10 @@ const TicketDetails = () => {
             type: 'comment',
             author: 'Admin User',
             text: replyText,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
         };
 
-        setActivities(prev => [...prev, newActivity]);
+        setActivities((prev) => [...prev, newActivity]);
         setReplyText('');
     };
 
@@ -107,7 +107,7 @@ const TicketDetails = () => {
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
         });
     };
 
@@ -125,24 +125,26 @@ const TicketDetails = () => {
                 <div className={styles.header_right}>
                     <span
                         className={`${styles.back_arrow} ${styles.icon_hover}`}
-                        onClick={() => navigate('/admin/tickets')}
-                    >
+                        onClick={() => navigate('/admin/tickets')}>
                         <img src="icons/arrow-down.svg" alt="Back" />
                     </span>
                     <div>
-                        <h1 className='title'>{ticket.subject}</h1>
-                        <div className={styles.ticket_id}>Ticket ID: {ticket.id}</div>
+                        <h1 className="title">{ticket.subject}</h1>
+                        <div className={styles.ticket_id}>
+                            Ticket ID: {ticket.id}
+                        </div>
                     </div>
                 </div>
 
                 <div className={styles.ticket_actions}>
                     <div className={styles.status_dropdown_container}>
-                        <label className={styles.status_dropdown_label}>Ticket Status:</label>
+                        <label className={styles.status_dropdown_label}>
+                            Ticket Status:
+                        </label>
                         <select
                             className={styles.status_dropdown}
                             value={statusChange || ticket.status}
-                            onChange={(e) => setStatusChange(e.target.value)}
-                        >
+                            onChange={(e) => setStatusChange(e.target.value)}>
                             <option value="open">Open</option>
                             <option value="pending">Pending</option>
                             <option value="closed">Closed</option>
@@ -163,23 +165,39 @@ const TicketDetails = () => {
                 <div className={styles.ticket_main}>
                     <div className={styles.ticket_description}>
                         <h2 className={styles.activity_title}>Description</h2>
-                        <div className={styles.description_content}>{ticket.description}</div>
+                        <div className={styles.description_content}>
+                            {ticket.description}
+                        </div>
                     </div>
 
                     <div className={styles.ticket_activities}>
                         <h2 className={styles.activity_title}>Activity</h2>
                         <div className={styles.activity_list}>
-                            {activities.map(activity => (
-                                <div key={activity.id} className={styles.activity_item}>
+                            {activities.map((activity) => (
+                                <div
+                                    key={activity.id}
+                                    className={styles.activity_item}>
                                     <div className={styles.activity_avatar}>
                                         {activity.author.charAt(0)}
                                     </div>
                                     <div className={styles.activity_content}>
                                         <div className={styles.activity_header}>
-                                            <span className={styles.activity_author}>{activity.author}</span>
-                                            <span className={styles.activity_time}>{formatDate(activity.timestamp)}</span>
+                                            <span
+                                                className={
+                                                    styles.activity_author
+                                                }>
+                                                {activity.author}
+                                            </span>
+                                            <span
+                                                className={
+                                                    styles.activity_time
+                                                }>
+                                                {formatDate(activity.timestamp)}
+                                            </span>
                                         </div>
-                                        <div className={styles.activity_text}>{activity.text}</div>
+                                        <div className={styles.activity_text}>
+                                            {activity.text}
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -193,26 +211,64 @@ const TicketDetails = () => {
                                 <textarea
                                     className={styles.form_textarea}
                                     value={replyText}
-                                    onChange={(e) => setReplyText(e.target.value)}
+                                    onChange={(e) =>
+                                        setReplyText(e.target.value)
+                                    }
                                     placeholder="Type your reply here..."
                                     required
                                 />
                             </div>
-                            <Buttons label="Post Reply" variant="primary" type="submit" />
+                            <Buttons
+                                label="Post Reply"
+                                variant="primary"
+                                type="submit"
+                            />
                         </form>
                     </div>
                 </div>
 
                 <div className={styles.ticket_sidebar}>
                     <div className={styles.ticket_info_card}>
-                        <div className={styles.card_title}><h3>Ticket Information</h3></div>
-                        <div className={styles.info_row}><span className={styles.info_label}>Status:</span><span className={`${styles.status_badge} ${styles[`status_${ticket.status}`]}`}>{ticket.status}</span></div>
-                        <div className={styles.info_row}><span className={styles.info_label}>Priority:</span><span>{ticket.priority}</span></div>
-                        <div className={styles.info_row}><span className={styles.info_label}>Category:</span><span>{ticket.category}</span></div>
-                        <div className={styles.info_row}><span className={styles.info_label}>Region:</span><span>{ticket.region}</span></div>
-                        <div className={styles.info_row}><span className={styles.info_label}>Created:</span><span>{formatDate(ticket.createdAt)}</span></div>
-                        <div className={styles.info_row}><span className={styles.info_label}>Last Updated:</span><span>{formatDate(ticket.updatedAt)}</span></div>
-                        <div className={styles.info_row}><span className={styles.info_label}>Created By:</span><span>{ticket.createdBy}</span></div>
+                        <div className={styles.card_title}>
+                            <h3>Ticket Information</h3>
+                        </div>
+                        <div className={styles.info_row}>
+                            <span className={styles.info_label}>Status:</span>
+                            <span
+                                className={`${styles.status_badge} ${
+                                    styles[`status_${ticket.status}`]
+                                }`}>
+                                {ticket.status}
+                            </span>
+                        </div>
+                        <div className={styles.info_row}>
+                            <span className={styles.info_label}>Priority:</span>
+                            <span>{ticket.priority}</span>
+                        </div>
+                        <div className={styles.info_row}>
+                            <span className={styles.info_label}>Category:</span>
+                            <span>{ticket.category}</span>
+                        </div>
+                        <div className={styles.info_row}>
+                            <span className={styles.info_label}>Region:</span>
+                            <span>{ticket.region}</span>
+                        </div>
+                        <div className={styles.info_row}>
+                            <span className={styles.info_label}>Created:</span>
+                            <span>{formatDate(ticket.createdAt)}</span>
+                        </div>
+                        <div className={styles.info_row}>
+                            <span className={styles.info_label}>
+                                Last Updated:
+                            </span>
+                            <span>{formatDate(ticket.updatedAt)}</span>
+                        </div>
+                        <div className={styles.info_row}>
+                            <span className={styles.info_label}>
+                                Created By:
+                            </span>
+                            <span>{ticket.createdBy}</span>
+                        </div>
                     </div>
                 </div>
             </div>

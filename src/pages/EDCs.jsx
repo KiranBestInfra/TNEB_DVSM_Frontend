@@ -25,7 +25,6 @@ const EDCs = () => {
     const { region } = useParams();
     const location = useLocation();
 
-    // Determine if this is a region user path
     const isRegionUser = location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
@@ -542,6 +541,7 @@ const EDCs = () => {
                                     widgetsData.substationCount?.[edc] || 0
                                 }
                                 // feederCount={edcFeederCounts?.[edc] || 0}
+                                edcCount={widgetsData.edcNames.length}
                                 feederCount={
                                     widgetsData.feederCount?.[edc] || 0
                                 }
