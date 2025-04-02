@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { apiClient } from '../api/client';
 import styles from '../styles/CreateTicket.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 
@@ -27,7 +27,7 @@ const CreateTicket = () => {
         Coimbatore: ['North', 'South'],
         Madurai: ['East', 'West'],
         Trichy: ['East', 'West'],
-        Salem: ['North', 'South']
+        Salem: ['North', 'South'],
     };
 
     const handleInputChange = (e) => {
@@ -35,9 +35,9 @@ const CreateTicket = () => {
 
         if (name === 'Mobile') {
             const numbersOnly = value.replace(/[^0-9]/g, '');
-            setFormData(prev => ({ ...prev, [name]: numbersOnly }));
+            setFormData((prev) => ({ ...prev, [name]: numbersOnly }));
         } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
+            setFormData((prev) => ({ ...prev, [name]: value }));
         }
     };
 
@@ -52,10 +52,10 @@ const CreateTicket = () => {
                 TicketId: ticketId,
                 Status: 'Open',
                 LastUpdated: new Date().toISOString(),
-                EDC_Substations: 'Substation A'
+                EDC_Substations: 'Substation A',
             };
 
-            await axios.post('http://localhost:3000/api/v1/tickets', payload);
+            await apiClient.post('/tickets', payload);
             navigate('/admin/tickets');
         } catch (err) {
             setError('Failed to create ticket');
@@ -158,13 +158,14 @@ const CreateTicket = () => {
                             value={formData.Category}
                             onChange={handleInputChange}
                             className={styles.form_select}
-                            required
-                        >
+                            required>
                             <option value="">Select Category</option>
                             <option value="Electrical">Electrical</option>
                             <option value="Billing">Billing</option>
                             <option value="Meter Issue">Meter Issue</option>
-                            <option value="Connection Issue">Connection Issue</option>
+                            <option value="Connection Issue">
+                                Connection Issue
+                            </option>
                             <option value="Other">Other</option>
                         </select>
                     </div>
@@ -174,8 +175,7 @@ const CreateTicket = () => {
                             value={formData.Priority}
                             onChange={handleInputChange}
                             className={styles.form_select}
-                            required
-                        >
+                            required>
                             <option value="">Select Priority</option>
                             <option value="Low">Low</option>
                             <option value="Medium">Medium</option>
@@ -192,11 +192,12 @@ const CreateTicket = () => {
                             value={formData.Region}
                             onChange={handleInputChange}
                             className={styles.form_select}
-                            required
-                        >
+                            required>
                             <option value="">Select Region</option>
-                            {Object.keys(regionDistrictMap).map(region => (
-                                <option key={region} value={region}>{region}</option>
+                            {Object.keys(regionDistrictMap).map((region) => (
+                                <option key={region} value={region}>
+                                    {region}
+                                </option>
                             ))}
                         </select>
                     </div>
@@ -207,12 +208,15 @@ const CreateTicket = () => {
                             onChange={handleInputChange}
                             className={styles.form_select}
                             required
-                            disabled={!formData.Region}
-                        >
+                            disabled={!formData.Region}>
                             <option value="">Select District</option>
-                            {regionDistrictMap[formData.Region]?.map(district => (
-                                <option key={district} value={district}>{district}</option>
-                            ))}
+                            {regionDistrictMap[formData.Region]?.map(
+                                (district) => (
+                                    <option key={district} value={district}>
+                                        {district}
+                                    </option>
+                                )
+                            )}
                         </select>
                     </div>
                 </div>
