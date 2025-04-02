@@ -727,14 +727,14 @@ const App = () => {
                                     </ProtectedRoute>
                                 }
                             />
-                            <Route
+                            {/* <Route
                                 path="regions/:regionId/details"
                                 element={
                                     <ProtectedRoute>
                                         <LongDetailsWidget />
                                     </ProtectedRoute>
                                 }
-                            />
+                            /> */}
                             <Route
                                 path="edcs"
                                 element={
