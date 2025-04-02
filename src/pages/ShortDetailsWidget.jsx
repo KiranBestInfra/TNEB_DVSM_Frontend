@@ -31,7 +31,7 @@ const ShortDetailsWidget = ({
     feederCount,
     currentValue,
     previousValue,
-    pageType = 'regions', // Default to 'regions' if not specified
+    pageType = 'regions',
     handleRegionClick,
     graphData = {
         xAxis: [],
@@ -41,11 +41,9 @@ const ShortDetailsWidget = ({
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Determine if we're in a user route
     const isUserRoute = location.pathname.includes('/user/');
     const baseRoute = isUserRoute ? '/user' : '/admin';
 
-    // Calculate percentage change from the props
     const percentageChange = (
         ((currentValue - previousValue) / previousValue) *
         100
@@ -53,13 +51,12 @@ const ShortDetailsWidget = ({
     const isPositiveChange = currentValue >= previousValue;
 
     const handleClick = () => {
-        // Construct the appropriate URL based on pageType
         let detailsUrl = '';
         switch (pageType) {
             case 'regions':
                 detailsUrl = `${baseRoute}/regions/${region
                     .toLowerCase()
-                    .replace(/\s+/g, '-')}/details`;
+                    .replace(/\s+/g, '-')}`;
                 break;
             case 'edcs':
                 detailsUrl = `${baseRoute}/${region
