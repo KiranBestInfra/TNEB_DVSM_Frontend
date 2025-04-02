@@ -28,6 +28,7 @@ const Regions = () => {
                     totalSubstations: 0,
                     totalFeeders: 0,
                     commMeters: 0,
+                    prevCommMeters: 0,
                     nonCommMeters: 0,
                     regionNames: Object.keys(parsedDemandData),
                     edcCount: {},
@@ -45,6 +46,7 @@ const Regions = () => {
             totalSubstations: 0,
             totalFeeders: 0,
             commMeters: 0,
+            prevCommMeters: 0,
             nonCommMeters: 0,
             regionNames: [],
             edcCount: {},
@@ -120,6 +122,7 @@ const Regions = () => {
                     data.totalSubstations || prev.totalSubstations,
                 totalFeeders: data.totalFeeders || prev.totalFeeders,
                 commMeters: data.commMeters || prev.commMeters,
+                prevCommMeters: data.prevCommMeters || prev.prevCommMeters,
                 nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
                 regionNames: data.regionNames || prev.regionNames,
                 edcCount: data.regionEdcCounts || prev.edcCount,
@@ -133,7 +136,6 @@ const Regions = () => {
 
         fetchData();
     }, []);
-    
 
     const handleRegionClick = (region) => {
         navigate(
@@ -344,7 +346,13 @@ const Regions = () => {
                                             styles.communication_positive_arrow
                                         }
                                     />
-                                    87%
+                                    {(
+                                        (widgetsData.commMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(2)}
+                                    %
                                 </div>
                             </div>
                             <div
@@ -365,7 +373,13 @@ const Regions = () => {
                                             styles.communication_negative_arrow
                                         }
                                     />
-                                    13%
+                                    {(
+                                        (widgetsData.nonCommMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(2)}
+                                    %
                                 </div>
                             </div>
                         </div>
