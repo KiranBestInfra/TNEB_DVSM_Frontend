@@ -168,42 +168,20 @@ const Regions = () => {
         }
     };
 
-    const currentPath = location.pathname.split('/');
-    const currentPage = currentPath[currentPath.length - 1];
-
     const getBreadcrumbItems = () => {
-        if (!isRegionUser) {
-            return [{ label: 'Regions', path: '/admin/regions' }];
+        if (isRegionUser) {
+            // Region user breadcrumb - showing only Dashboard -> Region
+            return [
+                { label: 'Dashboard', path: '/user/dashboard' },
+                { label: 'Regions', path: '/user/regions' },
+            ];
+        } else {
+            // Standard admin or user breadcrumb
+            return [
+                { label: 'Dashboard', path: `${baseRoute}/dashboard` },
+                { label: 'Regions', path: `${baseRoute}/regions` },
+            ];
         }
-
-        const formattedRegionName =
-            currentRegionName.charAt(0).toUpperCase() +
-            currentRegionName.slice(1);
-
-        const items = [{ label: 'Dashboard', path: `${baseRoute}/dashboard` }];
-
-        if (currentRegionName) {
-            items.push({
-                label: `Region : ${formattedRegionName}`,
-                path: `${baseRoute}/${currentRegionName}/dashboard`,
-            });
-        }
-
-        if (currentPage === 'edcs') {
-            items.push({
-                label: 'EDCs',
-                path: `${baseRoute}/${currentRegionName}/edcs`,
-            });
-        }
-
-        if (currentPage === 'substations') {
-            items.push({
-                label: 'Substations',
-                path: `${baseRoute}/${currentRegionName}/substations`,
-            });
-        }
-
-        return items;
     };
 
     return (
