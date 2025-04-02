@@ -80,18 +80,7 @@ const Substations = () => {
     });
     const { region } = useParams();
     const location = useLocation();
- //   const [timeframe, setTimeframe] = useState('Last 7 Days');
-    const totalMeters = 1243;
-    const totalRegions = 13; // Total number of regions
-    const totalEDCs = 95; // Total number of EDCs
-    const totalSubstations = 260; // Total number of substations
-    const totalFeeders = 416; // Total number of feeders
-    const [dateRange, setDateRange] = useState({
-        start: null,
-        end: null,
-    });
-    const { region } = useParams();
-    const location = useLocation();
+
 
     // Determine if this is a region user path
     const isRegionUser =
