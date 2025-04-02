@@ -80,7 +80,7 @@ const Substations = () => {
     });
     const { region } = useParams();
     const location = useLocation();
-    const [timeframe, setTimeframe] = useState('Last 7 Days');
+ //   const [timeframe, setTimeframe] = useState('Last 7 Days');
     const totalMeters = 1243;
     const totalRegions = 13; // Total number of regions
     const totalEDCs = 95; // Total number of EDCs
