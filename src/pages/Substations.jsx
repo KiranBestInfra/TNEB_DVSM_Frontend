@@ -107,13 +107,13 @@ const Substations = () => {
         substationFeederCounts: {},
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/v1/regions/widgets'
-            );
-            const data = await response.json();
-            const regionWidgets = data.data;
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const response = await fetch(
+    //             'http://localhost:3000/api/v1/regions/widgets'
+    //         );
+    //         const data = await response.json();
+    //         const regionWidgets = data.data;
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch(
