@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -9,6 +10,8 @@ import ShortDetailsWidget from './ShortDetailsWidget';
 
 const EDCs = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
+    const [socket, setSocket] = useState(null);
+    const cacheTimeoutRef = useRef(null);
     const totalMeters = 1243;
     const totalRegions = 13;
     const totalEDCs = 95;
@@ -29,41 +32,94 @@ const EDCs = () => {
         (location.pathname.includes('/user/') ? '/user' : '/user') :
         (location.pathname.includes('/user/') ? '/user' : '/admin');
 
-    const [widgetsData, setWidgetsData] = useState({
-        totalRegions: 0,
-        totalEdcs: 0,
-        totalSubstations: 0,
-        totalFeeders: 0,
-        commMeters: 0,
-        nonCommMeters: 0,
-        edcNames: [],
-        regionEdcCount: 0,
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedDemandData = localStorage.getItem('edcDemandData');
+        const savedTimestamp = localStorage.getItem('edcDemandTimestamp');
+
+        if (savedDemandData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedDemandData = JSON.parse(savedDemandData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    edcNames:Object.keys(parsedDemandData),
+                    regionEdcCount: 0,
+                    substationCount: {},
+                    feederCount: {},
+                    edcDemandData: parsedDemandData,
+                };
+            }
+        }
+
+        return {
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            edcNames: [],
+            substationCount: {},
+            feederCount: {},
+            regionEdcCount: 0,
+            edcDemandData: {},
+        };
     });
 
+    // Socket initialization
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/v1/regions/widgets'
-            );
-            const data = await response.json();
-            const regionWidgets = data.data;
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        setSocket(newSocket);
 
-            setWidgetsData((prev) => ({
-                ...prev,
-                totalRegions: regionWidgets.totalRegions || prev.totalRegions,
-                totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
-                totalSubstations:
-                    regionWidgets.totalSubstations || prev.totalSubstations,
-                totalFeeders: regionWidgets.totalFeeders || prev.totalFeeders,
-                commMeters: regionWidgets.commMeters || prev.commMeters,
-                nonCommMeters:
-                    regionWidgets.nonCommMeters || prev.nonCommMeters,
-                //edcNames: prev.edcNames,
-            }));
+        newSocket.on('connect', () => {
+            console.log('Connected to socket server');
+        });
+
+        newSocket.on('edcUpdate', (data) => {
+            setWidgetsData((prevData) => {
+                const newData = {
+                    ...prevData,
+                    edcDemandData: {
+                        ...prevData.edcDemandData,
+                        [data.edc]: data.graphData,
+                    },
+                };
+                localStorage.setItem('edcDemandData', JSON.stringify(newData.edcDemandData));
+                localStorage.setItem('edcDemandTimestamp', Date.now().toString());
+                return newData;
+            });
+
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+            cacheTimeoutRef.current = setTimeout(() => {
+                localStorage.removeItem('edcDemandData');
+                localStorage.removeItem('edcDemandTimestamp');
+            }, 30000);
+        });
+
+        return () => {
+            newSocket.close();
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
         };
-
-        fetchData();
     }, []);
+
+    // Subscribe to EDC updates when EDC names are available
+    useEffect(() => {
+        if (socket && widgetsData.edcNames.length > 0) {
+            socket.emit('subscribeEdc', {
+                edcs: widgetsData.edcNames,
+            });
+        }
+    }, [widgetsData.edcNames, socket]);
 
     useEffect(() => {
         console.log('region', region);
@@ -81,9 +137,14 @@ const EDCs = () => {
                     ...prev,
                     edcNames: data.data?.edcNames || [],
                     regionEdcCount: data.data?.edcNames?.length || 0,
-                    substationNames: data.data?.substationNames || [],
-                    regionSubstationCount:
-                        data.data?.substationNames?.length || 0,
+                    totalSubstations: data.data?.totalSubstations || 0,
+                    totalFeeders: data.data?.totalFeeders || 0,
+                    commMeters: data.data?.commMeters || 0,
+                    nonCommMeters: data.data?.nonCommMeters || 0,
+                    edcSubstationCounts: data.data?.edcSubstationCounts || {},
+                    edcFeederCounts: data.data?.edcFeederCounts || {},
+                    edcStats: data.data?.edcStats || {},
+                    edcDemandData: data.data?.edcDemandData || {}
                 }));
             } catch (error) {
                 console.error('Error fetching EDC names:', error);
@@ -473,6 +534,12 @@ const EDCs = () => {
                                 }
                                 previousValue={
                                     edcStats?.[edc]?.previousValue || 0
+                                }
+                                graphData={
+                                    widgetsData.edcDemandData?.[edc.trim()] ?? {
+                                        xAxis: [],
+                                        series: [],
+                                    }
                                 }
                                 pageType="edcs"
                             />

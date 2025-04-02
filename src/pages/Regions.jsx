@@ -133,6 +133,7 @@ const Regions = () => {
 
         fetchData();
     }, []);
+    
 
     const handleRegionClick = (region) => {
         navigate(
