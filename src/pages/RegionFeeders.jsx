@@ -236,6 +236,7 @@ const RegionFeeders = () => {
                         className={styles.individual_region_stats}>
                         <ShortDetailsWidget
                             region={feeder.name}
+                            name={feeder.name}
                             feederCount={feeder.meters}
                             currentValue={feeder.currentValue}
                             previousValue={feeder.previousValue}
