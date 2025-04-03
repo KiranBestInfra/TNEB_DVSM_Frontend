@@ -38,7 +38,23 @@ const ErrorBoundary = ({ children }) => {
             </div>
         );
     }
+    if (hasError) {
+        return (
+            <div
+                style={{
+                    padding: '20px',
+                    color: 'red',
+                    background: '#ffeeee',
+                    border: '1px solid red',
+                }}>
+                <h2>Something went wrong</h2>
+                <p>{error?.message || 'Unknown error'}</p>
+                <button onClick={() => window.history.back()}>Go Back</button>
+            </div>
+        );
+    }
 
+    return children;
     return children;
 };
 
@@ -76,32 +92,38 @@ const Substations = () => {
         totalFeeders: 0,
         commMeters: 0,
         nonCommMeters: 0,
-        substationNames: [],
+        regionSubstationCount: 0,
+        substationNames: {},
+        substationFeederCounts: {},
     });
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/v1/regions/widgets'
-            );
-            const data = await response.json();
-            const regionWidgets = data.data;
+            try {
+                const data = await apiClient.get('/regions/widgets');
+                const regionWidgets = data.data;
 
-            setWidgetsData((prev) => ({
-                ...prev,
-                totalRegions: regionWidgets.totalRegions || prev.totalRegions,
-                totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
-                totalSubstations:
-                    regionWidgets.totalSubstations || prev.totalSubstations,
-                totalFeeders: regionWidgets.totalFeeders || prev.totalFeeders,
-                commMeters: regionWidgets.commMeters || prev.commMeters,
-                nonCommMeters:
-                    regionWidgets.nonCommMeters || prev.nonCommMeters,
-            }));
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    totalRegions:
+                        regionWidgets.totalRegions || prev.totalRegions,
+                    totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
+                    totalSubstations:
+                        regionWidgets.totalSubstations || prev.totalSubstations,
+                    totalFeeders:
+                        regionWidgets.totalFeeders || prev.totalFeeders,
+                    commMeters: regionWidgets.commMeters || prev.commMeters,
+                    nonCommMeters:
+                        regionWidgets.nonCommMeters || prev.nonCommMeters,
+                }));
+            } catch (error) {
+                console.error('Error fetching widget data:', error);
+            }
         };
 
         fetchData();
     }, []);
+
     useEffect(() => {
         console.log('region', region);
         if (!region) return;
@@ -112,11 +134,15 @@ const Substations = () => {
                     `/edcs/widgets/${region}/substations`
                 );
                 const data = response;
-                console.log('Fetched Substation Data:', data);
 
+                console.log('Fetched Substation Data:', data);
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.substationNames || [],
+                    regionSubstationCount:
+                        data.data?.substationNames?.length || 0,
+                    substationFeederCounts:
+                        data.data?.substationFeederCounts || {}, // Add feeder counts
                 }));
             } catch (error) {
                 console.error('Error fetching EDC names:', error);
@@ -125,13 +151,11 @@ const Substations = () => {
 
         substationNames();
     }, [region]);
-
     console.log('widgetsData', widgetsData);
 
     const handleRegionClick = (region) => {
         setSelectedRegion(region); // Set region when clicked
     };
-
     const handleTimeframeChange = (e) => {
         setTimeframe(e.target.value);
     };
@@ -298,7 +322,6 @@ const Substations = () => {
                     ? `${currentBaseRoute}/${region}/substations`
                     : `${currentBaseRoute}/substations`,
             });
-
             return items;
         }
     };
@@ -503,7 +526,7 @@ const Substations = () => {
                         <h2 className="title">
                             Substations:{' '}
                             <span className={styles.region_count}>
-                                [{widgetsData.totalSubstations}]
+                                {widgetsData.regionSubstationCount}
                             </span>
                         </h2>
                     </div>
@@ -520,7 +543,8 @@ const Substations = () => {
                                           <ShortDetailsWidget
                                               region={substation}
                                               feederCount={
-                                                  substationFeederCounts?.[
+                                                  widgetsData
+                                                      .substationFeederCounts?.[
                                                       substation
                                                   ] || 0
                                               }

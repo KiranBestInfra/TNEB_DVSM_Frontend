@@ -236,7 +236,7 @@ const Dashboard = () => {
 
             <div className={styles.detail_chart}>
                 <DynamicGraph
-                    title="Detailed Energy Usage"
+                    title="Demand Trend"
                     data={graphData}
                     seriesColors={['#3f68b2', '#ed8c22']}
                     yAxisLabel="MW"

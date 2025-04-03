@@ -1,65 +1,129 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
+import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
+import { apiClient } from '../api/client';
 
 const EDCs = () => {
-    const [timeRange, setTimeRange] = useState('Daily');
-    const totalMeters = 1243;
-    const totalRegions = 13; // Total number of regions
-    const totalEDCs = 95; // Total number of EDCs
-    const totalSubstations = 260; // Total number of substations
-    const totalFeeders = 416; // Total number of feeders
+    const [timeframe, setTimeframe] = useState('Last 7 Days');
+    const [socket, setSocket] = useState(null);
+    const cacheTimeoutRef = useRef(null);
+    const [dateRange, setDateRange] = useState({
+        start: null,
+        end: null,
+    });
     const { region } = useParams();
     const location = useLocation();
 
-    // Determine if this is a region user path
-    const isRegionUser = location.pathname.includes('/user/') ||
+    const isRegionUser =
+        location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser ?
-        (location.pathname.includes('/user/') ? '/user' : '/user') :
-        (location.pathname.includes('/user/') ? '/user' : '/admin');
+    const currentBaseRoute = isRegionUser
+        ? location.pathname.includes('/user/')
+            ? '/user'
+            : '/user'
+        : location.pathname.includes('/user/')
+        ? '/user'
+        : '/admin';
 
-    const [widgetsData, setWidgetsData] = useState({
-        totalRegions: 0,
-        totalEdcs: 0,
-        totalSubstations: 0,
-        totalFeeders: 0,
-        commMeters: 0,
-        nonCommMeters: 0,
-        edcNames: [],
-        regionEdcCount: 0,
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedDemandData = localStorage.getItem('edcDemandData');
+        const savedTimestamp = localStorage.getItem('edcDemandTimestamp');
+
+        if (savedDemandData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedDemandData = JSON.parse(savedDemandData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    edcNames: Object.keys(parsedDemandData),
+                    regionEdcCount: 0,
+                    substationCount: {},
+                    feederCount: {},
+                    edcDemandData: parsedDemandData,
+                };
+            }
+        }
+
+        return {
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            edcNames: [],
+            substationCount: {},
+            feederCount: {},
+            regionEdcCount: 0,
+            edcDemandData: {},
+        };
     });
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/v1/regions/widgets'
-            );
-            const data = await response.json();
-            const regionWidgets = data.data;
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        setSocket(newSocket);
 
-            setWidgetsData((prev) => ({
-                ...prev,
-                totalRegions: regionWidgets.totalRegions || prev.totalRegions,
-                totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
-                totalSubstations:
-                    regionWidgets.totalSubstations || prev.totalSubstations,
-                totalFeeders: regionWidgets.totalFeeders || prev.totalFeeders,
-                commMeters: regionWidgets.commMeters || prev.commMeters,
-                nonCommMeters:
-                    regionWidgets.nonCommMeters || prev.nonCommMeters,
-                //edcNames: prev.edcNames,
-            }));
+        newSocket.on('connect', () => {
+            console.log('Connected to socket server');
+        });
+
+        newSocket.on('edcUpdate', (data) => {
+            setWidgetsData((prevData) => {
+                const newData = {
+                    ...prevData,
+                    edcDemandData: {
+                        ...prevData.edcDemandData,
+                        [data.edc]: data.graphData,
+                    },
+                };
+                localStorage.setItem(
+                    'edcDemandData',
+                    JSON.stringify(newData.edcDemandData)
+                );
+                localStorage.setItem(
+                    'edcDemandTimestamp',
+                    Date.now().toString()
+                );
+                return newData;
+            });
+
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+            cacheTimeoutRef.current = setTimeout(() => {
+                localStorage.removeItem('edcDemandData');
+                localStorage.removeItem('edcDemandTimestamp');
+            }, 30000);
+        });
+
+        return () => {
+            newSocket.close();
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
         };
-
-        fetchData();
     }, []);
+
+    useEffect(() => {
+        if (socket && widgetsData.edcNames.length > 0) {
+            socket.emit('subscribeEdc', {
+                edcs: widgetsData.edcNames,
+            });
+        }
+    }, [widgetsData.edcNames, socket]);
 
     useEffect(() => {
         console.log('region', region);
@@ -67,21 +131,29 @@ const EDCs = () => {
 
         const fetchEdcNames = async () => {
             try {
-                const response = await fetch(
-                    `http://localhost:3000/api/v1/edcs/widgets/${region}`
-                );
-                const data = await response.json();
-                console.log('Fetched EDC & Substation Data:', data);
+                const response = await apiClient.get(`/edcs/widgets/${region}`);
+                const data = response;
+                console.log('Fetched EDC data:', data); // Log to check response
+                const edcSubstationCounts =
+                    data.data?.substationCounts?.reduce((acc, edc) => {
+                        acc[edc.edc_name] = edc.substation_count;
+                        return acc;
+                    }, {}) || {};
 
                 setWidgetsData((prev) => ({
                     ...prev,
                     edcNames: data.data?.edcNames || [],
                     regionEdcCount: data.data?.edcNames?.length || 0,
-                    substationNames: data.data?.substationNames || [],
-                    regionSubstationCount:
-                        data.data?.substationNames?.length || 0,
+                    substationNames: data.data?.substationNames || [], // Added line
+                    // regionSubstationCount:
+                    //     data.data?.substationNames?.length || 0, // Added line
+                    //SubstationCount: data.data?.substationCounts || [],
+                    substationCount: edcSubstationCounts,
+                    //feederCount: edcFeederCounts, // Store feeder count
+                    feederCount: data.data?.feederCounts || {},
                 }));
             } catch (error) {
+                console.error('Error fetching EDC names:', error);
                 console.error('Error fetching EDC names:', error);
             }
         };
@@ -242,31 +314,40 @@ const EDCs = () => {
     const getBreadcrumbItems = () => {
         if (isRegionUser && region) {
             // Format region name with first letter capitalized
-            const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
+            const formattedRegionName =
+                region.charAt(0).toUpperCase() + region.slice(1);
 
             // Region user breadcrumb - showing only Dashboard -> Region -> EDCs
             return [
                 { label: 'Dashboard', path: '/user/dashboard' },
-                { label: `Region : ${formattedRegionName}`, path: `/user/${region}/dashboard` },
-                { label: 'EDCs', path: `/user/${region}/edcs` }
+                {
+                    label: `Region : ${formattedRegionName}`,
+                    path: `/user/${region}/dashboard`,
+                },
+                { label: 'EDCs', path: `/user/${region}/edcs` },
             ];
         } else {
             // Standard admin or user breadcrumb
             const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` }
+                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
             ];
 
             if (region) {
-                items.push({ label: 'Regions', path: `${currentBaseRoute}/regions` });
+                items.push({
+                    label: 'Regions',
+                    path: `${currentBaseRoute}/regions`,
+                });
                 items.push({
                     label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`
+                    path: `${currentBaseRoute}/${region}`,
                 });
             }
 
             items.push({
                 label: 'EDCs',
-                path: region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`
+                path: region
+                    ? `${currentBaseRoute}/${region}/edcs`
+                    : `${currentBaseRoute}/edcs`,
             });
 
             return items;
@@ -336,7 +417,12 @@ const EDCs = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/edcs`
+                                            : `${currentBaseRoute}/edcs`
+                                    }>
                                     EDCs
                                 </Link>
                             </p>
@@ -355,7 +441,12 @@ const EDCs = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/substations`
+                                            : `${currentBaseRoute}/substations`
+                                    }>
                                     Substations
                                 </Link>
                             </p>
@@ -374,7 +465,12 @@ const EDCs = () => {
                         />
                         <div className={styles.total_meters}>
                             <div className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/feeders`
+                                            : `${currentBaseRoute}/feeders`
+                                    }>
                                     Feeders
                                 </Link>
                             </div>
@@ -450,14 +546,24 @@ const EDCs = () => {
                             <ShortDetailsWidget
                                 region={edc}
                                 substationCount={
-                                    edcSubstationCounts?.[edc] || 0
+                                    widgetsData.substationCount?.[edc] || 0
                                 }
-                                feederCount={edcFeederCounts?.[edc] || 0}
+                                // feederCount={edcFeederCounts?.[edc] || 0}
+                                edcCount={widgetsData.edcNames.length}
+                                feederCount={
+                                    widgetsData.feederCount?.[edc] || 0
+                                }
                                 currentValue={
                                     edcStats?.[edc]?.currentValue || 0
                                 }
                                 previousValue={
                                     edcStats?.[edc]?.previousValue || 0
+                                }
+                                graphData={
+                                    widgetsData.edcDemandData?.[edc.trim()] ?? {
+                                        xAxis: [],
+                                        series: [],
+                                    }
                                 }
                                 pageType="edcs"
                             />
