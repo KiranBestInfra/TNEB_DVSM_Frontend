@@ -344,7 +344,7 @@ const Regions = () => {
                                             (widgetsData.commMeters +
                                                 widgetsData.nonCommMeters)) *
                                         100
-                                    ).toFixed(2)}
+                                    ).toFixed(1)}
                                     %
                                 </div>
                             </div>
@@ -371,7 +371,7 @@ const Regions = () => {
                                             (widgetsData.commMeters +
                                                 widgetsData.nonCommMeters)) *
                                         100
-                                    ).toFixed(2)}
+                                    ).toFixed(1)}
                                     %
                                 </div>
                             </div>
