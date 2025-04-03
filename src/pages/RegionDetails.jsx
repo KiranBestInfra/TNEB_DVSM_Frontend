@@ -18,8 +18,6 @@ const RegionDetails = () => {
 
     const entityId = region;
 
-    const baseRoute = location.pathname.includes('/user/') ? '/user' : '/admin';
-
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
@@ -104,8 +102,8 @@ const RegionDetails = () => {
                                 <Link
                                     to={
                                         entityId
-                                            ? `${baseRoute}/${entityId}/edcs`
-                                            : `${baseRoute}/edcs`
+                                            ? `/admin/${entityId}/edcs`
+                                            : `/admin/edcs`
                                     }>
                                     EDCs
                                 </Link>
@@ -131,8 +129,8 @@ const RegionDetails = () => {
                                 <Link
                                     to={
                                         entityId
-                                            ? `${baseRoute}/${entityId}/substations`
-                                            : `${baseRoute}/substations`
+                                            ? `/admin/${entityId}/substations`
+                                            : `/admin/substations`
                                     }>
                                     Substations
                                 </Link>
@@ -159,8 +157,8 @@ const RegionDetails = () => {
                                 <Link
                                     to={
                                         entityId
-                                            ? `${baseRoute}/${entityId}/feeders`
-                                            : `${baseRoute}/feeders`
+                                            ? `/admin/${entityId}/feeders`
+                                            : `/admin/feeders`
                                     }>
                                     Feeders
                                 </Link>

@@ -48,8 +48,6 @@ const RegionEdcs = () => {
         };
     });
 
-    const baseRoute = location.pathname.includes('/user/') ? '/user' : '/admin';
-
     // Socket initialization
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
@@ -158,19 +156,19 @@ const RegionEdcs = () => {
         : 'Unknown';
 
     const getBreadcrumbItems = () => {
-        const items = [{ label: 'Dashboard', path: `${baseRoute}/dashboard` }];
+        const items = [{ label: 'Dashboard', path: '/admin/dashboard' }];
 
         if (region) {
-            items.push({ label: 'Regions', path: `${baseRoute}/regions` });
+            items.push({ label: 'Regions', path: '/admin/regions' });
             items.push({
                 label: regionName,
-                path: `${baseRoute}/${region}`,
+                path: `/admin/${region}`,
             });
         }
 
         items.push({
             label: 'EDCs',
-            path: region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`,
+            path: region ? `/admin/${region}/edcs` : '/admin/edcs',
         });
 
         return items;

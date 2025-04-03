@@ -15,7 +15,6 @@ const RegionFeeders = () => {
 
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
-    const baseRoute = isUserRoute ? '/user' : '/admin';
 
     useEffect(() => {
         const fetchFeeders = async () => {

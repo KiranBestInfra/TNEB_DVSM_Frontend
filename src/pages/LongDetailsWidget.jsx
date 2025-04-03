@@ -27,11 +27,8 @@ const LongDetailsWidget = () => {
         entityId = edcId;
     }
 
-    const baseRoute = location.pathname.includes('/user/')
-        ? '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+    const isUserRoute = location.pathname.includes('/user/');
+    const routePrefix = isUserRoute ? '/user' : '/admin';
 
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -115,8 +112,8 @@ const LongDetailsWidget = () => {
                                 <Link
                                     to={
                                         entityId
-                                            ? `${baseRoute}/${entityId}/edcs`
-                                            : `${baseRoute}/edcs`
+                                            ? `${routePrefix}/${entityId}/edcs`
+                                            : `${routePrefix}/edcs`
                                     }>
                                     EDCs
                                 </Link>
@@ -142,8 +139,8 @@ const LongDetailsWidget = () => {
                                 <Link
                                     to={
                                         entityId
-                                            ? `${baseRoute}/${entityId}/substations`
-                                            : `${baseRoute}/substations`
+                                            ? `${routePrefix}/${entityId}/substations`
+                                            : `${routePrefix}/substations`
                                     }>
                                     Substations
                                 </Link>
@@ -170,8 +167,8 @@ const LongDetailsWidget = () => {
                                 <Link
                                     to={
                                         entityId
-                                            ? `${baseRoute}/${entityId}/feeders`
-                                            : `${baseRoute}/feeders`
+                                            ? `${routePrefix}/${entityId}/feeders`
+                                            : `${routePrefix}/feeders`
                                     }>
                                     Feeders
                                 </Link>

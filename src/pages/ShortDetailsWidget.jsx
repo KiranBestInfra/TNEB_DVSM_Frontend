@@ -42,7 +42,6 @@ const ShortDetailsWidget = ({
     const location = useLocation();
 
     const isUserRoute = location.pathname.includes('/user/');
-    const baseRoute = isUserRoute ? '/user' : '/admin';
 
     const percentageChange = (
         ((currentValue - previousValue) / previousValue) *
@@ -52,35 +51,37 @@ const ShortDetailsWidget = ({
 
     const handleClick = () => {
         let detailsUrl = '';
+        const routePrefix = isUserRoute ? '/user' : '/admin';
+
         switch (pageType) {
             case 'regions':
-                detailsUrl = `${baseRoute}/regions/${region
+                detailsUrl = `${routePrefix}/regions/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}`;
                 break;
             case 'edcs':
-                detailsUrl = `${baseRoute}/${region
+                detailsUrl = `${routePrefix}/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/edcs/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/details`;
                 break;
             case 'substations':
-                detailsUrl = `${baseRoute}/${region
+                detailsUrl = `${routePrefix}/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/substations/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/details`;
                 break;
             case 'feeders':
-                detailsUrl = `${baseRoute}/${region
+                detailsUrl = `${routePrefix}/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/feeders/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/details`;
                 break;
             default:
-                detailsUrl = `${baseRoute}/regions/${region
+                detailsUrl = `${routePrefix}/regions/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/details`;
         }
@@ -92,12 +93,14 @@ const ShortDetailsWidget = ({
     };
 
     const renderNavigationLinks = () => {
+        const routePrefix = isUserRoute ? '/user' : '/admin';
+
         switch (pageType) {
             case 'edcs':
                 return (
                     <>
                         <Link
-                            to={`${baseRoute}/${region
+                            to={`${routePrefix}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/substations/`}
                             className={styles.nav_link}>
@@ -105,7 +108,7 @@ const ShortDetailsWidget = ({
                         </Link>
                         {' / '}
                         <Link
-                            to={`${baseRoute}/${region
+                            to={`${routePrefix}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/feeders/`}
                             className={styles.nav_link}>
@@ -116,7 +119,7 @@ const ShortDetailsWidget = ({
             case 'substations':
                 return (
                     <Link
-                        to={`${baseRoute}/${region
+                        to={`${routePrefix}/${region
                             .toLowerCase()
                             .replace(/\s+/g, '-')}/feeders/`}
                         className={styles.nav_link}>
@@ -129,7 +132,7 @@ const ShortDetailsWidget = ({
                 return (
                     <>
                         <Link
-                            to={`${baseRoute}/${region
+                            to={`${routePrefix}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/edcs/`}
                             className={styles.nav_link}>
@@ -137,7 +140,7 @@ const ShortDetailsWidget = ({
                         </Link>
                         {' / '}
                         <Link
-                            to={`${baseRoute}/${region
+                            to={`${routePrefix}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/substations/`}
                             className={styles.nav_link}>
@@ -145,7 +148,7 @@ const ShortDetailsWidget = ({
                         </Link>
                         {' / '}
                         <Link
-                            to={`${baseRoute}/${region
+                            to={`${routePrefix}/${region
                                 .toLowerCase()
                                 .replace(/\s+/g, '-')}/feeders/`}
                             className={styles.nav_link}>

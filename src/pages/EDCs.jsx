@@ -24,13 +24,8 @@ const EDCs = () => {
         location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser
-        ? location.pathname.includes('/user/')
-            ? '/user'
-            : '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+
+    const routePrefix = isRegionUser ? '/user' : '/admin';
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('edcDemandData');
@@ -312,42 +307,37 @@ const EDCs = () => {
 
     // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
-        if (isRegionUser && region) {
-            // Format region name with first letter capitalized
-            const formattedRegionName =
-                region.charAt(0).toUpperCase() + region.slice(1);
+        if (isRegionUser) {
+            // For region user
+            const formattedRegionName = region
+                ? region
+                      .split('-')
+                      .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')
+                : 'Unknown';
 
-            // Region user breadcrumb - showing only Dashboard -> Region -> EDCs
-            return [
-                { label: 'Dashboard', path: '/user/dashboard' },
-                {
-                    label: `Region : ${formattedRegionName}`,
-                    path: `/user/${region}/dashboard`,
-                },
-                { label: 'EDCs', path: `/user/${region}/edcs` },
-            ];
-        } else {
-            // Standard admin or user breadcrumb
             const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
             ];
 
             if (region) {
                 items.push({
                     label: 'Regions',
-                    path: `${currentBaseRoute}/regions`,
+                    path: `${routePrefix}/regions`,
                 });
                 items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`,
+                    label: formattedRegionName,
+                    path: `${routePrefix}/${region}`,
                 });
             }
 
             items.push({
                 label: 'EDCs',
                 path: region
-                    ? `${currentBaseRoute}/${region}/edcs`
-                    : `${currentBaseRoute}/edcs`,
+                    ? `${routePrefix}/${region}/edcs`
+                    : `${routePrefix}/edcs`,
             });
 
             return items;
@@ -409,7 +399,7 @@ const EDCs = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={`${currentBaseRoute}/regions`}>
+                                <Link to={`${routePrefix}/regions`}>
                                     Regions
                                 </Link>
                             </p>
@@ -431,8 +421,8 @@ const EDCs = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${currentBaseRoute}/${region}/edcs`
-                                            : `${currentBaseRoute}/edcs`
+                                            ? `${routePrefix}/${region}/edcs`
+                                            : `${routePrefix}/edcs`
                                     }>
                                     EDCs
                                 </Link>
@@ -455,8 +445,8 @@ const EDCs = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${currentBaseRoute}/${region}/substations`
-                                            : `${currentBaseRoute}/substations`
+                                            ? `${routePrefix}/${region}/substations`
+                                            : `${routePrefix}/substations`
                                     }>
                                     Substations
                                 </Link>
@@ -479,8 +469,8 @@ const EDCs = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${currentBaseRoute}/${region}/feeders`
-                                            : `${currentBaseRoute}/feeders`
+                                            ? `${routePrefix}/${region}/feeders`
+                                            : `${routePrefix}/feeders`
                                     }>
                                     Feeders
                                 </Link>
