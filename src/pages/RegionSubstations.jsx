@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
+import PropTypes from 'prop-types';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -41,17 +42,18 @@ const ErrorBoundary = ({ children }) => {
     return children;
 };
 
+ErrorBoundary.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
 const RegionSubstations = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const { region } = useParams();
-    const location = useLocation();
 
-    const isRegionUser =
-        location.pathname.includes('/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
+    // Always use admin routes regardless of actual path
+    const isRegionUser = false;
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('substationDemandData');
@@ -293,7 +295,7 @@ const RegionSubstations = () => {
                                 />
                                 <div className={styles.total_title_value}>
                                     <p className="title">
-                                        <Link to={`/user/regions`}>
+                                        <Link to={`/admin/regions`}>
                                             Regions
                                         </Link>
                                     </p>
@@ -312,7 +314,14 @@ const RegionSubstations = () => {
                                 />
                                 <div className={styles.total_title_value}>
                                     <p className="title">
-                                        EDCs
+                                        <Link
+                                            to={
+                                                region
+                                                    ? `/admin/${region}/edcs`
+                                                    : `/admin/edcs`
+                                            }>
+                                            EDCs
+                                        </Link>
                                     </p>
                                     <div className={styles.summary_value}>
                                         {widgetsData.totalEdcs}
@@ -329,7 +338,14 @@ const RegionSubstations = () => {
                                 />
                                 <div className={styles.total_title_value}>
                                     <p className="title">
-                                        Substations
+                                        <Link
+                                            to={
+                                                region
+                                                    ? `/admin/${region}/substations`
+                                                    : `/admin/substations`
+                                            }>
+                                            Substations
+                                        </Link>
                                     </p>
                                     <div className={styles.summary_value}>
                                         {widgetsData.totalSubstations}
@@ -346,7 +362,14 @@ const RegionSubstations = () => {
                                 />
                                 <div className={styles.total_meters}>
                                     <div className="title">
-                                        Feeders
+                                        <Link
+                                            to={
+                                                region
+                                                    ? `/admin/${region}/feeders`
+                                                    : `/admin/feeders`
+                                            }>
+                                            Feeders
+                                        </Link>
                                     </div>
                                     <div className={styles.summary_value}>
                                         {widgetsData.totalFeeders}
@@ -445,7 +468,10 @@ const RegionSubstations = () => {
                                               styles.individual_region_stats
                                           }>
                                           <ShortDetailsWidget
-                                              region={substation}
+                                              region={region}
+                                              name={substation}
+                                              edcCount={0}
+                                              substationCount={0}
                                               feederCount={
                                                   widgetsData
                                                       .substationFeederCounts?.[
