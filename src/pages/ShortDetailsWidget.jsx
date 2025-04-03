@@ -203,7 +203,7 @@ const ShortDetailsWidget = ({
                                     src={
                                         isPositiveChange
                                             ? 'icons/up-right-arrow.svg'
-                                            : 'icons/down-right-arrow.svg'
+                                            : 'icons/up-right-arrow.svg'
                                     }
                                     alt={
                                         isPositiveChange

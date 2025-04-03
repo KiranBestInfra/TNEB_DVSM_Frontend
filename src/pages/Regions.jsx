@@ -160,22 +160,6 @@ const Regions = () => {
         }
     };
 
-    const getBreadcrumbItems = () => {
-        if (isRegionUser) {
-            // Region user breadcrumb - showing only Dashboard -> Region
-            return [
-                { label: 'Dashboard', path: '/user/dashboard' },
-                { label: 'Regions', path: '/user/regions' },
-            ];
-        } else {
-            // Standard admin or user breadcrumb
-            return [
-                { label: 'Dashboard', path: '/admin/dashboard' },
-                { label: 'Regions', path: '/admin/regions' },
-            ];
-        }
-    };
-
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
@@ -209,7 +193,7 @@ const Regions = () => {
                 </div>
             </div>
 
-            <Breadcrumb items={getBreadcrumbItems()} />
+            <Breadcrumb />
 
             <SummarySection
                 widgetsData={widgetsData}

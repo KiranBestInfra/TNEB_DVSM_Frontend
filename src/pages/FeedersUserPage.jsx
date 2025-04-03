@@ -121,41 +121,6 @@ const FeedersUserPage = () => {
         "Nungambakkam Feeder 15": { currentValue: 780, previousValue: 720 }
     };
 
-    // Build breadcrumb items based on current path
-    const getBreadcrumbItems = () => {
-        if (isRegionUser && region) {
-            // Format region name with first letter capitalized
-            const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
-
-            // Region user breadcrumb - showing only Dashboard -> Region -> Feeders
-            return [
-                { label: 'Dashboard', path: '/user/dashboard' },
-                { label: `Region : ${formattedRegionName}`, path: `/user/${region}/dashboard` },
-                { label: 'Feeders', path: `/user/${region}/feeders` }
-            ];
-        } else {
-            // Standard admin or user breadcrumb
-            const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` }
-            ];
-
-            if (region) {
-                items.push({ label: 'Regions', path: `${currentBaseRoute}/regions` });
-                items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`
-                });
-            }
-
-            items.push({
-                label: 'Feeders',
-                path: region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`
-            });
-
-            return items;
-        }
-    };
-
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
@@ -182,7 +147,7 @@ const FeedersUserPage = () => {
                     </div>
                 </div>
             </div>
-            <Breadcrumb items={getBreadcrumbItems()} />
+            <Breadcrumb />
             <div className={styles.summary_section}>
                 <div className={styles.total_edcs_container}>
                     <div className={styles.total_main_info}>
