@@ -76,13 +76,7 @@ const UserRegionDashboard = () => {
                                 }
                             />
                         </div>
-                        <Buttons
-                            label="Get Reports"
-                            variant="primary"
-                            alt="GetReports"
-                            icon="icons/reports.svg"
-                            iconPosition="left"
-                        />
+                       
                     </div>
                 </div>
             </div>

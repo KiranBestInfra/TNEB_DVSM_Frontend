@@ -175,13 +175,7 @@ const Feeders = () => {
                 <img src="/icons/date.svg" alt="Calendar" />
               </span>
             </div>
-            <Buttons
-              label="Get Reports"
-              variant="primary"
-              alt="GetReports"
-              icon="/icons/reports.svg"
-              iconPosition="left"
-            />
+          
           </div> */}
           <div className={styles.action_cont}>
             <div className={styles.time_range_select_dropdown}>
@@ -195,18 +189,12 @@ const Feeders = () => {
                 <option value="Year">Year</option>
               </select>
               <img
-                src="/icons/arrow-down.svg"
+                src="icons/arrow-down.svg"
                 alt="Select Time"
                 className={styles.time_range_select_dropdown_icon}
               />
             </div>
-            {/* <Buttons
-              label="Get Reports"
-              variant="primary"
-              alt="GetReports"
-              icon="/icons/reports.svg"
-              iconPosition="left"
-            /> */}
+            
           </div>
         </div>
       </div>

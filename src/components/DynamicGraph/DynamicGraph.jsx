@@ -232,7 +232,7 @@ const DynamicGraph = ({
                                 <option value="Year">Year</option>
                             </select>
                             <img
-                                src="/icons/arrow-down.svg"
+                                src="icons/arrow-down.svg"
                                 alt="Select Time"
                                 className={styles.time_range_select_dropdown_icon}
                             />
@@ -242,7 +242,7 @@ const DynamicGraph = ({
                         className={styles.icons_chart_controls}
                         onClick={handleDownload}>
                         <img
-                            src="/icons/download-icon.svg"
+                            src="icons/download-icon.svg"
                             alt="Download chart"
                         />
                     </span>
