@@ -173,7 +173,7 @@ const ShortDetailsWidget = ({
                 <div className={styles.individual_region_header_right}>
                     <div className={styles.click_individual_region}>
                         <img
-                            src="/icons/information.svg"
+                            src="icons/information.svg"
                             alt="Click Here"
                             onClick={handleClick}
                             style={{ cursor: 'pointer' }}
@@ -204,8 +204,8 @@ const ShortDetailsWidget = ({
                                 <img
                                     src={
                                         isPositiveChange
-                                            ? '/icons/up-right-arrow.svg'
-                                            : '/icons/down-right-arrow.svg'
+                                            ? 'icons/up-right-arrow.svg'
+                                            : 'icons/down-right-arrow.svg'
                                     }
                                     alt={
                                         isPositiveChange

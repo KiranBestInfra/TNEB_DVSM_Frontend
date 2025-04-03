@@ -120,8 +120,8 @@ const RegionEdcs = () => {
                         (sum, count) => sum + (count || 0),
                         0
                     ),
-                    commMeters: 0,
-                    nonCommMeters: 0,
+                    commMeters: data.commMeters || 0,
+                    nonCommMeters: data.nonCommMeters || 0,
                     edcNames: data.edcNames || [],
                     substationCount:
                         data.substationCounts?.reduce((acc, item) => {
@@ -182,7 +182,7 @@ const RegionEdcs = () => {
                 <div className={styles.total_edcs_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="/icons/electric-edc.svg"
+                            src="icons/electric-edc.svg"
                             alt="Total EDCs"
                             className={styles.TNEB_icons}
                         />
@@ -197,7 +197,7 @@ const RegionEdcs = () => {
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="/icons/electric-factory.svg"
+                            src="icons/electric-factory.svg"
                             alt="Total Substations"
                             className={styles.TNEB_icons}
                         />
@@ -212,7 +212,7 @@ const RegionEdcs = () => {
                 <div className={styles.total_meters_container}>
                     <div className={styles.total_meters_main_info}>
                         <img
-                            src="/icons/electric-meter.svg"
+                            src="icons/electric-meter.svg"
                             alt="Total Feeders"
                             className={styles.TNEB_icons}
                         />
@@ -238,13 +238,19 @@ const RegionEdcs = () => {
                                         styles.communication_positive_percentage
                                     }>
                                     <img
-                                        src="/icons/up-right-arrow.svg"
+                                        src="icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_positive_arrow
                                         }
                                     />
-                                    87%
+                                    {(
+                                        (widgetsData.commMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                             <div
@@ -259,13 +265,19 @@ const RegionEdcs = () => {
                                         styles.communication_negative_percentage
                                     }>
                                     <img
-                                        src="/icons/up-right-arrow.svg"
+                                        src="icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_negative_arrow
                                         }
                                     />
-                                    13%
+                                    {(
+                                        (widgetsData.nonCommMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                         </div>
@@ -299,14 +311,22 @@ const RegionEdcs = () => {
                                 }
                                 feederCount={widgetsData.feederCount[edc] || 0}
                                 edcCount={widgetsData.totalEdcs}
-                                currentValue={0}
-                                previousValue={0}
                                 graphData={
-                                    widgetsData.edcDemandData[edc] || {
+                                    widgetsData.edcDemandData?.[edc.trim()] ?? {
                                         xAxis: [],
                                         series: [],
                                     }
                                 }
+                                currentValue={parseFloat(
+                                    widgetsData.edcDemandData?.[
+                                        edc.trim()
+                                    ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                ).toFixed(1)}
+                                previousValue={parseFloat(
+                                    widgetsData.edcDemandData?.[
+                                        edc.trim()
+                                    ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                ).toFixed(1)}
                                 pageType="edcs"
                             />
                         </div>
