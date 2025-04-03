@@ -13,11 +13,6 @@ const EDCs = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
-    const totalMeters = 1243;
-    const totalRegions = 13;
-    const totalEDCs = 95;
-    const totalSubstations = 260;
-    const totalFeeders = 416;
     const [dateRange, setDateRange] = useState({
         start: null,
         end: null,
@@ -25,12 +20,17 @@ const EDCs = () => {
     const { region } = useParams();
     const location = useLocation();
 
-    const isRegionUser = location.pathname.includes('/user/') ||
+    const isRegionUser =
+        location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser ?
-        (location.pathname.includes('/user/') ? '/user' : '/user') :
-        (location.pathname.includes('/user/') ? '/user' : '/admin');
+    const currentBaseRoute = isRegionUser
+        ? location.pathname.includes('/user/')
+            ? '/user'
+            : '/user'
+        : location.pathname.includes('/user/')
+        ? '/user'
+        : '/admin';
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('edcDemandData');
@@ -48,7 +48,7 @@ const EDCs = () => {
                     totalFeeders: 0,
                     commMeters: 0,
                     nonCommMeters: 0,
-                    edcNames:Object.keys(parsedDemandData),
+                    edcNames: Object.keys(parsedDemandData),
                     regionEdcCount: 0,
                     substationCount: {},
                     feederCount: {},
@@ -72,7 +72,6 @@ const EDCs = () => {
         };
     });
 
-    // Socket initialization
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
@@ -90,8 +89,14 @@ const EDCs = () => {
                         [data.edc]: data.graphData,
                     },
                 };
-                localStorage.setItem('edcDemandData', JSON.stringify(newData.edcDemandData));
-                localStorage.setItem('edcDemandTimestamp', Date.now().toString());
+                localStorage.setItem(
+                    'edcDemandData',
+                    JSON.stringify(newData.edcDemandData)
+                );
+                localStorage.setItem(
+                    'edcDemandTimestamp',
+                    Date.now().toString()
+                );
                 return newData;
             });
 
@@ -112,7 +117,6 @@ const EDCs = () => {
         };
     }, []);
 
-    // Subscribe to EDC updates when EDC names are available
     useEffect(() => {
         if (socket && widgetsData.edcNames.length > 0) {
             socket.emit('subscribeEdc', {
@@ -127,10 +131,6 @@ const EDCs = () => {
 
         const fetchEdcNames = async () => {
             try {
-                // const response = await fetch(
-                //     `http://localhost:3000/api/v1/edcs/widgets/${region}`
-                // );
-                // const data = await response.json();
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response;
                 console.log('Fetched EDC data:', data); // Log to check response
@@ -139,11 +139,6 @@ const EDCs = () => {
                         acc[edc.edc_name] = edc.substation_count;
                         return acc;
                     }, {}) || {};
-                // const edcFeederCounts =
-                //     data.data?.feederCounts?.reduce((acc, edc) => {
-                //         acc[edc.edc_name] = edc.feeder_count;
-                //         return acc;
-                //     }, {}) || {};
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -319,31 +314,40 @@ const EDCs = () => {
     const getBreadcrumbItems = () => {
         if (isRegionUser && region) {
             // Format region name with first letter capitalized
-            const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
+            const formattedRegionName =
+                region.charAt(0).toUpperCase() + region.slice(1);
 
             // Region user breadcrumb - showing only Dashboard -> Region -> EDCs
             return [
                 { label: 'Dashboard', path: '/user/dashboard' },
-                { label: `Region : ${formattedRegionName}`, path: `/user/${region}/dashboard` },
-                { label: 'EDCs', path: `/user/${region}/edcs` }
+                {
+                    label: `Region : ${formattedRegionName}`,
+                    path: `/user/${region}/dashboard`,
+                },
+                { label: 'EDCs', path: `/user/${region}/edcs` },
             ];
         } else {
             // Standard admin or user breadcrumb
             const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` }
+                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
             ];
 
             if (region) {
-                items.push({ label: 'Regions', path: `${currentBaseRoute}/regions` });
+                items.push({
+                    label: 'Regions',
+                    path: `${currentBaseRoute}/regions`,
+                });
                 items.push({
                     label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`
+                    path: `${currentBaseRoute}/${region}`,
                 });
             }
 
             items.push({
                 label: 'EDCs',
-                path: region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`
+                path: region
+                    ? `${currentBaseRoute}/${region}/edcs`
+                    : `${currentBaseRoute}/edcs`,
             });
 
             return items;

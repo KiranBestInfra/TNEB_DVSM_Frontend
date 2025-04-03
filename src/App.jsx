@@ -652,7 +652,7 @@ const App = () => {
     };
 
     return (
-        <BrowserRouter basename="/bi">
+        <BrowserRouter basename="/mdmdvsm/bi">
             <AuthProvider>
                 <Routes>
                     <Route
