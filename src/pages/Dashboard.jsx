@@ -6,6 +6,7 @@ import styles from '../styles/Dashboard.module.css';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
+import SummarySection from '../components/SummarySection';
 import { apiClient } from '../api/client';
 
 const Dashboard = () => {
@@ -94,6 +95,7 @@ const Dashboard = () => {
                                 }
                             />
                         </div> */}
+                     
                     </div>
                 </div>
             </div>
@@ -107,8 +109,8 @@ const Dashboard = () => {
                                 ? isBiUserRoute
                                     ? `/exedb/user/${region}/dashboard`
                                     : isUserRoute
-                                    ? `/user/${region}/dashboard`
-                                    : `/admin/${region}/dashboard`
+                                        ? `/user/${region}/dashboard`
+                                        : `/admin/${region}/dashboard`
                                 : isBiUserRoute
                                 ? `/exedb/user/dashboard`
                                 : isUserRoute
