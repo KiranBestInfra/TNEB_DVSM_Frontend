@@ -384,7 +384,7 @@ const Regions = () => {
                 <h2 className="title">
                     Regions:{' '}
                     <span className={styles.region_count}>
-                        [{widgetsData.totalRegions}]
+                        [ {widgetsData.totalRegions} ]
                     </span>
                 </h2>
             </div>

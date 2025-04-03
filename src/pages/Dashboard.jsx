@@ -19,8 +19,8 @@ const Dashboard = () => {
     const baseRoute = isBiUserRoute
         ? '/bi/user'
         : isUserRoute
-            ? '/user'
-            : '/admin';
+        ? '/user'
+        : '/admin';
 
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
@@ -72,39 +72,44 @@ const Dashboard = () => {
         fetchGraphData();
     }, [timeRange]);
 
-  return (
-    <div className={styles.main_content}>
-      <div className={styles.section_header}>
-        <h2 className="title">Dashboard</h2>
-        <div className={styles.action_container}>
-          <div className={styles.action_cont}>
-            <div className={styles.time_range_select_dropdown}>
-              <select
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
-                className={styles.time_range_select}>
-                <option value="Last30days">Last 30 Days</option>
-                <option value="Daily">Daily</option>
-                <option value="Monthly">Monthly</option>
-                <option value="PreviousMonth">Last Week</option>
-                <option value="Year">Year</option>
-              </select>
-              <img
-                src="icons/arrow-down.svg"
-                alt="Select Time"
-                className={styles.time_range_select_dropdown_icon}
-              />
+    return (
+        <div className={styles.main_content}>
+            <div className={styles.section_header}>
+                <h2 className="title">Dashboard</h2>
+                <div className={styles.action_container}>
+                    <div className={styles.action_cont}>
+                        {/* <div className={styles.time_range_select_dropdown}>
+                            <select
+                                value={timeRange}
+                                onChange={(e) => setTimeRange(e.target.value)}
+                                className={styles.time_range_select}>
+                                <option value="Daily">Daily</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="PreviousMonth">
+                                    Last30days
+                                </option>
+                                <option value="PreviousMonth">Last Week</option>
+
+                                <option value="Year">Year</option>
+                            </select>
+                            <img
+                                src="icons/arrow-down.svg"
+                                alt="Select Time"
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
+                            />
+                        </div> */}
+                        {/* <Buttons
+                            label="Get Reports"
+                            variant="primary"
+                            alt="GetReports"
+                            icon="icons/reports.svg"
+                            iconPosition="left"
+                        /> */}
+                    </div>
+                </div>
             </div>
-            {/* <Buttons
-              label="Get Reports"
-              variant="primary"
-              alt="GetReports"
-              icon="icons/reports.svg"
-              iconPosition="left"
-            /> */}
-          </div>
-        </div>
-      </div>
 
             <Breadcrumb
                 items={[
@@ -130,7 +135,9 @@ const Dashboard = () => {
                             <p className="title">
                                 <Link to={`${baseRoute}/regions`}>Regions</Link>
                             </p>
-                            <div className={styles.summary_value}>{widgetsData.totalRegions}</div>
+                            <div className={styles.summary_value}>
+                                {widgetsData.totalRegions}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -200,31 +207,52 @@ const Dashboard = () => {
                                     Feeders
                                 </Link>
                             </div>
-                           
-                            <div className={styles.summary_value}>{widgetsData.totalFeeders}</div>
+                            <div className={styles.summary_value}>
+                                {widgetsData.totalFeeders}
+                            </div>
                         </div>
                     </div>
                     <div className={styles.metrics_communication_info}>
                         <div className="titles">Communication Status</div>
                         <div className={styles.overall_communication_status}>
-                            <div className={styles.communication_status_container}>
-                                <div className={styles.communication_value}>{widgetsData.commMeters}</div>
-                                <div className={styles.communication_positive_percentage}>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
+                                <div className={styles.communication_value}>
+                                    {widgetsData.commMeters}
+                                </div>
+                                <div
+                                    className={
+                                        styles.communication_positive_percentage
+                                    }>
                                     <img
                                         src="/bi/icons/up-right-arrow.svg"
                                         alt="Positive"
-                                        className={styles.communication_positive_arrow}
+                                        className={
+                                            styles.communication_positive_arrow
+                                        }
                                     />
                                     87%
                                 </div>
                             </div>
-                            <div className={styles.communication_status_container}>
-                                <div className={styles.communication_value}>{widgetsData.nonCommMeters}</div>
-                                <div className={styles.communication_negative_percentage}>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
+                                <div className={styles.communication_value}>
+                                    {widgetsData.nonCommMeters}
+                                </div>
+                                <div
+                                    className={
+                                        styles.communication_negative_percentage
+                                    }>
                                     <img
                                         src="/bi/icons/up-right-arrow.svg"
                                         alt="Positive"
-                                        className={styles.communication_negative_arrow}
+                                        className={
+                                            styles.communication_negative_arrow
+                                        }
                                     />
                                     13%
                                 </div>
@@ -243,6 +271,8 @@ const Dashboard = () => {
                     showLabel={false}
                     toolbox={true}
                     height="500px"
+                    timeRange={timeRange}
+                    onTimeRangeChange={setTimeRange}
                 />
             </div>
         </div>

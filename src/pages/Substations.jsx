@@ -526,7 +526,7 @@ const Substations = () => {
                         <h2 className="title">
                             Substations:{' '}
                             <span className={styles.region_count}>
-                                {widgetsData.regionSubstationCount}
+                                [ {widgetsData.regionSubstationCount} ]
                             </span>
                         </h2>
                     </div>

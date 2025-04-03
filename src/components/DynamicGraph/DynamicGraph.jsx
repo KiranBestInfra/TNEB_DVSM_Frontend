@@ -10,6 +10,9 @@ const DynamicGraph = ({
     lineColor = '#3f68b2',
     yAxisLabel = 'Value',
     refreshInterval = 15000,
+    timeRange,
+    onTimeRangeChange,
+    showTimeRangeDropdown = true,
 }) => {
     const chartRef = useRef(null);
     const chartInstance = useRef(null);
@@ -216,11 +219,30 @@ const DynamicGraph = ({
             <div className={styles.chart_controls}>
                 <h3 className={styles.chart_title}>{title}</h3>
                 <div className={styles.action_cont}>
+                    {showTimeRangeDropdown && (
+                        <div className={styles.time_range_select_dropdown}>
+                            <select
+                                value={timeRange}
+                                onChange={(e) => onTimeRangeChange(e.target.value)}
+                                className={styles.time_range_select}>
+                                <option value="Last30days">Last 30 Days</option>
+                                <option value="Daily">Daily</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="PreviousMonth">Last Week</option>
+                                <option value="Year">Year</option>
+                            </select>
+                            <img
+                                src="/mdmdvsm/icons/arrow-down.svg"
+                                alt="Select Time"
+                                className={styles.time_range_select_dropdown_icon}
+                            />
+                        </div>
+                    )}
                     <span
                         className={styles.icons_chart_controls}
                         onClick={handleDownload}>
                         <img
-                            src="icons/download-icon.svg"
+                            src="/mdmdvsm/bi/icons/download-icon.svg"
                             alt="Download chart"
                         />
                     </span>
