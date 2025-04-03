@@ -6,6 +6,7 @@ import styles from '../styles/Dashboard.module.css';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
+import SummarySection from '../components/SummarySection';
 import { apiClient } from '../api/client';
 
 const Dashboard = () => {
@@ -14,7 +15,7 @@ const Dashboard = () => {
 
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
-    const isBiUserRoute = location.includes('/bi/user/');
+    const isBiUserRoute = location.includes('/exedb/user/');
 
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
@@ -106,12 +107,12 @@ const Dashboard = () => {
                         path:
                             region && region !== 'undefined'
                                 ? isBiUserRoute
-                                    ? `/bi/user/${region}/dashboard`
+                                    ? `/exedb/user/${region}/dashboard`
                                     : isUserRoute
-                                    ? `/user/${region}/dashboard`
-                                    : `/admin/${region}/dashboard`
+                                        ? `/user/${region}/dashboard`
+                                        : `/admin/${region}/dashboard`
                                 : isBiUserRoute
-                                ? `/bi/user/dashboard`
+                                ? `/exedb/user/dashboard`
                                 : isUserRoute
                                 ? `/user/dashboard`
                                 : `/admin/dashboard`,
@@ -132,7 +133,7 @@ const Dashboard = () => {
                                 <Link
                                     to={
                                         isBiUserRoute
-                                            ? `/bi/user/regions`
+                                            ? `/exedb/user/regions`
                                             : isUserRoute
                                             ? `/user/regions`
                                             : `/admin/regions`
@@ -154,9 +155,7 @@ const Dashboard = () => {
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">
-                                EDCs
-                            </p>
+                            <p className="title">EDCs</p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalEdcs}
                             </div>
@@ -171,9 +170,7 @@ const Dashboard = () => {
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">
-                                Substations
-                            </p>
+                            <p className="title">Substations</p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalSubstations}
                             </div>
@@ -188,9 +185,7 @@ const Dashboard = () => {
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_meters}>
-                            <div className="title">
-                                Feeders
-                            </div>
+                            <div className="title">Feeders</div>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalFeeders}
                             </div>
@@ -228,7 +223,6 @@ const Dashboard = () => {
                             </div>
                             <div
                                 className={
-                         
                                     styles.communication_status_container
                                 }>
                                 <div className={styles.communication_value}>
