@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
+import SummarySection from '../components/SummarySection';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { Link } from 'react-router-dom';
 import { apiClient } from '../api/client';
@@ -119,9 +120,9 @@ const RegionFeeders = () => {
 
     const regionName = region
         ? region
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
         : 'Unknown';
 
     return (
@@ -143,82 +144,36 @@ const RegionFeeders = () => {
                                 <option value="Year">Year</option>
                             </select>
                             <img
-                                src="/icons/arrow-down.svg"
+                                src="icons/arrow-down.svg"
                                 alt="Select Time"
                                 className={
                                     styles.time_range_select_dropdown_icon
                                 }
                             />
                         </div>
-                       
+
                     </div>
                 </div>
             </div>
             <Breadcrumb />
-            <div className={styles.summary_section}>
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_meters_main_info}>
-                        <img
-                            src="/icons/electric-meter.svg"
-                            alt="Total Meters"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_meters}>
-                            <div className="title">Total Meters</div>
-                            <div className={styles.summary_value}>
-                                {totalMeters}
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.metrics_communication_info}>
-                        <div className="titles">Communication Status</div>
-                        <div className={styles.overall_communication_status}>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    942
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_positive_percentage
-                                    }>
-                                    <img
-                                        src="/icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_positive_arrow
-                                        }
-                                    />
-                                    87%
-                                </div>
-                            </div>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    301
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_negative_percentage
-                                    }>
-                                    <img
-                                        src="/icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_negative_arrow
-                                        }
-                                    />
-                                    13%
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+            <SummarySection
+                widgetsData={{
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: totalFeeders,
+                    commMeters: 942,
+                    nonCommMeters: 301,
+                    totalDistricts: 0
+                }}
+                isUserRoute={isUserRoute}
+                isBiUserRoute={location.includes('/bi/user/')}
+                showRegions={false}
+                showEdcs={false}
+                showSubstations={false}
+                showDistricts={false}
+            />
 
             <div className={styles.section_header}>
                 <h2 className="title">

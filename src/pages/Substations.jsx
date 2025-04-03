@@ -281,11 +281,11 @@ const Substations = () => {
             // For region user
             const formattedRegionName = region
                 ? region
-                      .split('-')
-                      .map(
-                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                      )
-                      .join(' ')
+                    .split('-')
+                    .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                    )
+                    .join(' ')
                 : 'Unknown';
 
             return [
@@ -350,7 +350,7 @@ const Substations = () => {
                                         <option value="Year">Year</option>
                                     </select>
                                     <img
-                                        src="/icons/arrow-down.svg"
+                                        src="icons/arrow-down.svg"
                                         alt="Select Time"
                                         className={
                                             styles.time_range_select_dropdown_icon
@@ -372,7 +372,7 @@ const Substations = () => {
                         <div className={styles.total_regions_container}>
                             <div className={styles.total_main_info}>
                                 <img
-                                    src="/icons/office.svg"
+                                    src="icons/office.svg"
                                     alt="Total Regions"
                                     className={styles.TNEB_icons}
                                 />
@@ -391,7 +391,7 @@ const Substations = () => {
                         <div className={styles.total_edcs_container}>
                             <div className={styles.total_main_info}>
                                 <img
-                                    src="/icons/electric-edc.svg"
+                                    src="icons/electric-edc.svg"
                                     alt="Total Region"
                                     className={styles.TNEB_icons}
                                 />
@@ -415,7 +415,7 @@ const Substations = () => {
                         <div className={styles.total_substations_container}>
                             <div className={styles.total_main_info}>
                                 <img
-                                    src="/icons/electric-factory.svg"
+                                    src="icons/electric-factory.svg"
                                     alt="Total Substations"
                                     className={styles.TNEB_icons}
                                 />
@@ -439,7 +439,7 @@ const Substations = () => {
                         <div className={styles.total_meters_container}>
                             <div className={styles.total_meters_main_info}>
                                 <img
-                                    src="/icons/electric-meter.svg"
+                                    src="icons/electric-meter.svg"
                                     alt="Total Meters"
                                     className={styles.TNEB_icons}
                                 />
@@ -482,7 +482,7 @@ const Substations = () => {
                                                 styles.communication_positive_percentage
                                             }>
                                             <img
-                                                src="/icons/up-right-arrow.svg"
+                                                src="icons/up-right-arrow.svg"
                                                 alt="Positive"
                                                 className={
                                                     styles.communication_positive_arrow
@@ -512,7 +512,7 @@ const Substations = () => {
                                                 styles.communication_negative_percentage
                                             }>
                                             <img
-                                                src="/icons/up-right-arrow.svg"
+                                                src="icons/up-right-arrow.svg"
                                                 alt="Positive"
                                                 className={
                                                     styles.communication_negative_arrow
@@ -542,35 +542,35 @@ const Substations = () => {
                     </div>
                     <div className={styles.region_stats_container}>
                         {widgetsData.substationNames &&
-                        widgetsData.substationNames.length > 0
+                            widgetsData.substationNames.length > 0
                             ? widgetsData.substationNames.map(
-                                  (substation, index) => (
-                                      <div
-                                          key={index}
-                                          className={
-                                              styles.individual_region_stats
-                                          }>
-                                          <ShortDetailsWidget
-                                              region={substation}
-                                              feederCount={
-                                                  widgetsData
-                                                      .substationFeederCounts?.[
-                                                      substation
-                                                  ] || 0
-                                              }
-                                              currentValue={
-                                                  substationStats[substation]
-                                                      ?.currentValue
-                                              }
-                                              previousValue={
-                                                  substationStats[substation]
-                                                      ?.previousValue
-                                              }
-                                              pageType="substations"
-                                          />
-                                      </div>
-                                  )
-                              )
+                                (substation, index) => (
+                                    <div
+                                        key={index}
+                                        className={
+                                            styles.individual_region_stats
+                                        }>
+                                        <ShortDetailsWidget
+                                            region={substation}
+                                            feederCount={
+                                                widgetsData
+                                                    .substationFeederCounts?.[
+                                                substation
+                                                ] || 0
+                                            }
+                                            currentValue={
+                                                substationStats[substation]
+                                                    ?.currentValue
+                                            }
+                                            previousValue={
+                                                substationStats[substation]
+                                                    ?.previousValue
+                                            }
+                                            pageType="substations"
+                                        />
+                                    </div>
+                                )
+                            )
                             : null}
                     </div>
                 </div>

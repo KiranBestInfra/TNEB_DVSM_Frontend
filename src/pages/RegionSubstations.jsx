@@ -4,6 +4,7 @@ import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
+import SummarySection from '../components/SummarySection';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 
@@ -194,6 +195,7 @@ const RegionSubstations = () => {
                         data.data?.substationNames?.length || 0,
                     substationFeederCounts:
                         data.data?.substationFeederCounts || {},
+                    totalDistricts: data.data?.totalDistricts || 0
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);
@@ -271,160 +273,36 @@ const RegionSubstations = () => {
                                         <option value="Year">Year</option>
                                     </select>
                                     <img
-                                        src="/icons/arrow-down.svg"
+                                        src="icons/arrow-down.svg"
                                         alt="Select Time"
                                         className={
                                             styles.time_range_select_dropdown_icon
                                         }
                                     />
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
                     <Breadcrumb items={getBreadcrumbItems()} />
-                    <div className={styles.summary_section}>
-                        <div className={styles.total_regions_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="/icons/office.svg"
-                                    alt="Total Regions"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link to={`/user/regions`}>
-                                            Regions
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalRegions}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_edcs_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="/icons/electric-edc.svg"
-                                    alt="Total Region"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        EDCs
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalEdcs}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_substations_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="/icons/electric-factory.svg"
-                                    alt="Total Substations"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        Substations
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalSubstations}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_meters_container}>
-                            <div className={styles.total_meters_main_info}>
-                                <img
-                                    src="/icons/electric-meter.svg"
-                                    alt="Total Meters"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_meters}>
-                                    <div className="title">
-                                        Feeders
-                                    </div>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalFeeders}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={styles.metrics_communication_info}>
-                                <div className="titles">
-                                    Communication Status
-                                </div>
-                                <div
-                                    className={
-                                        styles.overall_communication_status
-                                    }>
-                                    <div
-                                        className={
-                                            styles.communication_status_container
-                                        }>
-                                        <div
-                                            className={
-                                                styles.communication_value
-                                            }>
-                                            {widgetsData.commMeters}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles.communication_positive_percentage
-                                            }>
-                                            <img
-                                                src="/icons/up-right-arrow.svg"
-                                                alt="Positive"
-                                                className={
-                                                    styles.communication_positive_arrow
-                                                }
-                                            />
-                                            {(
-                                                (widgetsData.commMeters /
-                                                    (widgetsData.commMeters +
-                                                        widgetsData.nonCommMeters)) *
-                                                100
-                                            ).toFixed(1)}
-                                            %
-                                        </div>
-                                    </div>
-                                    <div
-                                        className={
-                                            styles.communication_status_container
-                                        }>
-                                        <div
-                                            className={
-                                                styles.communication_value
-                                            }>
-                                            {widgetsData.nonCommMeters}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles.communication_negative_percentage
-                                            }>
-                                            <img
-                                                src="/icons/up-right-arrow.svg"
-                                                alt="Positive"
-                                                className={
-                                                    styles.communication_negative_arrow
-                                                }
-                                            />
-                                            {(
-                                                (widgetsData.nonCommMeters /
-                                                    (widgetsData.commMeters +
-                                                        widgetsData.nonCommMeters)) *
-                                                100
-                                            ).toFixed(1)}
-                                            %
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
+                    <SummarySection
+                        widgetsData={{
+                            totalRegions: widgetsData.totalRegions,
+                            totalEdcs: widgetsData.totalEdcs,
+                            totalSubstations: widgetsData.totalSubstations,
+                            totalFeeders: widgetsData.totalFeeders,
+                            commMeters: widgetsData.commMeters,
+                            nonCommMeters: widgetsData.nonCommMeters,
+                            totalDistricts: widgetsData.totalDistricts || widgetsData.regionSubstationCount || 0
+                        }}
+                        isUserRoute={isRegionUser}
+                        isBiUserRoute={location.pathname.includes('/bi/user/')}
+                        showRegions={false}
+                        showEdcs={false}
+                        showSubstations={true}
+                        showDistricts={true}
+                    />
 
                     <div className={styles.section_header}>
                         <h2 className="title">
@@ -436,38 +314,38 @@ const RegionSubstations = () => {
                     </div>
                     <div className={styles.region_stats_container}>
                         {widgetsData.substationNames &&
-                        widgetsData.substationNames.length > 0
+                            widgetsData.substationNames.length > 0
                             ? widgetsData.substationNames.map(
-                                  (substation, index) => (
-                                      <div
-                                          key={index}
-                                          className={
-                                              styles.individual_region_stats
-                                          }>
-                                          <ShortDetailsWidget
-                                              region={substation}
-                                              feederCount={
-                                                  widgetsData
-                                                      .substationFeederCounts?.[
-                                                      substation
-                                                  ] || 0
-                                              }
-                                              currentValue={0}
-                                              previousValue={0}
-                                              pageType="substations"
-                                              graphData={
-                                                  widgetsData
-                                                      .substationDemandData?.[
-                                                      substation
-                                                  ] || {
-                                                      xAxis: [],
-                                                      series: [],
-                                                  }
-                                              }
-                                          />
-                                      </div>
-                                  )
-                              )
+                                (substation, index) => (
+                                    <div
+                                        key={index}
+                                        className={
+                                            styles.individual_region_stats
+                                        }>
+                                        <ShortDetailsWidget
+                                            region={substation}
+                                            feederCount={
+                                                widgetsData
+                                                    .substationFeederCounts?.[
+                                                substation
+                                                ] || 0
+                                            }
+                                            currentValue={0}
+                                            previousValue={0}
+                                            pageType="substations"
+                                            graphData={
+                                                widgetsData
+                                                    .substationDemandData?.[
+                                                substation
+                                                ] || {
+                                                    xAxis: [],
+                                                    series: [],
+                                                }
+                                            }
+                                        />
+                                    </div>
+                                )
+                            )
                             : null}
                     </div>
                 </div>

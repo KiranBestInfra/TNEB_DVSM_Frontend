@@ -63,22 +63,22 @@ const ShortDetailsWidget = ({
                 detailsUrl = `${routePrefix}/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/edcs/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/details`;
+                        .toLowerCase()
+                        .replace(/\s+/g, '-')}/details`;
                 break;
             case 'substations':
                 detailsUrl = `${routePrefix}/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/substations/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/details`;
+                        .toLowerCase()
+                        .replace(/\s+/g, '-')}/details`;
                 break;
             case 'feeders':
                 detailsUrl = `${routePrefix}/${region
                     .toLowerCase()
                     .replace(/\s+/g, '-')}/feeders/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/details`;
+                        .toLowerCase()
+                        .replace(/\s+/g, '-')}/details`;
                 break;
             default:
                 detailsUrl = `${routePrefix}/regions/${region
@@ -173,7 +173,7 @@ const ShortDetailsWidget = ({
                 <div className={styles.individual_region_header_right}>
                     <div className={styles.click_individual_region}>
                         <img
-                            src="/icons/information.svg"
+                            src="icons/information.svg"
                             alt="Click Here"
                             onClick={handleClick}
                             style={{ cursor: 'pointer' }}
@@ -194,29 +194,26 @@ const ShortDetailsWidget = ({
                                 {previousValue} MW
                             </div>
                             <div
-                                className={`${
-                                    styles.region_percentage_change
-                                } ${
-                                    isPositiveChange
+                                className={`${styles.region_percentage_change
+                                    } ${isPositiveChange
                                         ? styles.positive
                                         : styles.negative
-                                }`}>
+                                    }`}>
                                 <img
                                     src={
                                         isPositiveChange
-                                            ? '/icons/up-right-arrow.svg'
-                                            : '/icons/down-right-arrow.svg'
+                                            ? 'icons/up-right-arrow.svg'
+                                            : 'icons/down-right-arrow.svg'
                                     }
                                     alt={
                                         isPositiveChange
                                             ? 'Increase'
                                             : 'Decrease'
                                     }
-                                    className={`${styles.region_trend_arrow} ${
-                                        isPositiveChange
+                                    className={`${styles.region_trend_arrow} ${isPositiveChange
                                             ? styles.positive
                                             : styles.negative
-                                    }`}
+                                        }`}
                                 />
                                 {Math.abs(percentageChange)}%
                             </div>

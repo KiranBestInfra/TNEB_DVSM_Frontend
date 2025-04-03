@@ -28,7 +28,7 @@ const Header = () => {
         firstName: user?.id || 'User',
         lastName: user?.lastName || '',
     };
-    
+
     const handleSearchChange = (e) => {
         const query = e.target.value;
         if (query.length === 0) {
@@ -152,7 +152,7 @@ const Header = () => {
         <div className={styles.header_container}>
             <div className={styles.logo_container}>
                 <Link to={basePath}>
-                    <img src="/images/tangedco.png" alt="Company Logo" className={styles.logo_bestinfra} />
+                    <img src="images/tangedco.png" alt="Company Logo" className={styles.logo_bestinfra} />
                 </Link>
                 <span className={styles.welcome_message}>
                     Welcome {profileData.firstName}!
@@ -171,7 +171,7 @@ const Header = () => {
                     {isSearching ? (
                         <div className={styles.spinner}></div>
                     ) : (
-                        <img src="/icons/search-icon.svg" alt="Search" />
+                        <img src="icons/search-icon.svg" alt="Search" />
                     )}
                 </span>
                 {searchResults.length > 0 && (
@@ -181,7 +181,7 @@ const Header = () => {
                                 key={result.id}
                                 className={styles.search_result_item}
                                 onClick={() => handleResultClick(result.id)}>
-                               
+
                                 <span className={styles.result_name}>
                                     {result.hierarchy_name}
                                 </span>
@@ -197,26 +197,26 @@ const Header = () => {
                     </div> */}
 
                     <span className={styles.white_icons} onClick={handleProfileClick}>
-                        <img src="/icons/settings.svg" alt="Settings" />
+                        <img src="icons/settings.svg" alt="Settings" />
                     </span>
 
                     <span
                         className={styles.white_icons}
                         onClick={handleTicketsClick}>
-                        <img src="/icons/support-tickets.svg" alt="Tickets" />
+                        <img src="icons/support-tickets.svg" alt="Tickets" />
                     </span>
 
                     <span
                         className={styles.white_icons}
                         onClick={handleNotificationsClick}>
-                        <img src="/icons/bell.svg" alt="notifications" />
+                        <img src="icons/bell.svg" alt="notifications" />
                     </span>
 
                     <Buttons
                         label="Logout"
                         onClick={handleLogout}
                         variant="secondary"
-                        icon="/images/icons/logout-icon.svg"
+                        icon="imagesicons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
                     />
