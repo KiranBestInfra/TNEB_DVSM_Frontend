@@ -22,6 +22,7 @@
     gap: 1rem;
     flex-direction: row;
 }
+/*Dropdown for time range*/
 
 .time_range_select_dropdown {
     position: relative;
@@ -51,7 +52,7 @@
     height: 0.7rem;
 }
 
-.total_edcs_container, .total_regions_container, .total_substations_container,.total_meters_container {
+.total_edcs_container, .total_feeder_container,.total_regions_container, .total_substations_container,.total_meters_container {
     display: flex;
     flex-direction: row;
     align-items: center;

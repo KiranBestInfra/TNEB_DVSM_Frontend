@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
+import PropTypes from 'prop-types';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -41,28 +42,24 @@ const ErrorBoundary = ({ children }) => {
     return children;
 };
 
+ErrorBoundary.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
 const RegionSubstations = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const { region } = useParams();
-    const location = useLocation();
 
-    const isRegionUser =
-        location.pathname.includes('/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser
-        ? location.pathname.includes('/user/')
-            ? '/user'
-            : '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+    // Always use admin routes regardless of actual path
+    const isRegionUser = false;
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('substationDemandData');
-        const savedTimestamp = localStorage.getItem('substationDemandTimestamp');
+        const savedTimestamp = localStorage.getItem(
+            'substationDemandTimestamp'
+        );
 
         if (savedDemandData && savedTimestamp) {
             const timestamp = parseInt(savedTimestamp);
@@ -117,8 +114,14 @@ const RegionSubstations = () => {
                         [data.substation]: data.graphData,
                     },
                 };
-                localStorage.setItem('substationDemandData', JSON.stringify(newData.substationDemandData));
-                localStorage.setItem('substationDemandTimestamp', Date.now().toString());
+                localStorage.setItem(
+                    'substationDemandData',
+                    JSON.stringify(newData.substationDemandData)
+                );
+                localStorage.setItem(
+                    'substationDemandTimestamp',
+                    Date.now().toString()
+                );
                 return newData;
             });
 
@@ -142,7 +145,6 @@ const RegionSubstations = () => {
     console.log('widgetsData', widgetsData);
 
     useEffect(() => {
-        
         if (socket && widgetsData.substationNames.length > 0) {
             socket.emit('subscribeSubstation', {
                 substations: widgetsData.substationNames,
@@ -213,37 +215,35 @@ const RegionSubstations = () => {
                 region.charAt(0).toUpperCase() + region.slice(1);
 
             return [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `/user/dashboard` },
                 {
                     label: `Region : ${formattedRegionName}`,
-                    path: `${currentBaseRoute}/${region}/dashboard`,
+                    path: `/user/${region}/dashboard`,
                 },
                 {
                     label: 'Substations',
-                    path: `${currentBaseRoute}/${region}/substations`,
+                    path: `/user/${region}/substations`,
                 },
             ];
         } else {
-            const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
-            ];
+            const items = [{ label: 'Dashboard', path: `/user/dashboard` }];
 
             if (region) {
                 items.push({
                     label: 'Regions',
-                    path: `${currentBaseRoute}/regions`,
+                    path: `/user/regions`,
                 });
                 items.push({
                     label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`,
+                    path: `/user/${region}`,
                 });
             }
 
             items.push({
                 label: 'Substations',
                 path: region
-                    ? `${currentBaseRoute}/${region}/substations`
-                    : `${currentBaseRoute}/substations`,
+                    ? `/user/${region}/substations`
+                    : `/user/substations`,
             });
             return items;
         }
@@ -273,20 +273,14 @@ const RegionSubstations = () => {
                                         <option value="Year">Year</option>
                                     </select>
                                     <img
-                                        src="icons/arrow-down.svg"
+                                        src="/icons/arrow-down.svg"
                                         alt="Select Time"
                                         className={
                                             styles.time_range_select_dropdown_icon
                                         }
                                     />
                                 </div>
-                                <Buttons
-                                    label="Get Reports"
-                                    variant="primary"
-                                    alt="GetReports"
-                                    icon="icons/reports.svg"
-                                    iconPosition="left"
-                                />
+                                
                             </div>
                         </div>
                     </div>
@@ -295,14 +289,13 @@ const RegionSubstations = () => {
                         <div className={styles.total_regions_container}>
                             <div className={styles.total_main_info}>
                                 <img
-                                    src="icons/office.svg"
+                                    src="/icons/office.svg"
                                     alt="Total Regions"
                                     className={styles.TNEB_icons}
                                 />
                                 <div className={styles.total_title_value}>
                                     <p className="title">
-                                        <Link
-                                            to={`${currentBaseRoute}/regions`}>
+                                        <Link to={`/admin/regions`}>
                                             Regions
                                         </Link>
                                     </p>
@@ -315,7 +308,7 @@ const RegionSubstations = () => {
                         <div className={styles.total_edcs_container}>
                             <div className={styles.total_main_info}>
                                 <img
-                                    src="icons/electric-edc.svg"
+                                    src="/icons/electric-edc.svg"
                                     alt="Total Region"
                                     className={styles.TNEB_icons}
                                 />
@@ -324,8 +317,8 @@ const RegionSubstations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/edcs`
-                                                    : `${currentBaseRoute}/edcs`
+                                                    ? `/admin/${region}/edcs`
+                                                    : `/admin/edcs`
                                             }>
                                             EDCs
                                         </Link>
@@ -339,7 +332,7 @@ const RegionSubstations = () => {
                         <div className={styles.total_substations_container}>
                             <div className={styles.total_main_info}>
                                 <img
-                                    src="icons/electric-factory.svg"
+                                    src="/icons/electric-factory.svg"
                                     alt="Total Substations"
                                     className={styles.TNEB_icons}
                                 />
@@ -348,8 +341,8 @@ const RegionSubstations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/substations`
-                                                    : `${currentBaseRoute}/substations`
+                                                    ? `/admin/${region}/substations`
+                                                    : `/admin/substations`
                                             }>
                                             Substations
                                         </Link>
@@ -363,7 +356,7 @@ const RegionSubstations = () => {
                         <div className={styles.total_meters_container}>
                             <div className={styles.total_meters_main_info}>
                                 <img
-                                    src="icons/electric-meter.svg"
+                                    src="/icons/electric-meter.svg"
                                     alt="Total Meters"
                                     className={styles.TNEB_icons}
                                 />
@@ -372,8 +365,8 @@ const RegionSubstations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/feeders`
-                                                    : `${currentBaseRoute}/feeders`
+                                                    ? `/admin/${region}/feeders`
+                                                    : `/admin/feeders`
                                             }>
                                             Feeders
                                         </Link>
@@ -406,13 +399,19 @@ const RegionSubstations = () => {
                                                 styles.communication_positive_percentage
                                             }>
                                             <img
-                                                src="icons/up-right-arrow.svg"
+                                                src="/icons/up-right-arrow.svg"
                                                 alt="Positive"
                                                 className={
                                                     styles.communication_positive_arrow
                                                 }
                                             />
-                                            87%
+                                            {(
+                                                (widgetsData.commMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                     <div
@@ -430,13 +429,19 @@ const RegionSubstations = () => {
                                                 styles.communication_negative_percentage
                                             }>
                                             <img
-                                                src="icons/up-right-arrow.svg"
+                                                src="/icons/up-right-arrow.svg"
                                                 alt="Positive"
                                                 className={
                                                     styles.communication_negative_arrow
                                                 }
                                             />
-                                            13%
+                                            {(
+                                                (widgetsData.nonCommMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                 </div>
@@ -446,9 +451,9 @@ const RegionSubstations = () => {
 
                     <div className={styles.section_header}>
                         <h2 className="title">
-                            Substations{' '}
+                            Substations:{' '}
                             <span className={styles.region_count}>
-                                {widgetsData.regionSubstationCount}
+                                [ {widgetsData.regionSubstationCount} ]
                             </span>
                         </h2>
                     </div>
@@ -463,7 +468,10 @@ const RegionSubstations = () => {
                                               styles.individual_region_stats
                                           }>
                                           <ShortDetailsWidget
-                                              region={substation}
+                                              region={region}
+                                              name={substation}
+                                              edcCount={0}
+                                              substationCount={0}
                                               feederCount={
                                                   widgetsData
                                                       .substationFeederCounts?.[
@@ -473,12 +481,13 @@ const RegionSubstations = () => {
                                               currentValue={0}
                                               previousValue={0}
                                               pageType="substations"
-                                              graphData={   
-                                                  widgetsData.substationDemandData?.[
+                                              graphData={
+                                                  widgetsData
+                                                      .substationDemandData?.[
                                                       substation
                                                   ] || {
-                                                        xAxis: [],
-                                                        series: [],
+                                                      xAxis: [],
+                                                      series: [],
                                                   }
                                               }
                                           />

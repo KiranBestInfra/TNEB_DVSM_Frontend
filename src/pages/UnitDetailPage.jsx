@@ -80,7 +80,7 @@ const UnitDetailPage = () => {
                             <div className="title">{unit.name}</div>
                             <div className={styles.stat_card_right}>
                                 <span className="icons">
-                                    <img src="icons/units.svg" alt="" aria-hidden="true" />
+                                    <img src="/icons/units.svg" alt="" aria-hidden="true" />
                                 </span>
                             </div>
                         </div>
@@ -132,7 +132,7 @@ const UnitDetailPage = () => {
                         className={styles.back_button}
                         aria-label="Back to Dashboard"
                     >
-                        <img src="icons/arrow-left.svg" alt="" aria-hidden="true" style={{ width: '24px', height: '24px' }} />
+                        <img src="/icons/arrow-left.svg" alt="" aria-hidden="true" style={{ width: '24px', height: '24px' }} />
                         <span>Back to Dashboard</span>
                     </button>
                 </div>
@@ -150,7 +150,7 @@ const UnitDetailPage = () => {
                             <option value="Last 30 Days">Last 30 Days</option>
                         </select>
                         <img
-                            src="icons/arrow-down.svg"
+                            src="/icons/arrow-down.svg"
                             alt=""
                             aria-hidden="true"
                             className={styles.time_range_select_dropdown_icon}
@@ -166,7 +166,7 @@ const UnitDetailPage = () => {
                 <div className={styles.summary_section} aria-label={`Details for ${selectedUnit.name}`}>
                     <div className={styles.summary_card}>
                         <div className={styles.total_meters_container}>
-                            <img src="icons/meter.svg" alt="" aria-hidden="true" />
+                            <img src="/icons/meter.svg" alt="" aria-hidden="true" />
                             <div className={styles.total_meters}>
                                 <div className='titles'>Selected Unit: {selectedUnit.name}</div>
                                 <div className={styles.summary_value} aria-label={`Total meters: ${selectedUnit.communicated + selectedUnit.nonCommunication}`}>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -8,7 +8,6 @@ import ShortDetailsWidget from './ShortDetailsWidget';
 
 const RegionEdcs = () => {
     const { region } = useParams();
-    const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
@@ -48,9 +47,6 @@ const RegionEdcs = () => {
         };
     });
 
-    const baseRoute = location.pathname.includes('/user/') ? '/user' : '/admin';
-
-    // Socket initialization
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
@@ -96,12 +92,11 @@ const RegionEdcs = () => {
         };
     }, []);
 
-    // Subscribe to EDC updates when EDC names are available
     useEffect(() => {
         if (socket && widgetsData.edcNames.length > 0) {
             socket.emit('subscribeEdc', {
                 edcs: widgetsData.edcNames,
-                region: region, // Include region for filtering on server
+                region: region,
             });
         }
     }, [widgetsData.edcNames, socket, region]);
@@ -158,19 +153,19 @@ const RegionEdcs = () => {
         : 'Unknown';
 
     const getBreadcrumbItems = () => {
-        const items = [{ label: 'Dashboard', path: `${baseRoute}/dashboard` }];
+        const items = [{ label: 'Dashboard', path: '/admin/dashboard' }];
 
         if (region) {
-            items.push({ label: 'Regions', path: `${baseRoute}/regions` });
+            items.push({ label: 'Regions', path: '/admin/regions' });
             items.push({
                 label: regionName,
-                path: `${baseRoute}/${region}`,
+                path: `/admin/${region}`,
             });
         }
 
         items.push({
             label: 'EDCs',
-            path: region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`,
+            path: region ? `/admin/${region}/edcs` : '/admin/edcs',
         });
 
         return items;
@@ -187,7 +182,7 @@ const RegionEdcs = () => {
                 <div className={styles.total_edcs_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/electric-edc.svg"
+                            src="/icons/electric-edc.svg"
                             alt="Total EDCs"
                             className={styles.TNEB_icons}
                         />
@@ -202,7 +197,7 @@ const RegionEdcs = () => {
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/electric-factory.svg"
+                            src="/icons/electric-factory.svg"
                             alt="Total Substations"
                             className={styles.TNEB_icons}
                         />
@@ -217,7 +212,7 @@ const RegionEdcs = () => {
                 <div className={styles.total_meters_container}>
                     <div className={styles.total_meters_main_info}>
                         <img
-                            src="icons/electric-meter.svg"
+                            src="/icons/electric-meter.svg"
                             alt="Total Feeders"
                             className={styles.TNEB_icons}
                         />
@@ -243,7 +238,7 @@ const RegionEdcs = () => {
                                         styles.communication_positive_percentage
                                     }>
                                     <img
-                                        src="icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_positive_arrow
@@ -264,7 +259,7 @@ const RegionEdcs = () => {
                                         styles.communication_negative_percentage
                                     }>
                                     <img
-                                        src="icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_negative_arrow
@@ -280,9 +275,9 @@ const RegionEdcs = () => {
 
             <div className={styles.section_header}>
                 <h2 className="title">
-                    EDCs{' '}
+                    EDCs:{' '}
                     <span className={styles.region_count}>
-                        {widgetsData.totalEdcs}
+                        [ {widgetsData.totalEdcs} ]
                     </span>
                 </h2>
             </div>
@@ -296,7 +291,9 @@ const RegionEdcs = () => {
                             key={index}
                             className={styles.individual_region_stats}>
                             <ShortDetailsWidget
-                                region={edc}
+                                region={region}
+                                edc={edc}
+                                name={edc}
                                 substationCount={
                                     widgetsData.substationCount[edc] || 0
                                 }

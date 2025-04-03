@@ -1,6 +1,6 @@
 import styles from '../styles/ShortDetailsWidget.module.css';
 import LineChartTNEB from '../components/graphs/LineChartTNEB/LineChartTNEB';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // const graphData = {
@@ -26,6 +26,8 @@ import PropTypes from 'prop-types';
 
 const ShortDetailsWidget = ({
     region,
+    edc,
+    name,
     edcCount,
     substationCount,
     feederCount,
@@ -39,10 +41,8 @@ const ShortDetailsWidget = ({
     },
 }) => {
     const navigate = useNavigate();
-    const location = useLocation();
 
-    const isUserRoute = location.pathname.includes('/user/');
-    const baseRoute = isUserRoute ? '/user' : '/admin';
+    const isUserRoute = false;
 
     const percentageChange = (
         ((currentValue - previousValue) / previousValue) *
@@ -52,37 +52,40 @@ const ShortDetailsWidget = ({
 
     const handleClick = () => {
         let detailsUrl = '';
+        const routePrefix = isUserRoute ? '/user' : '/admin';
+        const formattedRegion = region.toLowerCase().replace(/\s+/g, '-');
+        const formattedName = name
+            ? name.toLowerCase().replace(/\s+/g, '-')
+            : '';
+
         switch (pageType) {
             case 'regions':
-                detailsUrl = `${baseRoute}/regions/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}`;
+                detailsUrl = `${routePrefix}/regions/${formattedRegion}`;
                 break;
             case 'edcs':
-                detailsUrl = `${baseRoute}/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/edcs/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/details`;
+                if (edc) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/edcs/${edc
+                        .toLowerCase()
+                        .replace(/\s+/g, '-')}/details`;
+                } else {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/edcs`;
+                }
                 break;
             case 'substations':
-                detailsUrl = `${baseRoute}/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/substations/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/details`;
+                detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`;
+                console.log('Navigating to:', detailsUrl);
                 break;
             case 'feeders':
-                detailsUrl = `${baseRoute}/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/feeders/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/details`;
+                if (edc) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/feeders/${edc
+                        .toLowerCase()
+                        .replace(/\s+/g, '-')}/details`;
+                } else {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/feeders`;
+                }
                 break;
             default:
-                detailsUrl = `${baseRoute}/regions/${region
-                    .toLowerCase()
-                    .replace(/\s+/g, '-')}/details`;
+                detailsUrl = `${routePrefix}/regions/${formattedRegion}`;
         }
 
         navigate(detailsUrl);
@@ -92,22 +95,30 @@ const ShortDetailsWidget = ({
     };
 
     const renderNavigationLinks = () => {
+        const routePrefix = isUserRoute ? '/user' : '/admin';
+        const formattedRegion = region.toLowerCase().replace(/\s+/g, '-');
+        const formattedName = name
+            ? name.toLowerCase().replace(/\s+/g, '-')
+            : '';
+
         switch (pageType) {
             case 'edcs':
+                if (!edc) return null;
+
                 return (
                     <>
                         <Link
-                            to={`${baseRoute}/${region
+                            to={`${routePrefix}/${formattedRegion}/${edc
                                 .toLowerCase()
-                                .replace(/\s+/g, '-')}/substations/`}
+                                .replace(/\s+/g, '-')}/substations`}
                             className={styles.nav_link}>
                             {substationCount} Substations
                         </Link>
                         {' / '}
                         <Link
-                            to={`${baseRoute}/${region
+                            to={`${routePrefix}/${formattedRegion}/${edc
                                 .toLowerCase()
-                                .replace(/\s+/g, '-')}/feeders/`}
+                                .replace(/\s+/g, '-')}/feeder`}
                             className={styles.nav_link}>
                             {feederCount} Feeders
                         </Link>
@@ -116,9 +127,7 @@ const ShortDetailsWidget = ({
             case 'substations':
                 return (
                     <Link
-                        to={`${baseRoute}/${region
-                            .toLowerCase()
-                            .replace(/\s+/g, '-')}/feeders/`}
+                        to={`${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`}
                         className={styles.nav_link}>
                         {feederCount} Feeders
                     </Link>
@@ -129,25 +138,19 @@ const ShortDetailsWidget = ({
                 return (
                     <>
                         <Link
-                            to={`${baseRoute}/${region
-                                .toLowerCase()
-                                .replace(/\s+/g, '-')}/edcs/`}
+                            to={`${routePrefix}/${formattedRegion}/edcs`}
                             className={styles.nav_link}>
                             {edcCount} EDCs
                         </Link>
                         {' / '}
                         <Link
-                            to={`${baseRoute}/${region
-                                .toLowerCase()
-                                .replace(/\s+/g, '-')}/substations/`}
+                            to={`${routePrefix}/${formattedRegion}/substations`}
                             className={styles.nav_link}>
                             {substationCount} Substations
                         </Link>
                         {' / '}
                         <Link
-                            to={`${baseRoute}/${region
-                                .toLowerCase()
-                                .replace(/\s+/g, '-')}/feeders/`}
+                            to={`${routePrefix}/${formattedRegion}/feeders`}
                             className={styles.nav_link}>
                             {feederCount} Feeders
                         </Link>
@@ -161,7 +164,7 @@ const ShortDetailsWidget = ({
             <div className={styles.individual_region_header}>
                 <div className={styles.individual_region_header_left}>
                     <h3 className={styles.individual_region_header_title}>
-                        {region}
+                        {name}
                     </h3>
                     <p className={styles.navigation_links}>
                         {renderNavigationLinks()}
@@ -170,7 +173,7 @@ const ShortDetailsWidget = ({
                 <div className={styles.individual_region_header_right}>
                     <div className={styles.click_individual_region}>
                         <img
-                            src="icons/information.svg"
+                            src="/icons/information.svg"
                             alt="Click Here"
                             onClick={handleClick}
                             style={{ cursor: 'pointer' }}
@@ -201,8 +204,8 @@ const ShortDetailsWidget = ({
                                 <img
                                     src={
                                         isPositiveChange
-                                            ? 'icons/up-right-arrow.svg'
-                                            : 'icons/down-right-arrow.svg'
+                                            ? '/icons/up-right-arrow.svg'
+                                            : '/icons/down-right-arrow.svg'
                                     }
                                     alt={
                                         isPositiveChange
@@ -238,6 +241,8 @@ const ShortDetailsWidget = ({
 
 ShortDetailsWidget.propTypes = {
     region: PropTypes.string.isRequired,
+    edc: PropTypes.string,
+    name: PropTypes.string,
     edcCount: PropTypes.number.isRequired,
     substationCount: PropTypes.number.isRequired,
     feederCount: PropTypes.number.isRequired,

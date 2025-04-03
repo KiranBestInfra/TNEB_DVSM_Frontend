@@ -17,7 +17,6 @@ const UserRegionDashboard = () => {
         series: [],
     });
 
-    const baseRoute = '/user';
     const entityId = region;
 
     useEffect(() => {
@@ -106,9 +105,7 @@ const UserRegionDashboard = () => {
                         </div>
                         <div className={styles.total_title_value}>
                             <span className="title">
-                                <Link to={`${baseRoute}/${entityId}/edcs`}>
-                                    EDCs
-                                </Link>
+                                <Link to={`/user/${entityId}/edcs`}>EDCs</Link>
                             </span>
                             <span className={styles.summary_value}>
                                 {stats.edcCount}
@@ -128,8 +125,7 @@ const UserRegionDashboard = () => {
                         </div>
                         <div className={styles.total_title_value}>
                             <span className="title">
-                                <Link
-                                    to={`${baseRoute}/${entityId}/substations`}>
+                                <Link to={`/user/${entityId}/substations`}>
                                     Substations
                                 </Link>
                             </span>
@@ -152,7 +148,7 @@ const UserRegionDashboard = () => {
 
                         <div className={styles.total_title_value}>
                             <span className="title">
-                                <Link to={`${baseRoute}/${entityId}/feeders`}>
+                                <Link to={`/user/${entityId}/feeders`}>
                                     Feeders
                                 </Link>
                             </span>

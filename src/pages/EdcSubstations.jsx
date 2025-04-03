@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -48,20 +48,9 @@ ErrorBoundary.propTypes = {
 const EdcSubstations = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
     const { region, edcs } = useParams();
-    const location = useLocation();
 
-    // Determine if this is a region user path
-    const isRegionUser =
-        location.pathname.includes('/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser
-        ? location.pathname.includes('/user/')
-            ? '/user'
-            : '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+    const isRegionUser = false;
+    const routePrefix = '/admin';
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -129,56 +118,61 @@ const EdcSubstations = () => {
         setTimeframe(e.target.value);
     };
 
-    // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
-        if (isRegionUser && region && edcs) {
-            const formattedRegionName =
-                region.charAt(0).toUpperCase() + region.slice(1);
-            const formattedEdcName =
-                edcs.charAt(0).toUpperCase() + edcs.slice(1);
+        if (isRegionUser) {
+            // For region user
+            const formattedRegionName = region
+                ? region
+                      .split('-')
+                      .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')
+                : 'Unknown';
 
             return [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
                 {
                     label: `Region : ${formattedRegionName}`,
-                    path: `${currentBaseRoute}/${region}/dashboard`,
+                    path: `${routePrefix}/${region}/dashboard`,
                 },
                 {
-                    label: `EDC : ${formattedEdcName}`,
-                    path: `${currentBaseRoute}/${region}/${edcs}`,
+                    label: edcs,
+                    path: `${routePrefix}/${region}/${edcs}`,
                 },
                 {
                     label: 'Substations',
-                    path: `${currentBaseRoute}/${region}/${edcs}/substations`,
+                    path: `${routePrefix}/${region}/${edcs}/substations`,
                 },
             ];
         } else {
             const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
             ];
 
             if (region) {
                 items.push({
                     label: 'Regions',
-                    path: `${currentBaseRoute}/regions`,
+                    path: `${routePrefix}/regions`,
                 });
                 items.push({
                     label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`,
+                    path: `${routePrefix}/${region}`,
                 });
-                if (edcs) {
-                    items.push({
-                        label: edcs.charAt(0).toUpperCase() + edcs.slice(1),
-                        path: `${currentBaseRoute}/${region}/${edcs}`,
-                    });
-                }
+            }
+
+            if (edcs) {
+                items.push({
+                    label: edcs.charAt(0).toUpperCase() + edcs.slice(1),
+                    path: `${routePrefix}/${region}/${edcs}`,
+                });
             }
 
             items.push({
                 label: 'Substations',
-                path: edcs
-                    ? `${currentBaseRoute}/${region}/${edcs}/substations`
-                    : `${currentBaseRoute}/substations`,
+                path: region
+                    ? `${routePrefix}/${region}/${edcs}/substations`
+                    : `${routePrefix}/substations`,
             });
             return items;
         }
@@ -236,8 +230,7 @@ const EdcSubstations = () => {
                                 />
                                 <div className={styles.total_title_value}>
                                     <p className="title">
-                                        <Link
-                                            to={`${currentBaseRoute}/regions`}>
+                                        <Link to={`${routePrefix}/regions`}>
                                             Regions
                                         </Link>
                                     </p>
@@ -257,7 +250,7 @@ const EdcSubstations = () => {
                                 <div className={styles.total_title_value}>
                                     <p className="title">
                                         <Link
-                                            to={`${currentBaseRoute}/${region}/edcs`}>
+                                            to={`${routePrefix}/${region}/edcs`}>
                                             EDCs
                                         </Link>
                                     </p>
@@ -277,7 +270,7 @@ const EdcSubstations = () => {
                                 <div className={styles.total_title_value}>
                                     <p className="title">
                                         <Link
-                                            to={`${currentBaseRoute}/${region}/${edcs}/substations`}>
+                                            to={`${routePrefix}/${region}/${edcs}/substations`}>
                                             Substations
                                         </Link>
                                     </p>
@@ -297,7 +290,7 @@ const EdcSubstations = () => {
                                 <div className={styles.total_meters}>
                                     <div className="title">
                                         <Link
-                                            to={`${currentBaseRoute}/${region}/${edcs}/feeders`}>
+                                            to={`${routePrefix}/${region}/${edcs}/feeders`}>
                                             Feeders
                                         </Link>
                                     </div>
@@ -335,7 +328,13 @@ const EdcSubstations = () => {
                                                     styles.communication_positive_arrow
                                                 }
                                             />
-                                            87%
+                                            {(
+                                                (widgetsData.commMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                     <div
@@ -359,7 +358,13 @@ const EdcSubstations = () => {
                                                     styles.communication_negative_arrow
                                                 }
                                             />
-                                            13%
+                                            {(
+                                                (widgetsData.nonCommMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                 </div>
