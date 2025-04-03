@@ -77,13 +77,8 @@ const Substations = () => {
         location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser
-        ? location.pathname.includes('/user/')
-            ? '/user'
-            : '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+
+    const routePrefix = isRegionUser ? '/user' : '/admin';
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -282,45 +277,49 @@ const Substations = () => {
 
     // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
-        if (isRegionUser && region) {
-            // Format region name with first letter capitalized
-            const formattedRegionName =
-                region.charAt(0).toUpperCase() + region.slice(1);
+        if (isRegionUser) {
+            // For region user
+            const formattedRegionName = region
+                ? region
+                      .split('-')
+                      .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')
+                : 'Unknown';
 
-            // Region user breadcrumb - showing only Dashboard -> Region -> Substations
             return [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
                 {
                     label: `Region : ${formattedRegionName}`,
-                    path: `${currentBaseRoute}/${region}/dashboard`,
+                    path: `${routePrefix}/${region}/dashboard`,
                 },
                 {
                     label: 'Substations',
-                    path: `${currentBaseRoute}/${region}/substations`,
+                    path: `${routePrefix}/${region}/substations`,
                 },
             ];
         } else {
-            // Standard admin or user breadcrumb
             const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
             ];
 
             if (region) {
                 items.push({
                     label: 'Regions',
-                    path: `${currentBaseRoute}/regions`,
+                    path: `${routePrefix}/regions`,
                 });
                 items.push({
                     label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`,
+                    path: `${routePrefix}/${region}`,
                 });
             }
 
             items.push({
                 label: 'Substations',
                 path: region
-                    ? `${currentBaseRoute}/${region}/substations`
-                    : `${currentBaseRoute}/substations`,
+                    ? `${routePrefix}/${region}/substations`
+                    : `${routePrefix}/substations`,
             });
             return items;
         }
@@ -351,7 +350,7 @@ const Substations = () => {
                                         <option value="Year">Year</option>
                                     </select>
                                     <img
-                                        src="icons/arrow-down.svg"
+                                        src="/icons/arrow-down.svg"
                                         alt="Select Time"
                                         className={
                                             styles.time_range_select_dropdown_icon
@@ -373,14 +372,13 @@ const Substations = () => {
                         <div className={styles.total_regions_container}>
                             <div className={styles.total_main_info}>
                                 <img
-                                    src="icons/office.svg"
+                                    src="/icons/office.svg"
                                     alt="Total Regions"
                                     className={styles.TNEB_icons}
                                 />
                                 <div className={styles.total_title_value}>
                                     <p className="title">
-                                        <Link
-                                            to={`${currentBaseRoute}/regions`}>
+                                        <Link to={`${routePrefix}/regions`}>
                                             Regions
                                         </Link>
                                     </p>
@@ -393,7 +391,7 @@ const Substations = () => {
                         <div className={styles.total_edcs_container}>
                             <div className={styles.total_main_info}>
                                 <img
-                                    src="icons/electric-edc.svg"
+                                    src="/icons/electric-edc.svg"
                                     alt="Total Region"
                                     className={styles.TNEB_icons}
                                 />
@@ -402,8 +400,8 @@ const Substations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/edcs`
-                                                    : `${currentBaseRoute}/edcs`
+                                                    ? `${routePrefix}/${region}/edcs`
+                                                    : `${routePrefix}/edcs`
                                             }>
                                             EDCs
                                         </Link>
@@ -417,7 +415,7 @@ const Substations = () => {
                         <div className={styles.total_substations_container}>
                             <div className={styles.total_main_info}>
                                 <img
-                                    src="icons/electric-factory.svg"
+                                    src="/icons/electric-factory.svg"
                                     alt="Total Substations"
                                     className={styles.TNEB_icons}
                                 />
@@ -426,8 +424,8 @@ const Substations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/substations`
-                                                    : `${currentBaseRoute}/substations`
+                                                    ? `${routePrefix}/${region}/substations`
+                                                    : `${routePrefix}/substations`
                                             }>
                                             Substations
                                         </Link>
@@ -441,7 +439,7 @@ const Substations = () => {
                         <div className={styles.total_meters_container}>
                             <div className={styles.total_meters_main_info}>
                                 <img
-                                    src="icons/electric-meter.svg"
+                                    src="/icons/electric-meter.svg"
                                     alt="Total Meters"
                                     className={styles.TNEB_icons}
                                 />
@@ -450,8 +448,8 @@ const Substations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/feeders`
-                                                    : `${currentBaseRoute}/feeders`
+                                                    ? `${routePrefix}/${region}/feeders`
+                                                    : `${routePrefix}/feeders`
                                             }>
                                             Feeders
                                         </Link>
@@ -484,13 +482,19 @@ const Substations = () => {
                                                 styles.communication_positive_percentage
                                             }>
                                             <img
-                                                src="icons/up-right-arrow.svg"
+                                                src="/icons/up-right-arrow.svg"
                                                 alt="Positive"
                                                 className={
                                                     styles.communication_positive_arrow
                                                 }
                                             />
-                                            87%
+                                            {(
+                                                (widgetsData.commMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                     <div
@@ -508,13 +512,19 @@ const Substations = () => {
                                                 styles.communication_negative_percentage
                                             }>
                                             <img
-                                                src="icons/up-right-arrow.svg"
+                                                src="/icons/up-right-arrow.svg"
                                                 alt="Positive"
                                                 className={
                                                     styles.communication_negative_arrow
                                                 }
                                             />
-                                            13%
+                                            {(
+                                                (widgetsData.nonCommMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                 </div>

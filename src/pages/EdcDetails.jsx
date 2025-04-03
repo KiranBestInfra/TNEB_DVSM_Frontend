@@ -17,8 +17,6 @@ const EdcDetails = () => {
 
     const entityId = edcId;
 
-    const baseRoute = location.pathname.includes('/user/') ? '/user' : '/admin';
-
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
@@ -28,7 +26,7 @@ const EdcDetails = () => {
                 const data = response.data;
                 setGraphData(data);
             } catch (error) {
-                console.error('Error fetching EDC graph data:', error);
+                console.error('Error fetching edc graph data:', error);
             }
         };
 
@@ -102,8 +100,8 @@ const EdcDetails = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${baseRoute}/${region}/${edcId}/substations`
-                                            : `${baseRoute}/${edcId}/substations`
+                                            ? `/admin/${region}/${edcId}/substations`
+                                            : `/admin/${edcId}/substations`
                                     }>
                                     Substations
                                 </Link>
@@ -130,8 +128,8 @@ const EdcDetails = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${baseRoute}/${region}/feeders/${edcId}/details`
-                                            : `${baseRoute}/feeders/${edcId}/details`
+                                            ? `/admin/${region}/feeders/${edcId}/details`
+                                            : `/admin/feeders/${edcId}/details`
                                     }>
                                     Feeders
                                 </Link>
@@ -155,7 +153,7 @@ const EdcDetails = () => {
                         <div className={styles.total_title_value}>
                             <span className="title">Region</span>
                             <span className={styles.summary_value}>
-                                <Link to={`${baseRoute}/${region}/dashboard`}>
+                                <Link to={`/admin/${region}/dashboard`}>
                                     {region
                                         ? region.charAt(0).toUpperCase() +
                                           region.slice(1)

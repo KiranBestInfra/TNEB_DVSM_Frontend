@@ -18,8 +18,6 @@ const RegionDetails = () => {
 
     const entityId = region;
 
-    const baseRoute = location.pathname.includes('/user/') ? '/user' : '/admin';
-
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
@@ -70,20 +68,14 @@ const RegionDetails = () => {
                                 <option value="Year">Year</option>
                             </select>
                             <img
-                                src="icons/arrow-down.svg"
+                                src="/icons/arrow-down.svg"
                                 alt="Select Time"
                                 className={
                                     styles.time_range_select_dropdown_icon
                                 }
                             />
                         </div>
-                        <Buttons
-                            label="Get Reports"
-                            variant="primary"
-                            alt="GetReports"
-                            icon="icons/reports.svg"
-                            iconPosition="left"
-                        />
+                       
                     </div>
                 </div>
             </div>
@@ -94,7 +86,7 @@ const RegionDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/electric-edc.svg"
+                                src="/icons/electric-edc.svg"
                                 alt="EDC"
                                 className={styles.TNEB_icons}
                             />
@@ -104,8 +96,8 @@ const RegionDetails = () => {
                                 <Link
                                     to={
                                         entityId
-                                            ? `${baseRoute}/${entityId}/edcs`
-                                            : `${baseRoute}/edcs`
+                                            ? `/admin/${entityId}/edcs`
+                                            : `/admin/edcs`
                                     }>
                                     EDCs
                                 </Link>
@@ -121,7 +113,7 @@ const RegionDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/electric-factory.svg"
+                                src="/icons/electric-factory.svg"
                                 alt="Substation"
                                 className={styles.TNEB_icons}
                             />
@@ -131,8 +123,8 @@ const RegionDetails = () => {
                                 <Link
                                     to={
                                         entityId
-                                            ? `${baseRoute}/${entityId}/substations`
-                                            : `${baseRoute}/substations`
+                                            ? `/admin/${entityId}/substations`
+                                            : `/admin/substations`
                                     }>
                                     Substations
                                 </Link>
@@ -148,7 +140,7 @@ const RegionDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/electric-meter.svg"
+                                src="/icons/electric-meter.svg"
                                 alt="Feeder"
                                 className={styles.TNEB_icons}
                             />
@@ -159,8 +151,8 @@ const RegionDetails = () => {
                                 <Link
                                     to={
                                         entityId
-                                            ? `${baseRoute}/${entityId}/feeders`
-                                            : `${baseRoute}/feeders`
+                                            ? `/admin/${entityId}/feeders`
+                                            : `/admin/feeders`
                                     }>
                                     Feeders
                                 </Link>

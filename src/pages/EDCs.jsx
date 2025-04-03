@@ -24,13 +24,8 @@ const EDCs = () => {
         location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser
-        ? location.pathname.includes('/user/')
-            ? '/user'
-            : '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+
+    const routePrefix = isRegionUser ? '/user' : '/admin';
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('edcDemandData');
@@ -202,11 +197,11 @@ const EDCs = () => {
         'Madurai Rural': 14,
         'Trichy Urban': 15,
         'Trichy Rural': 13,
-        Thanjavur: 16,
-        Villupuram: 14,
-        Vellore: 17,
-        Salem: 18,
-        Erode: 16,
+        'Thanjavur': 16,
+        'Villupuram': 14,
+        'Vellore': 17,
+        'Salem': 18,
+        'Erode': 16,
     };
 
     // EDC feeder counts
@@ -221,11 +216,11 @@ const EDCs = () => {
         'Madurai Rural': 25,
         'Trichy Urban': 28,
         'Trichy Rural': 24,
-        Thanjavur: 29,
-        Villupuram: 26,
-        Vellore: 31,
-        Salem: 33,
-        Erode: 29,
+        'Thanjavur': 29,
+        'Villupuram': 26,
+        'Vellore': 31,
+        'Salem': 33,
+        'Erode': 29,
     };
 
     // EDC consumption stats
@@ -240,11 +235,11 @@ const EDCs = () => {
         'Madurai Rural': { currentValue: 310, previousValue: 290 },
         'Trichy Urban': { currentValue: 330, previousValue: 300 },
         'Trichy Rural': { currentValue: 290, previousValue: 270 },
-        Thanjavur: { currentValue: 320, previousValue: 300 },
-        Villupuram: { currentValue: 300, previousValue: 280 },
-        Vellore: { currentValue: 340, previousValue: 310 },
-        Salem: { currentValue: 350, previousValue: 320 },
-        Erode: { currentValue: 330, previousValue: 300 },
+        'Thanjavur': { currentValue: 320, previousValue: 300 },
+        'Villupuram': { currentValue: 300, previousValue: 280 },
+        'Vellore': { currentValue: 340, previousValue: 310 },
+        'Salem': { currentValue: 350, previousValue: 320 },
+        'Erode': { currentValue: 330, previousValue: 300 },
     };
 
     // Sample data for the LineChart
@@ -312,42 +307,37 @@ const EDCs = () => {
 
     // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
-        if (isRegionUser && region) {
-            // Format region name with first letter capitalized
-            const formattedRegionName =
-                region.charAt(0).toUpperCase() + region.slice(1);
+        if (isRegionUser) {
+            // For region user
+            const formattedRegionName = region
+                ? region
+                      .split('-')
+                      .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')
+                : 'Unknown';
 
-            // Region user breadcrumb - showing only Dashboard -> Region -> EDCs
-            return [
-                { label: 'Dashboard', path: '/user/dashboard' },
-                {
-                    label: `Region : ${formattedRegionName}`,
-                    path: `/user/${region}/dashboard`,
-                },
-                { label: 'EDCs', path: `/user/${region}/edcs` },
-            ];
-        } else {
-            // Standard admin or user breadcrumb
             const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
             ];
 
             if (region) {
                 items.push({
                     label: 'Regions',
-                    path: `${currentBaseRoute}/regions`,
+                    path: `${routePrefix}/regions`,
                 });
                 items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`,
+                    label: formattedRegionName,
+                    path: `${routePrefix}/${region}`,
                 });
             }
 
             items.push({
                 label: 'EDCs',
                 path: region
-                    ? `${currentBaseRoute}/${region}/edcs`
-                    : `${currentBaseRoute}/edcs`,
+                    ? `${routePrefix}/${region}/edcs`
+                    : `${routePrefix}/edcs`,
             });
 
             return items;
@@ -398,7 +388,7 @@ const EDCs = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={`${currentBaseRoute}/regions`}>
+                                <Link to={`${routePrefix}/regions`}>
                                     Regions
                                 </Link>
                             </p>
@@ -420,8 +410,8 @@ const EDCs = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${currentBaseRoute}/${region}/edcs`
-                                            : `${currentBaseRoute}/edcs`
+                                            ? `${routePrefix}/${region}/edcs`
+                                            : `${routePrefix}/edcs`
                                     }>
                                     EDCs
                                 </Link>
@@ -444,8 +434,8 @@ const EDCs = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${currentBaseRoute}/${region}/substations`
-                                            : `${currentBaseRoute}/substations`
+                                            ? `${routePrefix}/${region}/substations`
+                                            : `${routePrefix}/substations`
                                     }>
                                     Substations
                                 </Link>
@@ -468,8 +458,8 @@ const EDCs = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${currentBaseRoute}/${region}/feeders`
-                                            : `${currentBaseRoute}/feeders`
+                                            ? `${routePrefix}/${region}/feeders`
+                                            : `${routePrefix}/feeders`
                                     }>
                                     Feeders
                                 </Link>
@@ -500,7 +490,13 @@ const EDCs = () => {
                                             styles.communication_positive_arrow
                                         }
                                     />
-                                    87%
+                                    {(
+                                        (widgetsData.commMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                             <div
@@ -521,7 +517,13 @@ const EDCs = () => {
                                             styles.communication_negative_arrow
                                         }
                                     />
-                                    13%
+                                    {(
+                                        (widgetsData.nonCommMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                         </div>

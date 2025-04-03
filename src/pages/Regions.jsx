@@ -64,6 +64,7 @@ const Regions = () => {
         });
 
         newSocket.on('regionUpdate', (data) => {
+            console.log('regionUpdate', data);
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -149,21 +150,16 @@ const Regions = () => {
     const currentRegionName = isRegionUser
         ? location.pathname.split('/').filter((x) => x)[1] || ''
         : '';
-    const baseRoute = location.pathname.includes('/user/')
-        ? '/user'
-        : location.pathname.includes('/user/')
-            ? '/user'
-            : '/admin';
 
     const handleEdcClick = () => {
         if (isRegionUser && currentRegionName) {
-            navigate(`${baseRoute}/${currentRegionName}/edcs`);
+            navigate(`/user/${currentRegionName}/edcs`);
         }
     };
 
     const handleSubstationClick = () => {
         if (isRegionUser && currentRegionName) {
-            navigate(`${baseRoute}/${currentRegionName}/substations`);
+            navigate(`/user/${currentRegionName}/substations`);
         }
     };
 
@@ -177,8 +173,8 @@ const Regions = () => {
         } else {
             // Standard admin or user breadcrumb
             return [
-                { label: 'Dashboard', path: `${baseRoute}/dashboard` },
-                { label: 'Regions', path: `${baseRoute}/regions` },
+                { label: 'Dashboard', path: '/admin/dashboard' },
+                { label: 'Regions', path: '/admin/regions' },
             ];
         }
     };
@@ -200,7 +196,7 @@ const Regions = () => {
                 <option value="Year">Year</option>
               </select>
               <img
-                src="icons/arrow-down.svg"
+                src="/icons/arrow-down.svg"
                 alt="Select Time"
                 className={styles.time_range_select_dropdown_icon}
               />
@@ -222,7 +218,7 @@ const Regions = () => {
                 <div className={styles.total_regions_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/office.svg"
+                            src="/icons/office.svg"
                             alt="Total Regions"
                             className={styles.TNEB_icons}
                         />
@@ -241,7 +237,7 @@ const Regions = () => {
                     title={isRegionUser ? 'Click to view EDCs' : ''}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/electric-edc.svg"
+                            src="/icons/electric-edc.svg"
                             alt="Total EDCs"
                             className={styles.TNEB_icons}
                         />
@@ -254,7 +250,7 @@ const Regions = () => {
                                         {isRegionUser && (
                                             <span
                                                 style={{ fontSize: '0.8rem' }}>
-                                                🔗
+                                                
                                             </span>
                                         )}
                                     </span>
@@ -276,7 +272,7 @@ const Regions = () => {
                     title={isRegionUser ? 'Click to view Substations' : ''}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/electric-factory.svg"
+                            src="/icons/electric-factory.svg"
                             alt="Total Substations"
                             className={styles.TNEB_icons}
                         />
@@ -306,7 +302,7 @@ const Regions = () => {
                 <div className={styles.total_meters_container}>
                     <div className={styles.total_meters_main_info}>
                         <img
-                            src="icons/electric-meter.svg"
+                            src="/icons/electric-meter.svg"
                             alt="Total Meters"
                             className={styles.TNEB_icons}
                         />
@@ -333,7 +329,7 @@ const Regions = () => {
                                         styles.communication_positive_percentage
                                     }>
                                     <img
-                                        src="icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_positive_arrow
@@ -344,7 +340,7 @@ const Regions = () => {
                                             (widgetsData.commMeters +
                                                 widgetsData.nonCommMeters)) *
                                         100
-                                    ).toFixed(2)}
+                                    ).toFixed(1)}
                                     %
                                 </div>
                             </div>
@@ -360,7 +356,7 @@ const Regions = () => {
                                         styles.communication_negative_percentage
                                     }>
                                     <img
-                                        src="icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_negative_arrow
@@ -371,7 +367,7 @@ const Regions = () => {
                                             (widgetsData.commMeters +
                                                 widgetsData.nonCommMeters)) *
                                         100
-                                    ).toFixed(2)}
+                                    ).toFixed(1)}
                                     %
                                 </div>
                             </div>

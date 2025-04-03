@@ -19,7 +19,6 @@ const Feeders = () => {
 
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
-    const baseRoute = isUserRoute ? '/user' : '/admin';
 
     const feederNames = [
         'Adyar Feeder 1',
@@ -157,7 +156,7 @@ const Feeders = () => {
                 placeholderText="Start Date"
               />
               <span className="icons icon_placement">
-                <img src="icons/date.svg" alt="Calendar" />
+                <img src="/icons/date.svg" alt="Calendar" />
               </span>
             </div>
 
@@ -173,14 +172,14 @@ const Feeders = () => {
                 minDate={dateRange.start}
               />
               <span className="icons icon_placement">
-                <img src="icons/date.svg" alt="Calendar" />
+                <img src="/icons/date.svg" alt="Calendar" />
               </span>
             </div>
             <Buttons
               label="Get Reports"
               variant="primary"
               alt="GetReports"
-              icon="icons/reports.svg"
+              icon="/icons/reports.svg"
               iconPosition="left"
             />
           </div> */}
@@ -196,7 +195,7 @@ const Feeders = () => {
                 <option value="Year">Year</option>
               </select>
               <img
-                src="icons/arrow-down.svg"
+                src="/icons/arrow-down.svg"
                 alt="Select Time"
                 className={styles.time_range_select_dropdown_icon}
               />
@@ -205,7 +204,7 @@ const Feeders = () => {
               label="Get Reports"
               variant="primary"
               alt="GetReports"
-              icon="icons/reports.svg"
+              icon="/icons/reports.svg"
               iconPosition="left"
             /> */}
           </div>
@@ -215,7 +214,7 @@ const Feeders = () => {
       <div className={styles.summary_section}>
         <div className={styles.total_regions_container}>
           <div className={styles.total_main_info}>
-            <img src="icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
+            <img src="/icons/office.svg" alt="Total Regions" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">
                 <Link to={`${baseRoute}/regions`}>
@@ -228,7 +227,7 @@ const Feeders = () => {
         </div>
         <div className={styles.total_edcs_container}>
           <div className={styles.total_main_info}>
-            <img src="icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
+            <img src="/icons/electric-edc.svg" alt="Total Region" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">
                 <Link to={region ? `${baseRoute}/${region}/edcs` : `${baseRoute}/edcs`}>
@@ -241,7 +240,7 @@ const Feeders = () => {
         </div>
         <div className={styles.total_substations_container}>
           <div className={styles.total_main_info}>
-            <img src="icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
+            <img src="/icons/electric-factory.svg" alt="Total Substations" className={styles.TNEB_icons} />
             <div className={styles.total_title_value}>
               <p className="title">
                 <Link to={region ? `${baseRoute}/${region}/substations` : `${baseRoute}/substations`}>
@@ -255,7 +254,7 @@ const Feeders = () => {
         <div className={styles.total_meters_container}>
           <div className={styles.total_meters_main_info}>
             <img
-              src="icons/electric-meter.svg"
+              src="/icons/electric-meter.svg"
               alt="Total Meters"
               className={styles.TNEB_icons}
             />
@@ -271,7 +270,7 @@ const Feeders = () => {
                 <div className={styles.communication_value}>942</div>
                 <div className={styles.communication_positive_percentage}>
                   <img
-                    src="icons/up-right-arrow.svg"
+                    src="/icons/up-right-arrow.svg"
                     alt="Positive"
                     className={styles.communication_positive_arrow}
                   />
@@ -282,7 +281,7 @@ const Feeders = () => {
                 <div className={styles.communication_value}>301</div>
                 <div className={styles.communication_negative_percentage}>
                   <img
-                    src="icons/up-right-arrow.svg"
+                    src="/icons/up-right-arrow.svg"
                     alt="Positive"
                     className={styles.communication_negative_arrow}
                   />

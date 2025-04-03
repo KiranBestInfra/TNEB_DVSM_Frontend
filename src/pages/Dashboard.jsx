@@ -12,15 +12,9 @@ const Dashboard = () => {
     const { region } = useParams();
     console.log('Dashboard - Region from params:', region);
 
-    // Determine base route from URL path (admin or user)
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
     const isBiUserRoute = location.includes('/bi/user/');
-    const baseRoute = isBiUserRoute
-        ? '/bi/user'
-        : isUserRoute
-        ? '/user'
-        : '/admin';
 
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
@@ -117,8 +111,16 @@ const Dashboard = () => {
                         label: 'Dashboard',
                         path:
                             region && region !== 'undefined'
-                                ? `${baseRoute}/${region}/dashboard`
-                                : `${baseRoute}/dashboard`,
+                                ? isBiUserRoute
+                                    ? `/bi/user/${region}/dashboard`
+                                    : isUserRoute
+                                    ? `/user/${region}/dashboard`
+                                    : `/admin/${region}/dashboard`
+                                : isBiUserRoute
+                                ? `/bi/user/dashboard`
+                                : isUserRoute
+                                ? `/user/dashboard`
+                                : `/admin/dashboard`,
                     },
                 ]}
             />
@@ -127,13 +129,22 @@ const Dashboard = () => {
                 <div className={styles.total_regions_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="/bi/icons/office.svg"
+                            src="/icons/office.svg"
                             alt="Total Regions"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={`${baseRoute}/regions`}>Regions</Link>
+                                <Link
+                                    to={
+                                        isBiUserRoute
+                                            ? `/bi/user/regions`
+                                            : isUserRoute
+                                            ? `/user/regions`
+                                            : `/admin/regions`
+                                    }>
+                                    Regions
+                                </Link>
                             </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalRegions}
@@ -144,20 +155,13 @@ const Dashboard = () => {
                 <div className={styles.total_edcs_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="/bi/icons/electric-edc.svg"
+                            src="/icons/electric-edc.svg"
                             alt="Total Region"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `${baseRoute}/${region}/edcs`
-                                            : `${baseRoute}/edcs`
-                                    }>
-                                    EDCs
-                                </Link>
+                                EDCs
                             </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalEdcs}
@@ -168,20 +172,13 @@ const Dashboard = () => {
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="/bi/icons/electric-factory.svg"
+                            src="/icons/electric-factory.svg"
                             alt="Total Substations"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `${baseRoute}/${region}/substations`
-                                            : `${baseRoute}/substations`
-                                    }>
-                                    Substations
-                                </Link>
+                                Substations
                             </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalSubstations}
@@ -192,20 +189,13 @@ const Dashboard = () => {
                 <div className={styles.total_meters_container}>
                     <div className={styles.total_meters_main_info}>
                         <img
-                            src="/bi/icons/electric-meter.svg"
+                            src="/icons/electric-meter.svg"
                             alt="Total Meters"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_meters}>
                             <div className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `${baseRoute}/${region}/feeders`
-                                            : `${baseRoute}/feeders`
-                                    }>
-                                    Feeders
-                                </Link>
+                                Feeders
                             </div>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalFeeders}
@@ -227,17 +217,24 @@ const Dashboard = () => {
                                         styles.communication_positive_percentage
                                     }>
                                     <img
-                                        src="/bi/icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_positive_arrow
                                         }
                                     />
-                                    87%
+                                    {(
+                                        (widgetsData.commMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                             <div
                                 className={
+                         
                                     styles.communication_status_container
                                 }>
                                 <div className={styles.communication_value}>
@@ -248,13 +245,19 @@ const Dashboard = () => {
                                         styles.communication_negative_percentage
                                     }>
                                     <img
-                                        src="/bi/icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_negative_arrow
                                         }
                                     />
-                                    13%
+                                    {(
+                                        (widgetsData.nonCommMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                         </div>

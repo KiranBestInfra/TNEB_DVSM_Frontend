@@ -225,14 +225,14 @@ const DynamicGraph = ({
                                 value={timeRange}
                                 onChange={(e) => onTimeRangeChange(e.target.value)}
                                 className={styles.time_range_select}>
-                                <option value="Last30days">Last 30 Days</option>
                                 <option value="Daily">Daily</option>
                                 <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">Last Week</option>
+                                <option value="Last30days">Last 30 Days</option>
+                                <option value="LastWeek">Last Week</option>
                                 <option value="Year">Year</option>
                             </select>
                             <img
-                                src="/mdmdvsm/icons/arrow-down.svg"
+                                src="/icons/arrow-down.svg"
                                 alt="Select Time"
                                 className={styles.time_range_select_dropdown_icon}
                             />
@@ -242,7 +242,7 @@ const DynamicGraph = ({
                         className={styles.icons_chart_controls}
                         onClick={handleDownload}>
                         <img
-                            src="/mdmdvsm/bi/icons/download-icon.svg"
+                            src="/icons/download-icon.svg"
                             alt="Download chart"
                         />
                     </span>
