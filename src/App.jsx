@@ -36,7 +36,7 @@ import SubstationFeeders from './pages/SubstationFeeders';
 
 const App = () => {
     return (
-        <BrowserRouter basename="/mdmdvsm/bi">
+        <BrowserRouter basename="/bi">
             <AuthProvider>
                 <Routes>
                     <Route
