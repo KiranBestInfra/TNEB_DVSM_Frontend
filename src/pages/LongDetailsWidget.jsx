@@ -1,5 +1,4 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import FullDetailLineChart from '../components/graphs/FullDetailLineChart/FullDetailLineChart';
 import { useParams } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Buttons from '../components/ui/Buttons/Buttons';
@@ -85,13 +84,7 @@ const LongDetailsWidget = () => {
                                 }
                             />
                         </div>
-                        <Buttons
-                            label="Get Reports"
-                            variant="primary"
-                            alt="GetReports"
-                            icon="icons/reports.svg"
-                            iconPosition="left"
-                        />
+
                     </div>
                 </div>
             </div>
@@ -192,15 +185,15 @@ const LongDetailsWidget = () => {
                                 />
                             </div>
 
-              <div className={styles.total_title_value}>
-                <span className='title'>
-                <Link to={entityId ? `${baseRoute}/${entityId}/feeders` : `${baseRoute}/feeders`}>
-                Feeder
-                  </Link></span>
-                <span className={styles.summary_value}>{stats.feederCount}</span>
-              </div>
-            </div>
-            {/* <div className={styles.total_title_value}>
+                            <div className={styles.total_title_value}>
+                                <span className='title'>
+                                    <Link to={entityId ? `${baseRoute}/${entityId}/feeders` : `${baseRoute}/feeders`}>
+                                        Feeder
+                                    </Link></span>
+                                <span className={styles.summary_value}>{stats.feederCount}</span>
+                            </div>
+                        </div>
+                        {/* <div className={styles.total_title_value}>
               <span className='title'>Actual Demand</span>
               <span className={`${styles.summary_value} ${isPositiveChange ? styles.positive : styles.negative}`}>
                 {stats.currentValue} MW

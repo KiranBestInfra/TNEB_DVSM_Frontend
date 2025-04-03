@@ -1,11 +1,11 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import FullDetailLineChart from '../components/graphs/FullDetailLineChart/FullDetailLineChart';
 import { useParams } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
+import SummarySection from '../components/SummarySection';
 import { Link } from 'react-router-dom';
 
 const RegionDetails = () => {
@@ -81,89 +81,23 @@ const RegionDetails = () => {
             </div>
             <Breadcrumb />
 
-            <div className={styles.performance_stats}>
-                <div className={styles.total_edcs_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-edc.svg"
-                                alt="EDC"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link
-                                    to={
-                                        entityId
-                                            ? `/admin/${entityId}/edcs`
-                                            : `/admin/edcs`
-                                    }>
-                                    EDCs
-                                </Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.edcCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.total_substations_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-factory.svg"
-                                alt="Substation"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link
-                                    to={
-                                        entityId
-                                            ? `/admin/${entityId}/substations`
-                                            : `/admin/substations`
-                                    }>
-                                    Substations
-                                </Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.substationCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-meter.svg"
-                                alt="Feeder"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link
-                                    to={
-                                        entityId
-                                            ? `/admin/${entityId}/feeders`
-                                            : `/admin/feeders`
-                                    }>
-                                    Feeders
-                                </Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.feederCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <SummarySection
+                widgetsData={{
+                    totalRegions: 0,
+                    totalEdcs: stats.edcCount,
+                    totalSubstations: stats.substationCount,
+                    totalFeeders: stats.feederCount,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    totalDistricts: stats.edcCount || 0
+                }}
+                isUserRoute={false}
+                isBiUserRoute={false}
+                showRegions={false}
+                showEdcs={true}
+                showSubstations={true}
+                showDistricts={true}
+            />
 
             <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />

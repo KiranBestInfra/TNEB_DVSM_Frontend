@@ -36,27 +36,6 @@ const RegionFeeders = () => {
             fetchFeeders();
         }
     }, [region]);
-    // useEffect(() => {
-    //     if (!region) return;
-
-    //     const feederNames = async () => {
-    //         try {
-    //             const response = await apiClient.get(
-    //                 `/regions/${region}/feeders`
-    //             );
-    //             const data = response;
-
-    //             setWidgetsData((prev) => ({
-    //                 ...prev,
-    //                 feederNames: data.data?.feederNames || [],
-    //             }));
-    //         } catch (error) {
-    //             console.error('Error fetching substation data:', error);
-    //         }
-    //     };
-
-    //     substationNames();
-    // }, [region]);
 
     const mockFeeders = [
         {
@@ -191,6 +170,7 @@ const RegionFeeders = () => {
                         className={styles.individual_region_stats}>
                         <ShortDetailsWidget
                             region={feeder.name}
+                            name={feeder.name}
                             feederCount={feeder.meters}
                             currentValue={feeder.currentValue}
                             previousValue={feeder.previousValue}

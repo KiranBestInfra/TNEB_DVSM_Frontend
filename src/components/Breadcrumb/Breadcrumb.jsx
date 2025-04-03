@@ -4,16 +4,9 @@ import styles from './Breadcrumb.module.css';
 const Breadcrumb = ({ items }) => {
     const location = useLocation();
 
-    // For region user pages, we want to customize breadcrumbs
-    // Need to handle both /user/ and /user/ paths for region users
+    // Always use admin routes regardless of actual path
     const pathSegments = location.pathname.split('/').filter((x) => x);
-    const isRegionUserPath =
-        location.pathname.includes('/user/') ||
-        (pathSegments[0] === 'user' &&
-            pathSegments.length >= 2 &&
-            !['admin', 'regions', 'edcs', 'substations', 'feeders'].includes(
-                pathSegments[1]
-            ));
+    const isRegionUserPath = false;
 
     console.log('Breadcrumb - Path:', location.pathname);
     console.log('Breadcrumb - Is Region User Path:', isRegionUserPath);
@@ -97,9 +90,7 @@ const Breadcrumb = ({ items }) => {
             const formattedRegionName =
                 region.charAt(0).toUpperCase() + region.slice(1);
 
-            const routePrefix = location.pathname.includes('/user/')
-                ? '/user'
-                : '/admin';
+            const routePrefix = '/admin';
 
             const customItems = [
                 { label: 'Dashboard', path: `${routePrefix}/dashboard` },

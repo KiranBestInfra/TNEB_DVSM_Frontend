@@ -72,13 +72,9 @@ const Substations = () => {
     const { region } = useParams();
     const location = useLocation();
 
-    // Determine if this is a region user path
-    const isRegionUser =
-        location.pathname.includes('/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
-
-    const routePrefix = isRegionUser ? '/user' : '/admin';
+    // Always use admin routes regardless of actual path
+    const isRegionUser = false;
+    const routePrefix = '/admin';
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -357,13 +353,7 @@ const Substations = () => {
                                         }
                                     />
                                 </div>
-                                {/* <Buttons
-                                    label="Get Reports"
-                                    variant="primary"
-                                    alt="GetReports"
-                                    icon="icons/reports.svg"
-                                    iconPosition="left"
-                                /> */}
+                                
                             </div>
                         </div>
                     </div>

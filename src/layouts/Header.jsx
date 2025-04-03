@@ -13,7 +13,8 @@ const Header = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
-    const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
+    const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
+        useState(false);
     const { isAdmin } = useAuth();
     const basePath = isAdmin() ? '/admin' : '/user';
 
@@ -112,7 +113,6 @@ const Header = () => {
             const search = async () => {
                 setIsSearching(true);
                 try {
-
                     const response = await apiClient.get(
                         `/regions/search?term=${debouncedSearchTerm}`
                     );
@@ -216,7 +216,7 @@ const Header = () => {
                         label="Logout"
                         onClick={handleLogout}
                         variant="secondary"
-                        icon="imagesicons/logout-icon.svg"
+                        icon="images/icons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
                     />

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
@@ -7,6 +7,7 @@ import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import SummarySection from '../components/SummarySection';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
+import PropTypes from 'prop-types';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -42,17 +43,18 @@ const ErrorBoundary = ({ children }) => {
     return children;
 };
 
+ErrorBoundary.propTypes = {
+    children: PropTypes.node.isRequired,
+};
+
 const RegionSubstations = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const { region } = useParams();
-    const location = useLocation();
 
-    const isRegionUser =
-        location.pathname.includes('/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
+    // Always use admin routes regardless of actual path
+    const isRegionUser = false;
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('substationDemandData');
@@ -274,6 +276,7 @@ const RegionSubstations = () => {
                                     </select>
                                     <img
                                         src="icons/arrow-down.svg"
+                                        src="icons/arrow-down.svg"
                                         alt="Select Time"
                                         className={
                                             styles.time_range_select_dropdown_icon
@@ -323,25 +326,41 @@ const RegionSubstations = () => {
                                             styles.individual_region_stats
                                         }>
                                         <ShortDetailsWidget
-                                            region={substation}
+                                            region={region}
+                                            name={substation}
+                                            edcCount={0}
+                                            substationCount={0}
                                             feederCount={
                                                 widgetsData
                                                     .substationFeederCounts?.[
                                                 substation
                                                 ] || 0
                                             }
-                                            currentValue={0}
-                                            previousValue={0}
-                                            pageType="substations"
                                             graphData={
                                                 widgetsData
                                                     .substationDemandData?.[
-                                                substation
-                                                ] || {
+                                                substation.trim()
+                                                ] ?? {
                                                     xAxis: [],
                                                     series: [],
                                                 }
                                             }
+                                            currentValue={parseFloat(
+                                                widgetsData.substationDemandData?.[
+                                                    substation.trim()
+                                                ]?.series?.[0]?.data?.slice(
+                                                    -1
+                                                )[0] || 0
+                                            ).toFixed(1)}
+                                            previousValue={parseFloat(
+                                                widgetsData.substationDemandData?.[
+                                                    substation.trim()
+                                                ]?.series?.[0]?.data?.slice(
+                                                    -2,
+                                                    -1
+                                                )[0] || 0
+                                            ).toFixed(1)}
+                                            pageType="substations"
                                         />
                                     </div>
                                 )

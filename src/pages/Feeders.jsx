@@ -179,7 +179,7 @@ const Feeders = () => {
               label="Get Reports"
               variant="primary"
               alt="GetReports"
-              icon="icons/reports.svg"
+              icon="/icons/reports.svg"
               iconPosition="left"
             />
           </div> */}
@@ -200,13 +200,7 @@ const Feeders = () => {
                 className={styles.time_range_select_dropdown_icon}
               />
             </div>
-            {/* <Buttons
-              label="Get Reports"
-              variant="primary"
-              alt="GetReports"
-              icon="icons/reports.svg"
-              iconPosition="left"
-            /> */}
+
           </div>
         </div>
       </div>

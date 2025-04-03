@@ -7,16 +7,16 @@ import SummarySection from '../components/SummarySection';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { Link } from 'react-router-dom';
 
-const EdcFeeders = () => {
+const SubstationFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
     const totalMeters = 1243;
-    const totalRegions = 13;
-    const totalEDCs = 95;
-    const totalSubstations = 260;
-    const totalFeeders = 416;
+    const totalRegions = 13; // Total number of regions
+    const totalEDCs = 95; // Total number of EDCs
+    const totalSubstations = 260; // Total number of substations
+    const totalFeeders = 416; // Total number of feeders
 
-    const { edc } = useParams();
-    console.log('EdcFeeders - EDC from params:', edc);
+    const { region, edcId, substationId } = useParams();
+    console.log('SubstationFeeders - Region from params:', region);
 
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
@@ -39,6 +39,7 @@ const EdcFeeders = () => {
         'Nungambakkam Feeder 15',
     ];
 
+    // Feeder meter counts
     const feederMeterCounts = {
         'Adyar Feeder 1': 45,
         'Velachery Feeder 2': 38,
@@ -57,6 +58,7 @@ const EdcFeeders = () => {
         'Nungambakkam Feeder 15': 38,
     };
 
+    // Feeder consumption stats (in kW)
     const feederStats = {
         'Adyar Feeder 1': { currentValue: 850, previousValue: 780 },
         'Velachery Feeder 2': { currentValue: 720, previousValue: 680 },
@@ -75,6 +77,7 @@ const EdcFeeders = () => {
         'Nungambakkam Feeder 15': { currentValue: 780, previousValue: 720 },
     };
 
+    // Sample data for the LineChart
     const graphData = {
         daily: {
             xAxis: [
@@ -140,7 +143,7 @@ const EdcFeeders = () => {
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">Feeders</h2>
+                <h2 className="title">Feeders for Substation {substationId}</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -213,4 +216,4 @@ const EdcFeeders = () => {
     );
 };
 
-export default EdcFeeders;
+export default SubstationFeeders;

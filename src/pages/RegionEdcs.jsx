@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -9,7 +9,6 @@ import ShortDetailsWidget from './ShortDetailsWidget';
 
 const RegionEdcs = () => {
     const { region } = useParams();
-    const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
@@ -51,7 +50,6 @@ const RegionEdcs = () => {
         };
     });
 
-    // Socket initialization
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
@@ -97,12 +95,11 @@ const RegionEdcs = () => {
         };
     }, []);
 
-    // Subscribe to EDC updates when EDC names are available
     useEffect(() => {
         if (socket && widgetsData.edcNames.length > 0) {
             socket.emit('subscribeEdc', {
                 edcs: widgetsData.edcNames,
-                region: region, // Include region for filtering on server
+                region: region,
             });
         }
     }, [widgetsData.edcNames, socket, region]);
@@ -126,8 +123,8 @@ const RegionEdcs = () => {
                         (sum, count) => sum + (count || 0),
                         0
                     ),
-                    commMeters: 0,
-                    nonCommMeters: 0,
+                    commMeters: data.commMeters || 0,
+                    nonCommMeters: data.nonCommMeters || 0,
                     totalDistricts: data.totalDistricts || data.edcNames?.length || 0,
                     edcNames: data.edcNames || [],
                     substationCount:
@@ -191,7 +188,7 @@ const RegionEdcs = () => {
                     totalEdcs: widgetsData.totalEdcs,
                     totalSubstations: widgetsData.totalSubstations,
                     totalFeeders: widgetsData.totalFeeders,
-                    commMeters: widgetsData.commMeters,
+                    commMeters: `${((widgetsData.commMeters / (widgetsData.commMeters + widgetsData.nonCommMeters)) * 100).toFixed(1)}%`,
                     nonCommMeters: widgetsData.nonCommMeters,
                     totalDistricts: widgetsData.totalDistricts
                 }}
@@ -219,20 +216,30 @@ const RegionEdcs = () => {
                             key={index}
                             className={styles.individual_region_stats}>
                             <ShortDetailsWidget
-                                region={edc}
+                                region={region}
+                                edc={edc}
+                                name={edc}
                                 substationCount={
                                     widgetsData.substationCount[edc] || 0
                                 }
                                 feederCount={widgetsData.feederCount[edc] || 0}
                                 edcCount={widgetsData.totalEdcs}
-                                currentValue={0}
-                                previousValue={0}
                                 graphData={
-                                    widgetsData.edcDemandData[edc] || {
+                                    widgetsData.edcDemandData?.[edc.trim()] ?? {
                                         xAxis: [],
                                         series: [],
                                     }
                                 }
+                                currentValue={parseFloat(
+                                    widgetsData.edcDemandData?.[
+                                        edc.trim()
+                                    ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                ).toFixed(1)}
+                                previousValue={parseFloat(
+                                    widgetsData.edcDemandData?.[
+                                        edc.trim()
+                                    ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                ).toFixed(1)}
                                 pageType="edcs"
                             />
                         </div>

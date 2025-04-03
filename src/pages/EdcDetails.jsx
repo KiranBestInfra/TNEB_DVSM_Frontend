@@ -73,13 +73,7 @@ const EdcDetails = () => {
                                 }
                             />
                         </div>
-                        <Buttons
-                            label="Get Reports"
-                            variant="primary"
-                            alt="GetReports"
-                            icon="icons/reports.svg"
-                            iconPosition="left"
-                        />
+                       
                     </div>
                 </div>
             </div>
@@ -128,8 +122,8 @@ const EdcDetails = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `/admin/${region}/feeders/${edcId}/details`
-                                            : `/admin/feeders/${edcId}/details`
+                                            ? `/admin/${region}/${edcId}/feeder`
+                                            : `/admin/${edcId}/feeder`
                                     }>
                                     Feeders
                                 </Link>
