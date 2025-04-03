@@ -194,13 +194,11 @@ const ShortDetailsWidget = ({
                                 {previousValue} MW
                             </div>
                             <div
-                                className={`${
-                                    styles.region_percentage_change
-                                } ${
-                                    isPositiveChange
+                                className={`${styles.region_percentage_change
+                                    } ${isPositiveChange
                                         ? styles.positive
                                         : styles.negative
-                                }`}>
+                                    }`}>
                                 <img
                                     src={
                                         isPositiveChange
@@ -212,11 +210,10 @@ const ShortDetailsWidget = ({
                                             ? 'Increase'
                                             : 'Decrease'
                                     }
-                                    className={`${styles.region_trend_arrow} ${
-                                        isPositiveChange
-                                            ? styles.positive
-                                            : styles.negative
-                                    }`}
+                                    className={`${styles.region_trend_arrow} ${isPositiveChange
+                                        ? styles.positive
+                                        : styles.negative
+                                        }`}
                                 />
                                 {Math.abs(percentageChange)}%
                             </div>

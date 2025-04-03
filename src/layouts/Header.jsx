@@ -172,7 +172,6 @@ const Header = () => {
                         <div className={styles.spinner}></div>
                     ) : (
                         <img src="icons/search-icon.svg" alt="Search" />
-                        <img src="icons/search-icon.svg" alt="Search" />
                     )}
                 </span>
                 {searchResults.length > 0 && (
@@ -182,6 +181,7 @@ const Header = () => {
                                 key={result.id}
                                 className={styles.search_result_item}
                                 onClick={() => handleResultClick(result.id)}>
+
                                 <span className={styles.result_name}>
                                     {result.hierarchy_name}
                                 </span>
