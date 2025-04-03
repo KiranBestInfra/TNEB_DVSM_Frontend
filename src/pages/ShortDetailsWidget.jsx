@@ -194,29 +194,26 @@ const ShortDetailsWidget = ({
                                 {previousValue} MW
                             </div>
                             <div
-                                className={`${
-                                    styles.region_percentage_change
-                                } ${
-                                    isPositiveChange
+                                className={`${styles.region_percentage_change
+                                    } ${isPositiveChange
                                         ? styles.positive
                                         : styles.negative
-                                }`}>
+                                    }`}>
                                 <img
                                     src={
                                         isPositiveChange
                                             ? 'icons/up-right-arrow.svg'
-                                            : 'icons/down-right-arrow.svg'
+                                            : 'icons/up-right-arrow.svg'
                                     }
                                     alt={
                                         isPositiveChange
                                             ? 'Increase'
                                             : 'Decrease'
                                     }
-                                    className={`${styles.region_trend_arrow} ${
-                                        isPositiveChange
-                                            ? styles.positive
-                                            : styles.negative
-                                    }`}
+                                    className={`${styles.region_trend_arrow} ${isPositiveChange
+                                        ? styles.positive
+                                        : styles.negative
+                                        }`}
                                 />
                                 {Math.abs(percentageChange)}%
                             </div>

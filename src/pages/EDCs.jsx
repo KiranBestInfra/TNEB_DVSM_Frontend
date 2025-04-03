@@ -364,18 +364,10 @@ const EDCs = () => {
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
+                                className={styles.time_range_select_dropdown_icon}
                             />
                         </div>
-                        {/* <Buttons
-                            label="Get Reports"
-                            variant="primary"
-                            alt="GetReports"
-                            icon="icons/reports.svg"
-                            iconPosition="left"
-                        /> */}
+                       
                     </div>
                 </div>
             </div>

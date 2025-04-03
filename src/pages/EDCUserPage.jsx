@@ -135,23 +135,6 @@ const EDCUserPage = () => {
         'Erode': { currentValue: 330, previousValue: 300 },
     };
 
-    // Build breadcrumb items based on current path
-    const getBreadcrumbItems = () => {
-        if (isRegionUser && region) {
-            const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
-            return [
-                { label: 'Dashboard', path: '/user/dashboard' },
-                { label: `Region : ${formattedRegionName}`, path: `/user/${region}/dashboard` },
-                { label: 'EDCs', path: `/user/${region}/edcs` }
-            ];
-        } else {
-            return [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
-                { label: 'EDCs', path: `${currentBaseRoute}/edcs` }
-            ];
-        }
-    };
-
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
@@ -178,7 +161,7 @@ const EDCUserPage = () => {
                     </div>
                 </div>
             </div>
-            <Breadcrumb items={getBreadcrumbItems()} />
+            <Breadcrumb />
             <div className={styles.summary_section}>
                 <div className={styles.total_regions_container}>
                     <div className={styles.total_main_info}>
