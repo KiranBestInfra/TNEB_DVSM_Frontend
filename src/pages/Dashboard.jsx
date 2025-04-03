@@ -72,7 +72,7 @@ const Dashboard = () => {
                 <h2 className="title">Dashboard</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
+                        {/* <div className={styles.time_range_select_dropdown}>
                             <select
                                 value={timeRange}
                                 onChange={(e) => setTimeRange(e.target.value)}
@@ -93,7 +93,7 @@ const Dashboard = () => {
                                     styles.time_range_select_dropdown_icon
                                 }
                             />
-                        </div>
+                        </div> */}
                         {/* <Buttons
                             label="Get Reports"
                             variant="primary"
@@ -129,7 +129,7 @@ const Dashboard = () => {
                 <div className={styles.total_regions_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="/bi/icons/office.svg"
+                            src="/icons/office.svg"
                             alt="Total Regions"
                             className={styles.TNEB_icons}
                         />
@@ -155,28 +155,13 @@ const Dashboard = () => {
                 <div className={styles.total_edcs_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="/bi/icons/electric-edc.svg"
+                            src="/icons/electric-edc.svg"
                             alt="Total Region"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? isBiUserRoute
-                                                ? `/bi/user/${region}/edcs`
-                                                : isUserRoute
-                                                ? `/user/${region}/edcs`
-                                                : `/admin/${region}/edcs`
-                                            : isBiUserRoute
-                                            ? `/bi/user/edcs`
-                                            : isUserRoute
-                                            ? `/user/edcs`
-                                            : `/admin/edcs`
-                                    }>
-                                    EDCs
-                                </Link>
+                                EDCs
                             </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalEdcs}
@@ -187,28 +172,13 @@ const Dashboard = () => {
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="/bi/icons/electric-factory.svg"
+                            src="/icons/electric-factory.svg"
                             alt="Total Substations"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? isBiUserRoute
-                                                ? `/bi/user/${region}/substations`
-                                                : isUserRoute
-                                                ? `/user/${region}/substations`
-                                                : `/admin/${region}/substations`
-                                            : isBiUserRoute
-                                            ? `/bi/user/substations`
-                                            : isUserRoute
-                                            ? `/user/substations`
-                                            : `/admin/substations`
-                                    }>
-                                    Substations
-                                </Link>
+                                Substations
                             </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalSubstations}
@@ -219,28 +189,13 @@ const Dashboard = () => {
                 <div className={styles.total_meters_container}>
                     <div className={styles.total_meters_main_info}>
                         <img
-                            src="/bi/icons/electric-meter.svg"
+                            src="/icons/electric-meter.svg"
                             alt="Total Meters"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_meters}>
                             <div className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? isBiUserRoute
-                                                ? `/bi/user/${region}/feeders`
-                                                : isUserRoute
-                                                ? `/user/${region}/feeders`
-                                                : `/admin/${region}/feeders`
-                                            : isBiUserRoute
-                                            ? `/bi/user/feeders`
-                                            : isUserRoute
-                                            ? `/user/feeders`
-                                            : `/admin/feeders`
-                                    }>
-                                    Feeders
-                                </Link>
+                                Feeders
                             </div>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalFeeders}
@@ -262,7 +217,7 @@ const Dashboard = () => {
                                         styles.communication_positive_percentage
                                     }>
                                     <img
-                                        src="/bi/icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_positive_arrow
@@ -279,6 +234,7 @@ const Dashboard = () => {
                             </div>
                             <div
                                 className={
+                         
                                     styles.communication_status_container
                                 }>
                                 <div className={styles.communication_value}>
@@ -289,7 +245,7 @@ const Dashboard = () => {
                                         styles.communication_negative_percentage
                                     }>
                                     <img
-                                        src="/bi/icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_negative_arrow
@@ -318,6 +274,8 @@ const Dashboard = () => {
                     showLabel={false}
                     toolbox={true}
                     height="500px"
+                    timeRange={timeRange}
+                    onTimeRangeChange={setTimeRange}
                 />
             </div>
         </div>

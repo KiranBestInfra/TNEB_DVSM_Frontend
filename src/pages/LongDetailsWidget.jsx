@@ -46,10 +46,10 @@ const LongDetailsWidget = () => {
         fetchGraphData();
     }, [entityId, timeRange]);
 
-    const entityName = entityId
-        .split('-')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+    // const entityName = entityId
+    //     .split('-')
+    //     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    //     .join(' ');
 
     const stats = {
         edcCount: 8,
@@ -62,7 +62,7 @@ const LongDetailsWidget = () => {
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">{entityName} Region</h2>
+                <h2 className="title"> Region</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -192,14 +192,15 @@ const LongDetailsWidget = () => {
                                 />
                             </div>
 
-                            <div className={styles.total_title_value}>
-                                <span className="title">Location</span>
-                                <span className={styles.summary_value}>
-                                    {stats.feederCount}
-                                </span>
-                            </div>
-                        </div>
-                        {/* <div className={styles.total_title_value}>
+              <div className={styles.total_title_value}>
+                <span className='title'>
+                <Link to={entityId ? `${baseRoute}/${entityId}/feeders` : `${baseRoute}/feeders`}>
+                Feeder
+                  </Link></span>
+                <span className={styles.summary_value}>{stats.feederCount}</span>
+              </div>
+            </div>
+            {/* <div className={styles.total_title_value}>
               <span className='title'>Actual Demand</span>
               <span className={`${styles.summary_value} ${isPositiveChange ? styles.positive : styles.negative}`}>
                 {stats.currentValue} MW

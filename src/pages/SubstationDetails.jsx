@@ -65,7 +65,7 @@ const SubstationDetails = () => {
                                 <option value="Year">Year</option>
                             </select>
                             <img
-                                src="icons/arrow-down.svg"
+                                src="/icons/arrow-down.svg"
                                 alt="Select Time"
                                 className={
                                     styles.time_range_select_dropdown_icon
@@ -89,7 +89,7 @@ const SubstationDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/electric-meter.svg"
+                                src="/icons/electric-meter.svg"
                                 alt="Feeder"
                                 className={styles.TNEB_icons}
                             />
@@ -117,7 +117,7 @@ const SubstationDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/location.svg"
+                                src="/icons/location.svg"
                                 alt="Location"
                                 className={styles.TNEB_icons}
                             />
@@ -140,7 +140,7 @@ const SubstationDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/electric-voltage.svg"
+                                src="/icons/electric-voltage.svg"
                                 alt="Voltage"
                                 className={styles.TNEB_icons}
                             />

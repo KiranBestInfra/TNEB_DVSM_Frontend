@@ -2,11 +2,12 @@ import React from 'react';
 import ReactECharts from 'echarts-for-react';
 import PropTypes from 'prop-types';
 import styles from './LineChartTNEB.module.css';
+import * as echarts from 'echarts';
 
 const LineChartTNEB = ({
     title = 'Energy Usage by Tariff Plan',
     data,
-    seriesColors = ['#029447', '#3f68b2', '#ed8c22', '#dc272c'],
+    seriesColors = ['#008cd7', '#029447', '#ed8c22', '#dc272c'],
     yAxisLabel = 'kWh',
     showLabel = false,
     toolbox = true,
@@ -76,11 +77,11 @@ const LineChartTNEB = ({
             type: 'line',
             smooth: true,
             lineStyle: {
-                color: seriesColors[index],
+                color: index === 0 ? '#008cd7' : '#029447',
                 width: 2,
             },
             itemStyle: {
-                color: seriesColors[index],
+                color: index === 0 ? '#008cd7' : '#029447',
                 borderWidth: 2,
             },
             emphasis: {
@@ -99,7 +100,16 @@ const LineChartTNEB = ({
                 : {},
             data: item.data,
             areaStyle: {
-                opacity: 0.1,
+                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                    {
+                        offset: 0,
+                        color: index === 0 ? '#008cd760' : '#02944750',
+                    },
+                    {
+                        offset: 1,
+                        color: index === 0 ? '#008cd710' : '#02944710',
+                    },
+                ]),
             },
         })),
     };
