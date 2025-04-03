@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -48,15 +48,9 @@ ErrorBoundary.propTypes = {
 const EdcSubstations = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
     const { region, edcs } = useParams();
-    const location = useLocation();
 
-    // Determine if this is a region user path
-    const isRegionUser =
-        location.pathname.includes('/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
-
-    const routePrefix = isRegionUser ? '/user' : '/admin';
+    const isRegionUser = false;
+    const routePrefix = '/admin';
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -124,7 +118,6 @@ const EdcSubstations = () => {
         setTimeframe(e.target.value);
     };
 
-    // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
         if (isRegionUser) {
             // For region user

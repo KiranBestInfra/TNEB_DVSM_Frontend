@@ -143,13 +143,9 @@ const Regions = () => {
         );
     };
 
-    const isRegionUser =
-        location.pathname.includes('/user/') ||
-        (location.pathname.includes('/user/') &&
-            !location.pathname.includes('/admin/'));
-    const currentRegionName = isRegionUser
-        ? location.pathname.split('/').filter((x) => x)[1] || ''
-        : '';
+    // Always use admin routes regardless of actual path
+    const isRegionUser = false;
+    const currentRegionName = '';
 
     const handleEdcClick = () => {
         if (isRegionUser && currentRegionName) {
@@ -398,6 +394,7 @@ const Regions = () => {
                             className={styles.individual_region_stats}>
                             <ShortDetailsWidget
                                 region={region}
+                                name={region}
                                 edcCount={
                                     widgetsData.edcCount?.[region.trim()] || 0
                                 }

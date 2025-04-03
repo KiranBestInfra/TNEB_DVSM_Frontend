@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -8,7 +8,6 @@ import ShortDetailsWidget from './ShortDetailsWidget';
 
 const RegionEdcs = () => {
     const { region } = useParams();
-    const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
@@ -48,7 +47,6 @@ const RegionEdcs = () => {
         };
     });
 
-    // Socket initialization
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
@@ -94,12 +92,11 @@ const RegionEdcs = () => {
         };
     }, []);
 
-    // Subscribe to EDC updates when EDC names are available
     useEffect(() => {
         if (socket && widgetsData.edcNames.length > 0) {
             socket.emit('subscribeEdc', {
                 edcs: widgetsData.edcNames,
-                region: region, // Include region for filtering on server
+                region: region,
             });
         }
     }, [widgetsData.edcNames, socket, region]);
@@ -294,7 +291,9 @@ const RegionEdcs = () => {
                             key={index}
                             className={styles.individual_region_stats}>
                             <ShortDetailsWidget
-                                region={edc}
+                                region={region}
+                                edc={edc}
+                                name={edc}
                                 substationCount={
                                     widgetsData.substationCount[edc] || 0
                                 }

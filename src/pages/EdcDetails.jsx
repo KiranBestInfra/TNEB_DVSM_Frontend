@@ -128,8 +128,8 @@ const EdcDetails = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `/admin/${region}/feeders/${edcId}/details`
-                                            : `/admin/feeders/${edcId}/details`
+                                            ? `/admin/${region}/${edcId}/feeder`
+                                            : `/admin/${edcId}/feeder`
                                     }>
                                     Feeders
                                 </Link>

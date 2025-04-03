@@ -32,6 +32,7 @@ import RegionFeeders from './pages/RegionFeeders';
 import UserEdcDashboard from './pages/UserEdcDashboard';
 import UserSubstationDashboard from './pages/UserSubstationDashboard';
 import EdcFeeders from './pages/EdcFeeders';
+import SubstationFeeders from './pages/SubstationFeeders';
 
 const App = () => {
     return (
@@ -97,6 +98,14 @@ const App = () => {
                             <Route
                                 path=":region/:edcs/substations"
                                 element={<EdcSubstations />}
+                            />
+                            <Route
+                                path=":region/:edcs/feeder"
+                                element={<EdcFeeders />}
+                            />
+                            <Route
+                                path=":region/substations/:substationId/feeders"
+                                element={<SubstationFeeders />}
                             />
                             <Route
                                 path=":region/feeders/:feederId/details"
@@ -195,7 +204,7 @@ const App = () => {
                                 element={<FeederDetails />}
                             />
                         </Route>
-                                
+
                         <Route
                             path="*"
                             element={<Navigate to="/admin/dashboard" replace />}
