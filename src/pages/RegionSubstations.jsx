@@ -197,7 +197,7 @@ const RegionSubstations = () => {
                         data.data?.substationNames?.length || 0,
                     substationFeederCounts:
                         data.data?.substationFeederCounts || {},
-                    totalDistricts: data.data?.totalDistricts || 0
+                    totalDistricts: data.data?.totalDistricts || 0,
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);
@@ -242,7 +242,6 @@ const RegionSubstations = () => {
                                         }
                                     />
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -256,7 +255,10 @@ const RegionSubstations = () => {
                             totalFeeders: widgetsData.totalFeeders,
                             commMeters: widgetsData.commMeters,
                             nonCommMeters: widgetsData.nonCommMeters,
-                            totalDistricts: widgetsData.totalDistricts || widgetsData.regionSubstationCount || 0
+                            totalDistricts:
+                                widgetsData.totalDistricts ||
+                                widgetsData.regionSubstationCount ||
+                                0,
                         }}
                         isUserRoute={isRegionUser}
                         isBiUserRoute={location.pathname.includes('/bi/user/')}
@@ -276,54 +278,54 @@ const RegionSubstations = () => {
                     </div>
                     <div className={styles.region_stats_container}>
                         {widgetsData.substationNames &&
-                            widgetsData.substationNames.length > 0
+                        widgetsData.substationNames.length > 0
                             ? widgetsData.substationNames.map(
-                                (substation, index) => (
-                                    <div
-                                        key={index}
-                                        className={
-                                            styles.individual_region_stats
-                                        }>
-                                        <ShortDetailsWidget
-                                            region={region}
-                                            name={substation}
-                                            edcCount={0}
-                                            substationCount={0}
-                                            feederCount={
-                                                widgetsData
-                                                    .substationFeederCounts?.[
-                                                substation
-                                                ] || 0
-                                            }
-                                            graphData={
-                                                widgetsData
-                                                    .substationDemandData?.[
-                                                substation.trim()
-                                                ] ?? {
-                                                    xAxis: [],
-                                                    series: [],
-                                                }
-                                            }
-                                            currentValue={parseFloat(
-                                                widgetsData.substationDemandData?.[
-                                                    substation.trim()
-                                                ]?.series?.[0]?.data?.slice(
-                                                    -1
-                                                )[0] || 0
-                                            ).toFixed(1)}
-                                            previousValue={parseFloat(
-                                                widgetsData.substationDemandData?.[
-                                                    substation.trim()
-                                                ]?.series?.[0]?.data?.slice(
-                                                    -2,
-                                                    -1
-                                                )[0] || 0
-                                            ).toFixed(1)}
-                                            pageType="substations"
-                                        />
-                                    </div>
-                                )
-                            )
+                                  (substation, index) => (
+                                      <div
+                                          key={index}
+                                          className={
+                                              styles.individual_region_stats
+                                          }>
+                                          <ShortDetailsWidget
+                                              region={region}
+                                              name={substation}
+                                              edcCount={0}
+                                              substationCount={0}
+                                              feederCount={
+                                                  widgetsData
+                                                      .substationFeederCounts?.[
+                                                      substation
+                                                  ] || 0
+                                              }
+                                              graphData={
+                                                  widgetsData
+                                                      .substationDemandData?.[
+                                                      substation.trim()
+                                                  ] ?? {
+                                                      xAxis: [],
+                                                      series: [],
+                                                  }
+                                              }
+                                              currentValue={parseFloat(
+                                                  widgetsData.substationDemandData?.[
+                                                      substation.trim()
+                                                  ]?.series?.[0]?.data?.slice(
+                                                      -1
+                                                  )[0] || 0
+                                              ).toFixed(1)}
+                                              previousValue={parseFloat(
+                                                  widgetsData.substationDemandData?.[
+                                                      substation.trim()
+                                                  ]?.series?.[0]?.data?.slice(
+                                                      -2,
+                                                      -1
+                                                  )[0] || 0
+                                              ).toFixed(1)}
+                                              pageType="substations"
+                                          />
+                                      </div>
+                                  )
+                              )
                             : null}
                     </div>
                 </div>
