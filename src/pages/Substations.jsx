@@ -490,7 +490,13 @@ const Substations = () => {
                                                     styles.communication_positive_arrow
                                                 }
                                             />
-                                            87%
+                                            {(
+                                                (widgetsData.commMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                     <div
@@ -514,7 +520,13 @@ const Substations = () => {
                                                     styles.communication_negative_arrow
                                                 }
                                             />
-                                            13%
+                                            {(
+                                                (widgetsData.nonCommMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                 </div>

@@ -412,7 +412,13 @@ const RegionSubstations = () => {
                                                     styles.communication_positive_arrow
                                                 }
                                             />
-                                            87%
+                                            {(
+                                                (widgetsData.commMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                     <div
@@ -436,7 +442,13 @@ const RegionSubstations = () => {
                                                     styles.communication_negative_arrow
                                                 }
                                             />
-                                            13%
+                                            {(
+                                                (widgetsData.nonCommMeters /
+                                                    (widgetsData.commMeters +
+                                                        widgetsData.nonCommMeters)) *
+                                                100
+                                            ).toFixed(1)}
+                                            %
                                         </div>
                                     </div>
                                 </div>
@@ -473,12 +485,13 @@ const RegionSubstations = () => {
                                               currentValue={0}
                                               previousValue={0}
                                               pageType="substations"
-                                              graphData={   
-                                                  widgetsData.substationDemandData?.[
+                                              graphData={
+                                                  widgetsData
+                                                      .substationDemandData?.[
                                                       substation
                                                   ] || {
-                                                        xAxis: [],
-                                                        series: [],
+                                                      xAxis: [],
+                                                      series: [],
                                                   }
                                               }
                                           />

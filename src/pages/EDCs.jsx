@@ -202,11 +202,11 @@ const EDCs = () => {
         'Madurai Rural': 14,
         'Trichy Urban': 15,
         'Trichy Rural': 13,
-        Thanjavur: 16,
-        Villupuram: 14,
-        Vellore: 17,
-        Salem: 18,
-        Erode: 16,
+        'Thanjavur': 16,
+        'Villupuram': 14,
+        'Vellore': 17,
+        'Salem': 18,
+        'Erode': 16,
     };
 
     // EDC feeder counts
@@ -221,11 +221,11 @@ const EDCs = () => {
         'Madurai Rural': 25,
         'Trichy Urban': 28,
         'Trichy Rural': 24,
-        Thanjavur: 29,
-        Villupuram: 26,
-        Vellore: 31,
-        Salem: 33,
-        Erode: 29,
+        'Thanjavur': 29,
+        'Villupuram': 26,
+        'Vellore': 31,
+        'Salem': 33,
+        'Erode': 29,
     };
 
     // EDC consumption stats
@@ -240,11 +240,11 @@ const EDCs = () => {
         'Madurai Rural': { currentValue: 310, previousValue: 290 },
         'Trichy Urban': { currentValue: 330, previousValue: 300 },
         'Trichy Rural': { currentValue: 290, previousValue: 270 },
-        Thanjavur: { currentValue: 320, previousValue: 300 },
-        Villupuram: { currentValue: 300, previousValue: 280 },
-        Vellore: { currentValue: 340, previousValue: 310 },
-        Salem: { currentValue: 350, previousValue: 320 },
-        Erode: { currentValue: 330, previousValue: 300 },
+        'Thanjavur': { currentValue: 320, previousValue: 300 },
+        'Villupuram': { currentValue: 300, previousValue: 280 },
+        'Vellore': { currentValue: 340, previousValue: 310 },
+        'Salem': { currentValue: 350, previousValue: 320 },
+        'Erode': { currentValue: 330, previousValue: 300 },
     };
 
     // Sample data for the LineChart
@@ -511,7 +511,13 @@ const EDCs = () => {
                                             styles.communication_positive_arrow
                                         }
                                     />
-                                    87%
+                                    {(
+                                        (widgetsData.commMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                             <div
@@ -532,7 +538,13 @@ const EDCs = () => {
                                             styles.communication_negative_arrow
                                         }
                                     />
-                                    13%
+                                    {(
+                                        (widgetsData.nonCommMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                         </div>
