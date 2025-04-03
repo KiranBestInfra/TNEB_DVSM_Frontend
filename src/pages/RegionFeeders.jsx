@@ -36,6 +36,31 @@ const RegionFeeders = () => {
             fetchFeeders();
         }
     }, [region]);
+    useEffect(() => {
+        if (!region) return;
+
+        const feederNames = async () => {
+            try {
+                const response = await apiClient.get(
+                    `/regions/${region}/feeders`
+                );
+                const data = response;
+
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    substationNames: data.data?.substationNames || [],
+                    regionSubstationCount:
+                        data.data?.substationNames?.length || 0,
+                    substationFeederCounts:
+                        data.data?.substationFeederCounts || {},
+                }));
+            } catch (error) {
+                console.error('Error fetching substation data:', error);
+            }
+        };
+
+        substationNames();
+    }, [region]);
 
     const mockFeeders = [
         {

@@ -424,7 +424,12 @@ const EDCs = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/edcs`
+                                            : `${currentBaseRoute}/edcs`
+                                    }>
                                     EDCs
                                 </Link>
                             </p>
@@ -443,7 +448,12 @@ const EDCs = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/substations`
+                                            : `${currentBaseRoute}/substations`
+                                    }>
                                     Substations
                                 </Link>
                             </p>
@@ -462,7 +472,12 @@ const EDCs = () => {
                         />
                         <div className={styles.total_meters}>
                             <div className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/feeders`
+                                            : `${currentBaseRoute}/feeders`
+                                    }>
                                     Feeders
                                 </Link>
                             </div>
@@ -492,7 +507,13 @@ const EDCs = () => {
                                             styles.communication_positive_arrow
                                         }
                                     />
-                                    87%
+                                    {(
+                                        (widgetsData.commMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(2)}
+                                    %
                                 </div>
                             </div>
                             <div
@@ -513,7 +534,13 @@ const EDCs = () => {
                                             styles.communication_negative_arrow
                                         }
                                     />
-                                    13%
+                                    {(
+                                        (widgetsData.nonCommMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(2)}
+                                    %
                                 </div>
                             </div>
                         </div>
