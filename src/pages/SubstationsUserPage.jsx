@@ -156,7 +156,7 @@ const SubstationsUserPage = () => {
                     </div>
                 </div>
             </div>
-            <Breadcrumb items={getBreadcrumbItems()} />
+            <Breadcrumb />
             <div className={styles.summary_section}>
                 <div className={styles.total_edcs_container}>
                     <div className={styles.total_main_info}>
@@ -197,7 +197,7 @@ const SubstationsUserPage = () => {
                     </div>
                 </div>
                 <div className={styles.total_feeder_container}>
-                <div className={styles.total_meters_main_info}>
+                    <div className={styles.total_meters_main_info}>
                         <img
                             src="icons/electric-meter.svg"
                             alt="Total Meters"
@@ -216,7 +216,7 @@ const SubstationsUserPage = () => {
                     </div>
                 </div>
                 <div className={styles.total_meters_container}>
-                  
+
                     <div className={styles.metrics_communication_info}>
                         <div className="titles">Communication Status</div>
                         <div className={styles.overall_communication_status}>
