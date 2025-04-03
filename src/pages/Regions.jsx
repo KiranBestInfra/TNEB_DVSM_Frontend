@@ -239,9 +239,9 @@ const Regions = () => {
                                         EDCs{' '}
                                         {isRegionUser && (
                                             <span
-                                                style={{ fontSize: '0.8rem' }}>
-                                                
-                                            </span>
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
                                         )}
                                     </span>
                                 ) : (
@@ -377,7 +377,7 @@ const Regions = () => {
 
             <div className={styles.region_stats_container}>
                 {widgetsData.regionNames &&
-                    widgetsData.regionNames.length > 0 ? (
+                widgetsData.regionNames.length > 0 ? (
                     widgetsData.regionNames.map((region, index) => (
                         <div
                             key={index}
@@ -390,29 +390,28 @@ const Regions = () => {
                                 }
                                 substationCount={
                                     widgetsData.substationCount?.[
-                                    region.trim()
+                                        region.trim()
                                     ] ?? 0
                                 }
                                 feederCount={
                                     widgetsData.feederCount?.[region.trim()] ??
                                     0
                                 }
-                                currentValue={
-                                    widgetsData.regionStats?.[region.trim()]
-                                        ?.currentValue || 0
-                                }
-                                previousValue={
-                                    widgetsData.regionStats?.[region.trim()]
-                                        ?.previousValue || 0
-                                }
                                 graphData={
                                     widgetsData.regionDemandData?.[
-                                    region.trim()
-                                    ] ?? {
-                                        xAxis: [],
-                                        series: [],
-                                    }
+                                        region.trim()
+                                    ] ?? { xAxis: [], series: [] }
                                 }
+                                currentValue={parseFloat(
+                                    widgetsData.regionDemandData?.[
+                                        region.trim()
+                                    ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                ).toFixed(1)}
+                                previousValue={parseFloat(
+                                    widgetsData.regionDemandData?.[
+                                        region.trim()
+                                    ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                ).toFixed(1)}
                             />
                         </div>
                     ))

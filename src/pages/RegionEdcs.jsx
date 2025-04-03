@@ -120,8 +120,8 @@ const RegionEdcs = () => {
                         (sum, count) => sum + (count || 0),
                         0
                     ),
-                    commMeters: 0,
-                    nonCommMeters: 0,
+                    commMeters: data.commMeters || 0,
+                    nonCommMeters: data.nonCommMeters || 0,
                     edcNames: data.edcNames || [],
                     substationCount:
                         data.substationCounts?.reduce((acc, item) => {
@@ -244,7 +244,13 @@ const RegionEdcs = () => {
                                             styles.communication_positive_arrow
                                         }
                                     />
-                                    87%
+                                    {(
+                                        (widgetsData.commMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                             <div
@@ -265,7 +271,13 @@ const RegionEdcs = () => {
                                             styles.communication_negative_arrow
                                         }
                                     />
-                                    13%
+                                    {(
+                                        (widgetsData.nonCommMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
                                 </div>
                             </div>
                         </div>
@@ -299,14 +311,22 @@ const RegionEdcs = () => {
                                 }
                                 feederCount={widgetsData.feederCount[edc] || 0}
                                 edcCount={widgetsData.totalEdcs}
-                                currentValue={0}
-                                previousValue={0}
                                 graphData={
-                                    widgetsData.edcDemandData[edc] || {
+                                    widgetsData.edcDemandData?.[edc.trim()] ?? {
                                         xAxis: [],
                                         series: [],
                                     }
                                 }
+                                currentValue={parseFloat(
+                                    widgetsData.edcDemandData?.[
+                                        edc.trim()
+                                    ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                ).toFixed(1)}
+                                previousValue={parseFloat(
+                                    widgetsData.edcDemandData?.[
+                                        edc.trim()
+                                    ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                ).toFixed(1)}
                                 pageType="edcs"
                             />
                         </div>

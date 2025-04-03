@@ -13,7 +13,8 @@ const Header = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
-    const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] = useState(false);
+    const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
+        useState(false);
     const { isAdmin } = useAuth();
     const basePath = isAdmin() ? '/admin' : '/user';
 
@@ -28,7 +29,7 @@ const Header = () => {
         firstName: user?.id || 'User',
         lastName: user?.lastName || '',
     };
-    
+
     const handleSearchChange = (e) => {
         const query = e.target.value;
         if (query.length === 0) {
@@ -112,7 +113,6 @@ const Header = () => {
             const search = async () => {
                 setIsSearching(true);
                 try {
-
                     const response = await apiClient.get(
                         `/regions/search?term=${debouncedSearchTerm}`
                     );
@@ -172,6 +172,7 @@ const Header = () => {
                         <div className={styles.spinner}></div>
                     ) : (
                         <img src="icons/search-icon.svg" alt="Search" />
+                        <img src="icons/search-icon.svg" alt="Search" />
                     )}
                 </span>
                 {searchResults.length > 0 && (
@@ -181,7 +182,6 @@ const Header = () => {
                                 key={result.id}
                                 className={styles.search_result_item}
                                 onClick={() => handleResultClick(result.id)}>
-                               
                                 <span className={styles.result_name}>
                                     {result.hierarchy_name}
                                 </span>

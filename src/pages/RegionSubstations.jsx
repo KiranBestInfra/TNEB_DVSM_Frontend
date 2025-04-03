@@ -280,7 +280,6 @@ const RegionSubstations = () => {
                                         }
                                     />
                                 </div>
-                                
                             </div>
                         </div>
                     </div>
@@ -478,18 +477,31 @@ const RegionSubstations = () => {
                                                       substation
                                                   ] || 0
                                               }
-                                              currentValue={0}
-                                              previousValue={0}
-                                              pageType="substations"
                                               graphData={
                                                   widgetsData
                                                       .substationDemandData?.[
-                                                      substation
-                                                  ] || {
+                                                      substation.trim()
+                                                  ] ?? {
                                                       xAxis: [],
                                                       series: [],
                                                   }
                                               }
+                                              currentValue={parseFloat(
+                                                  widgetsData.substationDemandData?.[
+                                                      substation.trim()
+                                                  ]?.series?.[0]?.data?.slice(
+                                                      -1
+                                                  )[0] || 0
+                                              ).toFixed(1)}
+                                              previousValue={parseFloat(
+                                                  widgetsData.substationDemandData?.[
+                                                      substation.trim()
+                                                  ]?.series?.[0]?.data?.slice(
+                                                      -2,
+                                                      -1
+                                                  )[0] || 0
+                                              ).toFixed(1)}
+                                              pageType="substations"
                                           />
                                       </div>
                                   )
