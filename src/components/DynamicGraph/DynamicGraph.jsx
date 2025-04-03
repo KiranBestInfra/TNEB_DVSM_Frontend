@@ -3,7 +3,7 @@ import * as echarts from 'echarts';
 import styles from './DynamicGraph.module.css';
 
 const DynamicGraph = ({
-    title = 'Dynamic Data & Time Axis',
+    title = 'Demand Graph',
     height = '100%',
     data,
     className,

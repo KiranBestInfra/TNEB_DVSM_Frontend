@@ -56,10 +56,10 @@ const UnitDetailPage = () => {
         const isSelected = selectedUnit && selectedUnit.id === unit.id;
         const totalCount = unit.communicated + unit.nonCommunication;
         const communicatingPercentage = Math.round((unit.communicated / totalCount) * 100);
-        
+
         return (
-            <div 
-                className={`${styles.total_units_container} ${isSelected ? styles.selected_unit : ''}`} 
+            <div
+                className={`${styles.total_units_container} ${isSelected ? styles.selected_unit : ''}`}
                 key={unit.id}
                 onClick={() => handleUnitClick(unit)}
                 style={{ cursor: 'pointer' }}
@@ -104,7 +104,7 @@ const UnitDetailPage = () => {
                         </div>
                     </div>
                 </div>
-                
+
                 <div className={styles.active_units_container}>
                     <div className="sub_title">
                         <span>EDC: <strong>{unit.edc}</strong></span>
@@ -117,17 +117,17 @@ const UnitDetailPage = () => {
     return (
         <div className={styles.region_detail_container}>
             {/* Accessibility announcement */}
-            <div 
-                id="unit-selection-announcement" 
-                className="sr-only" 
-                aria-live="polite" 
+            <div
+                id="unit-selection-announcement"
+                className="sr-only"
+                aria-live="polite"
                 style={{ position: 'absolute', height: '1px', width: '1px', overflow: 'hidden' }}
             ></div>
-            
+
             {/* Header with back button */}
             <div className={styles.detail_header}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <button 
+                    <button
                         onClick={() => navigate('/admin/dashboard')}
                         className={styles.back_button}
                         aria-label="Back to Dashboard"
@@ -185,19 +185,19 @@ const UnitDetailPage = () => {
                                             {Math.round((selectedUnit.communicated / (selectedUnit.communicated + selectedUnit.nonCommunication)) * 100)}%
                                         </div>
                                     </div>
-                                    <div className={styles.progress_bar} role="progressbar" 
+                                    <div className={styles.progress_bar} role="progressbar"
                                         aria-valuenow={Math.round((selectedUnit.communicated / (selectedUnit.communicated + selectedUnit.nonCommunication)) * 100)}
-                                        aria-valuemin="0" 
+                                        aria-valuemin="0"
                                         aria-valuemax="100">
-                                        <div 
-                                            className={`${styles.progress_fill} ${styles.progress_fill_positive}`} 
+                                        <div
+                                            className={`${styles.progress_fill} ${styles.progress_fill_positive}`}
                                             style={{ width: `${Math.round((selectedUnit.communicated / (selectedUnit.communicated + selectedUnit.nonCommunication)) * 100)}%` }}
                                         ></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className={styles.meter_communication}>
                             <div className={styles.summary_item}>
                                 <div className='title'>Non-Communicating Meters</div>
@@ -208,12 +208,12 @@ const UnitDetailPage = () => {
                                             {Math.round((selectedUnit.nonCommunication / (selectedUnit.communicated + selectedUnit.nonCommunication)) * 100)}%
                                         </div>
                                     </div>
-                                    <div className={styles.progress_bar} role="progressbar" 
+                                    <div className={styles.progress_bar} role="progressbar"
                                         aria-valuenow={Math.round((selectedUnit.nonCommunication / (selectedUnit.communicated + selectedUnit.nonCommunication)) * 100)}
-                                        aria-valuemin="0" 
+                                        aria-valuemin="0"
                                         aria-valuemax="100">
-                                        <div 
-                                            className={`${styles.progress_fill} ${styles.progress_fill_negative}`} 
+                                        <div
+                                            className={`${styles.progress_fill} ${styles.progress_fill_negative}`}
                                             style={{ width: `${Math.round((selectedUnit.nonCommunication / (selectedUnit.communicated + selectedUnit.nonCommunication)) * 100)}%` }}
                                         ></div>
                                     </div>

@@ -3,6 +3,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
+import SummarySection from '../components/SummarySection';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { Link } from 'react-router-dom';
 
@@ -165,140 +166,29 @@ const SubstationFeeders = () => {
                                 }
                             />
                         </div>
-                      
+
                     </div>
                 </div>
             </div>
             <Breadcrumb />
-            <div className={styles.summary_section}>
-                <div className={styles.total_regions_container}>
-                    <div className={styles.total_main_info}>
-                        <img
-                            src="icons/office.svg"
-                            alt="Total Regions"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_title_value}>
-                            <p className="title">
-                                <Link to="/user/regions">Regions</Link>
-                            </p>
-                            <div className={styles.summary_value}>
-                                {totalRegions}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.total_edcs_container}>
-                    <div className={styles.total_main_info}>
-                        <img
-                            src="icons/electric-edc.svg"
-                            alt="Total Region"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_title_value}>
-                            <p className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `/user/${region}/edcs`
-                                            : `/user/edcs`
-                                    }>
-                                    EDCs
-                                </Link>
-                            </p>
-                            <div className={styles.summary_value}>
-                                {totalEDCs}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.total_substations_container}>
-                    <div className={styles.total_main_info}>
-                        <img
-                            src="icons/electric-factory.svg"
-                            alt="Total Substations"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_title_value}>
-                            <p className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `/user/${region}/substations`
-                                            : `/user/substations`
-                                    }>
-                                    Substations
-                                </Link>
-                            </p>
-                            <div className={styles.summary_value}>
-                                {totalSubstations}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_meters_main_info}>
-                        <img
-                            src="icons/electric-meter.svg"
-                            alt="Total Meters"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_meters}>
-                            <div className="title">Feeders</div>
-                            <div className={styles.summary_value}>
-                                {totalMeters}
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.metrics_communication_info}>
-                        <div className="titles">Communication Status</div>
-                        <div className={styles.overall_communication_status}>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    942
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_positive_percentage
-                                    }>
-                                    <img
-                                        src="icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_positive_arrow
-                                        }
-                                    />
-                                    75.5%
-                                </div>
-                            </div>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    301
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_negative_percentage
-                                    }>
-                                    <img
-                                        src="icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_negative_arrow
-                                        }
-                                    />
-                                    24.5%
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
+            <SummarySection
+                widgetsData={{
+                    totalRegions: totalRegions,
+                    totalEdcs: totalEDCs,
+                    totalSubstations: totalSubstations,
+                    totalFeeders: totalMeters,
+                    commMeters: 942,
+                    nonCommMeters: 301,
+                    totalDistricts: 0
+                }}
+                isUserRoute={isUserRoute}
+                isBiUserRoute={location.includes('/bi/user/')}
+                showRegions={false}
+                showEdcs={false}
+                showSubstations={false}
+                showDistricts={false}
+            />
 
             <div className={styles.section_header}>
                 <h2 className="title">
