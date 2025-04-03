@@ -495,7 +495,7 @@ const Substations = () => {
                                                     (widgetsData.commMeters +
                                                         widgetsData.nonCommMeters)) *
                                                 100
-                                            ).toFixed(2)}
+                                            ).toFixed(1)}
                                             %
                                         </div>
                                     </div>
@@ -525,7 +525,7 @@ const Substations = () => {
                                                     (widgetsData.commMeters +
                                                         widgetsData.nonCommMeters)) *
                                                 100
-                                            ).toFixed(2)}
+                                            ).toFixed(1)}
                                             %
                                         </div>
                                     </div>

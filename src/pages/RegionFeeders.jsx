@@ -36,31 +36,27 @@ const RegionFeeders = () => {
             fetchFeeders();
         }
     }, [region]);
-    useEffect(() => {
-        if (!region) return;
+    // useEffect(() => {
+    //     if (!region) return;
 
-        const feederNames = async () => {
-            try {
-                const response = await apiClient.get(
-                    `/regions/${region}/feeders`
-                );
-                const data = response;
+    //     const feederNames = async () => {
+    //         try {
+    //             const response = await apiClient.get(
+    //                 `/regions/${region}/feeders`
+    //             );
+    //             const data = response;
 
-                setWidgetsData((prev) => ({
-                    ...prev,
-                    substationNames: data.data?.substationNames || [],
-                    regionSubstationCount:
-                        data.data?.substationNames?.length || 0,
-                    substationFeederCounts:
-                        data.data?.substationFeederCounts || {},
-                }));
-            } catch (error) {
-                console.error('Error fetching substation data:', error);
-            }
-        };
+    //             setWidgetsData((prev) => ({
+    //                 ...prev,
+    //                 feederNames: data.data?.feederNames || [],
+    //             }));
+    //         } catch (error) {
+    //             console.error('Error fetching substation data:', error);
+    //         }
+    //     };
 
-        substationNames();
-    }, [region]);
+    //     substationNames();
+    // }, [region]);
 
     const mockFeeders = [
         {

@@ -238,7 +238,7 @@ const Dashboard = () => {
                                             (widgetsData.commMeters +
                                                 widgetsData.nonCommMeters)) *
                                         100
-                                    ).toFixed(2)}
+                                    ).toFixed(1)}
                                     %
                                 </div>
                             </div>
@@ -265,7 +265,7 @@ const Dashboard = () => {
                                             (widgetsData.commMeters +
                                                 widgetsData.nonCommMeters)) *
                                         100
-                                    ).toFixed(2)}
+                                    ).toFixed(1)}
                                     %
                                 </div>
                             </div>

@@ -417,7 +417,7 @@ const RegionSubstations = () => {
                                                     (widgetsData.commMeters +
                                                         widgetsData.nonCommMeters)) *
                                                 100
-                                            ).toFixed(2)}
+                                            ).toFixed(1)}
                                             %
                                         </div>
                                     </div>
@@ -443,11 +443,11 @@ const RegionSubstations = () => {
                                                 }
                                             />
                                             {(
-                                                (widgetsData.commMeters /
+                                                (widgetsData.nonCommMeters /
                                                     (widgetsData.commMeters +
                                                         widgetsData.nonCommMeters)) *
                                                 100
-                                            ).toFixed(2)}
+                                            ).toFixed(1)}
                                             %
                                         </div>
                                     </div>
@@ -485,12 +485,13 @@ const RegionSubstations = () => {
                                               currentValue={0}
                                               previousValue={0}
                                               pageType="substations"
-                                              graphData={   
-                                                  widgetsData.substationDemandData?.[
+                                              graphData={
+                                                  widgetsData
+                                                      .substationDemandData?.[
                                                       substation
                                                   ] || {
-                                                        xAxis: [],
-                                                        series: [],
+                                                      xAxis: [],
+                                                      series: [],
                                                   }
                                               }
                                           />
