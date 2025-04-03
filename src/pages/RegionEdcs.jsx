@@ -182,7 +182,7 @@ const RegionEdcs = () => {
                 <div className={styles.total_edcs_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/electric-edc.svg"
+                            src="/icons/electric-edc.svg"
                             alt="Total EDCs"
                             className={styles.TNEB_icons}
                         />
@@ -197,7 +197,7 @@ const RegionEdcs = () => {
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/electric-factory.svg"
+                            src="/icons/electric-factory.svg"
                             alt="Total Substations"
                             className={styles.TNEB_icons}
                         />
@@ -212,7 +212,7 @@ const RegionEdcs = () => {
                 <div className={styles.total_meters_container}>
                     <div className={styles.total_meters_main_info}>
                         <img
-                            src="icons/electric-meter.svg"
+                            src="/icons/electric-meter.svg"
                             alt="Total Feeders"
                             className={styles.TNEB_icons}
                         />
@@ -238,7 +238,7 @@ const RegionEdcs = () => {
                                         styles.communication_positive_percentage
                                     }>
                                     <img
-                                        src="icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_positive_arrow
@@ -259,7 +259,7 @@ const RegionEdcs = () => {
                                         styles.communication_negative_percentage
                                     }>
                                     <img
-                                        src="icons/up-right-arrow.svg"
+                                        src="/icons/up-right-arrow.svg"
                                         alt="Positive"
                                         className={
                                             styles.communication_negative_arrow
@@ -275,9 +275,9 @@ const RegionEdcs = () => {
 
             <div className={styles.section_header}>
                 <h2 className="title">
-                    EDCs{' '}
+                    EDCs:{' '}
                     <span className={styles.region_count}>
-                        {widgetsData.totalEdcs}
+                        [ {widgetsData.totalEdcs} ]
                     </span>
                 </h2>
             </div>
