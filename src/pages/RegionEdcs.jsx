@@ -156,31 +156,12 @@ const RegionEdcs = () => {
             .join(' ')
         : 'Unknown';
 
-    const getBreadcrumbItems = () => {
-        const items = [{ label: 'Dashboard', path: '/admin/dashboard' }];
-
-        if (region) {
-            items.push({ label: 'Regions', path: '/admin/regions' });
-            items.push({
-                label: regionName,
-                path: `/admin/${region}`,
-            });
-        }
-
-        items.push({
-            label: 'EDCs',
-            path: region ? `/admin/${region}/edcs` : '/admin/edcs',
-        });
-
-        return items;
-    };
-
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
                 <h2 className="title">{regionName} Region EDCs</h2>
             </div>
-            <Breadcrumb items={getBreadcrumbItems()} />
+            <Breadcrumb />
 
             <SummarySection
                 widgetsData={{

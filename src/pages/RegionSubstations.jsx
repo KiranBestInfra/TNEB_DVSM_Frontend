@@ -211,46 +211,6 @@ const RegionSubstations = () => {
         setTimeframe(e.target.value);
     };
 
-    const getBreadcrumbItems = () => {
-        if (isRegionUser && region) {
-            const formattedRegionName =
-                region.charAt(0).toUpperCase() + region.slice(1);
-
-            return [
-                { label: 'Dashboard', path: `/user/dashboard` },
-                {
-                    label: `Region : ${formattedRegionName}`,
-                    path: `/user/${region}/dashboard`,
-                },
-                {
-                    label: 'Substations',
-                    path: `/user/${region}/substations`,
-                },
-            ];
-        } else {
-            const items = [{ label: 'Dashboard', path: `/user/dashboard` }];
-
-            if (region) {
-                items.push({
-                    label: 'Regions',
-                    path: `/user/regions`,
-                });
-                items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `/user/${region}`,
-                });
-            }
-
-            items.push({
-                label: 'Substations',
-                path: region
-                    ? `/user/${region}/substations`
-                    : `/user/substations`,
-            });
-            return items;
-        }
-    };
-
     try {
         return (
             <ErrorBoundary>
@@ -276,7 +236,6 @@ const RegionSubstations = () => {
                                     </select>
                                     <img
                                         src="icons/arrow-down.svg"
-                                        src="icons/arrow-down.svg"
                                         alt="Select Time"
                                         className={
                                             styles.time_range_select_dropdown_icon
@@ -287,7 +246,7 @@ const RegionSubstations = () => {
                             </div>
                         </div>
                     </div>
-                    <Breadcrumb items={getBreadcrumbItems()} />
+                    <Breadcrumb />
 
                     <SummarySection
                         widgetsData={{

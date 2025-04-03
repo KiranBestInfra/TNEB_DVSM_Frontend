@@ -121,108 +121,14 @@ const EdcSubstations = () => {
         setTimeframe(e.target.value);
     };
 
-    const getBreadcrumbItems = () => {
-        if (isRegionUser) {
-            // For region user
-            const formattedRegionName = region
-                ? region
-                    .split('-')
-                    .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                    )
-                    .join(' ')
-                : 'Unknown';
-
-            return [
-                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
-                {
-                    label: `Region : ${formattedRegionName}`,
-                    path: `${routePrefix}/${region}/dashboard`,
-                },
-                {
-                    label: edcs,
-                    path: `${routePrefix}/${region}/${edcs}`,
-                },
-                {
-                    label: 'Substations',
-                    path: `${routePrefix}/${region}/${edcs}/substations`,
-                },
-            ];
-        } else {
-            const items = [
-                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
-            ];
-
-            if (region) {
-                items.push({
-                    label: 'Regions',
-                    path: `${routePrefix}/regions`,
-                });
-                items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${routePrefix}/${region}`,
-                });
-            }
-
-            if (edcs) {
-                items.push({
-                    label: edcs.charAt(0).toUpperCase() + edcs.slice(1),
-                    path: `${routePrefix}/${region}/${edcs}`,
-                });
-            }
-
-            items.push({
-                label: 'Substations',
-                path: region
-                    ? `${routePrefix}/${region}/${edcs}/substations`
-                    : `${routePrefix}/substations`,
-            });
-            return items;
-        }
-    };
-
     try {
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
                     <div className={styles.section_header}>
                         <h2 className="title">Substations</h2>
-                        {/* <div className={styles.action_container}>
-                            <div className={styles.action_cont}>
-                                <div
-                                    className={
-                                        styles.time_range_select_dropdown
-                                    }>
-                                    <select
-                                        value={timeframe}
-                                        onChange={handleTimeframeChange}
-                                        className={styles.time_range_select}>
-                                        <option value="Daily">Daily</option>
-                                        <option value="Monthly">Monthly</option>
-                                        <option value="PreviousMonth">
-                                            Previous Month
-                                        </option>
-                                        <option value="Year">Year</option>
-                                    </select>
-                                    <img
-                                        src="icons/arrow-down.svg"
-                                        alt="Select Time"
-                                        className={
-                                            styles.time_range_select_dropdown_icon
-                                        }
-                                    />
-                                </div>
-                                <Buttons
-                                    label="Get Reports"
-                                    variant="primary"
-                                    alt="GetReports"
-                                    icon="icons/reports.svg"
-                                    iconPosition="left"
-                                />
-                            </div>
-                        </div> */}
                     </div>
-                    <Breadcrumb items={getBreadcrumbItems()} />
+                    <Breadcrumb />
 
                     <SummarySection
                         widgetsData={{
