@@ -23,30 +23,55 @@ const LineChartTNEB = ({
     const option = {
         tooltip: {
             trigger: 'axis',
+            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+            borderColor: '#ddd',
+            borderWidth: 1,
+            textStyle: {
+                color: '#333',
+                fontFamily: 'Roboto',
+                fontSize: 12,
+            },
+            padding: [8, 12],
+            formatter: function (params) {
+                const timeLabel = params[0].axisValue;
+                let tooltipText = `<div style="font-weight: bold; margin-bottom: 8px;">${timeLabel}</div>`;
+
+                params.forEach((param) => {
+                    tooltipText += `<div style="display: flex; align-items: center; margin: 3px 0;">
+                        <span style="display: inline-block; width: 10px; height: 10px; background-color: ${param.color}; margin-right: 5px; border-radius: 50%;"></span>
+                        <span style="margin-right: 5px;">${param.seriesName}:</span>
+                        <span style="font-weight: bold;">${param.value} ${yAxisLabel}</span>
+                    </div>`;
+                });
+
+                if (params.length === 2) {
+                    const currentValue = params[0].value;
+                    const previousValue = params[1].value;
+                    const percentChange = ((currentValue - previousValue) / previousValue) * 100;
+                    const sign = percentChange >= 0 ? '+' : '';
+                    const changeText = `${sign}${percentChange.toFixed(2)}%`;
+                    const changeColor = percentChange >= 0 ? '#4CAF50' : '#F44336';
+
+                    tooltipText += `<div style="display: flex; align-items: center; margin-top: 8px; padding-top: 5px; border-top: 1px dashed #ddd;">
+                        <span style="margin-right: 5px;">Comparison:</span>
+                        <span style="font-weight: bold; color: ${changeColor};">${changeText}</span>
+                    </div>`;
+                }
+
+                return tooltipText;
+            },
             axisPointer: {
                 type: 'cross',
-                label: {
-                    backgroundColor: seriesColors[0],
-                    fontFamily: 'Roboto',
-                    fontSize: '0.7rem',
-                    lineHeight: 1.6,
-                    borderRadius: '10',
-                    padding: [0, 0, 0, 0],
-                    width: '100%',
+                lineStyle: {
+                    color: '#aaa',
+                    width: 1,
+                    type: 'dashed',
                 },
+                crossStyle: {
+                    color: '#aaa',
+                },
+                animation: false,
             },
-            formatter: (params) => {
-                let result = ``;
-                params.forEach((param) => {
-                    result += `${param.seriesName}<br/>${param.value} ${yAxisLabel}<br/>`;
-                });
-                return result;
-            },
-            textStyle: {
-                fontFamily: 'Roboto',
-            },
-            borderRadius: '10',
-            padding: [5, 0, 5, 5],
         },
         legend: {
             show: false,
