@@ -172,7 +172,6 @@ const Header = () => {
                         <div className={styles.spinner}></div>
                     ) : (
                         <img src="icons/search-icon.svg" alt="Search" />
-                        <img src="icons/search-icon.svg" alt="Search" />
                     )}
                 </span>
                 {searchResults.length > 0 && (
@@ -216,7 +215,7 @@ const Header = () => {
                         label="Logout"
                         onClick={handleLogout}
                         variant="secondary"
-                        icon="images/icons/logout-icon.svg"
+                        icon="icons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
                     />
