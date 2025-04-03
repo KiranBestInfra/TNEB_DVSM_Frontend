@@ -17,8 +17,6 @@ const FeederDetails = () => {
 
     const entityId = feederId;
 
-    const baseRoute = location.pathname.includes('/user/') ? '/user' : '/admin';
-
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
@@ -118,7 +116,7 @@ const FeederDetails = () => {
                         <div className={styles.total_title_value}>
                             <span className="title">Region</span>
                             <span className={styles.summary_value}>
-                                <Link to={`${baseRoute}/${region}/dashboard`}>
+                                <Link to={`/admin/${region}/dashboard`}>
                                     {region
                                         ? region.charAt(0).toUpperCase() +
                                           region.slice(1)

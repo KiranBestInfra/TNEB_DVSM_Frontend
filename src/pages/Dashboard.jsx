@@ -12,15 +12,9 @@ const Dashboard = () => {
     const { region } = useParams();
     console.log('Dashboard - Region from params:', region);
 
-    // Determine base route from URL path (admin or user)
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
     const isBiUserRoute = location.includes('/bi/user/');
-    const baseRoute = isBiUserRoute
-        ? '/bi/user'
-        : isUserRoute
-        ? '/user'
-        : '/admin';
 
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
@@ -117,8 +111,16 @@ const Dashboard = () => {
                         label: 'Dashboard',
                         path:
                             region && region !== 'undefined'
-                                ? `${baseRoute}/${region}/dashboard`
-                                : `${baseRoute}/dashboard`,
+                                ? isBiUserRoute
+                                    ? `/bi/user/${region}/dashboard`
+                                    : isUserRoute
+                                    ? `/user/${region}/dashboard`
+                                    : `/admin/${region}/dashboard`
+                                : isBiUserRoute
+                                ? `/bi/user/dashboard`
+                                : isUserRoute
+                                ? `/user/dashboard`
+                                : `/admin/dashboard`,
                     },
                 ]}
             />
@@ -133,7 +135,16 @@ const Dashboard = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={`${baseRoute}/regions`}>Regions</Link>
+                                <Link
+                                    to={
+                                        isBiUserRoute
+                                            ? `/bi/user/regions`
+                                            : isUserRoute
+                                            ? `/user/regions`
+                                            : `/admin/regions`
+                                    }>
+                                    Regions
+                                </Link>
                             </p>
                             <div className={styles.summary_value}>
                                 {widgetsData.totalRegions}
@@ -153,8 +164,16 @@ const Dashboard = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${baseRoute}/${region}/edcs`
-                                            : `${baseRoute}/edcs`
+                                            ? isBiUserRoute
+                                                ? `/bi/user/${region}/edcs`
+                                                : isUserRoute
+                                                ? `/user/${region}/edcs`
+                                                : `/admin/${region}/edcs`
+                                            : isBiUserRoute
+                                            ? `/bi/user/edcs`
+                                            : isUserRoute
+                                            ? `/user/edcs`
+                                            : `/admin/edcs`
                                     }>
                                     EDCs
                                 </Link>
@@ -177,8 +196,16 @@ const Dashboard = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${baseRoute}/${region}/substations`
-                                            : `${baseRoute}/substations`
+                                            ? isBiUserRoute
+                                                ? `/bi/user/${region}/substations`
+                                                : isUserRoute
+                                                ? `/user/${region}/substations`
+                                                : `/admin/${region}/substations`
+                                            : isBiUserRoute
+                                            ? `/bi/user/substations`
+                                            : isUserRoute
+                                            ? `/user/substations`
+                                            : `/admin/substations`
                                     }>
                                     Substations
                                 </Link>
@@ -201,8 +228,16 @@ const Dashboard = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${baseRoute}/${region}/feeders`
-                                            : `${baseRoute}/feeders`
+                                            ? isBiUserRoute
+                                                ? `/bi/user/${region}/feeders`
+                                                : isUserRoute
+                                                ? `/user/${region}/feeders`
+                                                : `/admin/${region}/feeders`
+                                            : isBiUserRoute
+                                            ? `/bi/user/feeders`
+                                            : isUserRoute
+                                            ? `/user/feeders`
+                                            : `/admin/feeders`
                                     }>
                                     Feeders
                                 </Link>

@@ -64,6 +64,7 @@ const Regions = () => {
         });
 
         newSocket.on('regionUpdate', (data) => {
+            console.log('regionUpdate', data);
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -149,21 +150,16 @@ const Regions = () => {
     const currentRegionName = isRegionUser
         ? location.pathname.split('/').filter((x) => x)[1] || ''
         : '';
-    const baseRoute = location.pathname.includes('/user/')
-        ? '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
 
     const handleEdcClick = () => {
         if (isRegionUser && currentRegionName) {
-            navigate(`${baseRoute}/${currentRegionName}/edcs`);
+            navigate(`/user/${currentRegionName}/edcs`);
         }
     };
 
     const handleSubstationClick = () => {
         if (isRegionUser && currentRegionName) {
-            navigate(`${baseRoute}/${currentRegionName}/substations`);
+            navigate(`/user/${currentRegionName}/substations`);
         }
     };
 
@@ -177,8 +173,8 @@ const Regions = () => {
         } else {
             // Standard admin or user breadcrumb
             return [
-                { label: 'Dashboard', path: `${baseRoute}/dashboard` },
-                { label: 'Regions', path: `${baseRoute}/regions` },
+                { label: 'Dashboard', path: '/admin/dashboard' },
+                { label: 'Regions', path: '/admin/regions' },
             ];
         }
     };

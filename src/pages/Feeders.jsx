@@ -19,7 +19,6 @@ const Feeders = () => {
 
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
-    const baseRoute = isUserRoute ? '/user' : '/admin';
 
     const feederNames = [
         'Adyar Feeder 1',
@@ -226,7 +225,7 @@ const Feeders = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={`${baseRoute}/regions`}>Regions</Link>
+                                <Link to="/user/regions">Regions</Link>
                             </p>
                             <div className={styles.summary_value}>
                                 {totalRegions}
@@ -246,8 +245,8 @@ const Feeders = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${baseRoute}/${region}/edcs`
-                                            : `${baseRoute}/edcs`
+                                            ? `/user/${region}/edcs`
+                                            : `/user/edcs`
                                     }>
                                     EDCs
                                 </Link>
@@ -270,8 +269,8 @@ const Feeders = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `${baseRoute}/${region}/substations`
-                                            : `${baseRoute}/substations`
+                                            ? `/user/${region}/substations`
+                                            : `/user/substations`
                                     }>
                                     Substations
                                 </Link>

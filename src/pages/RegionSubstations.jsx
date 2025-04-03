@@ -52,17 +52,12 @@ const RegionSubstations = () => {
         location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser
-        ? location.pathname.includes('/user/')
-            ? '/user'
-            : '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('substationDemandData');
-        const savedTimestamp = localStorage.getItem('substationDemandTimestamp');
+        const savedTimestamp = localStorage.getItem(
+            'substationDemandTimestamp'
+        );
 
         if (savedDemandData && savedTimestamp) {
             const timestamp = parseInt(savedTimestamp);
@@ -117,8 +112,14 @@ const RegionSubstations = () => {
                         [data.substation]: data.graphData,
                     },
                 };
-                localStorage.setItem('substationDemandData', JSON.stringify(newData.substationDemandData));
-                localStorage.setItem('substationDemandTimestamp', Date.now().toString());
+                localStorage.setItem(
+                    'substationDemandData',
+                    JSON.stringify(newData.substationDemandData)
+                );
+                localStorage.setItem(
+                    'substationDemandTimestamp',
+                    Date.now().toString()
+                );
                 return newData;
             });
 
@@ -142,7 +143,6 @@ const RegionSubstations = () => {
     console.log('widgetsData', widgetsData);
 
     useEffect(() => {
-        
         if (socket && widgetsData.substationNames.length > 0) {
             socket.emit('subscribeSubstation', {
                 substations: widgetsData.substationNames,
@@ -213,37 +213,35 @@ const RegionSubstations = () => {
                 region.charAt(0).toUpperCase() + region.slice(1);
 
             return [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `/user/dashboard` },
                 {
                     label: `Region : ${formattedRegionName}`,
-                    path: `${currentBaseRoute}/${region}/dashboard`,
+                    path: `/user/${region}/dashboard`,
                 },
                 {
                     label: 'Substations',
-                    path: `${currentBaseRoute}/${region}/substations`,
+                    path: `/user/${region}/substations`,
                 },
             ];
         } else {
-            const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
-            ];
+            const items = [{ label: 'Dashboard', path: `/user/dashboard` }];
 
             if (region) {
                 items.push({
                     label: 'Regions',
-                    path: `${currentBaseRoute}/regions`,
+                    path: `/user/regions`,
                 });
                 items.push({
                     label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`,
+                    path: `/user/${region}`,
                 });
             }
 
             items.push({
                 label: 'Substations',
                 path: region
-                    ? `${currentBaseRoute}/${region}/substations`
-                    : `${currentBaseRoute}/substations`,
+                    ? `/user/${region}/substations`
+                    : `/user/substations`,
             });
             return items;
         }
@@ -301,8 +299,7 @@ const RegionSubstations = () => {
                                 />
                                 <div className={styles.total_title_value}>
                                     <p className="title">
-                                        <Link
-                                            to={`${currentBaseRoute}/regions`}>
+                                        <Link to={`/user/regions`}>
                                             Regions
                                         </Link>
                                     </p>
@@ -324,8 +321,8 @@ const RegionSubstations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/edcs`
-                                                    : `${currentBaseRoute}/edcs`
+                                                    ? `/user/${region}/edcs`
+                                                    : `/user/edcs`
                                             }>
                                             EDCs
                                         </Link>
@@ -348,8 +345,8 @@ const RegionSubstations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/substations`
-                                                    : `${currentBaseRoute}/substations`
+                                                    ? `/user/${region}/substations`
+                                                    : `/user/substations`
                                             }>
                                             Substations
                                         </Link>
@@ -372,8 +369,8 @@ const RegionSubstations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/feeders`
-                                                    : `${currentBaseRoute}/feeders`
+                                                    ? `/user/${region}/feeders`
+                                                    : `/user/feeders`
                                             }>
                                             Feeders
                                         </Link>
@@ -473,12 +470,13 @@ const RegionSubstations = () => {
                                               currentValue={0}
                                               previousValue={0}
                                               pageType="substations"
-                                              graphData={   
-                                                  widgetsData.substationDemandData?.[
+                                              graphData={
+                                                  widgetsData
+                                                      .substationDemandData?.[
                                                       substation
                                                   ] || {
-                                                        xAxis: [],
-                                                        series: [],
+                                                      xAxis: [],
+                                                      series: [],
                                                   }
                                               }
                                           />

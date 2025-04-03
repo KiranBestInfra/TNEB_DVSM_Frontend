@@ -55,13 +55,8 @@ const EdcSubstations = () => {
         location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser
-        ? location.pathname.includes('/user/')
-            ? '/user'
-            : '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+
+    const routePrefix = isRegionUser ? '/user' : '/admin';
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -131,54 +126,60 @@ const EdcSubstations = () => {
 
     // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
-        if (isRegionUser && region && edcs) {
-            const formattedRegionName =
-                region.charAt(0).toUpperCase() + region.slice(1);
-            const formattedEdcName =
-                edcs.charAt(0).toUpperCase() + edcs.slice(1);
+        if (isRegionUser) {
+            // For region user
+            const formattedRegionName = region
+                ? region
+                      .split('-')
+                      .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')
+                : 'Unknown';
 
             return [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
                 {
                     label: `Region : ${formattedRegionName}`,
-                    path: `${currentBaseRoute}/${region}/dashboard`,
+                    path: `${routePrefix}/${region}/dashboard`,
                 },
                 {
-                    label: `EDC : ${formattedEdcName}`,
-                    path: `${currentBaseRoute}/${region}/${edcs}`,
+                    label: edcs,
+                    path: `${routePrefix}/${region}/${edcs}`,
                 },
                 {
                     label: 'Substations',
-                    path: `${currentBaseRoute}/${region}/${edcs}/substations`,
+                    path: `${routePrefix}/${region}/${edcs}/substations`,
                 },
             ];
         } else {
             const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
             ];
 
             if (region) {
                 items.push({
                     label: 'Regions',
-                    path: `${currentBaseRoute}/regions`,
+                    path: `${routePrefix}/regions`,
                 });
                 items.push({
                     label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`,
+                    path: `${routePrefix}/${region}`,
                 });
-                if (edcs) {
-                    items.push({
-                        label: edcs.charAt(0).toUpperCase() + edcs.slice(1),
-                        path: `${currentBaseRoute}/${region}/${edcs}`,
-                    });
-                }
+            }
+
+            if (edcs) {
+                items.push({
+                    label: edcs.charAt(0).toUpperCase() + edcs.slice(1),
+                    path: `${routePrefix}/${region}/${edcs}`,
+                });
             }
 
             items.push({
                 label: 'Substations',
-                path: edcs
-                    ? `${currentBaseRoute}/${region}/${edcs}/substations`
-                    : `${currentBaseRoute}/substations`,
+                path: region
+                    ? `${routePrefix}/${region}/${edcs}/substations`
+                    : `${routePrefix}/substations`,
             });
             return items;
         }
@@ -236,8 +237,7 @@ const EdcSubstations = () => {
                                 />
                                 <div className={styles.total_title_value}>
                                     <p className="title">
-                                        <Link
-                                            to={`${currentBaseRoute}/regions`}>
+                                        <Link to={`${routePrefix}/regions`}>
                                             Regions
                                         </Link>
                                     </p>
@@ -257,7 +257,7 @@ const EdcSubstations = () => {
                                 <div className={styles.total_title_value}>
                                     <p className="title">
                                         <Link
-                                            to={`${currentBaseRoute}/${region}/edcs`}>
+                                            to={`${routePrefix}/${region}/edcs`}>
                                             EDCs
                                         </Link>
                                     </p>
@@ -277,7 +277,7 @@ const EdcSubstations = () => {
                                 <div className={styles.total_title_value}>
                                     <p className="title">
                                         <Link
-                                            to={`${currentBaseRoute}/${region}/${edcs}/substations`}>
+                                            to={`${routePrefix}/${region}/${edcs}/substations`}>
                                             Substations
                                         </Link>
                                     </p>
@@ -297,7 +297,7 @@ const EdcSubstations = () => {
                                 <div className={styles.total_meters}>
                                     <div className="title">
                                         <Link
-                                            to={`${currentBaseRoute}/${region}/${edcs}/feeders`}>
+                                            to={`${routePrefix}/${region}/${edcs}/feeders`}>
                                             Feeders
                                         </Link>
                                     </div>

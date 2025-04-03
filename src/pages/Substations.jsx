@@ -77,13 +77,8 @@ const Substations = () => {
         location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser
-        ? location.pathname.includes('/user/')
-            ? '/user'
-            : '/user'
-        : location.pathname.includes('/user/')
-        ? '/user'
-        : '/admin';
+
+    const routePrefix = isRegionUser ? '/user' : '/admin';
 
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
@@ -282,45 +277,49 @@ const Substations = () => {
 
     // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
-        if (isRegionUser && region) {
-            // Format region name with first letter capitalized
-            const formattedRegionName =
-                region.charAt(0).toUpperCase() + region.slice(1);
+        if (isRegionUser) {
+            // For region user
+            const formattedRegionName = region
+                ? region
+                      .split('-')
+                      .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')
+                : 'Unknown';
 
-            // Region user breadcrumb - showing only Dashboard -> Region -> Substations
             return [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
                 {
                     label: `Region : ${formattedRegionName}`,
-                    path: `${currentBaseRoute}/${region}/dashboard`,
+                    path: `${routePrefix}/${region}/dashboard`,
                 },
                 {
                     label: 'Substations',
-                    path: `${currentBaseRoute}/${region}/substations`,
+                    path: `${routePrefix}/${region}/substations`,
                 },
             ];
         } else {
-            // Standard admin or user breadcrumb
             const items = [
-                { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
             ];
 
             if (region) {
                 items.push({
                     label: 'Regions',
-                    path: `${currentBaseRoute}/regions`,
+                    path: `${routePrefix}/regions`,
                 });
                 items.push({
                     label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${currentBaseRoute}/${region}`,
+                    path: `${routePrefix}/${region}`,
                 });
             }
 
             items.push({
                 label: 'Substations',
                 path: region
-                    ? `${currentBaseRoute}/${region}/substations`
-                    : `${currentBaseRoute}/substations`,
+                    ? `${routePrefix}/${region}/substations`
+                    : `${routePrefix}/substations`,
             });
             return items;
         }
@@ -379,8 +378,7 @@ const Substations = () => {
                                 />
                                 <div className={styles.total_title_value}>
                                     <p className="title">
-                                        <Link
-                                            to={`${currentBaseRoute}/regions`}>
+                                        <Link to={`${routePrefix}/regions`}>
                                             Regions
                                         </Link>
                                     </p>
@@ -402,8 +400,8 @@ const Substations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/edcs`
-                                                    : `${currentBaseRoute}/edcs`
+                                                    ? `${routePrefix}/${region}/edcs`
+                                                    : `${routePrefix}/edcs`
                                             }>
                                             EDCs
                                         </Link>
@@ -426,8 +424,8 @@ const Substations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/substations`
-                                                    : `${currentBaseRoute}/substations`
+                                                    ? `${routePrefix}/${region}/substations`
+                                                    : `${routePrefix}/substations`
                                             }>
                                             Substations
                                         </Link>
@@ -450,8 +448,8 @@ const Substations = () => {
                                         <Link
                                             to={
                                                 region
-                                                    ? `${currentBaseRoute}/${region}/feeders`
-                                                    : `${currentBaseRoute}/feeders`
+                                                    ? `${routePrefix}/${region}/feeders`
+                                                    : `${routePrefix}/feeders`
                                             }>
                                             Feeders
                                         </Link>
