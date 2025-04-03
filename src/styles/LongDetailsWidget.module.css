@@ -46,6 +46,44 @@
     color: var(--black);
     margin: 0;
 }
+/*Dropdown for time range*/
+
+.time_range_select_dropdown {
+    position: relative;
+}
+.action_cont {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-direction: row;
+}
+.time_range_select {
+    border-radius: 2rem;
+    font-size: 1rem;
+    color: #333;
+    cursor: pointer;
+    outline: none;
+    width: fit-content;
+    height: 2.1rem;
+    padding: 0 1rem;
+    min-width: 9rem;
+    border: 1px solid var(--primary-bg);
+    background-color: var(--white);
+}
+.time_range_select_dropdown_icon {
+    position: absolute;
+    right: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    width: 0.7rem;
+    height: 0.7rem;
+}
+/*end of dropdown for time range*/
+
+
+
+
 
 .back_button {
     display: flex;
@@ -148,7 +186,7 @@
     height: 400px;
     width: 100%;
 }
-
+/*media queries for responsiveness*/
 @media screen and (max-width: 768px) {
     .page_container {
         padding: 1rem;

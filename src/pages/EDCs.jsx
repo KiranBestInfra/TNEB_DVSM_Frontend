@@ -349,42 +349,31 @@ const EDCs = () => {
             <div className={styles.section_header}>
                 <h2 className="title">EDCs</h2>
                 <div className={styles.action_container}>
-                    <div className={styles.date_range}>
-                        <div className={styles.search_cont}>
-                            <DatePicker
-                                selected={dateRange.start}
-                                onChange={(date) =>
-                                    setDateRange({ ...dateRange, start: date })
-                                }
-                                dateFormat="MMM dd, yyyy"
-                                placeholderText="Start Date"
+                    <div className={styles.action_cont}>
+                        <div className={styles.time_range_select_dropdown}>
+                            <select
+                                value={timeRange}
+                                onChange={(e) => setTimeRange(e.target.value)}
+                                className={styles.time_range_select}>
+                                <option value="Last30days">Last 30 Days</option>
+                                <option value="Daily">Daily</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="PreviousMonth">Last Week</option>
+                                <option value="Year">Year</option>
+                            </select>
+                            <img
+                                src="icons/arrow-down.svg"
+                                alt="Select Time"
+                                className={styles.time_range_select_dropdown_icon}
                             />
-                            <span className="icons icon_placement">
-                                <img src="icons/date.svg" alt="Calendar" />
-                            </span>
                         </div>
-
-                        <div className={styles.search_cont}>
-                            <DatePicker
-                                selected={dateRange.end}
-                                onChange={(date) =>
-                                    setDateRange({ ...dateRange, end: date })
-                                }
-                                dateFormat="MMM dd, yyyy"
-                                placeholderText="End Date"
-                                minDate={dateRange.start}
-                            />
-                            <span className="icons icon_placement">
-                                <img src="icons/date.svg" alt="Calendar" />
-                            </span>
-                        </div>
-                        <Buttons
+                        {/* <Buttons
                             label="Get Reports"
                             variant="primary"
                             alt="GetReports"
                             icon="icons/reports.svg"
                             iconPosition="left"
-                        />
+                        /> */}
                     </div>
                 </div>
             </div>
@@ -544,9 +533,9 @@ const EDCs = () => {
 
             <div className={styles.section_header}>
                 <h2 className="title">
-                    EDCs{' '}
+                    EDCs:{' '}
                     <span className={styles.region_count}>
-                        {widgetsData.regionEdcCount}
+                        [{widgetsData.regionEdcCount}]
                     </span>
                 </h2>
             </div>
