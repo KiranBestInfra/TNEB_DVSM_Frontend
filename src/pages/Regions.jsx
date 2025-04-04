@@ -182,13 +182,7 @@ const Regions = () => {
                                 className={styles.time_range_select_dropdown_icon}
                             />
                         </div>
-                        {/* <Buttons
-              label="Get Reports"
-              variant="primary"
-              alt="GetReports"
-              icon="icons/reports.svg"
-              iconPosition="left"
-            /> */}
+                       
                     </div>
                 </div>
             </div>
@@ -201,6 +195,7 @@ const Regions = () => {
                 isBiUserRoute={false}
                 onEdcClick={isRegionUser ? handleEdcClick : null}
                 onSubstationClick={isRegionUser ? handleSubstationClick : null}
+                showRegions={false}
             />
 
             <div className={styles.section_header}>

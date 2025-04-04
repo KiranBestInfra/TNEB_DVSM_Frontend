@@ -33,8 +33,7 @@ const LineChartTNEB = ({
             },
             padding: [8, 12],
             formatter: function (params) {
-                const timeLabel = params[0].axisValue;
-                let tooltipText = `<div style="font-weight: bold; margin-bottom: 8px;">${timeLabel}</div>`;
+                let tooltipText = '';
 
                 params.forEach((param) => {
                     tooltipText += `<div style="display: flex; align-items: center; margin: 3px 0;">
