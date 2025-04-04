@@ -21,7 +21,7 @@ const Feeders = () => {
     const isUserRoute = location.includes('/user/');
 
     const feederNames = [
-        'Adyar Feeder 1',
+        'Adyar',
         'Velachery Feeder 2',
         'T Nagar Feeder 3',
         'Mylapore Feeder 4',
