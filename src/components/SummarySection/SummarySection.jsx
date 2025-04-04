@@ -19,7 +19,8 @@ const SummarySection = ({
     showRegions = true,
     showDistricts = false,
     showEdcs = true,
-    showSubstations = true
+    showSubstations = true,
+    showFeeders = true
 }) => {
     return (
         <div className={styles.summary_section}>
@@ -86,6 +87,25 @@ const SummarySection = ({
                     </div>
                 </div>
             )}
+            {showDistricts && (
+                <div className={styles.total_substations_container}>
+                    <div className={styles.total_main_info}>
+                        <img
+                            src="icons/map-pin.svg"
+                            alt="Total Districts"
+                            className={styles.TNEB_icons}
+                        />
+                        <div className={styles.total_title_value}>
+                            <p className="title">
+                                Districts
+                            </p>
+                            <div className={styles.summary_value}>
+                                {widgetsData.totalDistricts || 0}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             {showSubstations && (
                 <div
                     className={styles.total_substations_container}
@@ -121,101 +141,84 @@ const SummarySection = ({
                     </div>
                 </div>
             )}
-            {showDistricts && (
-                <div className={styles.total_substations_container}>
-                    <div className={styles.total_main_info}>
+            {showFeeders && (
+                <div className={styles.total_meters_container}>
+                    <div className={styles.total_meters_main_info}>
                         <img
-                            src="icons/map-pin.svg"
-                            alt="Total Districts"
+                            src="icons/electric-meter.svg"
+                            alt="Total Meters"
                             className={styles.TNEB_icons}
                         />
-                        <div className={styles.total_title_value}>
-                            <p className="title">
-                                Districts
-                            </p>
+                        <div className={styles.total_meters}>
+                            <div className="title">
+                                Feeders
+                            </div>
                             <div className={styles.summary_value}>
-                                {widgetsData.totalDistricts || 0}
+                                {widgetsData.totalFeeders}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.metrics_communication_info}>
+                        <div className="titles">Communication Status</div>
+                        <div className={styles.overall_communication_status}>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
+                                <div className={styles.communication_value}>
+                                    {widgetsData.commMeters}
+                                </div>
+                                <div
+                                    className={
+                                        styles.communication_positive_percentage
+                                    }>
+                                    <img
+                                        src="icons/up-right-arrow.svg"
+                                        alt="Positive"
+                                        className={
+                                            styles.communication_positive_arrow
+                                        }
+                                    />
+                                    {(
+                                        (widgetsData.commMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
+                                </div>
+                            </div>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
+                                <div className={styles.communication_value}>
+                                    {widgetsData.nonCommMeters}
+                                </div>
+                                <div
+                                    className={
+                                        styles.communication_negative_percentage
+                                    }>
+                                    <img
+                                        src="icons/up-right-arrow.svg"
+                                        alt="Positive"
+                                        className={
+                                            styles.communication_negative_arrow
+                                        }
+                                    />
+                                    {(
+                                        (widgetsData.nonCommMeters /
+                                            (widgetsData.commMeters +
+                                                widgetsData.nonCommMeters)) *
+                                        100
+                                    ).toFixed(1)}
+                                    %
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             )}
-            <div className={styles.total_meters_container}>
-                <div className={styles.total_meters_main_info}>
-                    <img
-                        src="icons/electric-meter.svg"
-                        alt="Total Meters"
-                        className={styles.TNEB_icons}
-                    />
-                    <div className={styles.total_meters}>
-                        <div className="title">
-                            Feeders
-                        </div>
-                        <div className={styles.summary_value}>
-                            {widgetsData.totalFeeders}
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.metrics_communication_info}>
-                    <div className="titles">Communication Status</div>
-                    <div className={styles.overall_communication_status}>
-                        <div
-                            className={
-                                styles.communication_status_container
-                            }>
-                            <div className={styles.communication_value}>
-                                {widgetsData.commMeters}
-                            </div>
-                            <div
-                                className={
-                                    styles.communication_positive_percentage
-                                }>
-                                <img
-                                    src="icons/up-right-arrow.svg"
-                                    alt="Positive"
-                                    className={
-                                        styles.communication_positive_arrow
-                                    }
-                                />
-                                {(
-                                    (widgetsData.commMeters /
-                                        (widgetsData.commMeters +
-                                            widgetsData.nonCommMeters)) *
-                                    100
-                                ).toFixed(1)}
-                                %
-                            </div>
-                        </div>
-                        <div
-                            className={
-                                styles.communication_status_container
-                            }>
-                            <div className={styles.communication_value}>
-                                {widgetsData.nonCommMeters}
-                            </div>
-                            <div
-                                className={
-                                    styles.communication_negative_percentage
-                                }>
-                                <img
-                                    src="icons/up-right-arrow.svg"
-                                    alt="Positive"
-                                    className={
-                                        styles.communication_negative_arrow
-                                    }
-                                />
-                                {(
-                                    (widgetsData.nonCommMeters /
-                                        (widgetsData.commMeters +
-                                            widgetsData.nonCommMeters)) *
-                                    100
-                                ).toFixed(1)}
-                                %
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };
