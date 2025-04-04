@@ -273,9 +273,9 @@ const RegionFeeders = () => {
 
     const regionName = region
         ? region
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
         : 'Unknown';
 
     return (
@@ -311,22 +311,12 @@ const RegionFeeders = () => {
 
             <SummarySection
                 widgetsData={{
-                    totalRegions: widgetsData.totalRegions,
-                    totalEdcs: widgetsData.totalEdcs,
-                    totalSubstations: widgetsData.totalSubstations,
-                    totalFeeders: widgetsData.totalFeeders,
-                    commMeters: `${(
-                        (widgetsData.commMeters /
-                            (widgetsData.commMeters +
-                                widgetsData.nonCommMeters)) *
-                        100
-                    ).toFixed(1)}%`,
-                    nonCommMeters: `${(
-                        (widgetsData.nonCommMeters /
-                            (widgetsData.commMeters +
-                                widgetsData.nonCommMeters)) *
-                        100
-                    ).toFixed(1)}%`,
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: totalFeeders,
+                    commMeters: 942,
+                    nonCommMeters: 301,
                     totalDistricts: 0,
                 }}
                 isUserRoute={isUserRoute}
@@ -346,7 +336,7 @@ const RegionFeeders = () => {
             </div>
             <div className={styles.region_stats_container}>
                 {widgetsData.feederNames &&
-                widgetsData.feederNames.length > 0 ? (
+                    widgetsData.feederNames.length > 0 ? (
                     widgetsData.feederNames.map((feeder, index) => (
                         <div
                             key={index}
@@ -367,7 +357,7 @@ const RegionFeeders = () => {
                                 }
                                 graphData={
                                     widgetsData.feederDemandData?.[
-                                        feeder.trim()
+                                    feeder.trim()
                                     ] ?? graphData.daily
                                 }
                                 pageType="feeders"
