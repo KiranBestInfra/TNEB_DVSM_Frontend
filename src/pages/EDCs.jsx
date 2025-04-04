@@ -311,11 +311,11 @@ const EDCs = () => {
             // For region user
             const formattedRegionName = region
                 ? region
-                      .split('-')
-                      .map(
-                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                      )
-                      .join(' ')
+                    .split('-')
+                    .map(
+                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                    )
+                    .join(' ')
                 : 'Unknown';
 
             const items = [
@@ -352,8 +352,8 @@ const EDCs = () => {
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
                             <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
+                                value={timeframe}
+                                onChange={(e) => setTimeframe(e.target.value)}
                                 className={styles.time_range_select}>
                                 <option value="Last30days">Last 30 Days</option>
                                 <option value="Daily">Daily</option>
@@ -367,7 +367,7 @@ const EDCs = () => {
                                 className={styles.time_range_select_dropdown_icon}
                             />
                         </div>
-                       
+
                     </div>
                 </div>
             </div>
