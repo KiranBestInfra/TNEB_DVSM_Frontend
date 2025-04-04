@@ -155,7 +155,7 @@ const RegionFeeders = () => {
                     nonCommMeters: 301,
                     feederNames: Object.keys(parsedFeederData),
                     feederCount: 0,
-                    meterCount: {},
+                    // meterCount: 0,
                     feederDemandData: parsedFeederData,
                 };
             }
@@ -170,7 +170,7 @@ const RegionFeeders = () => {
             nonCommMeters: 301,
             feederNames: [],
             feederCount: 0,
-            meterCount: {},
+            //  meterCount: 0,
             feederDemandData: {},
         };
     });
@@ -236,8 +236,8 @@ const RegionFeeders = () => {
                         `/regions/${region}/feeders`
                     );
 
-                    const feedersData = response.data;
-                    console.log('feedersData', feedersData);
+                    const feedersData = response.data || [];
+                    console.log(feedersData);
 
                     setWidgetsData((prev) => ({
                         ...prev,
@@ -245,10 +245,10 @@ const RegionFeeders = () => {
                             feedersData.map((feeder) => feeder.name) || [],
                         feederCount: feedersData.length || 0,
                         totalFeeders: feedersData.length || 0,
-                        meterCount: feedersData.reduce((acc, feeder) => {
-                            acc[feeder.name] = feeder.meter_count || 0;
-                            return acc;
-                        }, {}),
+                        // meterCount: feedersData.reduce((acc, feeder) => {
+                        //     acc[feeder.name] = feeder.meterCount || 0;
+                        //     return acc;
+                        // }, {}),
                     }));
                 } catch (error) {
                     console.error('API error, using demo data:', error);
@@ -258,7 +258,7 @@ const RegionFeeders = () => {
                         feederNames: demoFeederNames,
                         feederCount: demoFeederNames.length,
                         totalFeeders: demoFeederNames.length,
-                        meterCount: feederMeterCounts,
+                        //   meterCount: feederMeterCounts,
                         feederDemandData: demoFeederDemandData,
                     }));
                 }
@@ -347,11 +347,9 @@ const RegionFeeders = () => {
                             <ShortDetailsWidget
                                 region={feeder}
                                 name={feeder}
-                                feederCount={
-                                    widgetsData.meterCount?.[feeder] ||
-                                    feederMeterCounts[feeder] ||
-                                    0
-                                }
+                                // feederCount={
+                                //     feeder.meterCount || 0
+                                // }
                                 currentValue={
                                     feederStats[feeder]?.currentValue || 0
                                 }

@@ -23,6 +23,7 @@ const SummarySection = ({
     showSubstations = true,
     showFeeders = true
 }) => {
+    console.log('widgetsData 2', widgetsData);
     return (
         <div className={styles.summary_section}>
             {showRegions && (
