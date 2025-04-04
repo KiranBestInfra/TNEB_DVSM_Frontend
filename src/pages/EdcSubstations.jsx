@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
-import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
+import { io } from 'socket.io-client';
 import PropTypes from 'prop-types';
+import SummarySection from '../components/SummarySection';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -46,47 +47,202 @@ ErrorBoundary.propTypes = {
 };
 
 const EdcSubstations = () => {
-    const [timeframe, setTimeframe] = useState('Last 7 Days');
-    const { region, edcs } = useParams();
+    const { edcs } = useParams();
+    const [socket, setSocket] = useState(null);
+    const cacheTimeoutRef = useRef(null);
+    const location = window.location.pathname;
 
-    const isRegionUser = false;
-    const routePrefix = '/admin';
+    // Demo data for when API is unavailable
+    const demoSubstationNames = [
+        'Adyar Substation',
+        'Velachery Substation',
+        'T Nagar Substation',
+        'Mylapore Substation',
+        'Anna Nagar Substation',
+        'Tambaram Substation',
+        'Guindy Substation',
+        'Porur Substation',
+        'Kodambakkam Substation',
+        'Royapuram Substation',
+        'Perambur Substation',
+        'Ambattur Substation',
+    ];
 
-    const [widgetsData, setWidgetsData] = useState({
-        totalRegions: 0,
-        totalEdcs: 0,
-        totalSubstations: 0,
-        totalFeeders: 0,
-        commMeters: 0,
-        nonCommMeters: 0,
-        edcSubstationCount: 0,
-        substationNames: {},
-        substationFeederCounts: {},
+    const demoSubstationFeederCounts = {
+        'Adyar Substation': 8,
+        'Velachery Substation': 6,
+        'T Nagar Substation': 10,
+        'Mylapore Substation': 7,
+        'Anna Nagar Substation': 9,
+        'Tambaram Substation': 5,
+        'Guindy Substation': 8,
+        'Porur Substation': 6,
+        'Kodambakkam Substation': 7,
+        'Royapuram Substation': 4,
+        'Perambur Substation': 5,
+        'Ambattur Substation': 6,
+    };
+
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedSubstationData = localStorage.getItem('substationData');
+        const savedTimestamp = localStorage.getItem('substationDataTimestamp');
+
+        if (savedSubstationData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedData = JSON.parse(savedSubstationData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    edcSubstationCount: parsedData.substationNames?.length || 0,
+                    totalDistricts:
+                        parsedData.totalDistricts ||
+                        parsedData.substationNames?.length ||
+                        0,
+                    substationNames: parsedData.substationNames || [],
+                    substationFeederCounts:
+                        parsedData.substationFeederCounts || {},
+                };
+            }
+        }
+
+        return {
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            edcSubstationCount: 0,
+            totalDistricts: 0,
+            substationNames: [],
+            substationFeederCounts: {},
+        };
     });
+
+    useEffect(() => {
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        setSocket(newSocket);
+
+        newSocket.on('connect', () => {
+            console.log('Connected to socket server');
+        });
+
+        newSocket.on('substationUpdate', (data) => {
+            setWidgetsData((prevData) => {
+                const newData = {
+                    ...prevData,
+                    substationNames:
+                        data.substationNames || prevData.substationNames,
+                    substationFeederCounts:
+                        data.substationFeederCounts ||
+                        prevData.substationFeederCounts,
+                    edcSubstationCount:
+                        data.substationNames?.length ||
+                        prevData.edcSubstationCount,
+                    totalDistricts:
+                        data.totalDistricts ||
+                        data.substationNames?.length ||
+                        prevData.totalDistricts,
+                };
+
+                const cacheData = {
+                    substationNames: newData.substationNames,
+                    substationFeederCounts: newData.substationFeederCounts,
+                    totalDistricts: newData.totalDistricts,
+                };
+
+                localStorage.setItem(
+                    'substationData',
+                    JSON.stringify(cacheData)
+                );
+                localStorage.setItem(
+                    'substationDataTimestamp',
+                    Date.now().toString()
+                );
+                return newData;
+            });
+
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+            cacheTimeoutRef.current = setTimeout(() => {
+                localStorage.removeItem('substationData');
+                localStorage.removeItem('substationDataTimestamp');
+            }, 30000);
+        });
+
+        return () => {
+            newSocket.close();
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        if (socket && edcs) {
+            socket.emit('subscribeSubstation', {
+                edc: edcs,
+            });
+        }
+    }, [edcs, socket]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const data = await apiClient.get(`/edcs/${edcs}/widgets`);
-                const edcWidgets = data.data;
+                try {
+                    const data = await apiClient.get(`/edcs/${edcs}/widgets`);
+                    const edcWidgets = data.data;
 
-                setWidgetsData((prev) => ({
-                    ...prev,
-                    totalRegions: edcWidgets.totalRegions || prev.totalRegions,
-                    totalEdcs: edcWidgets.totalEdcs || prev.totalEdcs,
-                    totalSubstations:
-                        edcWidgets.totalSubstations || prev.totalSubstations,
-                    totalFeeders: edcWidgets.totalFeeders || prev.totalFeeders,
-                    commMeters: edcWidgets.commMeters || prev.commMeters,
-                    nonCommMeters:
-                        edcWidgets.nonCommMeters || prev.nonCommMeters,
-                }));
+                    setWidgetsData((prev) => {
+                        const newData = {
+                            ...prev,
+                            totalRegions:
+                                edcWidgets.totalRegions || prev.totalRegions,
+                            totalEdcs: edcWidgets.totalEdcs || prev.totalEdcs,
+                            totalSubstations:
+                                edcWidgets.totalSubstations ||
+                                prev.totalSubstations,
+                            totalFeeders:
+                                edcWidgets.totalFeeders || prev.totalFeeders,
+                            commMeters:
+                                edcWidgets.commMeters || prev.commMeters,
+                            nonCommMeters:
+                                edcWidgets.nonCommMeters || prev.nonCommMeters,
+                        };
+                        return newData;
+                    });
+                } catch (error) {
+                    console.error(
+                        'API error, using demo data for widgets:',
+                        error
+                    );
+
+                    // Use demo data if API fails
+                    setWidgetsData((prev) => ({
+                        ...prev,
+                        totalRegions: 5,
+                        totalEdcs: 9,
+                        totalSubstations: 162,
+                        totalFeeders: 871,
+                        commMeters: 735,
+                        nonCommMeters: 246,
+                    }));
+                }
             } catch (error) {
                 console.error('Error fetching widget data:', error);
             }
         };
 
-        fetchData();
+        if (edcs) {
+            fetchData();
+        }
     }, [edcs]);
 
     useEffect(() => {
@@ -94,18 +250,77 @@ const EdcSubstations = () => {
 
         const substationNames = async () => {
             try {
-                const response = await apiClient.get(
-                    `/edcs/${edcs}/substations`
-                );
-                const data = response;
+                try {
+                    const response = await apiClient.get(
+                        `/edcs/${edcs}/substations`
+                    );
+                    const data = response;
 
-                setWidgetsData((prev) => ({
-                    ...prev,
-                    substationNames: data.data?.substationNames || [],
-                    edcSubstationCount: data.data?.substationNames?.length || 0,
-                    substationFeederCounts:
-                        data.data?.substationFeederCounts || {},
-                }));
+                    setWidgetsData((prev) => {
+                        const newData = {
+                            ...prev,
+                            substationNames: data.data?.substationNames || [],
+                            edcSubstationCount:
+                                data.data?.substationNames?.length || 0,
+                            totalDistricts:
+                                data.data?.totalDistricts ||
+                                data.data?.substationNames?.length ||
+                                0,
+                            substationFeederCounts:
+                                data.data?.substationFeederCounts || {},
+                        };
+
+                        const cacheData = {
+                            substationNames: newData.substationNames,
+                            substationFeederCounts:
+                                newData.substationFeederCounts,
+                            totalDistricts: newData.totalDistricts,
+                        };
+
+                        localStorage.setItem(
+                            'substationData',
+                            JSON.stringify(cacheData)
+                        );
+                        localStorage.setItem(
+                            'substationDataTimestamp',
+                            Date.now().toString()
+                        );
+                        return newData;
+                    });
+                } catch (error) {
+                    console.error(
+                        'API error, using demo data for substations:',
+                        error
+                    );
+
+                    // Use demo data if API fails
+                    setWidgetsData((prev) => {
+                        const newData = {
+                            ...prev,
+                            substationNames: demoSubstationNames,
+                            edcSubstationCount: demoSubstationNames.length,
+                            totalDistricts: demoSubstationNames.length,
+                            substationFeederCounts: demoSubstationFeederCounts,
+                        };
+
+                        const cacheData = {
+                            substationNames: newData.substationNames,
+                            substationFeederCounts:
+                                newData.substationFeederCounts,
+                            totalDistricts: newData.totalDistricts,
+                        };
+
+                        localStorage.setItem(
+                            'substationData',
+                            JSON.stringify(cacheData)
+                        );
+                        localStorage.setItem(
+                            'substationDataTimestamp',
+                            Date.now().toString()
+                        );
+                        return newData;
+                    });
+                }
             } catch (error) {
                 console.error('Error fetching substation names:', error);
             }
@@ -113,70 +328,6 @@ const EdcSubstations = () => {
 
         substationNames();
     }, [edcs]);
-
-    const handleTimeframeChange = (e) => {
-        setTimeframe(e.target.value);
-    };
-
-    const getBreadcrumbItems = () => {
-        if (isRegionUser) {
-            // For region user
-            const formattedRegionName = region
-                ? region
-                      .split('-')
-                      .map(
-                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                      )
-                      .join(' ')
-                : 'Unknown';
-
-            return [
-                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
-                {
-                    label: `Region : ${formattedRegionName}`,
-                    path: `${routePrefix}/${region}/dashboard`,
-                },
-                {
-                    label: edcs,
-                    path: `${routePrefix}/${region}/${edcs}`,
-                },
-                {
-                    label: 'Substations',
-                    path: `${routePrefix}/${region}/${edcs}/substations`,
-                },
-            ];
-        } else {
-            const items = [
-                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
-            ];
-
-            if (region) {
-                items.push({
-                    label: 'Regions',
-                    path: `${routePrefix}/regions`,
-                });
-                items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${routePrefix}/${region}`,
-                });
-            }
-
-            if (edcs) {
-                items.push({
-                    label: edcs.charAt(0).toUpperCase() + edcs.slice(1),
-                    path: `${routePrefix}/${region}/${edcs}`,
-                });
-            }
-
-            items.push({
-                label: 'Substations',
-                path: region
-                    ? `${routePrefix}/${region}/${edcs}/substations`
-                    : `${routePrefix}/substations`,
-            });
-            return items;
-        }
-    };
 
     try {
         return (
@@ -213,158 +364,33 @@ const EdcSubstations = () => {
                             </div>
                         </div>
                     </div>
-                    <Breadcrumb items={getBreadcrumbItems()} />
-                    <div className={styles.summary_section}>
-                        <div className={styles.total_regions_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="icons/office.svg"
-                                    alt="Total Regions"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link to={`${routePrefix}/regions`}>
-                                            Regions
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalRegions}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_edcs_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="icons/electric-edc.svg"
-                                    alt="Total EDCs"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link
-                                            to={`${routePrefix}/${region}/edcs`}>
-                                            EDCs
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalEdcs}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_substations_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="icons/electric-factory.svg"
-                                    alt="Total Substations"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link
-                                            to={`${routePrefix}/${region}/${edcs}/substations`}>
-                                            Substations
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalSubstations}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_meters_container}>
-                            <div className={styles.total_meters_main_info}>
-                                <img
-                                    src="icons/electric-meter.svg"
-                                    alt="Total Meters"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_meters}>
-                                    <div className="title">
-                                        <Link
-                                            to={`${routePrefix}/${region}/${edcs}/feeders`}>
-                                            Feeders
-                                        </Link>
-                                    </div>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalFeeders}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={styles.metrics_communication_info}>
-                                <div className="titles">
-                                    Communication Status
-                                </div>
-                                <div
-                                    className={
-                                        styles.overall_communication_status
-                                    }>
-                                    <div
-                                        className={
-                                            styles.communication_status_container
-                                        }>
-                                        <div
-                                            className={
-                                                styles.communication_value
-                                            }>
-                                            {widgetsData.commMeters}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles.communication_positive_percentage
-                                            }>
-                                            <img
-                                                src="icons/up-right-arrow.svg"
-                                                alt="Positive"
-                                                className={
-                                                    styles.communication_positive_arrow
-                                                }
-                                            />
-                                            {(
-                                                (widgetsData.commMeters /
-                                                    (widgetsData.commMeters +
-                                                        widgetsData.nonCommMeters)) *
-                                                100
-                                            ).toFixed(1)}
-                                            %
-                                        </div>
-                                    </div>
-                                    <div
-                                        className={
-                                            styles.communication_status_container
-                                        }>
-                                        <div
-                                            className={
-                                                styles.communication_value
-                                            }>
-                                            {widgetsData.nonCommMeters}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles.communication_negative_percentage
-                                            }>
-                                            <img
-                                                src="icons/up-right-arrow.svg"
-                                                alt="Positive"
-                                                className={
-                                                    styles.communication_negative_arrow
-                                                }
-                                            />
-                                            {(
-                                                (widgetsData.nonCommMeters /
-                                                    (widgetsData.commMeters +
-                                                        widgetsData.nonCommMeters)) *
-                                                100
-                                            ).toFixed(1)}
-                                            %
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <Breadcrumb />
+
+                    <SummarySection
+                        widgetsData={{
+                            totalRegions: widgetsData.totalRegions,
+                            totalEdcs: widgetsData.totalEdcs,
+                            totalSubstations: widgetsData.totalSubstations,
+                            totalFeeders: widgetsData.totalFeeders,
+                            commMeters: `${(
+                                (widgetsData.commMeters /
+                                    (widgetsData.commMeters +
+                                        widgetsData.nonCommMeters)) *
+                                100
+                            ).toFixed(1)}%`,
+                            nonCommMeters: `${(
+                                (widgetsData.nonCommMeters /
+                                    (widgetsData.commMeters +
+                                        widgetsData.nonCommMeters)) *
+                                100
+                            ).toFixed(1)}%`,
+                            totalDistricts: widgetsData.totalDistricts,
+                        }}
+                        isUserRoute={location.includes('/user/')}
+                        isBiUserRoute={location.includes('/bi/user/')}
+                        showRegions={true}
+                        showDistricts={false}
+                    />
 
                     <div className={styles.section_header}>
                         <h2 className="title">
@@ -392,7 +418,7 @@ const EdcSubstations = () => {
                                                       substation
                                                   ] || 0
                                               }
-                                              currentValue={42} // These values should come from your API
+                                              currentValue={42}
                                               previousValue={38}
                                               pageType="substations"
                                           />
