@@ -271,56 +271,6 @@ const Substations = () => {
         },
     };
 
-    // Build breadcrumb items based on current path
-    const getBreadcrumbItems = () => {
-        if (isRegionUser) {
-            // For region user
-            const formattedRegionName = region
-                ? region
-                    .split('-')
-                    .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                    )
-                    .join(' ')
-                : 'Unknown';
-
-            return [
-                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
-                {
-                    label: `Region : ${formattedRegionName}`,
-                    path: `${routePrefix}/${region}/dashboard`,
-                },
-                {
-                    label: 'Substations',
-                    path: `${routePrefix}/${region}/substations`,
-                },
-            ];
-        } else {
-            const items = [
-                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
-            ];
-
-            if (region) {
-                items.push({
-                    label: 'Regions',
-                    path: `${routePrefix}/regions`,
-                });
-                items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${routePrefix}/${region}`,
-                });
-            }
-
-            items.push({
-                label: 'Substations',
-                path: region
-                    ? `${routePrefix}/${region}/substations`
-                    : `${routePrefix}/substations`,
-            });
-            return items;
-        }
-    };
-
     try {
         console.log('Rendering Substations component, timeRange:', timeframe);
         return (
@@ -353,11 +303,11 @@ const Substations = () => {
                                         }
                                     />
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
-                    <Breadcrumb items={getBreadcrumbItems()} />
+                    <Breadcrumb />
                     <div className={styles.summary_section}>
                         <div className={styles.total_regions_container}>
                             <div className={styles.total_main_info}>
