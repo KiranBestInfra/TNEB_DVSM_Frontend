@@ -2,6 +2,7 @@ import styles from '../styles/ShortDetailsWidget.module.css';
 import LineChartTNEB from '../components/graphs/LineChartTNEB/LineChartTNEB';
 import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import RollingNumber from '../components/RollingNumber';
 
 // const graphData = {
 //   daily: {
@@ -185,7 +186,7 @@ const ShortDetailsWidget = ({
             <div className={styles.individual_region_body}>
                 <div className={styles.region_content_wrapper}>
                     <div className={styles.region_stats_utilization}>
-                        <p className="titles">Units Utilization</p>
+                        <p className="titles">Demand Usage</p>
                         <div className={styles.region_stats_values}>
                             <div className={styles.region_current_value}>
                                 {currentValue}
@@ -215,7 +216,7 @@ const ShortDetailsWidget = ({
                                         : styles.negative
                                         }`}
                                 />
-                                {Math.abs(percentageChange)}%
+                                <RollingNumber n={Math.abs(parseFloat(percentageChange))} decimals={1} />%
                             </div>
                         </div>
                     </div>
