@@ -16,127 +16,24 @@ const RegionFeeders = () => {
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
 
-    const [widgetsData, setWidgetsData] = useState(() => {
-        const savedFeederData = localStorage.getItem('feederDemandData');
-        const savedTimestamp = localStorage.getItem('feederDemandTimestamp');
+    const demoFeederNames = [
+        'Adyar Feeder 1',
+        'Velachery Feeder 2',
+        'T Nagar Feeder 3',
+        'Mylapore Feeder 4',
+        'Anna Nagar Feeder 5',
+        'Porur Feeder 6',
+        'Ambattur Feeder 7',
+        'Perambur Feeder 8',
+        'Guindy Feeder 9',
+        'Kodambakkam Feeder 10',
+        'Royapuram Feeder 11',
+        'Thiruvanmiyur Feeder 12',
+        'Kilpauk Feeder 13',
+        'Egmore Feeder 14',
+        'Nungambakkam Feeder 15',
+    ];
 
-        if (savedFeederData && savedTimestamp) {
-            const timestamp = parseInt(savedTimestamp);
-            const now = Date.now();
-            if (now - timestamp < 30000) {
-                const parsedFeederData = JSON.parse(savedFeederData);
-                return {
-                    totalRegions: 13,
-                    totalEdcs: 95,
-                    totalSubstations: 260,
-                    totalFeeders: 0,
-                    commMeters: 942,
-                    nonCommMeters: 301,
-                    feederNames: Object.keys(parsedFeederData),
-                    feederCount: 0,
-                    meterCount: {},
-                    feederDemandData: parsedFeederData,
-                };
-            }
-        }
-
-        return {
-            totalRegions: 13,
-            totalEdcs: 95,
-            totalSubstations: 260,
-            totalFeeders: 0,
-            commMeters: 942,
-            nonCommMeters: 301,
-            feederNames: [],
-            feederCount: 0,
-            meterCount: {},
-            feederDemandData: {},
-        };
-    });
-
-    useEffect(() => {
-        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
-        setSocket(newSocket);
-
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
-
-        newSocket.on('feederUpdate', (data) => {
-            setWidgetsData((prevData) => {
-                const newData = {
-                    ...prevData,
-                    feederDemandData: {
-                        ...prevData.feederDemandData,
-                        [data.feeder]: data.graphData,
-                    },
-                };
-                localStorage.setItem(
-                    'feederDemandData',
-                    JSON.stringify(newData.feederDemandData)
-                );
-                localStorage.setItem(
-                    'feederDemandTimestamp',
-                    Date.now().toString()
-                );
-                return newData;
-            });
-
-            if (cacheTimeoutRef.current) {
-                clearTimeout(cacheTimeoutRef.current);
-            }
-            cacheTimeoutRef.current = setTimeout(() => {
-                localStorage.removeItem('feederDemandData');
-                localStorage.removeItem('feederDemandTimestamp');
-            }, 30000);
-        });
-
-        return () => {
-            newSocket.close();
-            if (cacheTimeoutRef.current) {
-                clearTimeout(cacheTimeoutRef.current);
-            }
-        };
-    }, []);
-
-    useEffect(() => {
-        if (socket && widgetsData.feederNames.length > 0) {
-            socket.emit('subscribeFeeder', {
-                feeders: widgetsData.feederNames,
-            });
-        }
-    }, [widgetsData.feederNames, socket]);
-
-    useEffect(() => {
-        const fetchFeeders = async () => {
-            try {
-                const response = await apiClient.get(
-                    `/regions/${region}/feeders`
-                );
-
-                const feedersData = response.data || [];
-
-                setWidgetsData((prev) => ({
-                    ...prev,
-                    feederNames: feedersData.map((feeder) => feeder.name) || [],
-                    feederCount: feedersData.length || 0,
-                    totalFeeders: feedersData.length || 0,
-                    meterCount: feedersData.reduce((acc, feeder) => {
-                        acc[feeder.name] = feeder.meter_count || 0;
-                        return acc;
-                    }, {}),
-                }));
-            } catch (error) {
-                console.error('Error fetching feeders for region:', error);
-            }
-        };
-
-        if (region) {
-            fetchFeeders();
-        }
-    }, [region]);
-
-    // These static samples are used as fallback when API data is missing
     const feederMeterCounts = {
         'Adyar Feeder 1': 45,
         'Velachery Feeder 2': 38,
@@ -234,6 +131,145 @@ const RegionFeeders = () => {
             ],
         },
     };
+
+    const demoFeederDemandData = {};
+    demoFeederNames.forEach((feeder) => {
+        demoFeederDemandData[feeder] = graphData.daily;
+    });
+
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedFeederData = localStorage.getItem('feederDemandData');
+        const savedTimestamp = localStorage.getItem('feederDemandTimestamp');
+
+        if (savedFeederData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedFeederData = JSON.parse(savedFeederData);
+                return {
+                    totalRegions: 13,
+                    totalEdcs: 95,
+                    totalSubstations: 260,
+                    totalFeeders: 0,
+                    commMeters: 942,
+                    nonCommMeters: 301,
+                    feederNames: Object.keys(parsedFeederData),
+                    feederCount: 0,
+                    meterCount: {},
+                    feederDemandData: parsedFeederData,
+                };
+            }
+        }
+
+        return {
+            totalRegions: 13,
+            totalEdcs: 95,
+            totalSubstations: 260,
+            totalFeeders: 0,
+            commMeters: 942,
+            nonCommMeters: 301,
+            feederNames: [],
+            feederCount: 0,
+            meterCount: {},
+            feederDemandData: {},
+        };
+    });
+
+    useEffect(() => {
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        setSocket(newSocket);
+
+        newSocket.on('connect', () => {
+            console.log('Connected to socket server');
+        });
+
+        newSocket.on('feederUpdate', (data) => {
+            setWidgetsData((prevData) => {
+                const newData = {
+                    ...prevData,
+                    feederDemandData: {
+                        ...prevData.feederDemandData,
+                        [data.feeder]: data.graphData,
+                    },
+                };
+                localStorage.setItem(
+                    'feederDemandData',
+                    JSON.stringify(newData.feederDemandData)
+                );
+                localStorage.setItem(
+                    'feederDemandTimestamp',
+                    Date.now().toString()
+                );
+                return newData;
+            });
+
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+            cacheTimeoutRef.current = setTimeout(() => {
+                localStorage.removeItem('feederDemandData');
+                localStorage.removeItem('feederDemandTimestamp');
+            }, 30000);
+        });
+
+        return () => {
+            newSocket.close();
+            if (cacheTimeoutRef.current) {
+                clearTimeout(cacheTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        if (socket && widgetsData.feederNames.length > 0) {
+            socket.emit('subscribeFeeder', {
+                feeders: widgetsData.feederNames,
+            });
+        }
+    }, [widgetsData.feederNames, socket]);
+
+    useEffect(() => {
+        const fetchFeeders = async () => {
+            try {
+                try {
+                    const response = await apiClient.get(
+                        `/regions/${region}/feeders`
+                    );
+
+                    const feedersData = response.data || [];
+
+                    setWidgetsData((prev) => ({
+                        ...prev,
+                        feederNames:
+                            feedersData.map((feeder) => feeder.name) || [],
+                        feederCount: feedersData.length || 0,
+                        totalFeeders: feedersData.length || 0,
+                        meterCount: feedersData.reduce((acc, feeder) => {
+                            acc[feeder.name] = feeder.meter_count || 0;
+                            return acc;
+                        }, {}),
+                    }));
+                } catch (error) {
+                    console.error('API error, using demo data:', error);
+
+                    setWidgetsData((prev) => ({
+                        ...prev,
+                        feederNames: demoFeederNames,
+                        feederCount: demoFeederNames.length,
+                        totalFeeders: demoFeederNames.length,
+                        meterCount: feederMeterCounts,
+                        feederDemandData: demoFeederDemandData,
+                    }));
+                }
+            } catch (error) {
+                console.error('Error fetching feeders for region:', error);
+            }
+        };
+
+        if (region) {
+            fetchFeeders();
+        }
+    }, [region]);
 
     const regionName = region
         ? region

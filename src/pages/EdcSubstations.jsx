@@ -52,7 +52,6 @@ const EdcSubstations = () => {
     const cacheTimeoutRef = useRef(null);
     const location = window.location.pathname;
 
-    // Demo data for when API is unavailable
     const demoSubstationNames = [
         'Adyar Substation',
         'Velachery Substation',
@@ -83,6 +82,88 @@ const EdcSubstations = () => {
         'Ambattur Substation': 6,
     };
 
+    const demoSubstationStats = {
+        'Adyar Substation': { currentValue: 42, previousValue: 38 },
+        'Velachery Substation': { currentValue: 45, previousValue: 40 },
+        'T Nagar Substation': { currentValue: 48, previousValue: 42 },
+        'Mylapore Substation': { currentValue: 39, previousValue: 35 },
+        'Anna Nagar Substation': { currentValue: 44, previousValue: 40 },
+        'Tambaram Substation': { currentValue: 41, previousValue: 36 },
+        'Guindy Substation': { currentValue: 46, previousValue: 41 },
+        'Porur Substation': { currentValue: 40, previousValue: 36 },
+        'Kodambakkam Substation': { currentValue: 43, previousValue: 38 },
+        'Royapuram Substation': { currentValue: 38, previousValue: 34 },
+        'Perambur Substation': { currentValue: 37, previousValue: 33 },
+        'Ambattur Substation': { currentValue: 42, previousValue: 37 },
+    };
+
+    const graphData = {
+        daily: {
+            xAxis: [
+                '2025-03-16 23:59:59',
+                '2025-03-16 08:30:00',
+                '2025-03-16 08:15:00',
+                '2025-03-16 08:00:00',
+                '2025-03-16 07:45:00',
+                '2025-03-16 07:30:00',
+                '2025-03-16 07:15:00',
+                '2025-03-16 07:00:00',
+                '2025-03-16 06:45:00',
+                '2025-03-16 06:30:00',
+                '2025-03-16 06:15:00',
+                '2025-03-16 06:00:00',
+                '2025-03-16 05:45:00',
+                '2025-03-16 05:30:00',
+                '2025-03-16 05:15:00',
+                '2025-03-16 05:00:00',
+                '2025-03-16 04:45:00',
+                '2025-03-16 04:30:00',
+                '2025-03-16 04:15:00',
+                '2025-03-16 04:00:00',
+                '2025-03-16 03:45:00',
+                '2025-03-16 03:30:00',
+                '2025-03-16 03:15:00',
+                '2025-03-16 03:00:00',
+                '2025-03-16 02:45:00',
+                '2025-03-16 02:30:00',
+                '2025-03-16 02:15:00',
+                '2025-03-16 02:00:00',
+                '2025-03-16 01:45:00',
+                '2025-03-16 01:30:00',
+                '2025-03-16 01:15:00',
+                '2025-03-16 01:00:00',
+                '2025-03-16 00:45:00',
+                '2025-03-16 00:30:00',
+                '2025-03-16 00:15:00',
+            ],
+            series: [
+                {
+                    name: 'Current Day',
+                    data: [
+                        13.6, 12.0, 11.2, 11.2, 11.6, 10.4, 12.0, 10.8, 12.4,
+                        12.0, 12.8, 13.6, 12.4, 13.6, 12.0, 13.6, 12.8, 13.2,
+                        13.6, 12.4, 14.0, 12.4, 14.0, 12.4, 13.6, 12.8, 13.2,
+                        14.0, 12.8, 14.0, 12.4, 13.6, 12.4, 13.6, 12.4,
+                    ],
+                },
+                {
+                    name: 'Previous Day',
+                    data: [
+                        13.2, 10.8, 10.0, 11.2, 10.8, 10.8, 11.6, 10.8, 12.0,
+                        11.6, 13.2, 12.8, 13.2, 14.0, 12.8, 14.4, 13.2, 14.8,
+                        13.6, 14.4, 14.8, 13.2, 14.8, 13.2, 14.4, 13.2, 14.4,
+                        13.6, 13.6, 14.4, 13.2, 14.4, 12.8, 14.4, 12.8,
+                    ],
+                },
+            ],
+        },
+    };
+
+    const demoSubstationDemandData = {};
+    demoSubstationNames.forEach((substation) => {
+        demoSubstationDemandData[substation] = graphData.daily;
+    });
+
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedSubstationData = localStorage.getItem('substationData');
         const savedTimestamp = localStorage.getItem('substationDataTimestamp');
@@ -107,6 +188,11 @@ const EdcSubstations = () => {
                     substationNames: parsedData.substationNames || [],
                     substationFeederCounts:
                         parsedData.substationFeederCounts || {},
+                    substationStats:
+                        parsedData.substationStats || demoSubstationStats,
+                    substationDemandData:
+                        parsedData.substationDemandData ||
+                        demoSubstationDemandData,
                 };
             }
         }
@@ -122,6 +208,8 @@ const EdcSubstations = () => {
             totalDistricts: 0,
             substationNames: [],
             substationFeederCounts: {},
+            substationStats: {},
+            substationDemandData: {},
         };
     });
 
@@ -149,12 +237,20 @@ const EdcSubstations = () => {
                         data.totalDistricts ||
                         data.substationNames?.length ||
                         prevData.totalDistricts,
+                    substationStats:
+                        data.substationStats || prevData.substationStats,
+                    substationDemandData: {
+                        ...prevData.substationDemandData,
+                        ...(data.substationDemandData || {}),
+                    },
                 };
 
                 const cacheData = {
                     substationNames: newData.substationNames,
                     substationFeederCounts: newData.substationFeederCounts,
                     totalDistricts: newData.totalDistricts,
+                    substationStats: newData.substationStats,
+                    substationDemandData: newData.substationDemandData,
                 };
 
                 localStorage.setItem(
@@ -224,7 +320,6 @@ const EdcSubstations = () => {
                         error
                     );
 
-                    // Use demo data if API fails
                     setWidgetsData((prev) => ({
                         ...prev,
                         totalRegions: 5,
@@ -268,6 +363,12 @@ const EdcSubstations = () => {
                                 0,
                             substationFeederCounts:
                                 data.data?.substationFeederCounts || {},
+                            substationStats:
+                                data.data?.substationStats ||
+                                demoSubstationStats,
+                            substationDemandData:
+                                data.data?.substationDemandData ||
+                                demoSubstationDemandData,
                         };
 
                         const cacheData = {
@@ -275,6 +376,8 @@ const EdcSubstations = () => {
                             substationFeederCounts:
                                 newData.substationFeederCounts,
                             totalDistricts: newData.totalDistricts,
+                            substationStats: newData.substationStats,
+                            substationDemandData: newData.substationDemandData,
                         };
 
                         localStorage.setItem(
@@ -293,7 +396,6 @@ const EdcSubstations = () => {
                         error
                     );
 
-                    // Use demo data if API fails
                     setWidgetsData((prev) => {
                         const newData = {
                             ...prev,
@@ -301,6 +403,8 @@ const EdcSubstations = () => {
                             edcSubstationCount: demoSubstationNames.length,
                             totalDistricts: demoSubstationNames.length,
                             substationFeederCounts: demoSubstationFeederCounts,
+                            substationStats: demoSubstationStats,
+                            substationDemandData: demoSubstationDemandData,
                         };
 
                         const cacheData = {
@@ -308,6 +412,8 @@ const EdcSubstations = () => {
                             substationFeederCounts:
                                 newData.substationFeederCounts,
                             totalDistricts: newData.totalDistricts,
+                            substationStats: newData.substationStats,
+                            substationDemandData: newData.substationDemandData,
                         };
 
                         localStorage.setItem(
@@ -335,34 +441,6 @@ const EdcSubstations = () => {
                 <div className={styles.main_content}>
                     <div className={styles.section_header}>
                         <h2 className="title">Substations</h2>
-                        <div className={styles.action_container}>
-                            <div className={styles.action_cont}>
-                                <div
-                                    className={
-                                        styles.time_range_select_dropdown
-                                    }>
-                                    <select
-                                        value={timeframe}
-                                        onChange={handleTimeframeChange}
-                                        className={styles.time_range_select}>
-                                        <option value="Daily">Daily</option>
-                                        <option value="Monthly">Monthly</option>
-                                        <option value="PreviousMonth">
-                                            Previous Month
-                                        </option>
-                                        <option value="Year">Year</option>
-                                    </select>
-                                    <img
-                                        src="icons/arrow-down.svg"
-                                        alt="Select Time"
-                                        className={
-                                            styles.time_range_select_dropdown_icon
-                                        }
-                                    />
-                                </div>
-                                
-                            </div>
-                        </div>
                     </div>
                     <Breadcrumb />
 
@@ -412,14 +490,37 @@ const EdcSubstations = () => {
                                           }>
                                           <ShortDetailsWidget
                                               region={substation}
+                                              name={substation}
                                               feederCount={
                                                   widgetsData
                                                       .substationFeederCounts?.[
                                                       substation
                                                   ] || 0
                                               }
-                                              currentValue={42}
-                                              previousValue={38}
+                                              currentValue={
+                                                  widgetsData.substationStats?.[
+                                                      substation
+                                                  ]?.currentValue ||
+                                                  demoSubstationStats[
+                                                      substation
+                                                  ]?.currentValue ||
+                                                  42
+                                              }
+                                              previousValue={
+                                                  widgetsData.substationStats?.[
+                                                      substation
+                                                  ]?.previousValue ||
+                                                  demoSubstationStats[
+                                                      substation
+                                                  ]?.previousValue ||
+                                                  38
+                                              }
+                                              graphData={
+                                                  widgetsData
+                                                      .substationDemandData?.[
+                                                      substation
+                                                  ] || graphData.daily
+                                              }
                                               pageType="substations"
                                           />
                                       </div>
