@@ -222,7 +222,7 @@ const Header = () => {
                         label="Logout"
                         onClick={handleLogout}
                         variant="secondary"
-                        icon="images/icons/logout-icon.svg"
+                        icon="icons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
                     />
