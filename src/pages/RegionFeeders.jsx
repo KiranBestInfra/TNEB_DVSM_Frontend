@@ -155,7 +155,7 @@ const RegionFeeders = () => {
                     nonCommMeters: 301,
                     feederNames: Object.keys(parsedFeederData),
                     feederCount: 0,
-                    meterCount: {},
+                    // meterCount: 0,
                     feederDemandData: parsedFeederData,
                 };
             }
@@ -170,7 +170,7 @@ const RegionFeeders = () => {
             nonCommMeters: 301,
             feederNames: [],
             feederCount: 0,
-            meterCount: {},
+            //  meterCount: 0,
             feederDemandData: {},
         };
     });
@@ -237,6 +237,7 @@ const RegionFeeders = () => {
                     );
 
                     const feedersData = response.data || [];
+                    console.log(feedersData);
 
                     setWidgetsData((prev) => ({
                         ...prev,
@@ -244,10 +245,10 @@ const RegionFeeders = () => {
                             feedersData.map((feeder) => feeder.name) || [],
                         feederCount: feedersData.length || 0,
                         totalFeeders: feedersData.length || 0,
-                        meterCount: feedersData.reduce((acc, feeder) => {
-                            acc[feeder.name] = feeder.meter_count || 0;
-                            return acc;
-                        }, {}),
+                        // meterCount: feedersData.reduce((acc, feeder) => {
+                        //     acc[feeder.name] = feeder.meterCount || 0;
+                        //     return acc;
+                        // }, {}),
                     }));
                 } catch (error) {
                     console.error('API error, using demo data:', error);
@@ -257,7 +258,7 @@ const RegionFeeders = () => {
                         feederNames: demoFeederNames,
                         feederCount: demoFeederNames.length,
                         totalFeeders: demoFeederNames.length,
-                        meterCount: feederMeterCounts,
+                        //   meterCount: feederMeterCounts,
                         feederDemandData: demoFeederDemandData,
                     }));
                 }
@@ -281,7 +282,7 @@ const RegionFeeders = () => {
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">{regionName} Region Feeders</h2>
+                <h2 className="title">{regionName} - Feeders</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -311,28 +312,20 @@ const RegionFeeders = () => {
 
             <SummarySection
                 widgetsData={{
-                    totalRegions: widgetsData.totalRegions,
-                    totalEdcs: widgetsData.totalEdcs,
-                    totalSubstations: widgetsData.totalSubstations,
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
                     totalFeeders: widgetsData.totalFeeders,
-                    commMeters: `${(
-                        (widgetsData.commMeters /
-                            (widgetsData.commMeters +
-                                widgetsData.nonCommMeters)) *
-                        100
-                    ).toFixed(1)}%`,
-                    nonCommMeters: `${(
-                        (widgetsData.nonCommMeters /
-                            (widgetsData.commMeters +
-                                widgetsData.nonCommMeters)) *
-                        100
-                    ).toFixed(1)}%`,
+                    commMeters: 942,
+                    nonCommMeters: 301,
                     totalDistricts: 0,
                 }}
                 isUserRoute={isUserRoute}
                 isBiUserRoute={false}
-                showRegions={true}
+                showRegions={false}
                 showDistricts={false}
+                showEdcs={false}
+                showSubstations={false}
             />
 
             <div className={styles.section_header}>
@@ -354,11 +347,9 @@ const RegionFeeders = () => {
                             <ShortDetailsWidget
                                 region={feeder}
                                 name={feeder}
-                                feederCount={
-                                    widgetsData.meterCount?.[feeder] ||
-                                    feederMeterCounts[feeder] ||
-                                    0
-                                }
+                                // feederCount={
+                                //     feeder.meterCount || 0
+                                // }
                                 currentValue={
                                     feederStats[feeder]?.currentValue || 0
                                 }

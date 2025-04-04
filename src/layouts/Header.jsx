@@ -15,6 +15,7 @@ const Header = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
         useState(false);
+    const [currentDateTime, setCurrentDateTime] = useState(new Date());
     const { isAdmin } = useAuth();
     const basePath = isAdmin() ? '/admin' : '/user';
 
@@ -29,6 +30,29 @@ const Header = () => {
         firstName: user?.id || 'User',
         lastName: user?.lastName || '',
     };
+
+    // Update date and time every second
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentDateTime(new Date());
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
+
+    // Format date and time
+    const formattedDate = currentDateTime.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+    });
+
+    const formattedTime = currentDateTime.toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+    });
 
     const handleSearchChange = (e) => {
         const query = e.target.value;
@@ -226,6 +250,17 @@ const Header = () => {
                     {/* <div className={styles.white_icons} onClick={handleProfileClick}>
                         {renderProfilePicture()}
                     </div> */}
+
+                    <div className={styles.date_time_display}>
+                        <div className={styles.time}>{formattedTime}</div>
+                        <div className={styles.date}>{formattedDate}</div>
+                        <div
+                            className={styles.clock_icons}
+                            onClick={handleProfileClick}>
+                            <img src="icons/clock-up-arrow.svg" alt="Clock" />
+                        </div>
+
+                    </div>
 
                     <span
                         className={styles.white_icons}

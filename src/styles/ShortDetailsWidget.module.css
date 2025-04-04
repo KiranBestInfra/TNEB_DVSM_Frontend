@@ -110,7 +110,7 @@
 }
 
 .region_current_value {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--black);
 }
@@ -184,5 +184,6 @@
 }
 
 .nav_link:hover {
-    color: var(--brand-blue);  /* or your preferred hover color */
-} 
+    color: var(--brand-blue);
+    /* or your preferred hover color */
+}

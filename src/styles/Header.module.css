@@ -64,7 +64,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     border: 2px solid var(--white);
-    
+
 }
 
 .white_icons>img {
@@ -259,4 +259,42 @@
     font-size: 1.1rem;
     font-weight: 500;
     color: #333;
+}
+
+/* Date and time display styles */
+.date_time_display {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--white);
+    border-radius: 2rem;
+    padding: 0.5rem 0.75rem;
+    margin-right: 0.5rem;
+    border: 2px solid var(--white);
+    transition: border-color 0.3s ease;
+    gap: 0.5rem;
+    text-transform: uppercase;
+}
+
+.clock_icons {
+    height: 1rem;
+    width: 1rem;
+}
+
+.clock_icons img {
+    height: 1rem;
+    width: 1rem;
+    filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%);
+}
+
+.time {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--black);
+}
+
+.date {
+    font-size: 0.75rem;
+    color: var(--grey);
 }
