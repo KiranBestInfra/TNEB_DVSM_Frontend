@@ -115,6 +115,9 @@ const Regions = () => {
             const response = await apiClient.get('/regions/widgets');
             const data = response.data;
 
+
+            console.log('RegionDataSASAS', data);
+            
             setWidgetsData((prev) => ({
                 totalRegions: data.totalRegions || prev.totalRegions,
                 totalEdcs: data.totalEdcs || prev.totalEdcs,

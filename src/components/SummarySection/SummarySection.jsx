@@ -142,83 +142,67 @@ const SummarySection = ({
                 </div>
             )}
             {showFeeders && (
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_meters_main_info}>
-                        <img
-                            src="icons/electric-meter.svg"
-                            alt="Total Meters"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_meters}>
-                            <div className="title">
-                                Feeders
-                            </div>
-                            <div className={styles.summary_value}>
-                                {widgetsData.totalFeeders}
-                            </div>
-                        </div>
+    <div className={styles.total_meters_container}>
+        <div className={styles.total_meters_main_info}>
+            <img
+                src="icons/electric-meter.svg"
+                alt="Total Meters"
+                className={styles.TNEB_icons}
+            />
+            <div className={styles.total_meters}>
+                <div className="title">Feeders</div>
+                <div className={styles.summary_value}>
+                    {widgetsData.totalFeeders}
+                </div>
+            </div>
+        </div>
+        <div className={styles.metrics_communication_info}>
+            <div className="titles">Communication Status</div>
+            <div className={styles.overall_communication_status}>
+                <div className={styles.communication_status_container}>
+                    <div className={styles.communication_value}>
+                        {widgetsData.commMeters}
                     </div>
-                    <div className={styles.metrics_communication_info}>
-                        <div className="titles">Communication Status</div>
-                        <div className={styles.overall_communication_status}>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    {widgetsData.commMeters}
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_positive_percentage
-                                    }>
-                                    <img
-                                        src="icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_positive_arrow
-                                        }
-                                    />
-                                    {(
-                                        (widgetsData.commMeters /
-                                            (widgetsData.commMeters +
-                                                widgetsData.nonCommMeters)) *
-                                        100
-                                    ).toFixed(1)}
-                                    %
-                                </div>
-                            </div>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    {widgetsData.nonCommMeters}
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_negative_percentage
-                                    }>
-                                    <img
-                                        src="icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_negative_arrow
-                                        }
-                                    />
-                                    {(
-                                        (widgetsData.nonCommMeters /
-                                            (widgetsData.commMeters +
-                                                widgetsData.nonCommMeters)) *
-                                        100
-                                    ).toFixed(1)}
-                                    %
-                                </div>
-                            </div>
-                        </div>
+                    <div className={styles.communication_positive_percentage}>
+                        <img
+                            src="icons/up-right-arrow.svg"
+                            alt="Positive"
+                            className={styles.communication_positive_arrow}
+                        />
+                        {(() => {
+                            const total = widgetsData.commMeters + widgetsData.nonCommMeters;
+                            return total > 0
+                                ? ((widgetsData.commMeters / total) * 100).toFixed(1)
+                                : 0;
+                        })()}
+                        %
                     </div>
                 </div>
-            )}
+                <div className={styles.communication_status_container}>
+                    <div className={styles.communication_value}>
+                        {widgetsData.nonCommMeters}
+                    </div>
+                    <div className={styles.communication_negative_percentage}>
+                        <img
+                            src="icons/up-right-arrow.svg"
+                            alt="Negative"
+                            className={styles.communication_negative_arrow}
+                        />
+                        {(() => {
+                            const total = widgetsData.commMeters + widgetsData.nonCommMeters;
+                            return total > 0
+                                ? ((widgetsData.nonCommMeters / total) * 100).toFixed(1)
+                                : 0;
+                        })()}
+                        %
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+)}
+
+
         </div>
     );
 };
