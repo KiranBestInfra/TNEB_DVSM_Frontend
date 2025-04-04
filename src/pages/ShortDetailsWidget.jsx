@@ -192,7 +192,7 @@ const ShortDetailsWidget = ({
                                 <RollingNumber n={parseFloat(currentValue)} decimals={1} />
                             </div>
                             <div className={styles.region_previous_value}>
-                                <RollingNumber n={parseFloat(previousValue)} decimals={1} /> MW
+                                <RollingNumber n={parseFloat(previousValue)} decimals={1} />MW
                             </div>
                             <div
                                 className={`${styles.region_percentage_change
@@ -216,7 +216,9 @@ const ShortDetailsWidget = ({
                                         : styles.negative
                                         }`}
                                 />
-                                <RollingNumber n={Math.abs(parseFloat(percentageChange))} decimals={1} />%
+                                <div className={styles.region_percentage_change_text}>
+                                    <RollingNumber n={Math.abs(parseFloat(percentageChange))} decimals={1} />%
+                                </div>
                             </div>
                         </div>
                     </div>

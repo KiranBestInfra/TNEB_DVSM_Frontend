@@ -116,9 +116,19 @@
 }
 
 .region_previous_value {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: var(--gray);
     font-weight: 700;
+    display: flex;
+    gap: 0.2rem;
+}
+
+.region_percentage_change_text {
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
 }
 
 .region_percentage_change {
