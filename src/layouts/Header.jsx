@@ -152,7 +152,11 @@ const Header = () => {
         <div className={styles.header_container}>
             <div className={styles.logo_container}>
                 <Link to={basePath}>
-                    <img src="images/tangedco.png" alt="Company Logo" className={styles.logo_bestinfra} />
+                    <img
+                        src="images/tangedco.png"
+                        alt="Company Logo"
+                        className={styles.logo_bestinfra}
+                    />
                 </Link>
                 <span className={styles.welcome_message}>
                     Welcome {profileData.firstName}!
@@ -181,6 +185,7 @@ const Header = () => {
                                 key={result.id}
                                 className={styles.search_result_item}
                                 onClick={() => handleResultClick(result.id)}>
+
                                 <span className={styles.result_name}>
                                     {result.hierarchy_name}
                                 </span>
@@ -195,7 +200,9 @@ const Header = () => {
                         {renderProfilePicture()}
                     </div> */}
 
-                    <span className={styles.white_icons} onClick={handleProfileClick}>
+                    <span
+                        className={styles.white_icons}
+                        onClick={handleProfileClick}>
                         <img src="icons/settings.svg" alt="Settings" />
                     </span>
 
@@ -215,7 +222,7 @@ const Header = () => {
                         label="Logout"
                         onClick={handleLogout}
                         variant="secondary"
-                        icon="images/icons/logout-icon.svg"
+                        icon="icons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
                     />

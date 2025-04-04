@@ -36,7 +36,7 @@ import SubstationFeeders from './pages/SubstationFeeders';
 
 const App = () => {
     return (
-        <BrowserRouter basename="/bi">
+        <BrowserRouter basename="/exedb">
             <AuthProvider>
                 <Routes>
                     <Route
