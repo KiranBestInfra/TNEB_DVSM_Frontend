@@ -2,7 +2,6 @@ import { Outlet } from 'react-router-dom';
 import '../global.css';
 import styles from '../styles/AdminLayout.module.css';
 import Header from './Header';
-import Sidebar from './Sidebar';
 import { useState } from 'react';
 
 const AdminLayout = ({ children }) => {
