@@ -31,8 +31,8 @@ const Breadcrumb = ({ items }) => {
     const pathSegments = location.pathname.split('/').filter(Boolean);
     const isRegionUserPath = false;
 
-    // If custom items are provided, render them directly
-    if (items?.length) {
+    // If items are passed directly, use them instead of building from the URL
+    if (items && items.length) {
         return (
             <nav className={styles.breadcrumb} aria-label="breadcrumb">
                 <ol className={styles.breadcrumb_list}>
@@ -60,14 +60,17 @@ const Breadcrumb = ({ items }) => {
         );
     }
 
-    // Handle root path
-    if (pathSegments.length === 0 || location.pathname === '/') {
+    // Original code for auto-generated breadcrumbs from URL
+    const pathnames = location.pathname.split('/').filter((x) => x);
+
+    // Only hide breadcrumb on root path
+    if (pathnames.length === 0 || location.pathname === '/') {
         return null;
     }
 
-    // Filter out system paths
-    const filteredPathnames = pathSegments.filter(
-        name => !['admin', 'user', 'bi'].includes(name)
+    // Filter out 'admin', 'user', and 'bi' from pathnames for cleaner breadcrumb
+    const filteredPathnames = pathnames.filter(
+        (name) => name !== 'admin' && name !== 'user' && name !== 'bi'
     );
 
     // Handle region user paths

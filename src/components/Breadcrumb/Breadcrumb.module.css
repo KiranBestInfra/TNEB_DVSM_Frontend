@@ -28,7 +28,7 @@
 
 .breadcrumb_link:hover {
   color: var(--brand-blue);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .breadcrumb_current {
