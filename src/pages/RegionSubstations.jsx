@@ -268,8 +268,9 @@ const RegionSubstations = () => {
                         isBiUserRoute={location.pathname.includes('/bi/user/')}
                         showRegions={false}
                         showEdcs={false}
-                        showSubstations={true}
                         showDistricts={true}
+                        showSubstations={true}
+                        showFeeders={true}
                     />
 
                     <div className={styles.section_header}>
