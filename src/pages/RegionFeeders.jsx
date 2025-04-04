@@ -155,7 +155,7 @@ const RegionFeeders = () => {
                     nonCommMeters: 301,
                     feederNames: Object.keys(parsedFeederData),
                     feederCount: 0,
-                   // meterCount: 0,
+                    // meterCount: 0,
                     feederDemandData: parsedFeederData,
                 };
             }
@@ -170,7 +170,7 @@ const RegionFeeders = () => {
             nonCommMeters: 301,
             feederNames: [],
             feederCount: 0,
-          //  meterCount: 0,
+            //  meterCount: 0,
             feederDemandData: {},
         };
     });
@@ -258,7 +258,7 @@ const RegionFeeders = () => {
                         feederNames: demoFeederNames,
                         feederCount: demoFeederNames.length,
                         totalFeeders: demoFeederNames.length,
-                     //   meterCount: feederMeterCounts,
+                        //   meterCount: feederMeterCounts,
                         feederDemandData: demoFeederDemandData,
                     }));
                 }
@@ -274,9 +274,6 @@ const RegionFeeders = () => {
 
     const regionName = region
         ? region
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
               .split('-')
               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
               .join(' ')
@@ -343,7 +340,6 @@ const RegionFeeders = () => {
             <div className={styles.region_stats_container}>
                 {widgetsData.feederNames &&
                 widgetsData.feederNames.length > 0 ? (
-                widgetsData.feederNames.length > 0 ? (
                     widgetsData.feederNames.map((feeder, index) => (
                         <div
                             key={index}
@@ -362,7 +358,6 @@ const RegionFeeders = () => {
                                 }
                                 graphData={
                                     widgetsData.feederDemandData?.[
-                                        feeder.trim()
                                         feeder.trim()
                                     ] ?? graphData.daily
                                 }
