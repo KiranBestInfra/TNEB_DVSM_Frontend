@@ -99,9 +99,9 @@ const RegionFeeders = () => {
 
     const regionName = region
         ? region
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
         : 'Unknown';
 
     return (
@@ -130,7 +130,6 @@ const RegionFeeders = () => {
                                 }
                             />
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -144,7 +143,7 @@ const RegionFeeders = () => {
                     totalFeeders: totalFeeders,
                     commMeters: 942,
                     nonCommMeters: 301,
-                    totalDistricts: 0
+                    totalDistricts: 0,
                 }}
                 isUserRoute={isUserRoute}
                 isBiUserRoute={location.includes('/bi/user/')}
