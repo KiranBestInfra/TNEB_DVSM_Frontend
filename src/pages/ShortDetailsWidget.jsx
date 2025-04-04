@@ -189,10 +189,10 @@ const ShortDetailsWidget = ({
                         <p className="titles">Demand Usage</p>
                         <div className={styles.region_stats_values}>
                             <div className={styles.region_current_value}>
-                                {currentValue}
+                                <RollingNumber n={parseFloat(currentValue)} decimals={1} />
                             </div>
                             <div className={styles.region_previous_value}>
-                                {previousValue} MW
+                                <RollingNumber n={parseFloat(previousValue)} decimals={1} /> MW
                             </div>
                             <div
                                 className={`${styles.region_percentage_change
