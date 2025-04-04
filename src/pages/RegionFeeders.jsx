@@ -231,38 +231,40 @@ const RegionFeeders = () => {
     useEffect(() => {
         const fetchFeeders = async () => {
             try {
-                try {
-                    const response = await apiClient.get(
-                        `/regions/${region}/feeders`
-                    );
+                const response = await apiClient.get(
+                    `/regions/${region}/feeders`
+                );
+                const feedersData = response.data?.data || [];
 
-                    const feedersData = response.data || [];
-
-                    setWidgetsData((prev) => ({
-                        ...prev,
-                        feederNames:
-                            feedersData.map((feeder) => feeder.name) || [],
-                        feederCount: feedersData.length || 0,
-                        totalFeeders: feedersData.length || 0,
-                        meterCount: feedersData.reduce((acc, feeder) => {
-                            acc[feeder.name] = feeder.meter_count || 0;
-                            return acc;
-                        }, {}),
-                    }));
-                } catch (error) {
-                    console.error('API error, using demo data:', error);
-
-                    setWidgetsData((prev) => ({
-                        ...prev,
-                        feederNames: demoFeederNames,
-                        feederCount: demoFeederNames.length,
-                        totalFeeders: demoFeederNames.length,
-                        meterCount: feederMeterCounts,
-                        feederDemandData: demoFeederDemandData,
-                    }));
-                }
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    feederNames: feedersData.map((feeder) => feeder.name) || [],
+                    feederCount: feedersData.length || 0,
+                    totalFeeders: feedersData.length || 0,
+                    meterCount: feedersData.reduce((acc, feeder) => {
+                        acc[feeder.name] = feeder.meter_count || 0;
+                        return acc;
+                    }, {}),
+                    feederDemandData: feedersData.reduce((acc, feeder) => {
+                        acc[feeder.name] = feeder.demandData || {
+                            xAxis: [],
+                            series: [],
+                        };
+                        return acc;
+                    }, {}),
+                }));
             } catch (error) {
-                console.error('Error fetching feeders for region:', error);
+                console.error('API error, using demo data:', error);
+
+                // fallback to demo data
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    feederNames: demoFeederNames,
+                    feederCount: demoFeederNames.length,
+                    totalFeeders: demoFeederNames.length,
+                    meterCount: feederMeterCounts,
+                    feederDemandData: demoFeederDemandData,
+                }));
             }
         };
 
