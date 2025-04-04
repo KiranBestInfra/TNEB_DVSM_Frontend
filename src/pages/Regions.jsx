@@ -182,7 +182,7 @@ const Regions = () => {
                                 className={styles.time_range_select_dropdown_icon}
                             />
                         </div>
-                       
+
                     </div>
                 </div>
             </div>

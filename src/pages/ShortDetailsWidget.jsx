@@ -2,6 +2,7 @@ import styles from '../styles/ShortDetailsWidget.module.css';
 import LineChartTNEB from '../components/graphs/LineChartTNEB/LineChartTNEB';
 import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import RollingNumber from '../components/RollingNumber';
 
 // const graphData = {
 //   daily: {
@@ -215,7 +216,7 @@ const ShortDetailsWidget = ({
                                         : styles.negative
                                         }`}
                                 />
-                                {Math.abs(percentageChange)}%
+                                <RollingNumber n={Math.abs(parseFloat(percentageChange))} decimals={1} />%
                             </div>
                         </div>
                     </div>

@@ -227,6 +227,12 @@ const Header = () => {
                     <div className={styles.date_time_display}>
                         <div className={styles.time}>{formattedTime}</div>
                         <div className={styles.date}>{formattedDate}</div>
+                        <div
+                            className={styles.clock_icons}
+                            onClick={handleProfileClick}>
+                            <img src="icons/clock-up-arrow.svg" alt="Clock" />
+                        </div>
+
                     </div>
 
                     <span

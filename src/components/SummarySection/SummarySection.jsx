@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from './SummarySection.module.css';
+import RollingNumber from '../RollingNumber';
 
 const SummarySection = ({
     widgetsData = {
@@ -46,7 +47,7 @@ const SummarySection = ({
                                 </Link>
                             </p>
                             <div className={styles.summary_value}>
-                                {widgetsData.totalRegions}
+                                <RollingNumber n={widgetsData.totalRegions} />
                             </div>
                         </div>
                     </div>
@@ -81,7 +82,7 @@ const SummarySection = ({
                                 )}
                             </p>
                             <div className={styles.summary_value}>
-                                {widgetsData.totalEdcs}
+                                <RollingNumber n={widgetsData.totalEdcs} />
                             </div>
                         </div>
                     </div>
@@ -100,7 +101,7 @@ const SummarySection = ({
                                 Districts
                             </p>
                             <div className={styles.summary_value}>
-                                {widgetsData.totalDistricts || 0}
+                                <RollingNumber n={widgetsData.totalDistricts || 0} />
                             </div>
                         </div>
                     </div>
@@ -135,7 +136,7 @@ const SummarySection = ({
                                 )}
                             </p>
                             <div className={styles.summary_value}>
-                                {widgetsData.totalSubstations}
+                                <RollingNumber n={widgetsData.totalSubstations} />
                             </div>
                         </div>
                     </div>
@@ -154,7 +155,7 @@ const SummarySection = ({
                                 Feeders
                             </div>
                             <div className={styles.summary_value}>
-                                {widgetsData.totalFeeders}
+                                <RollingNumber n={widgetsData.totalFeeders} />
                             </div>
                         </div>
                     </div>
