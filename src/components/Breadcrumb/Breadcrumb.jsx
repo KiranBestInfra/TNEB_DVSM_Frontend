@@ -28,8 +28,6 @@ const ROUTE_MAP = {
 
 const Breadcrumb = ({ items }) => {
     const location = useLocation();
-    const pathSegments = location.pathname.split('/').filter(Boolean);
-    const isRegionUserPath = false;
 
     // If items are passed directly, use them instead of building from the URL
     if (items && items.length) {
@@ -73,127 +71,40 @@ const Breadcrumb = ({ items }) => {
         (name) => name !== 'admin' && name !== 'user' && name !== 'bi'
     );
 
-    // Handle region user paths
-    if (isRegionUserPath && !items) {
-        const region = pathSegments.find(p => REGIONS.includes(p));
-        if (region) {
-            const pagePath = pathSegments[pathSegments.length - 1];
-            const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
-            const routePrefix = '/admin';
-
-            const customItems = [
-                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
-                { 
-                    label: `Region : ${formattedRegionName}`,
-                    path: `${routePrefix}/${region}/dashboard`
-                }
-            ];
-
-            if (['edcs', 'substations', 'feeders'].includes(pagePath)) {
-                const pageLabel = pagePath.charAt(0).toUpperCase() + pagePath.slice(1);
-                customItems.push({
-                    label: pageLabel,
-                    path: `${routePrefix}/${region}/${pagePath}`
-                });
-            }
-
-            return (
-                <nav className={styles.breadcrumb} aria-label="breadcrumb">
-                    <ol className={styles.breadcrumb_list}>
-                        {customItems.map((item, index) => {
-                            const isLast = index === customItems.length - 1;
-                            return (
-                                <li key={index} className={styles.breadcrumb_item}>
-                                    {isLast ? (
-                                        <span className={styles.breadcrumb_current}>
-                                            {item.label}
-                                        </span>
-                                    ) : (
-                                        <>
-                                            <Link to={item.path} className={styles.breadcrumb_link}>
-                                                {item.label}
-                                            </Link>
-                                            <span className={styles.breadcrumb_separator}>/</span>
-                                        </>
-                                    )}
-                                </li>
-                            );
-                        })}
-                    </ol>
-                </nav>
-            );
-        }
-    }
-
-    // Helper function to get breadcrumb name
-    const getBreadcrumbName = (path) => {
-        const routeMap = {
-            dashboard: 'Dashboard',
-            regions: 'Regions',
-            edcs: 'EDCs',
-            substations: 'Substations',
-            feeders: 'Feeders',
-            tickets: 'Tickets',
-            profile: 'Profile',
-            'create-ticket': 'Create Ticket',
-            'ticket-details': 'Ticket Details',
-            'unit-selection': 'Unit Selection',
-            'unit-detail': 'Unit Detail',
-            verification: 'Verification',
-            'forgot-password': 'Forgot Password',
-            privacy: 'Privacy',
-            terms: 'Terms',
-        };
-
-        return routeMap[path] || path.charAt(0).toUpperCase() + path.slice(1);
-    };
-
-    // Build complete hierarchy path
-    const buildCompleteHierarchy = (paths) => {
-        const hierarchy = [];
-        const isUserRoute = paths.includes('user');
-        const routePrefix = isUserRoute ? '/user' : '/admin';
-
-        if (paths[0] === 'dashboard') {
-            return hierarchy;
-        }
-
-        const currentPage = paths[paths.length - 1];
-        hierarchy.push({
-            path: currentPage,
-            name: getBreadcrumbName(currentPage),
-            route: `${routePrefix}/${currentPage}`
-        });
-
-        return hierarchy;
-    };
-
-    const completeHierarchyPath = buildCompleteHierarchy(filteredPathnames);
-    const routePrefix = pathSegments.includes('user') ? '/user' : '/admin';
-
+    // Basic breadcrumb generation
     return (
         <nav className={styles.breadcrumb} aria-label="breadcrumb">
             <ol className={styles.breadcrumb_list}>
                 <li className={styles.breadcrumb_item}>
-                    <Link to={`${routePrefix}/dashboard`} className={styles.breadcrumb_link}>
+                    <Link
+                        to="/dashboard"
+                        className={styles.breadcrumb_link}>
                         Dashboard
                     </Link>
-                    {completeHierarchyPath.length > 0 && (
+                    {filteredPathnames.length > 0 && (
                         <span className={styles.breadcrumb_separator}>/</span>
                     )}
                 </li>
-                {completeHierarchyPath.map((item, index) => {
-                    const isLast = index === completeHierarchyPath.length - 1;
+                {filteredPathnames.map((name, index) => {
+                    // Build path for this breadcrumb item
+                    const routeTo = `/${pathnames.slice(0, pathnames.indexOf(name) + 1).join('/')}`;
+                    const isLast = index === filteredPathnames.length - 1;
+
+                    // Format the display name
+                    const displayName = name.charAt(0).toUpperCase() + name.slice(1);
+
                     return (
-                        <li key={item.path} className={styles.breadcrumb_item}>
+                        <li key={name} className={styles.breadcrumb_item}>
                             {isLast ? (
                                 <span className={styles.breadcrumb_current}>
-                                    {item.name}
+                                    {displayName}
                                 </span>
                             ) : (
                                 <>
-                                    <Link to={item.route} className={styles.breadcrumb_link}>
-                                        {item.name}
+                                    <Link
+                                        to={routeTo}
+                                        className={styles.breadcrumb_link}>
+                                        {displayName}
                                     </Link>
                                     <span className={styles.breadcrumb_separator}>/</span>
                                 </>
