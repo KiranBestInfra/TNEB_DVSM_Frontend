@@ -236,7 +236,8 @@ const RegionFeeders = () => {
                         `/regions/${region}/feeders`
                     );
 
-                    const feedersData = response.data || [];
+                    const feedersData = response.data;
+                    console.log('feedersData', feedersData);
 
                     setWidgetsData((prev) => ({
                         ...prev,
@@ -273,9 +274,9 @@ const RegionFeeders = () => {
 
     const regionName = region
         ? region
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
         : 'Unknown';
 
     return (
@@ -338,7 +339,7 @@ const RegionFeeders = () => {
             </div>
             <div className={styles.region_stats_container}>
                 {widgetsData.feederNames &&
-                    widgetsData.feederNames.length > 0 ? (
+                widgetsData.feederNames.length > 0 ? (
                     widgetsData.feederNames.map((feeder, index) => (
                         <div
                             key={index}
@@ -359,7 +360,7 @@ const RegionFeeders = () => {
                                 }
                                 graphData={
                                     widgetsData.feederDemandData?.[
-                                    feeder.trim()
+                                        feeder.trim()
                                     ] ?? graphData.daily
                                 }
                                 pageType="feeders"

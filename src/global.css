@@ -5,6 +5,20 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: "Roboto";
+  src: url("./fonts/Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("./fonts/Roboto-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
 /* Variables */
 :root {
   --danger: #dc272c;
@@ -122,6 +136,8 @@ input {
   outline: none;
   color: var(--grey);
 }
+
+
 
 input:focus {
   border: 1px solid var(--primary-bg);
