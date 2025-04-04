@@ -2,6 +2,7 @@ import styles from '../styles/ShortDetailsWidget.module.css';
 import LineChartTNEB from '../components/graphs/LineChartTNEB/LineChartTNEB';
 import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import RollingNumber from '../components/RollingNumber';
 
 // const graphData = {
 //   daily: {
@@ -173,7 +174,7 @@ const ShortDetailsWidget = ({
                 <div className={styles.individual_region_header_right}>
                     <div className={styles.click_individual_region}>
                         <img
-                            src="/icons/information.svg"
+                            src="icons/information.svg"
                             alt="Click Here"
                             onClick={handleClick}
                             style={{ cursor: 'pointer' }}
@@ -185,7 +186,7 @@ const ShortDetailsWidget = ({
             <div className={styles.individual_region_body}>
                 <div className={styles.region_content_wrapper}>
                     <div className={styles.region_stats_utilization}>
-                        <p className="titles">Units Utilization</p>
+                        <p className="titles">Demand Usage</p>
                         <div className={styles.region_stats_values}>
                             <div className={styles.region_current_value}>
                                 {currentValue}
@@ -194,31 +195,28 @@ const ShortDetailsWidget = ({
                                 {previousValue} MW
                             </div>
                             <div
-                                className={`${
-                                    styles.region_percentage_change
-                                } ${
-                                    isPositiveChange
+                                className={`${styles.region_percentage_change
+                                    } ${isPositiveChange
                                         ? styles.positive
                                         : styles.negative
-                                }`}>
+                                    }`}>
                                 <img
                                     src={
                                         isPositiveChange
-                                            ? '/icons/up-right-arrow.svg'
-                                            : '/icons/down-right-arrow.svg'
+                                            ? 'icons/up-right-arrow.svg'
+                                            : 'icons/up-right-arrow.svg'
                                     }
                                     alt={
                                         isPositiveChange
                                             ? 'Increase'
                                             : 'Decrease'
                                     }
-                                    className={`${styles.region_trend_arrow} ${
-                                        isPositiveChange
-                                            ? styles.positive
-                                            : styles.negative
-                                    }`}
+                                    className={`${styles.region_trend_arrow} ${isPositiveChange
+                                        ? styles.positive
+                                        : styles.negative
+                                        }`}
                                 />
-                                {Math.abs(percentageChange)}%
+                                <RollingNumber n={Math.abs(parseFloat(percentageChange))} decimals={1} />%
                             </div>
                         </div>
                     </div>

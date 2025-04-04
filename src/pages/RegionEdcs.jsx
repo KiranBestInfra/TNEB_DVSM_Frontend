@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
+import SummarySection from '../components/SummarySection';
 import { apiClient } from '../api/client';
 import ShortDetailsWidget from './ShortDetailsWidget';
 
@@ -10,6 +11,7 @@ const RegionEdcs = () => {
     const { region } = useParams();
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
+    const [timeRange, setTimeRange] = useState("Daily");
     const cacheTimeoutRef = useRef(null);
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('regionEdcDemandData');
@@ -26,6 +28,7 @@ const RegionEdcs = () => {
                     totalFeeders: 0,
                     commMeters: 0,
                     nonCommMeters: 0,
+                    //   totalDistricts: 0,
                     edcNames: Object.keys(parsedDemandData),
                     substationCount: {},
                     feederCount: {},
@@ -40,6 +43,7 @@ const RegionEdcs = () => {
             totalFeeders: 0,
             commMeters: 0,
             nonCommMeters: 0,
+            totalDistricts: 0,
             edcNames: [],
             substationCount: {},
             feederCount: {},
@@ -122,6 +126,9 @@ const RegionEdcs = () => {
                     ),
                     commMeters: data.commMeters || 0,
                     nonCommMeters: data.nonCommMeters || 0,
+                    //  totalDistricts: data.totalDistricts || data.edcNames?.length || 0,
+                    totalDistricts:
+                        data.districtCount?.[0]?.district_count || 0,
                     edcNames: data.edcNames || [],
                     substationCount:
                         data.substationCounts?.reduce((acc, item) => {
@@ -147,143 +154,62 @@ const RegionEdcs = () => {
 
     const regionName = region
         ? region
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
         : 'Unknown';
-
-    const getBreadcrumbItems = () => {
-        const items = [{ label: 'Dashboard', path: '/admin/dashboard' }];
-
-        if (region) {
-            items.push({ label: 'Regions', path: '/admin/regions' });
-            items.push({
-                label: regionName,
-                path: `/admin/${region}`,
-            });
-        }
-
-        items.push({
-            label: 'EDCs',
-            path: region ? `/admin/${region}/edcs` : '/admin/edcs',
-        });
-
-        return items;
-    };
 
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">{regionName} Region EDCs</h2>
+                <h2 className="title">{regionName} - EDCs</h2>
+                <div className={styles.action_container}>
+                    <div className={styles.action_cont}>
+                        <div className={styles.time_range_select_dropdown}>
+                            <select
+                                value={timeRange}
+                                onChange={(e) => setTimeRange(e.target.value)}
+                                className={styles.time_range_select}>
+                                <option value="Daily">Daily</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="PreviousMonth">
+                                    Previous Month
+                                </option>
+                                <option value="Year">Year</option>
+                            </select>
+                            <img
+                                src="icons/arrow-down.svg"
+                                alt="Select Time"
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
-            <Breadcrumb items={getBreadcrumbItems()} />
+            <Breadcrumb />
 
-            <div className={styles.summary_section}>
-                <div className={styles.total_edcs_container}>
-                    <div className={styles.total_main_info}>
-                        <img
-                            src="/icons/electric-edc.svg"
-                            alt="Total EDCs"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_title_value}>
-                            <p className="title">EDCs</p>
-                            <div className={styles.summary_value}>
-                                {widgetsData.totalEdcs}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.total_substations_container}>
-                    <div className={styles.total_main_info}>
-                        <img
-                            src="/icons/electric-factory.svg"
-                            alt="Total Substations"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_title_value}>
-                            <p className="title">Substations</p>
-                            <div className={styles.summary_value}>
-                                {widgetsData.totalSubstations}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_meters_main_info}>
-                        <img
-                            src="/icons/electric-meter.svg"
-                            alt="Total Feeders"
-                            className={styles.TNEB_icons}
-                        />
-                        <div className={styles.total_meters}>
-                            <div className="title">Feeders</div>
-                            <div className={styles.summary_value}>
-                                {widgetsData.totalFeeders}
-                            </div>
-                        </div>
-                    </div>
-                    <div className={styles.metrics_communication_info}>
-                        <div className="titles">Communication Status</div>
-                        <div className={styles.overall_communication_status}>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    {widgetsData.commMeters}
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_positive_percentage
-                                    }>
-                                    <img
-                                        src="/icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_positive_arrow
-                                        }
-                                    />
-                                    {(
-                                        (widgetsData.commMeters /
-                                            (widgetsData.commMeters +
-                                                widgetsData.nonCommMeters)) *
-                                        100
-                                    ).toFixed(1)}
-                                    %
-                                </div>
-                            </div>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    {widgetsData.nonCommMeters}
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_negative_percentage
-                                    }>
-                                    <img
-                                        src="/icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_negative_arrow
-                                        }
-                                    />
-                                    {(
-                                        (widgetsData.nonCommMeters /
-                                            (widgetsData.commMeters +
-                                                widgetsData.nonCommMeters)) *
-                                        100
-                                    ).toFixed(1)}
-                                    %
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <SummarySection
+                widgetsData={{
+                    totalRegions: 0,
+                    totalEdcs: widgetsData.totalEdcs,
+                    totalSubstations: widgetsData.totalSubstations,
+                    totalFeeders: widgetsData.totalFeeders,
+                    commMeters: `${(
+                        (widgetsData.commMeters /
+                            (widgetsData.commMeters +
+                                widgetsData.nonCommMeters)) *
+                        100
+                    ).toFixed(1)}%`,
+                    nonCommMeters: widgetsData.nonCommMeters,
+                    totalDistricts: widgetsData.totalDistricts,
+                }}
+                isUserRoute={location.pathname.includes('/user/')}
+                isBiUserRoute={location.pathname.includes('/bi/user/')}
+                showRegions={false}
+                showDistricts={true}
+            />
 
             <div className={styles.section_header}>
                 <h2 className="title">
