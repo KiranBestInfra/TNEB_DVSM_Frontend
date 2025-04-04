@@ -172,7 +172,6 @@ const Header = () => {
                         <div className={styles.spinner}></div>
                     ) : (
                         <img src="icons/search-icon.svg" alt="Search" />
-                        <img src="icons/search-icon.svg" alt="Search" />
                     )}
                 </span>
                 {searchResults.length > 0 && (
