@@ -6,6 +6,7 @@ import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 import PropTypes from 'prop-types';
+import SummarySection from '../components/SummarySection/SummarySection';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -118,65 +119,7 @@ const EdcSubstations = () => {
         setTimeframe(e.target.value);
     };
 
-    const getBreadcrumbItems = () => {
-        if (isRegionUser) {
-            // For region user
-            const formattedRegionName = region
-                ? region
-                      .split('-')
-                      .map(
-                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                      )
-                      .join(' ')
-                : 'Unknown';
 
-            return [
-                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
-                {
-                    label: `Region : ${formattedRegionName}`,
-                    path: `${routePrefix}/${region}/dashboard`,
-                },
-                {
-                    label: edcs,
-                    path: `${routePrefix}/${region}/${edcs}`,
-                },
-                {
-                    label: 'Substations',
-                    path: `${routePrefix}/${region}/${edcs}/substations`,
-                },
-            ];
-        } else {
-            const items = [
-                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
-            ];
-
-            if (region) {
-                items.push({
-                    label: 'Regions',
-                    path: `${routePrefix}/regions`,
-                });
-                items.push({
-                    label: region.charAt(0).toUpperCase() + region.slice(1),
-                    path: `${routePrefix}/${region}`,
-                });
-            }
-
-            if (edcs) {
-                items.push({
-                    label: edcs.charAt(0).toUpperCase() + edcs.slice(1),
-                    path: `${routePrefix}/${region}/${edcs}`,
-                });
-            }
-
-            items.push({
-                label: 'Substations',
-                path: region
-                    ? `${routePrefix}/${region}/${edcs}/substations`
-                    : `${routePrefix}/substations`,
-            });
-            return items;
-        }
-    };
 
     try {
         return (
@@ -213,164 +156,33 @@ const EdcSubstations = () => {
                             </div>
                         </div>
                     </div>
-                    <Breadcrumb items={getBreadcrumbItems()} />
-                    <div className={styles.summary_section}>
-                        <div className={styles.total_regions_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="icons/office.svg"
-                                    alt="Total Regions"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link to={`${routePrefix}/regions`}>
-                                            Regions
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalRegions}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_edcs_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="icons/electric-edc.svg"
-                                    alt="Total EDCs"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link
-                                            to={`${routePrefix}/${region}/edcs`}>
-                                            EDCs
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalEdcs}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_substations_container}>
-                            <div className={styles.total_main_info}>
-                                <img
-                                    src="icons/electric-factory.svg"
-                                    alt="Total Substations"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_title_value}>
-                                    <p className="title">
-                                        <Link
-                                            to={`${routePrefix}/${region}/${edcs}/substations`}>
-                                            Substations
-                                        </Link>
-                                    </p>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalSubstations}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={styles.total_meters_container}>
-                            <div className={styles.total_meters_main_info}>
-                                <img
-                                    src="icons/electric-meter.svg"
-                                    alt="Total Meters"
-                                    className={styles.TNEB_icons}
-                                />
-                                <div className={styles.total_meters}>
-                                    <div className="title">
-                                        <Link
-                                            to={`${routePrefix}/${region}/${edcs}/feeders`}>
-                                            Feeders
-                                        </Link>
-                                    </div>
-                                    <div className={styles.summary_value}>
-                                        {widgetsData.totalFeeders}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className={styles.metrics_communication_info}>
-                                <div className="titles">
-                                    Communication Status
-                                </div>
-                                <div
-                                    className={
-                                        styles.overall_communication_status
-                                    }>
-                                    <div
-                                        className={
-                                            styles.communication_status_container
-                                        }>
-                                        <div
-                                            className={
-                                                styles.communication_value
-                                            }>
-                                            {widgetsData.commMeters}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles.communication_positive_percentage
-                                            }>
-                                            <img
-                                                src="icons/up-right-arrow.svg"
-                                                alt="Positive"
-                                                className={
-                                                    styles.communication_positive_arrow
-                                                }
-                                            />
-                                            {(
-                                                (widgetsData.commMeters /
-                                                    (widgetsData.commMeters +
-                                                        widgetsData.nonCommMeters)) *
-                                                100
-                                            ).toFixed(1)}
-                                            %
-                                        </div>
-                                    </div>
-                                    <div
-                                        className={
-                                            styles.communication_status_container
-                                        }>
-                                        <div
-                                            className={
-                                                styles.communication_value
-                                            }>
-                                            {widgetsData.nonCommMeters}
-                                        </div>
-                                        <div
-                                            className={
-                                                styles.communication_negative_percentage
-                                            }>
-                                            <img
-                                                src="icons/up-right-arrow.svg"
-                                                alt="Positive"
-                                                className={
-                                                    styles.communication_negative_arrow
-                                                }
-                                            />
-                                            {(
-                                                (widgetsData.nonCommMeters /
-                                                    (widgetsData.commMeters +
-                                                        widgetsData.nonCommMeters)) *
-                                                100
-                                            ).toFixed(1)}
-                                            %
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                    <Breadcrumb  />
+                  
+                    <SummarySection
+                        widgetsData={{
+                            totalRegions: widgetsData.totalRegions,
+                            totalEdcs: widgetsData.totalEdcs,
+                            totalSubstations: widgetsData.totalSubstations,
+                            totalFeeders: widgetsData.totalFeeders,
+                            commMeters: widgetsData.commMeters,
+                            nonCommMeters: widgetsData.nonCommMeters,
+                            totalDistricts:
+                                widgetsData.totalDistricts ||
+                                widgetsData.regionSubstationCount ||
+                                0,
+                        }}
+                        isUserRoute={isRegionUser}
+                        isBiUserRoute={location.pathname.includes('/bi/user/')}
+                        showRegions={false}
+                        showEdcs={false}
+                        showSubstations={true}
+                        showDistricts={true}
+                    />
                     <div className={styles.section_header}>
                         <h2 className="title">
-                            Substations{' '}
+                            Substations:{' '}
                             <span className={styles.region_count}>
-                                {widgetsData.edcSubstationCount}
+                                [ {widgetsData.edcSubstationCount} ]
                             </span>
                         </h2>
                     </div>
