@@ -335,6 +335,34 @@ const EdcSubstations = () => {
                 <div className={styles.main_content}>
                     <div className={styles.section_header}>
                         <h2 className="title">Substations</h2>
+                        <div className={styles.action_container}>
+                            <div className={styles.action_cont}>
+                                <div
+                                    className={
+                                        styles.time_range_select_dropdown
+                                    }>
+                                    <select
+                                        value={timeframe}
+                                        onChange={handleTimeframeChange}
+                                        className={styles.time_range_select}>
+                                        <option value="Daily">Daily</option>
+                                        <option value="Monthly">Monthly</option>
+                                        <option value="PreviousMonth">
+                                            Previous Month
+                                        </option>
+                                        <option value="Year">Year</option>
+                                    </select>
+                                    <img
+                                        src="icons/arrow-down.svg"
+                                        alt="Select Time"
+                                        className={
+                                            styles.time_range_select_dropdown_icon
+                                        }
+                                    />
+                                </div>
+                                
+                            </div>
+                        </div>
                     </div>
                     <Breadcrumb />
 

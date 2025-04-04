@@ -14,6 +14,7 @@ const Tickets = () => {
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [error, setError] = useState(null);
 
     const [filterCategory, setFilterCategory] = useState('all');
     const [filterRegion, setFilterRegion] = useState('all');
@@ -46,17 +47,41 @@ const Tickets = () => {
     useEffect(() => {
         const fetchTickets = async () => {
             setLoading(true);
+            setError(null);
             try {
+                console.log('API Base URL:', apiClient.baseURL);
+                console.log('Cookies:', document.cookie);
+                
                 const res = await apiClient.get('/tickets');
-                setAllTickets(res.data);
+                console.log('API Response:', res);
+                
+                if (Array.isArray(res)) {
+                    setAllTickets(res);
+                } 
+                else if (res && Array.isArray(res.data)) {
+                    setAllTickets(res.data);
+                } else {
+                    const errorMsg = 'Invalid response format from server';
+                    console.error(errorMsg, res);
+                    setError(errorMsg);
+                }
             } catch (error) {
                 console.error('Failed to fetch tickets:', error);
+                const errorMessage = error.message || 
+                    (error.status === 401 ? 'Please log in again' : 
+                     error.status === 403 ? 'You do not have permission to view tickets' :
+                     'Failed to fetch tickets. Please try again later.');
+                setError(errorMessage);
+                
+                if (error.status === 401) {
+                    navigate('/auth/login');
+                }
             } finally {
                 setLoading(false);
             }
         };
         fetchTickets();
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
         let filtered = [...allTickets];

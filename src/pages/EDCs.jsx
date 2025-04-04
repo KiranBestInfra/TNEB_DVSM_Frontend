@@ -305,6 +305,45 @@ const EDCs = () => {
         },
     };
 
+    // Build breadcrumb items based on current path
+    const getBreadcrumbItems = () => {
+        if (isRegionUser) {
+            // For region user
+            const formattedRegionName = region
+                ? region
+                      .split('-')
+                      .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')
+                : 'Unknown';
+
+            const items = [
+                { label: 'Dashboard', path: `${routePrefix}/dashboard` },
+            ];
+
+            if (region) {
+                items.push({
+                    label: 'Regions',
+                    path: `${routePrefix}/regions`,
+                });
+                items.push({
+                    label: formattedRegionName,
+                    path: `${routePrefix}/${region}`,
+                });
+            }
+
+            items.push({
+                label: 'EDCs',
+                path: region
+                    ? `${routePrefix}/${region}/edcs`
+                    : `${routePrefix}/edcs`,
+            });
+
+            return items;
+        }
+    };
+
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
@@ -325,22 +364,14 @@ const EDCs = () => {
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
+                                className={styles.time_range_select_dropdown_icon}
                             />
                         </div>
-                        {/* <Buttons
-                            label="Get Reports"
-                            variant="primary"
-                            alt="GetReports"
-                            icon="icons/reports.svg"
-                            iconPosition="left"
-                        /> */}
+                       
                     </div>
                 </div>
             </div>
-            <Breadcrumb />
+            <Breadcrumb items={getBreadcrumbItems()} />
             <div className={styles.summary_section}>
                 <div className={styles.total_regions_container}>
                     <div className={styles.total_main_info}>
