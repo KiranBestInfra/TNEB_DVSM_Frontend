@@ -53,7 +53,6 @@ const RegionSubstations = () => {
     const cacheTimeoutRef = useRef(null);
     const { region } = useParams();
 
-    // Always use admin routes regardless of actual path
     const isRegionUser = false;
 
     const [widgetsData, setWidgetsData] = useState(() => {
@@ -96,7 +95,6 @@ const RegionSubstations = () => {
         };
     });
 
-    // Socket initialization
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
@@ -106,7 +104,6 @@ const RegionSubstations = () => {
         });
 
         newSocket.on('substationUpdate', (data) => {
-            console.log('substationUpdate', data);
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -146,6 +143,7 @@ const RegionSubstations = () => {
     console.log('widgetsData', widgetsData);
 
     useEffect(() => {
+        console.log('substationNames', widgetsData.substationNames);
         if (socket && widgetsData.substationNames.length > 0) {
             socket.emit('subscribeSubstation', {
                 substations: widgetsData.substationNames,
@@ -158,7 +156,7 @@ const RegionSubstations = () => {
             try {
                 const data = await apiClient.get(`/regions/widgets`);
                 const regionWidgets = data.data;
-
+                console.log('regionWidgets', regionWidgets);
                 setWidgetsData((prev) => ({
                     ...prev,
                     totalRegions:
@@ -189,6 +187,7 @@ const RegionSubstations = () => {
                     `/edcs/widgets/${region}/substations`
                 );
                 const data = response;
+                console.log('data', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -197,7 +196,6 @@ const RegionSubstations = () => {
                         data.data?.substationNames?.length || 0,
                     substationFeederCounts:
                         data.data?.substationFeederCounts || {},
-                    totalDistricts: data.data?.totalDistricts || 0,
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);

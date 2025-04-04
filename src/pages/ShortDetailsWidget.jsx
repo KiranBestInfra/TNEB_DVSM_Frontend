@@ -185,7 +185,7 @@ const ShortDetailsWidget = ({
             <div className={styles.individual_region_body}>
                 <div className={styles.region_content_wrapper}>
                     <div className={styles.region_stats_utilization}>
-                        <p className="titles">Units Utilization</p>
+                        <p className="titles">Demand Usage</p>
                         <div className={styles.region_stats_values}>
                             <div className={styles.region_current_value}>
                                 {currentValue}
