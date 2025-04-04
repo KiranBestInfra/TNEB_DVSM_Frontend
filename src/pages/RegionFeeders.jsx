@@ -275,15 +275,15 @@ const RegionFeeders = () => {
 
     const regionName = region
         ? region
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
+            .split('-')
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ')
         : 'Unknown';
 
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">{regionName} Region Feeders</h2>
+                <h2 className="title">{regionName} - Feeders</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -313,28 +313,20 @@ const RegionFeeders = () => {
 
             <SummarySection
                 widgetsData={{
-                    totalRegions: widgetsData.totalRegions,
-                    totalEdcs: widgetsData.totalEdcs,
-                    totalSubstations: widgetsData.totalSubstations,
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
                     totalFeeders: widgetsData.totalFeeders,
-                    commMeters: `${(
-                        (widgetsData.commMeters /
-                            (widgetsData.commMeters +
-                                widgetsData.nonCommMeters)) *
-                        100
-                    ).toFixed(1)}%`,
-                    nonCommMeters: `${(
-                        (widgetsData.nonCommMeters /
-                            (widgetsData.commMeters +
-                                widgetsData.nonCommMeters)) *
-                        100
-                    ).toFixed(1)}%`,
+                    commMeters: 942,
+                    nonCommMeters: 301,
                     totalDistricts: 0,
                 }}
                 isUserRoute={isUserRoute}
                 isBiUserRoute={false}
-                showRegions={true}
+                showRegions={false}
                 showDistricts={false}
+                showEdcs={false}
+                showSubstations={false}
             />
 
             <div className={styles.section_header}>
@@ -348,7 +340,7 @@ const RegionFeeders = () => {
             </div>
             <div className={styles.region_stats_container}>
                 {widgetsData.feederNames &&
-                widgetsData.feederNames.length > 0 ? (
+                    widgetsData.feederNames.length > 0 ? (
                     widgetsData.feederNames.map((feeder, index) => (
                         <div
                             key={index}
@@ -369,7 +361,7 @@ const RegionFeeders = () => {
                                 }
                                 graphData={
                                     widgetsData.feederDemandData?.[
-                                        feeder.trim()
+                                    feeder.trim()
                                     ] ?? graphData.daily
                                 }
                                 pageType="feeders"
