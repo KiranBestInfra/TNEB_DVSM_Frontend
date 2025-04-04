@@ -125,7 +125,8 @@ const RegionEdcs = () => {
                     ),
                     commMeters: data.commMeters || 0,
                     nonCommMeters: data.nonCommMeters || 0,
-                    totalDistricts: data.totalDistricts || data.edcNames?.length || 0,
+                    totalDistricts:
+                        data.totalDistricts || data.edcNames?.length || 0,
                     edcNames: data.edcNames || [],
                     substationCount:
                         data.substationCounts?.reduce((acc, item) => {
@@ -151,9 +152,9 @@ const RegionEdcs = () => {
 
     const regionName = region
         ? region
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
         : 'Unknown';
 
     return (
@@ -169,9 +170,19 @@ const RegionEdcs = () => {
                     totalEdcs: widgetsData.totalEdcs,
                     totalSubstations: widgetsData.totalSubstations,
                     totalFeeders: widgetsData.totalFeeders,
-                    commMeters: `${((widgetsData.commMeters / (widgetsData.commMeters + widgetsData.nonCommMeters)) * 100).toFixed(1)}%`,
-                    nonCommMeters: widgetsData.nonCommMeters,
-                    totalDistricts: widgetsData.totalDistricts
+                    commMeters: `${(
+                        (widgetsData.commMeters /
+                            (widgetsData.commMeters +
+                                widgetsData.nonCommMeters)) *
+                        100
+                    ).toFixed(1)}%`,
+                    nonCommMeters: `${(
+                        (widgetsData.nonCommMeters /
+                            (widgetsData.commMeters +
+                                widgetsData.nonCommMeters)) *
+                        100
+                    ).toFixed(1)}%`,
+                    totalDistricts: widgetsData.totalDistricts,
                 }}
                 isUserRoute={location.pathname.includes('/user/')}
                 isBiUserRoute={location.pathname.includes('/bi/user/')}
