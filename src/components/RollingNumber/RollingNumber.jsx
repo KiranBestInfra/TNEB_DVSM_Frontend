@@ -1,14 +1,6 @@
 import { useSpring, animated } from 'react-spring';
 
-/**
- * RollingNumber - A component that animates number changes with a rolling effect
- * @param {Object} props
- * @param {number} props.n - The target number to display
- * @param {number} [props.delay=200] - Animation delay in ms
- * @param {number} [props.decimals=0] - Number of decimal places to display
- * @param {Object} [props.springConfig] - Custom spring configuration
- * @returns {JSX.Element} Animated number component
- */
+
 function RollingNumber({
     n,
     delay = 200,
@@ -24,7 +16,7 @@ function RollingNumber({
 
     return (
         <animated.div>
-            {number.to((num) => num.toFixed(decimals))}
+            {number.to((num) => parseFloat(num).toFixed(decimals))}
         </animated.div>
     );
 }
