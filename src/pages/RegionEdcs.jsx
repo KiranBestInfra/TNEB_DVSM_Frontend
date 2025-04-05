@@ -28,7 +28,7 @@ const RegionEdcs = () => {
                     totalFeeders: 0,
                     commMeters: 0,
                     nonCommMeters: 0,
-                    //   totalDistricts: 0,
+                    totalDistricts: 0,
                     edcNames: Object.keys(parsedDemandData),
                     substationCount: {},
                     feederCount: {},
@@ -126,7 +126,6 @@ const RegionEdcs = () => {
                     ),
                     commMeters: data.commMeters || 0,
                     nonCommMeters: data.nonCommMeters || 0,
-                    //  totalDistricts: data.totalDistricts || data.edcNames?.length || 0,
                     totalDistricts:
                         data.districtCount?.[0]?.district_count || 0,
                     edcNames: data.edcNames || [],

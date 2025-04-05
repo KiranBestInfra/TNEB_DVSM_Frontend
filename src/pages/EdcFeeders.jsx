@@ -303,6 +303,7 @@ const EdcFeeders = () => {
                 const response = await apiClient.get(`/edcs/${edc}/feeders`);
                 // const feedersData = response.data || [];
                 const feedersData = response.data.edcFeederNames || [];
+
                 console.log('API response for feeders:', feedersData);
 
                 const newData = {
