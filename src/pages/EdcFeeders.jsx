@@ -13,8 +13,6 @@ const EdcFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
     const { edcs: edc } = useParams();
     console.log(edc);
-    const { edcs: edc } = useParams();
-    console.log(edc);
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
 
@@ -240,11 +238,12 @@ const EdcFeeders = () => {
     }, []);
 
     useEffect(() => {
-        let ids = []
+        let ids = [];
         console.log('widgetsData 1212');
         if (socket && widgetsData.feederIds.length > 0) {
-            widgetsData.feederIds.map((value) => (
-                Object.entries(value).map(([key, value]) => ids.push(value))))
+            widgetsData.feederIds.map((value) =>
+                Object.entries(value).map(([key, value]) => ids.push(value))
+            );
             console.log('ids', ids);
             socket.emit('subscribeFeeder', {
                 feeders: ids,
@@ -305,29 +304,8 @@ const EdcFeeders = () => {
                     meterCount: feederMeterCounts,
                     feederStats: feederStats,
                     feederDemandData: demoFeederDemandData,
-                }));
-                return;
-            }
-
-            try {
-                console.log('Attempting to fetch feeders for EDC:', edc);
-                const response = await apiClient.get(`/edcs/${edc}/feeders`);
-                // const feedersData = response.data || [];
-                const feedersData = response.data.edcFeederNames || [];
-
-                console.log('API response for feeders:', feedersData);
-            if (!edc) {
-                console.log('No EDC parameter provided, cannot fetch feeders');
-                setWidgetsData((prev) => ({
-                    ...prev,
-                    feederNames: feederNames,
-                    feederCount: feederNames.length,
-                    totalFeeders: feederNames.length,
-                    meterCount: feederMeterCounts,
-                    feederStats: feederStats,
-                    feederDemandData: demoFeederDemandData,
                     feederIds: feederNames.map((name, index) => ({
-                        [name]: `demo-feeder-${index}`
+                        [name]: `demo-feeder-${index}`,
                     })),
                 }));
                 return;
@@ -355,9 +333,10 @@ const EdcFeeders = () => {
                         };
                         return acc;
                     }, {}),
-                    feederIds: feedersData.map((feeder) => ({
-                        [feeder.name]: feeder.id,
-                    })) || [],
+                    feederIds:
+                        feedersData.map((feeder) => ({
+                            [feeder.name]: feeder.id,
+                        })) || [],
                 };
 
                 setWidgetsData((prev) => {
@@ -404,7 +383,7 @@ const EdcFeeders = () => {
                         feederStats,
                         feederDemandData: demoFeederDemandData,
                         feederIds: feederNames.map((name, index) => ({
-                            [name]: `demo-feeder-${index}`
+                            [name]: `demo-feeder-${index}`,
                         })),
                     };
 
@@ -416,21 +395,7 @@ const EdcFeeders = () => {
                         'edcFeederDataTimestamp',
                         Date.now().toString()
                     );
-                    localStorage.setItem(
-                        'edcFeederData',
-                        JSON.stringify(updated)
-                    );
-                    localStorage.setItem(
-                        'edcFeederDataTimestamp',
-                        Date.now().toString()
-                    );
 
-                    console.log(
-                        'Updated widgets data with demo data:',
-                        updated
-                    );
-                    return updated;
-                });
                     console.log(
                         'Updated widgets data with demo data:',
                         updated
@@ -440,7 +405,6 @@ const EdcFeeders = () => {
             }
         };
 
-        fetchFeeders();
         fetchFeeders();
     }, [edc]);
 
@@ -505,43 +469,51 @@ const EdcFeeders = () => {
                 </h2>
             </div>
             <div className={styles.region_stats_container}>
-                {widgetsData.feederIds &&
-                widgetsData.feederIds.length > 0 ? (
-                    widgetsData.feederIds.map((value) => (
+                {widgetsData.feederIds && widgetsData.feederIds.length > 0 ? (
+                    widgetsData.feederIds.map((value) =>
                         Object.entries(value).map(([key, value]) => (
-                        <div
-                            key={value}
-                            className={styles.individual_region_stats}>
-                            <ShortDetailsWidget
-                                region={key}
-                                name={key}
-                                id={value}
-                                feederCount={
-                                    widgetsData.meterCount[key] ||
-                                    feederMeterCounts[key] ||
-                                    0
-                                }
-                                currentValue={parseFloat(
-                                    widgetsData.feederDemandData?.[value]?.series?.[0]?.data?.slice(-1)[0] || 
-                                    widgetsData.feederStats[key]?.currentValue ||
-                                    feederStats[key]?.currentValue ||
-                                    0
-                                ).toFixed(1)}
-                                previousValue={parseFloat(
-                                    widgetsData.feederDemandData?.[value]?.series?.[0]?.data?.slice(-2, -1)[0] || 
-                                    widgetsData.feederStats[key]?.previousValue ||
-                                    feederStats[key]?.previousValue ||
-                                    0
-                                ).toFixed(1)}
-                                graphData={
-                                    widgetsData.feederDemandData[value] || 
-                                    graphData.daily
-                                }
-                                pageType="feeders"
-                            />
-                        </div>
+                            <div
+                                key={value}
+                                className={styles.individual_region_stats}>
+                                <ShortDetailsWidget
+                                    region={key}
+                                    name={key}
+                                    id={value}
+                                    feederCount={
+                                        widgetsData.meterCount[key] ||
+                                        feederMeterCounts[key] ||
+                                        0
+                                    }
+                                    currentValue={parseFloat(
+                                        widgetsData.feederDemandData?.[
+                                            value
+                                        ]?.series?.[0]?.data?.slice(-1)[0] ||
+                                            widgetsData.feederStats[key]
+                                                ?.currentValue ||
+                                            feederStats[key]?.currentValue ||
+                                            0
+                                    ).toFixed(1)}
+                                    previousValue={parseFloat(
+                                        widgetsData.feederDemandData?.[
+                                            value
+                                        ]?.series?.[0]?.data?.slice(
+                                            -2,
+                                            -1
+                                        )[0] ||
+                                            widgetsData.feederStats[key]
+                                                ?.previousValue ||
+                                            feederStats[key]?.previousValue ||
+                                            0
+                                    ).toFixed(1)}
+                                    graphData={
+                                        widgetsData.feederDemandData[value] ||
+                                        graphData.daily
+                                    }
+                                    pageType="feeders"
+                                />
+                            </div>
                         ))
-                    ))
+                    )
                 ) : (
                     <p>No feeders available for this EDC.</p>
                 )}
