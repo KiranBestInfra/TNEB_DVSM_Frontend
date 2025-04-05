@@ -45,12 +45,66 @@ const ErrorBoundary = ({ children }) => {
 ErrorBoundary.propTypes = {
     children: PropTypes.node.isRequired,
 };
+// useEffect(() => {
+//     if (!edcs) return;
+
+//     const substationNames = async () => {
+//         try {
+//             const response = await apiClient.get(
+//                 `/widgets/:edcs/substations`
+//             );
+//             const data = response;
+//             console.log('data', data);
+
+//             setWidgetsData((prev) => ({
+//                 ...prev,
+//                 substationNames: data.data?.substationNames || [],
+//                 regionSubstationCount:
+//                     data.data?.substationNames?.length || 0,
+//                 substationFeederCounts:
+//                     data.data?.substationFeederCounts || {},
+//             }));
+//         } catch (error) {
+//             console.error('Error fetching substation data:', error);
+//         }
+//     };
+
+//     substationNames();
+// }, [edcs]);
 
 const EdcSubstations = () => {
     const { edcs } = useParams();
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const location = window.location.pathname;
+
+    useEffect(() => {
+        if (!edcs) return;
+    
+        const substationNames = async () => {
+            try {
+                const response = await apiClient.get(
+                    `/substation/widgets/${edcs}/substations`
+                );
+                const data = response;
+                console.log('data', data);
+    
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    substationNames: data.data?.edcsubstationNames || [],
+                    regionSubstationCount:
+                        data.data?.substationNames?.length || 0,
+                    substationFeederCounts:
+                        data.data?.substationFeederCountsedc
+                        || {},
+                }));
+            } catch (error) {
+                console.error('Error fetching substation data:', error);
+            }
+        };
+    
+        substationNames();
+    }, [edcs]);
 
     const demoSubstationNames = [
         'Adyar Substation',
@@ -176,7 +230,7 @@ const EdcSubstations = () => {
                 return {
                     totalRegions: 0,
                     totalEdcs: 0,
-                    totalSubstations: 0,
+                    totalsubstations: 0,
                     totalFeeders: 0,
                     commMeters: 0,
                     nonCommMeters: 0,
@@ -189,10 +243,9 @@ const EdcSubstations = () => {
                     substationFeederCounts:
                         parsedData.substationFeederCounts || {},
                     substationStats:
-                        parsedData.substationStats || demoSubstationStats,
+                        parsedData.substationStats ,
                     substationDemandData:
-                        parsedData.substationDemandData ||
-                        demoSubstationDemandData,
+                        parsedData.substationDemandData,
                 };
             }
         }
@@ -200,7 +253,7 @@ const EdcSubstations = () => {
         return {
             totalRegions: 0,
             totalEdcs: 0,
-            totalSubstations: 0,
+            totalsubstations: 0,
             totalFeeders: 0,
             commMeters: 0,
             nonCommMeters: 0,
@@ -225,31 +278,32 @@ const EdcSubstations = () => {
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
-                    substationNames:
-                        data.substationNames || prevData.substationNames,
-                    substationFeederCounts:
-                        data.substationFeederCounts ||
-                        prevData.substationFeederCounts,
-                    edcSubstationCount:
-                        data.substationNames?.length ||
-                        prevData.edcSubstationCount,
-                    totalDistricts:
-                        data.totalDistricts ||
-                        data.substationNames?.length ||
-                        prevData.totalDistricts,
-                    substationStats:
-                        data.substationStats || prevData.substationStats,
+                    // substationNames:
+                    //     data.substationNames || prevData.substationNames,
+                    // substationFeederCounts:
+                    //     data.substationFeederCounts ||
+                    //     prevData.substationFeederCounts,
+                    // edcSubstationCount:
+                    //     data.substationNames?.length ||
+                    //     prevData.edcSubstationCount,
+                    // totalDistricts:
+                    //     data.totalDistricts ||
+                    //     data.substationNames?.length ||
+                    //     prevData.totalDistricts,
+                    // substationStats:
+                    //     data.substationStats || prevData.substationStats,
+                    ...prevData,
                     substationDemandData: {
                         ...prevData.substationDemandData,
-                        ...(data.substationDemandData || {}),
+                        [data.substation]: data.graphData,
                     },
                 };
 
                 const cacheData = {
-                    substationNames: newData.substationNames,
-                    substationFeederCounts: newData.substationFeederCounts,
-                    totalDistricts: newData.totalDistricts,
-                    substationStats: newData.substationStats,
+                    // substationNames: newData.substationNames,
+                    // substationFeederCounts: newData.substationFeederCounts,
+                    // totalDistricts: newData.totalDistricts,
+                    // substationStats: newData.substationStats,
                     substationDemandData: newData.substationDemandData,
                 };
 
@@ -282,12 +336,13 @@ const EdcSubstations = () => {
     }, []);
 
     useEffect(() => {
-        if (socket && edcs) {
+        if (socket && widgetsData.substationNames.length > 0) {
             socket.emit('subscribeSubstation', {
-                edc: edcs,
+                substations: widgetsData.substationNames,
+                
             });
         }
-    }, [edcs, socket]);
+    }, [widgetsData.substationNames, socket]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -295,16 +350,17 @@ const EdcSubstations = () => {
                 try {
                     const data = await apiClient.get(`/edcs/${edcs}/widgets`);
                     const edcWidgets = data.data;
+                    console.log('edcWidgets', edcWidgets);
 
                     setWidgetsData((prev) => {
                         const newData = {
                             ...prev,
-                            totalRegions:
-                                edcWidgets.totalRegions || prev.totalRegions,
-                            totalEdcs: edcWidgets.totalEdcs || prev.totalEdcs,
-                            totalSubstations:
-                                edcWidgets.totalSubstations ||
-                                prev.totalSubstations,
+                            // totalRegions:
+                            //     edcWidgets.totalRegions || prev.totalRegions,
+                            // totalEdcs: edcWidgets.totalEdcs || prev.totalEdcs,
+                            totalsubstations:
+                                edcWidgets.totalsubstations ||
+                                prev.totalsubstations,
                             totalFeeders:
                                 edcWidgets.totalFeeders || prev.totalFeeders,
                             commMeters:
@@ -319,16 +375,6 @@ const EdcSubstations = () => {
                         'API error, using demo data for widgets:',
                         error
                     );
-
-                    setWidgetsData((prev) => ({
-                        ...prev,
-                        totalRegions: 5,
-                        totalEdcs: 9,
-                        totalSubstations: 162,
-                        totalFeeders: 871,
-                        commMeters: 735,
-                        nonCommMeters: 246,
-                    }));
                 }
             } catch (error) {
                 console.error('Error fetching widget data:', error);
@@ -363,12 +409,6 @@ const EdcSubstations = () => {
                                 0,
                             substationFeederCounts:
                                 data.data?.substationFeederCounts || {},
-                            substationStats:
-                                data.data?.substationStats ||
-                                demoSubstationStats,
-                            substationDemandData:
-                                data.data?.substationDemandData ||
-                                demoSubstationDemandData,
                         };
 
                         const cacheData = {
@@ -376,8 +416,6 @@ const EdcSubstations = () => {
                             substationFeederCounts:
                                 newData.substationFeederCounts,
                             totalDistricts: newData.totalDistricts,
-                            substationStats: newData.substationStats,
-                            substationDemandData: newData.substationDemandData,
                         };
 
                         localStorage.setItem(
@@ -392,40 +430,9 @@ const EdcSubstations = () => {
                     });
                 } catch (error) {
                     console.error(
-                        'API error, using demo data for substations:',
+                        'API error fetching substations:',
                         error
                     );
-
-                    setWidgetsData((prev) => {
-                        const newData = {
-                            ...prev,
-                            substationNames: demoSubstationNames,
-                            edcSubstationCount: demoSubstationNames.length,
-                            totalDistricts: demoSubstationNames.length,
-                            substationFeederCounts: demoSubstationFeederCounts,
-                            substationStats: demoSubstationStats,
-                            substationDemandData: demoSubstationDemandData,
-                        };
-
-                        const cacheData = {
-                            substationNames: newData.substationNames,
-                            substationFeederCounts:
-                                newData.substationFeederCounts,
-                            totalDistricts: newData.totalDistricts,
-                            substationStats: newData.substationStats,
-                            substationDemandData: newData.substationDemandData,
-                        };
-
-                        localStorage.setItem(
-                            'substationData',
-                            JSON.stringify(cacheData)
-                        );
-                        localStorage.setItem(
-                            'substationDataTimestamp',
-                            Date.now().toString()
-                        );
-                        return newData;
-                    });
                 }
             } catch (error) {
                 console.error('Error fetching substation names:', error);
@@ -434,6 +441,8 @@ const EdcSubstations = () => {
 
         substationNames();
     }, [edcs]);
+
+    console.log('widgetsData', widgetsData);
 
     try {
         return (
@@ -448,33 +457,25 @@ const EdcSubstations = () => {
                         widgetsData={{
                             totalRegions: widgetsData.totalRegions,
                             totalEdcs: widgetsData.totalEdcs,
-                            totalSubstations: widgetsData.totalSubstations,
+                            totalSubstations: widgetsData.totalsubstations,
                             totalFeeders: widgetsData.totalFeeders,
-                            commMeters: `${(
-                                (widgetsData.commMeters /
-                                    (widgetsData.commMeters +
-                                        widgetsData.nonCommMeters)) *
-                                100
-                            ).toFixed(1)}%`,
-                            nonCommMeters: `${(
-                                (widgetsData.nonCommMeters /
-                                    (widgetsData.commMeters +
-                                        widgetsData.nonCommMeters)) *
-                                100
-                            ).toFixed(1)}%`,
+                            commMeters: widgetsData.commMeters,
+                            nonCommMeters: widgetsData.nonCommMeters,
                             totalDistricts: widgetsData.totalDistricts,
                         }}
                         isUserRoute={location.includes('/user/')}
                         isBiUserRoute={location.includes('/bi/user/')}
-                        showRegions={true}
+                        showRegions={false}
                         showDistricts={false}
+                        showEdcs={false}
+                        showSubstations={true}
                     />
 
                     <div className={styles.section_header}>
                         <h2 className="title">
                             Substations{' '}
                             <span className={styles.region_count}>
-                                {widgetsData.edcSubstationCount}
+                                {widgetsData.substationNames.length}
                             </span>
                         </h2>
                     </div>
@@ -497,30 +498,30 @@ const EdcSubstations = () => {
                                                       substation
                                                   ] || 0
                                               }
-                                              currentValue={
-                                                  widgetsData.substationStats?.[
-                                                      substation
-                                                  ]?.currentValue ||
-                                                  demoSubstationStats[
-                                                      substation
-                                                  ]?.currentValue ||
-                                                  42
-                                              }
-                                              previousValue={
-                                                  widgetsData.substationStats?.[
-                                                      substation
-                                                  ]?.previousValue ||
-                                                  demoSubstationStats[
-                                                      substation
-                                                  ]?.previousValue ||
-                                                  38
-                                              }
+                                              currentValue={parseFloat(
+                                                widgetsData.substationDemandData?.[
+                                                    substation.trim()
+                                                ]?.series?.[0]?.data?.slice(
+                                                    -1
+                                                )[0] || 0
+                                            ).toFixed(1)}
+                                            previousValue={parseFloat(
+                                                widgetsData.substationDemandData?.[
+                                                    substation.trim()
+                                                ]?.series?.[0]?.data?.slice(
+                                                    -2,
+                                                    -1
+                                                )[0] || 0
+                                            ).toFixed(1)}
                                               graphData={
-                                                  widgetsData
-                                                      .substationDemandData?.[
-                                                      substation
-                                                  ] || graphData.daily
-                                              }
+                                                widgetsData
+                                                    .substationDemandData?.[
+                                                    substation.trim()
+                                                ] ?? {
+                                                    xAxis: [],
+                                                    series: [],
+                                                }
+                                            }
                                               pageType="substations"
                                           />
                                       </div>

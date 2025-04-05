@@ -62,8 +62,30 @@ const Header = () => {
         setSearchQuery(query);
     };
 
-    const handleResultClick = (resultId) => {
-        navigate(`${basePath}/details/${resultId}`);
+    const handleResultClick = (result) => {
+        const { id, hierarchy_type_id, hierarchy_name} = result;
+        console.log('result', result);
+        let redirectPath = '';
+
+        const formatName = (name) => {
+            return name.toLowerCase().replace(/\s+/g, '-');
+        };
+
+        switch (hierarchy_type_id) {
+            case 10: // Region
+                redirectPath = `${basePath}/regions/${formatName(hierarchy_name)}`;
+                break;
+            case 11: // EDC
+                redirectPath = `${basePath}/${formatName(region)}/edcs/${id}/details`;
+                break;
+            case 35: // Substation
+                redirectPath = `${basePath}/${formatName(region)}/substations/${id}/feeders`;
+                break;
+            default:
+                redirectPath = `${basePath}/details/${id}`;
+        }
+
+        navigate(redirectPath);
         setSearchQuery('');
         setSearchResults([]);
     };
@@ -141,6 +163,11 @@ const Header = () => {
                         `/regions/search?term=${debouncedSearchTerm}`
                     );
                     const results = response.data;
+                    console.log('Search API Response:', {
+                        term: debouncedSearchTerm,
+                        results: results,
+                        firstResult: results[0]
+                    });
                     setSearchResults(results);
                 } catch (error) {
                     console.error('Search error:', error);
@@ -155,7 +182,7 @@ const Header = () => {
 
     const placeholders = [
         'Search by Region',
-        'Search by District',
+        'Search by EDC',
         'Search by Substation',
     ];
 
@@ -208,7 +235,7 @@ const Header = () => {
                             <div
                                 key={result.id}
                                 className={styles.search_result_item}
-                                onClick={() => handleResultClick(result.id)}>
+                                onClick={() => handleResultClick(result)}>
 
                                 <span className={styles.result_name}>
                                     {result.hierarchy_name}
