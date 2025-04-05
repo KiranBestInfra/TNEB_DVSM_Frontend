@@ -1,6 +1,31 @@
 import { Link, useLocation } from 'react-router-dom';
 import styles from './Breadcrumb.module.css';
 
+// Constants for region names and route mapping
+const REGIONS = [
+    'chennai', 'coimbatore', 'erode', 'kancheepuram', 'karur',
+    'madurai', 'thanjavur', 'thiruvallur', 'tirunelveli',
+    'tiruvannamalai', 'trichy', 'vellore', 'villupuram'
+];
+
+const ROUTE_MAP = {
+    dashboard: 'Dashboard',
+    regions: 'Regions',
+    edcs: 'EDCs',
+    substations: 'Substations',
+    feeders: 'Feeders',
+    tickets: 'Tickets',
+    profile: 'Profile',
+    'create-ticket': 'Create Ticket',
+    'ticket-details': 'Ticket Details',
+    'unit-selection': 'Unit Selection',
+    'unit-detail': 'Unit Detail',
+    verification: 'Verification',
+    'forgot-password': 'Forgot Password',
+    privacy: 'Privacy',
+    terms: 'Terms',
+};
+
 const Breadcrumb = ({ items }) => {
     const location = useLocation();
 
@@ -19,17 +44,10 @@ const Breadcrumb = ({ items }) => {
                                     </span>
                                 ) : (
                                     <>
-                                        <Link
-                                            to={item.path}
-                                            className={styles.breadcrumb_link}>
+                                        <Link to={item.path} className={styles.breadcrumb_link}>
                                             {item.label}
                                         </Link>
-                                        <span
-                                            className={
-                                                styles.breadcrumb_separator
-                                            }>
-                                            /
-                                        </span>
+                                        <span className={styles.breadcrumb_separator}>/</span>
                                     </>
                                 )}
                             </li>
@@ -88,10 +106,7 @@ const Breadcrumb = ({ items }) => {
                                         className={styles.breadcrumb_link}>
                                         {displayName}
                                     </Link>
-                                    <span
-                                        className={styles.breadcrumb_separator}>
-                                        /
-                                    </span>
+                                    <span className={styles.breadcrumb_separator}>/</span>
                                 </>
                             )}
                         </li>

@@ -52,6 +52,7 @@ const RegionSubstations = () => {
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const { region } = useParams();
+    const [selectedSubstation, setSelectedSubstation] = useState(null);
 
     const isRegionUser = false;
 
@@ -215,6 +216,29 @@ const RegionSubstations = () => {
             .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
             .join(' ')
         : 'Unknown';
+
+    const getSummaryData = () => {
+        if (!selectedSubstation) {
+            return {
+                totalRegions: widgetsData.totalRegions,
+                totalEdcs: widgetsData.totalEdcs,
+                totalSubstations: widgetsData.regionSubstationCount,
+                totalFeeders: widgetsData.totalFeeders,
+                commMeters: widgetsData.commMeters,
+                nonCommMeters: widgetsData.nonCommMeters
+            };
+        }
+
+        return {
+            totalRegions: widgetsData.totalRegions,
+            totalEdcs: widgetsData.totalEdcs,
+            totalSubstations: 1,
+            totalFeeders: widgetsData.substationFeederCounts?.[selectedSubstation] || 0,
+            commMeters: widgetsData.commMeters,
+            nonCommMeters: widgetsData.nonCommMeters
+        };
+    };
+
     try {
         return (
             <ErrorBoundary>
@@ -252,23 +276,12 @@ const RegionSubstations = () => {
                     <Breadcrumb />
 
                     <SummarySection
-                        widgetsData={{
-                            totalRegions: widgetsData.totalRegions,
-                            totalEdcs: widgetsData.totalEdcs,
-                            totalSubstations: widgetsData.totalSubstations,
-                            totalFeeders: widgetsData.totalFeeders,
-                            commMeters: widgetsData.commMeters,
-                            nonCommMeters: widgetsData.nonCommMeters,
-                            totalDistricts:
-                                widgetsData.totalDistricts ||
-                                widgetsData.regionSubstationCount ||
-                                0,
-                        }}
+                        widgetsData={getSummaryData()}
                         isUserRoute={isRegionUser}
                         isBiUserRoute={location.pathname.includes('/bi/user/')}
                         showRegions={false}
                         showEdcs={false}
-                        showDistricts={true}
+                        showDistricts={false}
                         showSubstations={true}
                         showFeeders={true}
                     />
@@ -327,6 +340,7 @@ const RegionSubstations = () => {
                                                 )[0] || 0
                                             ).toFixed(1)}
                                             pageType="substations"
+                                            handleRegionClick={() => setSelectedSubstation(substation)}
                                         />
                                     </div>
                                 )

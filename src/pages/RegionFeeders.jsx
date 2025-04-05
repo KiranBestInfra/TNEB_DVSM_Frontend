@@ -70,72 +70,72 @@ const RegionFeeders = () => {
         'Nungambakkam Feeder 15': { currentValue: 780, previousValue: 720 },
     };
 
-    const graphData = {
-        daily: {
-            xAxis: [
-                '2025-03-16 23:59:59',
-                '2025-03-16 08:30:00',
-                '2025-03-16 08:15:00',
-                '2025-03-16 08:00:00',
-                '2025-03-16 07:45:00',
-                '2025-03-16 07:30:00',
-                '2025-03-16 07:15:00',
-                '2025-03-16 07:00:00',
-                '2025-03-16 06:45:00',
-                '2025-03-16 06:30:00',
-                '2025-03-16 06:15:00',
-                '2025-03-16 06:00:00',
-                '2025-03-16 05:45:00',
-                '2025-03-16 05:30:00',
-                '2025-03-16 05:15:00',
-                '2025-03-16 05:00:00',
-                '2025-03-16 04:45:00',
-                '2025-03-16 04:30:00',
-                '2025-03-16 04:15:00',
-                '2025-03-16 04:00:00',
-                '2025-03-16 03:45:00',
-                '2025-03-16 03:30:00',
-                '2025-03-16 03:15:00',
-                '2025-03-16 03:00:00',
-                '2025-03-16 02:45:00',
-                '2025-03-16 02:30:00',
-                '2025-03-16 02:15:00',
-                '2025-03-16 02:00:00',
-                '2025-03-16 01:45:00',
-                '2025-03-16 01:30:00',
-                '2025-03-16 01:15:00',
-                '2025-03-16 01:00:00',
-                '2025-03-16 00:45:00',
-                '2025-03-16 00:30:00',
-                '2025-03-16 00:15:00',
-            ],
-            series: [
-                {
-                    name: 'Current Day',
-                    data: [
-                        13.6, 12.0, 11.2, 11.2, 11.6, 10.4, 12.0, 10.8, 12.4,
-                        12.0, 12.8, 13.6, 12.4, 13.6, 12.0, 13.6, 12.8, 13.2,
-                        13.6, 12.4, 14.0, 12.4, 14.0, 12.4, 13.6, 12.8, 13.2,
-                        14.0, 12.8, 14.0, 12.4, 13.6, 12.4, 13.6, 12.4,
-                    ],
-                },
-                {
-                    name: 'Previous Day',
-                    data: [
-                        13.2, 10.8, 10.0, 11.2, 10.8, 10.8, 11.6, 10.8, 12.0,
-                        11.6, 13.2, 12.8, 13.2, 14.0, 12.8, 14.4, 13.2, 14.8,
-                        13.6, 14.4, 14.8, 13.2, 14.8, 13.2, 14.4, 13.2, 14.4,
-                        13.6, 13.6, 14.4, 13.2, 14.4, 12.8, 14.4, 12.8,
-                    ],
-                },
-            ],
-        },
-    };
+    // const graphData = {
+    //     daily: {
+    //         xAxis: [
+    //             '2025-03-16 23:59:59',
+    //             '2025-03-16 08:30:00',
+    //             '2025-03-16 08:15:00',
+    //             '2025-03-16 08:00:00',
+    //             '2025-03-16 07:45:00',
+    //             '2025-03-16 07:30:00',
+    //             '2025-03-16 07:15:00',
+    //             '2025-03-16 07:00:00',
+    //             '2025-03-16 06:45:00',
+    //             '2025-03-16 06:30:00',
+    //             '2025-03-16 06:15:00',
+    //             '2025-03-16 06:00:00',
+    //             '2025-03-16 05:45:00',
+    //             '2025-03-16 05:30:00',
+    //             '2025-03-16 05:15:00',
+    //             '2025-03-16 05:00:00',
+    //             '2025-03-16 04:45:00',
+    //             '2025-03-16 04:30:00',
+    //             '2025-03-16 04:15:00',
+    //             '2025-03-16 04:00:00',
+    //             '2025-03-16 03:45:00',
+    //             '2025-03-16 03:30:00',
+    //             '2025-03-16 03:15:00',
+    //             '2025-03-16 03:00:00',
+    //             '2025-03-16 02:45:00',
+    //             '2025-03-16 02:30:00',
+    //             '2025-03-16 02:15:00',
+    //             '2025-03-16 02:00:00',
+    //             '2025-03-16 01:45:00',
+    //             '2025-03-16 01:30:00',
+    //             '2025-03-16 01:15:00',
+    //             '2025-03-16 01:00:00',
+    //             '2025-03-16 00:45:00',
+    //             '2025-03-16 00:30:00',
+    //             '2025-03-16 00:15:00',
+    //         ],
+    //         series: [
+    //             {
+    //                 name: 'Current Day',
+    //                 data: [
+    //                     13.6, 12.0, 11.2, 11.2, 11.6, 10.4, 12.0, 10.8, 12.4,
+    //                     12.0, 12.8, 13.6, 12.4, 13.6, 12.0, 13.6, 12.8, 13.2,
+    //                     13.6, 12.4, 14.0, 12.4, 14.0, 12.4, 13.6, 12.8, 13.2,
+    //                     14.0, 12.8, 14.0, 12.4, 13.6, 12.4, 13.6, 12.4,
+    //                 ],
+    //             },
+    //             {
+    //                 name: 'Previous Day',
+    //                 data: [
+    //                     13.2, 10.8, 10.0, 11.2, 10.8, 10.8, 11.6, 10.8, 12.0,
+    //                     11.6, 13.2, 12.8, 13.2, 14.0, 12.8, 14.4, 13.2, 14.8,
+    //                     13.6, 14.4, 14.8, 13.2, 14.8, 13.2, 14.4, 13.2, 14.4,
+    //                     13.6, 13.6, 14.4, 13.2, 14.4, 12.8, 14.4, 12.8,
+    //                 ],
+    //             },
+    //         ],
+    //     },
+    // };
 
     const demoFeederDemandData = {};
-    demoFeederNames.forEach((feeder) => {
-        demoFeederDemandData[feeder] = graphData.daily;
-    });
+    // demoFeederNames.forEach((feeder) => {
+    //     demoFeederDemandData[feeder] = graphData.daily;
+    // });
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedFeederData = localStorage.getItem('feederDemandData');
@@ -157,6 +157,7 @@ const RegionFeeders = () => {
                     feederCount: 0,
                     // meterCount: 0,
                     feederDemandData: parsedFeederData,
+                    feederIds: {}
                 };
             }
         }
@@ -172,6 +173,7 @@ const RegionFeeders = () => {
             feederCount: 0,
             //  meterCount: 0,
             feederDemandData: {},
+            feederIds: {},
         };
     });
 
@@ -184,6 +186,7 @@ const RegionFeeders = () => {
         });
 
         newSocket.on('feederUpdate', (data) => {
+            console.log('feederUpdate', data);
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -192,14 +195,14 @@ const RegionFeeders = () => {
                         [data.feeder]: data.graphData,
                     },
                 };
-                localStorage.setItem(
-                    'feederDemandData',
-                    JSON.stringify(newData.feederDemandData)
-                );
-                localStorage.setItem(
-                    'feederDemandTimestamp',
-                    Date.now().toString()
-                );
+                // localStorage.setItem(
+                //     'feederDemandData',
+                //     JSON.stringify(newData.feederDemandData)
+                // );
+                // localStorage.setItem(
+                //     'feederDemandTimestamp',
+                //     Date.now().toString()
+                // );
                 return newData;
             });
 
@@ -219,14 +222,18 @@ const RegionFeeders = () => {
             }
         };
     }, []);
-
     useEffect(() => {
-        if (socket && widgetsData.feederNames.length > 0) {
+        let ids = []
+        console.log('widgetsData 1212');
+        if (socket && widgetsData.feederIds.length > 0) {
+            widgetsData.feederIds.map((value) => (
+                Object.entries(value).map(([key, value])  => ids.push(value))))
+            console.log('ids', ids);
             socket.emit('subscribeFeeder', {
-                feeders: widgetsData.feederNames,
+                feeders: ids,
             });
         }
-    }, [widgetsData.feederNames, socket]);
+    }, [widgetsData.feederIds, socket]);
 
     useEffect(() => {
         const fetchFeeders = async () => {
@@ -237,12 +244,15 @@ const RegionFeeders = () => {
                     );
 
                     const feedersData = response.data || [];
-                    console.log(feedersData);
 
                     setWidgetsData((prev) => ({
                         ...prev,
                         feederNames:
                             feedersData.map((feeder) => feeder.name) || [],
+                        feederIds:
+                            feedersData.map((feeder) => ({
+                                [feeder.name]: feeder.id,
+                            })) || [],
                         feederCount: feedersData.length || 0,
                         totalFeeders: feedersData.length || 0,
                         // meterCount: feedersData.reduce((acc, feeder) => {
@@ -251,16 +261,8 @@ const RegionFeeders = () => {
                         // }, {}),
                     }));
                 } catch (error) {
-                    console.error('API error, using demo data:', error);
-
-                    setWidgetsData((prev) => ({
-                        ...prev,
-                        feederNames: demoFeederNames,
-                        feederCount: demoFeederNames.length,
-                        totalFeeders: demoFeederNames.length,
-                        //   meterCount: feederMeterCounts,
-                        feederDemandData: demoFeederDemandData,
-                    }));
+                    console.error('API error:', error);
+                    // Error is logged but no demo data is set
                 }
             } catch (error) {
                 console.error('Error fetching feeders for region:', error);
@@ -279,6 +281,7 @@ const RegionFeeders = () => {
               .join(' ')
         : 'Unknown';
 
+    console.log('widgetsData', widgetsData.feederDemandData);
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
@@ -330,7 +333,7 @@ const RegionFeeders = () => {
 
             <div className={styles.section_header}>
                 <h2 className="title">
-                    Feeders{' '}
+                    Feeders:{' '}
                     <span
                         className={
                             styles.region_count
@@ -338,33 +341,37 @@ const RegionFeeders = () => {
                 </h2>
             </div>
             <div className={styles.region_stats_container}>
-                {widgetsData.feederNames &&
-                widgetsData.feederNames.length > 0 ? (
-                    widgetsData.feederNames.map((feeder, index) => (
+                {widgetsData.feederIds &&
+                widgetsData.feederIds.length > 0 ? (
+                    widgetsData.feederIds.map((value) => (
+                        Object.entries(value).map(([key, value]) => (
                         <div
-                            key={index}
+                            key={value}
                             className={styles.individual_region_stats}>
                             <ShortDetailsWidget
-                                region={feeder}
-                                name={feeder}
+                                region={key}
+                                name={key}
+                                id={value}
                                 // feederCount={
                                 //     feeder.meterCount || 0
                                 // }
                                 currentValue={
-                                    feederStats[feeder]?.currentValue || 0
+                                    feederStats[key]?.currentValue || 0
                                 }
                                 previousValue={
-                                    feederStats[feeder]?.previousValue || 0
+                                    feederStats[key]?.previousValue || 0
                                 }
                                 graphData={
-                                    widgetsData.feederDemandData?.[
-                                        feeder.trim()
-                                    ] ?? graphData.daily
+                                    widgetsData.feederDemandData?.[value] ?? {
+                                        xAxis: [],
+                                        series: [],
+                                    }
                                 }
                                 pageType="feeders"
                             />
+
                         </div>
-                    ))
+                         )) ))
                 ) : (
                     <p>No feeders available for this region.</p>
                 )}

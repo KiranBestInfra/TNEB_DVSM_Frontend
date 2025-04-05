@@ -139,7 +139,7 @@ const EdcDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/location.svg"
+                                src="icons/district.svg"
                                 alt="Location"
                                 className={styles.TNEB_icons}
                             />

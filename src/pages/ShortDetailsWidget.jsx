@@ -29,6 +29,7 @@ const ShortDetailsWidget = ({
     region,
     edc,
     name,
+    id = null,
     edcCount,
     substationCount,
     feederCount,
@@ -54,7 +55,7 @@ const ShortDetailsWidget = ({
     const handleClick = () => {
         let detailsUrl = '';
         const routePrefix = isUserRoute ? '/user' : '/admin';
-        const formattedRegion = region.toLowerCase().replace(/\s+/g, '-');
+        const formattedRegion = id ? id : region.toLowerCase().replace(/\s+/g, '-');
         const formattedName = name
             ? name.toLowerCase().replace(/\s+/g, '-')
             : '';
@@ -97,7 +98,7 @@ const ShortDetailsWidget = ({
 
     const renderNavigationLinks = () => {
         const routePrefix = isUserRoute ? '/user' : '/admin';
-        const formattedRegion = region.toLowerCase().replace(/\s+/g, '-');
+        const formattedRegion = id ? id : region.toLowerCase().replace(/\s+/g, '-');
         const formattedName = name
             ? name.toLowerCase().replace(/\s+/g, '-')
             : '';

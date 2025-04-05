@@ -11,8 +11,8 @@ const RegionEdcs = () => {
     const { region } = useParams();
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
-    const [timeRange, setTimeRange] = useState("Daily");
     const cacheTimeoutRef = useRef(null);
+    const [selectedEdc, setSelectedEdc] = useState(null);
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('regionEdcDemandData');
         const savedTimestamp = localStorage.getItem('regionEdcDemandTimestamp');
@@ -111,6 +111,8 @@ const RegionEdcs = () => {
                 setLoading(true);
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response.data || {};
+
+
                 console.log('Fetched EDC data:', data);
 
                 const transformedData = {
@@ -127,7 +129,7 @@ const RegionEdcs = () => {
                     commMeters: data.commMeters || 0,
                     nonCommMeters: data.nonCommMeters || 0,
                     totalDistricts:
-                        data.districtCount?.[0]?.district_count || 0,
+                        data.totalDistricts || data.edcNames?.length || 0,
                     edcNames: data.edcNames || [],
                     substationCount:
                         data.substationCounts?.reduce((acc, item) => {
@@ -137,6 +139,14 @@ const RegionEdcs = () => {
                     feederCount: data.feederCounts || {},
                     edcDemandData: widgetsData.edcDemandData || {},
                 };
+
+                console.log('Communication Meters:', transformedData.commMeters);
+                console.log('Non-Communication Meters:', transformedData.nonCommMeters);
+                console.log(typeof transformedData.commMeters); // Should be 'number'
+                console.log(typeof transformedData.nonCommMeters); // Should be 'number'
+                console.log('Total Meters:', transformedData.commMeters + transformedData.nonCommMeters);
+                console.log('Communication Percentage:', ((transformedData.commMeters / (transformedData.commMeters + transformedData.nonCommMeters)) * 100).toFixed(1) + '%');
+                console.log('Non-Communication Percentage:', ((transformedData.nonCommMeters / (transformedData.commMeters + transformedData.nonCommMeters)) * 100).toFixed(1) + '%');
 
                 setWidgetsData(transformedData);
                 setLoading(false);
@@ -158,57 +168,90 @@ const RegionEdcs = () => {
             .join(' ')
         : 'Unknown';
 
+    const handleEdcClick = (edc) => {
+        setSelectedEdc(edc);
+    };
+
+    // const getSummaryData = () => {
+    //     if (!selectedEdc) {
+    //         return {
+    //             totalEdcs: widgetsData.totalEdcs,
+    //             totalSubstations: widgetsData.totalSubstations,
+    //             totalFeeders: widgetsData.totalFeeders,
+    //             commMeters: `${(
+    //                 (widgetsData.commMeters /
+    //                     (widgetsData.commMeters +
+    //                         widgetsData.nonCommMeters)) *
+    //                 100
+    //             ).toFixed(1)}%`,
+    //             nonCommMeters: `${(
+    //                 (widgetsData.nonCommMeters /
+    //                     (widgetsData.commMeters +
+    //                         widgetsData.nonCommMeters)) *
+    //                 100
+    //             ).toFixed(1)}%`,
+    //         };
+    //     }
+
+    //     return {
+    //         totalEdcs: 1,
+    //         totalSubstations: widgetsData.substationCount[selectedEdc] || 0,
+    //         totalFeeders: widgetsData.feederCount[selectedEdc] || 0,
+    //         commMeters: `${(
+    //             (widgetsData.commMeters /
+    //                 (widgetsData.commMeters +
+    //                     widgetsData.nonCommMeters)) *
+    //             100
+    //         ).toFixed(1)}%`,
+    //         nonCommMeters: `${(
+    //             (widgetsData.nonCommMeters /
+    //                 (widgetsData.commMeters +
+    //                     widgetsData.nonCommMeters)) *
+    //             100
+    //         ).toFixed(1)}%`,
+    //     };
+    // };
+    const getSummaryData = () => {
+        const comm = widgetsData?.commMeters ?? 0;
+        const nonComm = widgetsData?.nonCommMeters ?? 0;
+        const total = comm + nonComm;
+
+        const commPercentage = total ? ((comm / total) * 100).toFixed(1) : '0.0';
+        const nonCommPercentage = total ? ((nonComm / total) * 100).toFixed(1) : '0.0';
+
+        if (!selectedEdc) {
+            return {
+                totalEdcs: widgetsData.totalEdcs,
+                totalSubstations: widgetsData.totalSubstations,
+                totalFeeders: widgetsData.totalFeeders,
+                commMeters: `${commPercentage}%`,
+                nonCommMeters: `${nonCommPercentage}%`,
+            };
+        }
+
+        return {
+            totalEdcs: 1,
+            totalSubstations: widgetsData.substationCount?.[selectedEdc] || 0,
+            totalFeeders: widgetsData.feederCount?.[selectedEdc] || 0,
+            commMeters: `${commPercentage}%`,
+            nonCommMeters: `${nonCommPercentage}%`,
+        };
+    };
+
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">{regionName} - EDCs</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                                className={styles.time_range_select}>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">
-                                    Previous Month
-                                </option>
-                                <option value="Year">Year</option>
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
-                            />
-                        </div>
-                    </div>
-                </div>
+                <h2 className="title">{regionName} Region EDCs</h2>
             </div>
             <Breadcrumb />
 
             <SummarySection
-                widgetsData={{
-                    totalRegions: 0,
-                    totalEdcs: widgetsData.totalEdcs,
-                    totalSubstations: widgetsData.totalSubstations,
-                    totalFeeders: widgetsData.totalFeeders,
-                    commMeters: `${(
-                        (widgetsData.commMeters /
-                            (widgetsData.commMeters +
-                                widgetsData.nonCommMeters)) *
-                        100
-                    ).toFixed(1)}%`,
-                    nonCommMeters: widgetsData.nonCommMeters,
-                    totalDistricts: widgetsData.totalDistricts,
-                }}
+                widgetsData={getSummaryData()}
                 isUserRoute={location.pathname.includes('/user/')}
                 isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
-                showDistricts={true}
-            />
+                showDistricts={false}
+            /> 
 
             <div className={styles.section_header}>
                 <h2 className="title">
@@ -253,6 +296,7 @@ const RegionEdcs = () => {
                                     ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
                                 ).toFixed(1)}
                                 pageType="edcs"
+                                handleRegionClick={() => handleEdcClick(edc)}
                             />
                         </div>
                     ))}
