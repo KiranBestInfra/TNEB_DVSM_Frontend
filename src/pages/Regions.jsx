@@ -117,6 +117,9 @@ const Regions = () => {
             const data = response.data;
             console.log('dataaaa', data);
 
+
+            console.log('RegionDataSASAS', data);
+            
             setWidgetsData((prev) => ({
                 totalRegions: data.totalRegions || prev.totalRegions,
                 totalEdcs: data.totalEdcs || prev.totalEdcs,
