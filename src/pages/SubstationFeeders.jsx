@@ -14,9 +14,9 @@ const SubstationFeeders = () => {
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
 
-    const { region, edcId, substationId } = useParams();
-    console.log('SubstationFeeders - Region from params:', region);
-
+    // const { region, edcId, substationId } = useParams();
+    const { substationId: substationId } = useParams();
+    console.log(substationId);
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
 
@@ -302,24 +302,24 @@ const SubstationFeeders = () => {
                     const response = await apiClient.get(
                         `/substations/${substationId}/feeders`
                     );
-                    const feedersData = response.data || [];
+                    const feedersData = response.data.feeders || [];
+
                     console.log('API response for feeders:', feedersData);
 
                     setWidgetsData((prev) => {
                         const newData = {
                             ...prev,
-                            feederNames:
-                                feedersData.map((feeder) => feeder.name) || [],
+                            feederNames: feedersData.map((f) => f.name) || [],
                             feederCount: feedersData.length || 0,
                             totalFeeders: feedersData.length || 0,
-                            meterCount: feedersData.reduce((acc, feeder) => {
-                                acc[feeder.name] = feeder.meter_count || 0;
+                            meterCount: feedersData.reduce((acc, f) => {
+                                acc[f.name] = f.meter_count || 0;
                                 return acc;
                             }, {}),
-                            feederStats: feedersData.reduce((acc, feeder) => {
-                                acc[feeder.name] = {
-                                    currentValue: feeder.current_value || 0,
-                                    previousValue: feeder.previous_value || 0,
+                            feederStats: feedersData.reduce((acc, f) => {
+                                acc[f.name] = {
+                                    currentValue: f.current_value || 0,
+                                    previousValue: f.previous_value || 0,
                                 };
                                 return acc;
                             }, {}),
@@ -507,7 +507,7 @@ const SubstationFeeders = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No feeders available for this substation.</p>
+                    <p>No feeders available for this EDC.</p>
                 )}
             </div>
         </div>
