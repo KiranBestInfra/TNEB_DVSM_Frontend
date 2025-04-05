@@ -11,7 +11,8 @@ import { io } from 'socket.io-client';
 
 const EdcFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
-    const { edc } = useParams();
+    const { edcs: edc } = useParams();
+    console.log(edc);
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
 
@@ -283,119 +284,107 @@ const EdcFeeders = () => {
 
     useEffect(() => {
         const fetchFeeders = async () => {
+            if (!edc) {
+                console.log('No EDC parameter provided, cannot fetch feeders');
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    feederNames: feederNames,
+                    feederCount: feederNames.length,
+                    totalFeeders: feederNames.length,
+                    meterCount: feederMeterCounts,
+                    feederStats: feederStats,
+                    feederDemandData: demoFeederDemandData,
+                }));
+                return;
+            }
+
             try {
-                try {
-                    console.log('Attempting to fetch feeders for EDC:', edc);
-                    const response = await apiClient.get(
-                        `/edcs/${edc}/feeders`
+                console.log('Attempting to fetch feeders for EDC:', edc);
+                const response = await apiClient.get(`/edcs/${edc}/feeders`);
+                // const feedersData = response.data || [];
+                const feedersData = response.data.edcFeederNames || [];
+                console.log('API response for feeders:', feedersData);
+
+                const newData = {
+                    feederNames: feedersData.map((f) => f.name) || [],
+                    feederCount: feedersData.length || 0,
+                    totalFeeders: feedersData.length || 0,
+                    meterCount: feedersData.reduce((acc, f) => {
+                        acc[f.name] = f.meter_count || 0;
+                        return acc;
+                    }, {}),
+                    feederStats: feedersData.reduce((acc, f) => {
+                        acc[f.name] = {
+                            currentValue: f.current_value || 0,
+                            previousValue: f.previous_value || 0,
+                        };
+                        return acc;
+                    }, {}),
+                };
+
+                setWidgetsData((prev) => {
+                    const updated = {
+                        ...prev,
+                        ...newData,
+                    };
+
+                    const cacheData = {
+                        feederNames: updated.feederNames,
+                        meterCount: updated.meterCount,
+                        feederStats: updated.feederStats,
+                        feederDemandData: updated.feederDemandData,
+                    };
+
+                    localStorage.setItem(
+                        'edcFeederData',
+                        JSON.stringify(cacheData)
                     );
-                    const feedersData = response.data || [];
-                    console.log('API response for feeders:', feedersData);
-
-                    setWidgetsData((prev) => {
-                        const newData = {
-                            ...prev,
-                            feederNames:
-                                feedersData.map((feeder) => feeder.name) || [],
-                            feederCount: feedersData.length || 0,
-                            totalFeeders: feedersData.length || 0,
-                            meterCount: feedersData.reduce((acc, feeder) => {
-                                acc[feeder.name] = feeder.meter_count || 0;
-                                return acc;
-                            }, {}),
-                            feederStats: feedersData.reduce((acc, feeder) => {
-                                acc[feeder.name] = {
-                                    currentValue: feeder.current_value || 0,
-                                    previousValue: feeder.previous_value || 0,
-                                };
-                                return acc;
-                            }, {}),
-                        };
-
-                        const cacheData = {
-                            feederNames: newData.feederNames,
-                            meterCount: newData.meterCount,
-                            feederStats: newData.feederStats,
-                            feederDemandData: newData.feederDemandData,
-                        };
-
-                        localStorage.setItem(
-                            'edcFeederData',
-                            JSON.stringify(cacheData)
-                        );
-                        localStorage.setItem(
-                            'edcFeederDataTimestamp',
-                            Date.now().toString()
-                        );
-
-                        return newData;
-                    });
-                } catch (error) {
-                    console.error(
-                        'API error, using demo data for feeders:',
-                        error
+                    localStorage.setItem(
+                        'edcFeederDataTimestamp',
+                        Date.now().toString()
                     );
 
-                    console.log('Applying demo data for feeders', {
-                        names: feederNames,
-                        count: feederNames.length,
-                        meterCounts: feederMeterCounts,
-                        stats: feederStats,
-                    });
-
-                    setWidgetsData((prev) => {
-                        const newData = {
-                            ...prev,
-                            feederNames: feederNames,
-                            feederCount: feederNames.length,
-                            totalFeeders: feederNames.length,
-                            meterCount: feederMeterCounts,
-                            feederStats: feederStats,
-                            feederDemandData: demoFeederDemandData,
-                        };
-
-                        const cacheData = {
-                            feederNames: newData.feederNames,
-                            meterCount: newData.meterCount,
-                            feederStats: newData.feederStats,
-                            feederDemandData: newData.feederDemandData,
-                        };
-
-                        localStorage.setItem(
-                            'edcFeederData',
-                            JSON.stringify(cacheData)
-                        );
-                        localStorage.setItem(
-                            'edcFeederDataTimestamp',
-                            Date.now().toString()
-                        );
-
-                        console.log(
-                            'Updated widgets data with demo data:',
-                            newData
-                        );
-                        return newData;
-                    });
-                }
+                    return updated;
+                });
             } catch (error) {
-                console.error('Error fetching feeders for EDC:', error);
+                console.error('API error, using demo data for feeders:', error);
+                console.log('Applying demo data for feeders', {
+                    names: feederNames,
+                    count: feederNames.length,
+                    meterCounts: feederMeterCounts,
+                    stats: feederStats,
+                });
+
+                setWidgetsData((prev) => {
+                    const updated = {
+                        ...prev,
+                        feederNames,
+                        feederCount: feederNames.length,
+                        totalFeeders: feederNames.length,
+                        meterCount: feederMeterCounts,
+                        feederStats,
+                        feederDemandData: demoFeederDemandData,
+                    };
+
+                    localStorage.setItem(
+                        'edcFeederData',
+                        JSON.stringify(updated)
+                    );
+                    localStorage.setItem(
+                        'edcFeederDataTimestamp',
+                        Date.now().toString()
+                    );
+
+                    console.log(
+                        'Updated widgets data with demo data:',
+                        updated
+                    );
+                    return updated;
+                });
             }
         };
 
-        if (edc) {
-            fetchFeeders();
-        } else {
-            console.log('No EDC parameter provided, cannot fetch feeders');
-            setWidgetsData((prev) => ({
-                ...prev,
-                feederNames: feederNames,
-                feederCount: feederNames.length,
-                totalFeeders: feederNames.length,
-                meterCount: feederMeterCounts,
-                feederStats: feederStats,
-                feederDemandData: demoFeederDemandData,
-            }));
-        }
+        fetchFeeders();
     }, [edc]);
 
     console.log('Current widgetsData state:', widgetsData);
