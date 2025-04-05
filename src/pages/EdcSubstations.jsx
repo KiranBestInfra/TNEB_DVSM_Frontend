@@ -473,7 +473,7 @@ const EdcSubstations = () => {
 
                     <div className={styles.section_header}>
                         <h2 className="title">
-                            Substations{' '}
+                            Substations:{' '}
                             <span className={styles.region_count}>
                                 {widgetsData.substationNames.length}
                             </span>

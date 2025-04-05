@@ -35,7 +35,7 @@ const Dashboard = () => {
         const fetchData = async () => {
             const response = await apiClient.get('/regions/widgets');
             const data = response.data;
-
+            
             setWidgetsData((prev) => ({
                 ...prev,
                 totalRegions: data.totalRegions || prev.totalRegions,
@@ -51,11 +51,28 @@ const Dashboard = () => {
         fetchData();
     }, []);
 
+
+    {/* Fetching graph time range */}
+    useEffect(() => {
+        const fetchGraphTimeRange = async () => {   
+            try {
+                const response = await apiClient.get('/main/graphs');
+                const data = response.data;
+                console.log("Graph time range",data);
+            } catch (error) {
+                console.error('Error fetching graph time range:', error);
+            }
+        };  
+        fetchGraphTimeRange();
+    }, []);
+
+    {/* Fetching graph data */}
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
                 const response = await apiClient.get('/regions/graph/demand');
                 const data = response.data;
+                console.log("Graph data",data);
                 setGraphData({
                     xAxis: data.xAxis || [],
                     series: data.series || [],

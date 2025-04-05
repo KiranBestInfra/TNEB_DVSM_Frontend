@@ -56,7 +56,7 @@ const LongDetailsWidget = () => {
         feederCount: 45,
         currentValue: 13.6,
         previousValue: 12.8,
-    };
+    }
 
     return (
         <div className={styles.main_content}>
@@ -108,11 +108,11 @@ const LongDetailsWidget = () => {
                                             ? `${routePrefix}/${entityId}/edcs`
                                             : `${routePrefix}/edcs`
                                     }>
-                                    EDCs
+                                    EDCs:{''}
                                 </Link>
                             </span>
                             <span className={styles.summary_value}>
-                                {stats.edcCount}
+                                [ {stats.edcCount} ]
                             </span>
                         </div>
                     </div>
@@ -168,6 +168,7 @@ const LongDetailsWidget = () => {
                             </span>
                             <span className={styles.summary_value}>
                                 {stats.feederCount}
+                                
                             </span>
                         </div>
                     </div>
@@ -190,7 +191,7 @@ const LongDetailsWidget = () => {
                                     <Link to={entityId ? `${baseRoute}/${entityId}/feeders` : `${baseRoute}/feeders`}>
                                         Feeder
                                     </Link></span>
-                                <span className={styles.summary_value}>{stats.feederCount}</span>
+                                <span className={styles.summary_value}>[ {stats.feederCount} ]</span>
                             </div>
                         </div>
                         {/* <div className={styles.total_title_value}>
