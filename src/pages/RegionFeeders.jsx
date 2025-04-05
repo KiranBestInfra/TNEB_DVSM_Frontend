@@ -156,7 +156,8 @@ const RegionFeeders = () => {
                     feederNames: Object.keys(parsedFeederData),
                     feederCount: 0,
                     // meterCount: 0,
-                    feederDemandData: parsedFeederData,
+                    feederStats: parsedData.feederStats || {},
+                    feederDemandData: parsedData.feederDemandData,
                     feederIds: {}
                 };
             }
@@ -172,6 +173,7 @@ const RegionFeeders = () => {
             feederNames: [],
             feederCount: 0,
             //  meterCount: 0,
+            feederStats: {},
             feederDemandData: {},
             feederIds: {},
         };
