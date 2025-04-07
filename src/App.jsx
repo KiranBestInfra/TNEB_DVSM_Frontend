@@ -35,6 +35,9 @@ import UserEdcDashboard from './pages/UserEdcDashboard';
 import UserSubstationDashboard from './pages/UserSubstationDashboard';
 import EdcFeeders from './pages/EdcFeeders';
 import SubstationFeeders from './pages/SubstationFeeders';
+import EdcSubstationFeeders from './pages/EdcSubstationFeeders';
+import RegionSubstationFeederDetails from './pages/RegionSubstationFeederDetails';
+import EdcSubstationFeederDetails from './pages/EdcSubstationFeederDetails';
 
 const App = () => {
     return (
@@ -102,7 +105,7 @@ const App = () => {
                                 element={<EdcSubstations />}
                             />
                             <Route
-                                path=":region/:edcs/feeder"
+                                path=":region/:edcs/feeders"
                                 element={<EdcFeeders />}
                             />
                             <Route
@@ -114,8 +117,20 @@ const App = () => {
                                 element={<EdcFeederDetails />}
                             />
                             <Route
+                                path=":region/:edcs/substations/:substationId/feeders"
+                                element={<EdcSubstationFeeders />}
+                            />
+                            <Route
+                                path=":region/:edcs/substations/:substationId/feeders/:feederId/details"
+                                element={<EdcSubstationFeederDetails />}
+                            />
+                            <Route
                                 path=":region/substations/:substationId/feeders"
                                 element={<SubstationFeeders />}
+                            />
+                            <Route
+                                path=":region/substations/:substationId/feeders/:feederId/details"
+                                element={<RegionSubstationFeederDetails />}
                             />
                             <Route
                                 path=":region/substations/:substationId/details"
@@ -162,6 +177,10 @@ const App = () => {
                                 path=":region/feeders/:feederId/details"
                                 element={<FeederDetails />}
                             />
+                            <Route
+                                path=":region/substations/:substationId/feeders/:feederId/details"
+                                element={<RegionSubstationFeederDetails />}
+                            />
                         </Route>
 
                         <Route path="user/edc" element={<ProtectedRoute />}>
@@ -190,6 +209,14 @@ const App = () => {
                             <Route
                                 path=":edc/feeders/:feederId/details"
                                 element={<EdcFeederDetails />}
+                            />
+                            <Route
+                                path=":edc/substations/:substationId/feeders"
+                                element={<EdcSubstationFeeders />}
+                            />
+                            <Route
+                                path=":edc/substations/:substationId/feeders/:feederId/details"
+                                element={<EdcSubstationFeederDetails />}
                             />
                         </Route>
 

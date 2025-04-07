@@ -73,7 +73,7 @@ ErrorBoundary.propTypes = {
 // }, [edcs]);
 
 const EdcSubstations = () => {
-    const { edcs } = useParams();
+    const { edcs, region } = useParams();
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const location = window.location.pathname;
@@ -84,7 +84,7 @@ const EdcSubstations = () => {
         const substationNames = async () => {
             try {
                 const response = await apiClient.get(
-                    `/substation/widgets/${edcs}/substations`
+                    `/substations/widgets/${edcs}/substations`
                 );
                 const data = response;
                 console.log('data', data);
@@ -483,7 +483,7 @@ const EdcSubstations = () => {
                                               styles.individual_region_stats
                                           }>
                                           <ShortDetailsWidget
-                                              region={substation}
+                                              region={region}
                                               edc={edcs}
                                               name={substation}
                                               feederCount={

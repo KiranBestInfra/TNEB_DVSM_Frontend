@@ -30,6 +30,7 @@ const ShortDetailsWidget = ({
     edc,
     name,
     id = null,
+    substationId = null,
     edcCount,
     substationCount,
     feederCount,
@@ -62,6 +63,9 @@ const ShortDetailsWidget = ({
             ? name.toLowerCase().replace(/\s+/g, '-')
             : '';
         const formattedEdc = edc ? edc.toLowerCase().replace(/\s+/g, '-') : '';
+        const formattedSubstationId = substationId
+            ? substationId.toLowerCase().replace(/\s+/g, '-')
+            : '';
 
         switch (pageType) {
             case 'regions':
@@ -85,7 +89,13 @@ const ShortDetailsWidget = ({
                 console.log('Navigating to:', detailsUrl);
                 break;
             case 'feeders':
-                if (edc) {
+                if (substationId && edc) {
+                    // This is a feeder belonging to a specific substation within an EDC
+                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
+                } else if (substationId) {
+                    // This is a feeder belonging to a specific substation
+                    detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
+                } else if (edc) {
                     detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/feeders/${formattedName}/details`;
                 } else {
                     detailsUrl = `${routePrefix}/${formattedRegion}/feeders/${formattedName}/details`;
@@ -124,7 +134,7 @@ const ShortDetailsWidget = ({
                         </Link>
                         {' / '}
                         <Link
-                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/feeder`}
+                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/feeders`}
                             className={styles.nav_link}>
                             {feederCount} Feeders
                         </Link>
@@ -264,6 +274,7 @@ ShortDetailsWidget.propTypes = {
     edc: PropTypes.string,
     name: PropTypes.string,
     id: PropTypes.string,
+    substationId: PropTypes.string,
     edcCount: PropTypes.number.isRequired,
     substationCount: PropTypes.number.isRequired,
     feederCount: PropTypes.number.isRequired,
