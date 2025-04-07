@@ -14,9 +14,7 @@ const SubstationFeeders = () => {
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
 
-    // const { region, edcId, substationId } = useParams();
-    const { substationId: substationId } = useParams();
-    console.log(substationId);
+    const { region, substationId: substationId } = useParams();
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
 
@@ -479,7 +477,7 @@ const SubstationFeeders = () => {
                             key={index}
                             className={styles.individual_region_stats}>
                             <ShortDetailsWidget
-                                region={feeder}
+                                region={region}
                                 name={feeder}
                                 feederCount={
                                     widgetsData.meterCount[feeder] ||

@@ -1,13 +1,14 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 
-const SubstationDetails = () => {
-    const { region, substationId } = useParams();
+const EdcSubstationDetails = () => {
+    const { region, edc, edcId, edcs, substationId } = useParams();
+    const location = useLocation();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -15,6 +16,8 @@ const SubstationDetails = () => {
     });
 
     const entityId = substationId;
+    const edcIdentifier = edcId || edcs || edc;
+    const isUserRoute = location.pathname.includes('/user/');
 
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -32,8 +35,15 @@ const SubstationDetails = () => {
         fetchGraphData();
     }, [entityId, timeRange]);
 
-    const entityName = entityId
+    const substationName = entityId
         ? entityId
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
+        : 'Unknown';
+
+    const edcName = edcIdentifier
+        ? edcIdentifier
               .split('-')
               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
               .join(' ')
@@ -41,14 +51,22 @@ const SubstationDetails = () => {
 
     const stats = {
         feederCount: 20,
-        currentValue: 8.5,
-        previousValue: 7.9,
+        currentValue: 5.7,
+        previousValue: 5.2,
     };
+
+    const routePrefix = isUserRoute ? '/user' : '/admin';
+    const feedersLink = region
+        ? `${routePrefix}/${region}/${edcIdentifier}/substations/${substationId}/feeders`
+        : `${routePrefix}/${edcIdentifier}/substations/${substationId}/feeders`;
+    const edcLink = region
+        ? `${routePrefix}/${region}/edcs/${edcIdentifier}/details`
+        : `${routePrefix}/${edcIdentifier}/dashboard`;
 
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">{entityName} Substation</h2>
+                <h2 className="title">{substationName} Substation</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -89,10 +107,7 @@ const SubstationDetails = () => {
 
                         <div className={styles.total_title_value}>
                             <span className="title">
-                                <Link
-                                    to={`/admin/${region}/substations/${substationId}/feeders`}>
-                                    Feeders
-                                </Link>
+                                <Link to={feedersLink}>Feeders</Link>
                             </span>
                             <span className={styles.summary_value}>
                                 {stats.feederCount}
@@ -105,20 +120,15 @@ const SubstationDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/district.svg"
-                                alt="Location"
+                                src="icons/electric-factory.svg"
+                                alt="EDC"
                                 className={styles.TNEB_icons}
                             />
                         </div>
                         <div className={styles.total_title_value}>
-                            <span className="title">Region</span>
+                            <span className="title">EDC</span>
                             <span className={styles.summary_value}>
-                                <Link to={`/admin/${region}/dashboard`}>
-                                    {region
-                                        ? region.charAt(0).toUpperCase() +
-                                          region.slice(1)
-                                        : 'N/A'}
-                                </Link>
+                                <Link to={edcLink}>{edcName}</Link>
                             </span>
                         </div>
                     </div>
@@ -132,4 +142,4 @@ const SubstationDetails = () => {
     );
 };
 
-export default SubstationDetails;
+export default EdcSubstationDetails;

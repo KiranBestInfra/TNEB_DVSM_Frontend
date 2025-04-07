@@ -55,14 +55,17 @@ const ShortDetailsWidget = ({
     const handleClick = () => {
         let detailsUrl = '';
         const routePrefix = isUserRoute ? '/user' : '/admin';
-        const formattedRegion = id ? id : region.toLowerCase().replace(/\s+/g, '-');
+        const formattedRegion = id
+            ? id
+            : region.toLowerCase().replace(/\s+/g, '-');
         const formattedName = name
             ? name.toLowerCase().replace(/\s+/g, '-')
             : '';
+        const formattedEdc = edc ? edc.toLowerCase().replace(/\s+/g, '-') : '';
 
         switch (pageType) {
             case 'regions':
-                detailsUrl = `${routePrefix}/regions/${formattedRegion}`;
+                detailsUrl = `${routePrefix}/regions/${formattedRegion}/details`;
                 break;
             case 'edcs':
                 if (edc) {
@@ -74,16 +77,18 @@ const ShortDetailsWidget = ({
                 }
                 break;
             case 'substations':
-                detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`;
+                if (edc) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedName}/details`;
+                } else {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/details`;
+                }
                 console.log('Navigating to:', detailsUrl);
                 break;
             case 'feeders':
                 if (edc) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/feeders/${edc
-                        .toLowerCase()
-                        .replace(/\s+/g, '-')}/details`;
+                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/feeders/${formattedName}/details`;
                 } else {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/feeders`;
+                    detailsUrl = `${routePrefix}/${formattedRegion}/feeders/${formattedName}/details`;
                 }
                 break;
             default:
@@ -98,10 +103,13 @@ const ShortDetailsWidget = ({
 
     const renderNavigationLinks = () => {
         const routePrefix = isUserRoute ? '/user' : '/admin';
-        const formattedRegion = id ? id : region.toLowerCase().replace(/\s+/g, '-');
+        const formattedRegion = id
+            ? id
+            : region.toLowerCase().replace(/\s+/g, '-');
         const formattedName = name
             ? name.toLowerCase().replace(/\s+/g, '-')
             : '';
+        const formattedEdc = edc ? edc.toLowerCase().replace(/\s+/g, '-') : '';
 
         switch (pageType) {
             case 'edcs':
@@ -110,30 +118,36 @@ const ShortDetailsWidget = ({
                 return (
                     <>
                         <Link
-                            to={`${routePrefix}/${formattedRegion}/${edc
-                                .toLowerCase()
-                                .replace(/\s+/g, '-')}/substations`}
+                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/substations`}
                             className={styles.nav_link}>
                             {substationCount} Substations
                         </Link>
                         {' / '}
                         <Link
-                            to={`${routePrefix}/${formattedRegion}/${edc
-                                .toLowerCase()
-                                .replace(/\s+/g, '-')}/feeder`}
+                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/feeder`}
                             className={styles.nav_link}>
                             {feederCount} Feeders
                         </Link>
                     </>
                 );
             case 'substations':
-                return (
-                    <Link
-                        to={`${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`}
-                        className={styles.nav_link}>
-                        {feederCount} Feeders
-                    </Link>
-                );
+                if (edc) {
+                    return (
+                        <Link
+                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedName}/feeders`}
+                            className={styles.nav_link}>
+                            {feederCount} Feeders
+                        </Link>
+                    );
+                } else {
+                    return (
+                        <Link
+                            to={`${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`}
+                            className={styles.nav_link}>
+                            {feederCount} Feeders
+                        </Link>
+                    );
+                }
             case 'feeders':
                 return null;
             default:
@@ -196,11 +210,13 @@ const ShortDetailsWidget = ({
                                 {previousValue} MW
                             </div>
                             <div
-                                className={`${styles.region_percentage_change
-                                    } ${isPositiveChange
+                                className={`${
+                                    styles.region_percentage_change
+                                } ${
+                                    isPositiveChange
                                         ? styles.positive
                                         : styles.negative
-                                    }`}>
+                                }`}>
                                 <img
                                     src={
                                         isPositiveChange
@@ -212,12 +228,17 @@ const ShortDetailsWidget = ({
                                             ? 'Increase'
                                             : 'Decrease'
                                     }
-                                    className={`${styles.region_trend_arrow} ${isPositiveChange
-                                        ? styles.positive
-                                        : styles.negative
-                                        }`}
+                                    className={`${styles.region_trend_arrow} ${
+                                        isPositiveChange
+                                            ? styles.positive
+                                            : styles.negative
+                                    }`}
                                 />
-                                <RollingNumber n={Math.abs(parseFloat(percentageChange))} decimals={1} />%
+                                <RollingNumber
+                                    n={Math.abs(parseFloat(percentageChange))}
+                                    decimals={1}
+                                />
+                                %
                             </div>
                         </div>
                     </div>
@@ -242,6 +263,7 @@ ShortDetailsWidget.propTypes = {
     region: PropTypes.string.isRequired,
     edc: PropTypes.string,
     name: PropTypes.string,
+    id: PropTypes.string,
     edcCount: PropTypes.number.isRequired,
     substationCount: PropTypes.number.isRequired,
     feederCount: PropTypes.number.isRequired,

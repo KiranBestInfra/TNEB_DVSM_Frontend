@@ -477,6 +477,7 @@ const EdcFeeders = () => {
                                 className={styles.individual_region_stats}>
                                 <ShortDetailsWidget
                                     region={key}
+                                    edc={edc}
                                     name={key}
                                     id={value}
                                     feederCount={
