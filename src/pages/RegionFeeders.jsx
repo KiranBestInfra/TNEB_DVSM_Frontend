@@ -357,18 +357,27 @@ const RegionFeeders = () => {
                                 // feederCount={
                                 //     feeder.meterCount || 0
                                 // }
-                                currentValue={
-                                    feederStats[key]?.currentValue || 0
-                                }
-                                previousValue={
-                                    feederStats[key]?.previousValue || 0
-                                }
+                                // currentValue={
+                                //     feederStats[key]?.currentValue || 0
+                                // }
+                                // previousValue={
+                                //     feederStats[key]?.previousValue || 0
+                                // }
                                 graphData={
-                                    widgetsData.feederDemandData?.[value] ?? {
-                                        xAxis: [],
-                                        series: [],
-                                    }
+                                    widgetsData.feederDemandData[value]
                                 }
+                                previousValue={parseFloat(
+                                    widgetsData.feederDemandData?.[value]?.series?.[0]?.data?.slice(-2, -1)[0] || 
+                                    widgetsData.feederStats[key]?.previousValue ||
+                                    feederStats[key]?.previousValue ||
+                                    0
+                                ).toFixed(1)}
+                                currentValue={parseFloat(
+                                    widgetsData.feederDemandData?.[value]?.series?.[0]?.data?.slice(-1)[0] || 
+                                    widgetsData.feederStats[key]?.currentValue ||
+                                    feederStats[key]?.currentValue ||
+                                    0
+                                ).toFixed(1)}
                                 pageType="feeders"
                             />
 
