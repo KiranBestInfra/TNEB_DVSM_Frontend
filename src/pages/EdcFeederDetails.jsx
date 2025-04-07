@@ -1,56 +1,70 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
-import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 
-const EdcDetails = () => {
-    const { region, edcId } = useParams();
+const EdcFeederDetails = () => {
+    const { region, edc, edcId, edcs, feederId } = useParams();
+    const location = useLocation();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
     });
 
-    const entityId = edcId;
+    const entityId = feederId;
+    const edcIdentifier = edcId || edcs || edc;
+    const isUserRoute = location.pathname.includes('/user/');
 
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
                 const response = await apiClient.get(
-                    `/edcs/graph/${entityId}/demand`
+                    `/feeders/graph/${entityId}/demand`
                 );
                 const data = response.data;
                 setGraphData(data);
             } catch (error) {
-                console.error('Error fetching edc graph data:', error);
+                console.error('Error fetching feeder graph data:', error);
             }
         };
 
         fetchGraphData();
     }, [entityId, timeRange]);
 
-    const entityName = entityId
+    const feederName = entityId
         ? entityId
               .split('-')
               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
               .join(' ')
         : 'Unknown';
 
+    const edcName = edcIdentifier
+        ? edcIdentifier
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
+        : 'Unknown';
+
     const stats = {
-        substationCount: 15,
-        feederCount: 35,
-        currentValue: 10.2,
-        previousValue: 9.8,
+        currentValue: 3.2,
+        previousValue: 2.9,
+        voltageLevel: '11kV',
     };
+
+    // Determine the route prefix based on location
+    const routePrefix = isUserRoute ? '/user' : '/admin';
+    const edcLink = region
+        ? `${routePrefix}/${region}/edcs/${edcIdentifier}/details`
+        : `${routePrefix}/${edcIdentifier}/dashboard`;
 
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">{entityName} EDC</h2>
+                <h2 className="title">{feederName} Feeder</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -73,86 +87,43 @@ const EdcDetails = () => {
                                 }
                             />
                         </div>
-                       
                     </div>
                 </div>
             </div>
             <Breadcrumb />
 
             <div className={styles.performance_stats}>
-                <div className={styles.total_substations_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-factory.svg"
-                                alt="Substation"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `/admin/${region}/${edcId}/substations`
-                                            : `/admin/${edcId}/substations`
-                                    }>
-                                    Substations
-                                </Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.substationCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-meter.svg"
-                                alt="Feeder"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `/admin/${region}/${edcId}/feeders`
-                                            : `/admin/${edcId}/feeders`
-                                    }>
-                                    Feeders
-                                </Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.feederCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
                 <div className={styles.total_units_container}>
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/district.svg"
-                                alt="Location"
+                                src="icons/electric-factory.svg"
+                                alt="EDC"
                                 className={styles.TNEB_icons}
                             />
                         </div>
                         <div className={styles.total_title_value}>
-                            <span className="title">Region</span>
+                            <span className="title">EDC</span>
                             <span className={styles.summary_value}>
-                                <Link to={`/admin/${region}/dashboard`}>
-                                    {region
-                                        ? region.charAt(0).toUpperCase() +
-                                          region.slice(1)
-                                        : 'N/A'}
-                                </Link>
+                                <Link to={edcLink}>{edcName}</Link>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={styles.voltage_container}>
+                    <div className={styles.total_main_info}>
+                        <div className={styles.TNEB_icons}>
+                            <img
+                                src="icons/electric-voltage.svg"
+                                alt="Voltage"
+                                className={styles.TNEB_icons}
+                            />
+                        </div>
+                        <div className={styles.total_title_value}>
+                            <span className="title">Voltage Level</span>
+                            <span className={styles.summary_value}>
+                                {stats.voltageLevel}
                             </span>
                         </div>
                     </div>
@@ -166,4 +137,4 @@ const EdcDetails = () => {
     );
 };
 
-export default EdcDetails;
+export default EdcFeederDetails;
