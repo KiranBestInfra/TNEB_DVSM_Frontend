@@ -80,29 +80,28 @@ const EdcSubstations = () => {
 
     useEffect(() => {
         if (!edcs) return;
-    
+
         const substationNames = async () => {
             try {
                 const response = await apiClient.get(
-                    `/substation/widgets/${edcs}/substations`
+                    `/substations/widgets/${edcs}/substations`
                 );
                 const data = response;
                 console.log('data', data);
-    
+
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.edcsubstationNames || [],
                     regionSubstationCount:
                         data.data?.substationNames?.length || 0,
                     substationFeederCounts:
-                        data.data?.substationFeederCountsedc
-                        || {},
+                        data.data?.substationFeederCountsedc || {},
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);
             }
         };
-    
+
         substationNames();
     }, [edcs]);
 
@@ -242,10 +241,8 @@ const EdcSubstations = () => {
                     substationNames: parsedData.substationNames || [],
                     substationFeederCounts:
                         parsedData.substationFeederCounts || {},
-                    substationStats:
-                        parsedData.substationStats ,
-                    substationDemandData:
-                        parsedData.substationDemandData,
+                    substationStats: parsedData.substationStats,
+                    substationDemandData: parsedData.substationDemandData,
                 };
             }
         }
@@ -339,7 +336,6 @@ const EdcSubstations = () => {
         if (socket && widgetsData.substationNames.length > 0) {
             socket.emit('subscribeSubstation', {
                 substations: widgetsData.substationNames,
-                
             });
         }
     }, [widgetsData.substationNames, socket]);
@@ -429,10 +425,7 @@ const EdcSubstations = () => {
                         return newData;
                     });
                 } catch (error) {
-                    console.error(
-                        'API error fetching substations:',
-                        error
-                    );
+                    console.error('API error fetching substations:', error);
                 }
             } catch (error) {
                 console.error('Error fetching substation names:', error);
@@ -499,29 +492,29 @@ const EdcSubstations = () => {
                                                   ] || 0
                                               }
                                               currentValue={parseFloat(
-                                                widgetsData.substationDemandData?.[
-                                                    substation.trim()
-                                                ]?.series?.[0]?.data?.slice(
-                                                    -1
-                                                )[0] || 0
-                                            ).toFixed(1)}
-                                            previousValue={parseFloat(
-                                                widgetsData.substationDemandData?.[
-                                                    substation.trim()
-                                                ]?.series?.[0]?.data?.slice(
-                                                    -2,
-                                                    -1
-                                                )[0] || 0
-                                            ).toFixed(1)}
+                                                  widgetsData.substationDemandData?.[
+                                                      substation.trim()
+                                                  ]?.series?.[0]?.data?.slice(
+                                                      -1
+                                                  )[0] || 0
+                                              ).toFixed(1)}
+                                              previousValue={parseFloat(
+                                                  widgetsData.substationDemandData?.[
+                                                      substation.trim()
+                                                  ]?.series?.[0]?.data?.slice(
+                                                      -2,
+                                                      -1
+                                                  )[0] || 0
+                                              ).toFixed(1)}
                                               graphData={
-                                                widgetsData
-                                                    .substationDemandData?.[
-                                                    substation.trim()
-                                                ] ?? {
-                                                    xAxis: [],
-                                                    series: [],
-                                                }
-                                            }
+                                                  widgetsData
+                                                      .substationDemandData?.[
+                                                      substation.trim()
+                                                  ] ?? {
+                                                      xAxis: [],
+                                                      series: [],
+                                                  }
+                                              }
                                               pageType="substations"
                                           />
                                       </div>
