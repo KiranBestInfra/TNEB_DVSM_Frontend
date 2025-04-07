@@ -84,7 +84,7 @@ const EdcSubstations = () => {
         const substationNames = async () => {
             try {
                 const response = await apiClient.get(
-                    `/substation/widgets/${edcs}/substations`
+                    `/substations/widgets/${edcs}/substations`
                 );
                 const data = response;
                 console.log('data', data);
