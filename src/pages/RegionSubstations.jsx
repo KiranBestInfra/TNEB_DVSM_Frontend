@@ -197,6 +197,9 @@ const RegionSubstations = () => {
                         data.data?.substationNames?.length || 0,
                     substationFeederCounts:
                         data.data?.substationFeederCounts || {},
+                    commMeters: data.data?.commMeters || prev.commMeters,
+                    nonCommMeters:
+                        data.data?.nonCommMeters || prev.nonCommMeters,
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);
