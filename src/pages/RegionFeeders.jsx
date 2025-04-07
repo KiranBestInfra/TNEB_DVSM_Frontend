@@ -151,14 +151,14 @@ const RegionFeeders = () => {
                     totalEdcs: 95,
                     totalSubstations: 260,
                     totalFeeders: 0,
-                    commMeters: 942,
-                    nonCommMeters: 301,
+                    commMeters: 0,
+                    nonCommMeters: 0,
                     feederNames: Object.keys(parsedFeederData),
                     feederCount: 0,
                     // meterCount: 0,
                     feederStats: parsedData.feederStats || {},
                     feederDemandData: parsedData.feederDemandData,
-                    feederIds: {}
+                    feederIds: {},
                 };
             }
         }
@@ -168,8 +168,8 @@ const RegionFeeders = () => {
             totalEdcs: 95,
             totalSubstations: 260,
             totalFeeders: 0,
-            commMeters: 942,
-            nonCommMeters: 301,
+            commMeters: 0,
+            nonCommMeters: 0,
             feederNames: [],
             feederCount: 0,
             //  meterCount: 0,
@@ -188,7 +188,7 @@ const RegionFeeders = () => {
         });
 
         newSocket.on('feederUpdate', (data) => {
-            console.log('feederUpdate', data);
+            //console.log('feederUpdate', data);
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -225,11 +225,12 @@ const RegionFeeders = () => {
         };
     }, []);
     useEffect(() => {
-        let ids = []
+        let ids = [];
         console.log('widgetsData 1212');
         if (socket && widgetsData.feederIds.length > 0) {
-            widgetsData.feederIds.map((value) => (
-                Object.entries(value).map(([key, value])  => ids.push(value))))
+            widgetsData.feederIds.map((value) =>
+                Object.entries(value).map(([key, value]) => ids.push(value))
+            );
             console.log('ids', ids);
             socket.emit('subscribeFeeder', {
                 feeders: ids,
@@ -245,7 +246,9 @@ const RegionFeeders = () => {
                         `/regions/${region}/feeders`
                     );
 
-                    const feedersData = response.data || [];
+                    const feedersData = response.data.feedersWithCount || [];
+                    const commMeters = response.data.commMeters || 0;
+                    const nonCommMeters = response.data.nonCommMeters || 0;
 
                     setWidgetsData((prev) => ({
                         ...prev,
@@ -257,6 +260,8 @@ const RegionFeeders = () => {
                             })) || [],
                         feederCount: feedersData.length || 0,
                         totalFeeders: feedersData.length || 0,
+                        commMeters,
+                        nonCommMeters,
                         // meterCount: feedersData.reduce((acc, feeder) => {
                         //     acc[feeder.name] = feeder.meterCount || 0;
                         //     return acc;
@@ -321,8 +326,8 @@ const RegionFeeders = () => {
                     totalEdcs: 0,
                     totalSubstations: 0,
                     totalFeeders: widgetsData.totalFeeders,
-                    commMeters: 942,
-                    nonCommMeters: 301,
+                    commMeters: widgetsData.commMeters,
+                    nonCommMeters: widgetsData.nonCommMeters,
                     totalDistricts: 0,
                 }}
                 isUserRoute={isUserRoute}
@@ -343,46 +348,47 @@ const RegionFeeders = () => {
                 </h2>
             </div>
             <div className={styles.region_stats_container}>
-                {widgetsData.feederIds &&
-                widgetsData.feederIds.length > 0 ? (
-                    widgetsData.feederIds.map((value) => (
+                {widgetsData.feederIds && widgetsData.feederIds.length > 0 ? (
+                    widgetsData.feederIds.map((value) =>
                         Object.entries(value).map(([key, value]) => (
-                        <div
-                            key={value}
-                            className={styles.individual_region_stats}>
-                            <ShortDetailsWidget
-                                region={key}
-                                name={key}
-                                id={value}
-                                // feederCount={
-                                //     feeder.meterCount || 0
-                                // }
-                                // currentValue={
-                                //     feederStats[key]?.currentValue || 0
-                                // }
-                                // previousValue={
-                                //     feederStats[key]?.previousValue || 0
-                                // }
-                                graphData={
-                                    widgetsData.feederDemandData[value]
-                                }
-                                previousValue={parseFloat(
-                                    widgetsData.feederDemandData?.[value]?.series?.[0]?.data?.slice(-2, -1)[0] || 
-                                    widgetsData.feederStats[key]?.previousValue ||
-                                    feederStats[key]?.previousValue ||
-                                    0
-                                ).toFixed(1)}
-                                currentValue={parseFloat(
-                                    widgetsData.feederDemandData?.[value]?.series?.[0]?.data?.slice(-1)[0] || 
-                                    widgetsData.feederStats[key]?.currentValue ||
-                                    feederStats[key]?.currentValue ||
-                                    0
-                                ).toFixed(1)}
-                                pageType="feeders"
-                            />
-
-                        </div>
-                         )) ))
+                            <div
+                                key={value}
+                                className={styles.individual_region_stats}>
+                                <ShortDetailsWidget
+                                    region={key}
+                                    name={key}
+                                    id={value}
+                                    commMeters={widgetsData.commMeters} // ✅ add this
+                                    nonCommMeters={widgetsData.nonCommMeters} // ✅ and this
+                                    graphData={
+                                        widgetsData.feederDemandData[value]
+                                    }
+                                    previousValue={parseFloat(
+                                        widgetsData.feederDemandData?.[
+                                            value
+                                        ]?.series?.[0]?.data?.slice(
+                                            -2,
+                                            -1
+                                        )[0] ||
+                                            widgetsData.feederStats[key]
+                                                ?.previousValue ||
+                                            feederStats[key]?.previousValue ||
+                                            0
+                                    ).toFixed(1)}
+                                    currentValue={parseFloat(
+                                        widgetsData.feederDemandData?.[
+                                            value
+                                        ]?.series?.[0]?.data?.slice(-1)[0] ||
+                                            widgetsData.feederStats[key]
+                                                ?.currentValue ||
+                                            feederStats[key]?.currentValue ||
+                                            0
+                                    ).toFixed(1)}
+                                    pageType="feeders"
+                                />
+                            </div>
+                        ))
+                    )
                 ) : (
                     <p>No feeders available for this region.</p>
                 )}
