@@ -14,9 +14,7 @@ const SubstationFeeders = () => {
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
 
-    // const { region, edcId, substationId } = useParams();
-    const { substationId: substationId } = useParams();
-    console.log(substationId);
+    const { region, substationId: substationId } = useParams();
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
 
@@ -164,7 +162,8 @@ const SubstationFeeders = () => {
                     meterCount: parsedData.meterCount || {},
                     feederStats: parsedData.feederStats || {},
                     feederDemandData: parsedData.feederDemandData,
-                    feederIds: {},                };
+                    feederIds: {},
+                };
             }
         }
 
@@ -333,9 +332,10 @@ const SubstationFeeders = () => {
                                 };
                                 return acc;
                             }, {}),
-                            feederIds: feedersData.map((feeder) => ({
-                                [feeder.name]: feeder.id,
-                            })) || [],
+                            feederIds:
+                                feedersData.map((feeder) => ({
+                                    [feeder.name]: feeder.id,
+                                })) || [],
                         };
 
                         const cacheData = {
@@ -503,6 +503,7 @@ const SubstationFeeders = () => {
                                 <ShortDetailsWidget
                                     region={key}
                                     name={key}
+                                    substationId={substationId}
                                     id={value}
                                     feederCount={
                                         widgetsData.meterCount[key] ||
