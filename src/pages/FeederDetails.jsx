@@ -121,7 +121,7 @@ const FeederDetails = () => {
                     </div>
                 </div>
 
-                <div className={styles.status_container}>
+                {/* <div className={styles.status_container}>
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
@@ -139,7 +139,7 @@ const FeederDetails = () => {
                             </span>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div className={styles.chart_container}>

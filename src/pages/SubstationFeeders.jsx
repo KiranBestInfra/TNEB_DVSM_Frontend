@@ -188,11 +188,11 @@ const SubstationFeeders = () => {
         setSocket(newSocket);
 
         newSocket.on('connect', () => {
-            console.log('Connected to socket server');
+            // ... existing code ...
         });
 
         newSocket.on('feederUpdate', (data) => {
-            console.log('feederUpdate', data);
+            // ... existing code ...
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -240,12 +240,10 @@ const SubstationFeeders = () => {
 
     useEffect(() => {
         let ids = [];
-        console.log('widgetsData 1212');
         if (socket && widgetsData.feederIds.length > 0) {
             widgetsData.feederIds.map((value) =>
                 Object.entries(value).map(([key, value]) => ids.push(value))
             );
-            console.log('ids', ids);
             socket.emit('subscribeFeeder', {
                 feeders: ids,
             });
@@ -303,16 +301,10 @@ const SubstationFeeders = () => {
         const fetchFeeders = async () => {
             try {
                 try {
-                    console.log(
-                        'Attempting to fetch feeders for substation:',
-                        substationId
-                    );
                     const response = await apiClient.get(
                         `/substations/${substationId}/feeders`
                     );
                     const feedersData = response.data.feeders || [];
-
-                    console.log('API response for feeders:', feedersData);
 
                     setWidgetsData((prev) => {
                         const newData = {
@@ -362,13 +354,6 @@ const SubstationFeeders = () => {
                         error
                     );
 
-                    console.log('Applying demo data for feeders', {
-                        names: feederNames,
-                        count: feederNames.length,
-                        meterCounts: feederMeterCounts,
-                        stats: feederStats,
-                    });
-
                     setWidgetsData((prev) => {
                         const newData = {
                             ...prev,
@@ -400,10 +385,6 @@ const SubstationFeeders = () => {
                             Date.now().toString()
                         );
 
-                        console.log(
-                            'Updated widgets data with demo data:',
-                            newData
-                        );
                         return newData;
                     });
                 }
@@ -415,9 +396,6 @@ const SubstationFeeders = () => {
         if (substationId) {
             fetchFeeders();
         } else {
-            console.log(
-                'No substationId parameter provided, cannot fetch feeders'
-            );
             setWidgetsData((prev) => ({
                 ...prev,
                 feederNames: feederNames,
@@ -432,7 +410,6 @@ const SubstationFeeders = () => {
             }));
         }
     }, [substationId]);
-    console.log('widgetsData', widgetsData.feederDemandData);
 
     return (
         <div className={styles.main_content}>
@@ -500,7 +477,7 @@ const SubstationFeeders = () => {
                                 key={value}
                                 className={styles.individual_region_stats}>
                                 <ShortDetailsWidget
-                                    region={key}
+                                    region={region}
                                     name={key}
                                     substationId={substationId}
                                     id={value}

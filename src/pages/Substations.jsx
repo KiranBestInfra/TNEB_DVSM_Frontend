@@ -116,7 +116,6 @@ const Substations = () => {
     }, []);
 
     useEffect(() => {
-        console.log('region', region);
         if (!region) return;
 
         const substationNames = async () => {
@@ -126,7 +125,6 @@ const Substations = () => {
                 );
                 const data = response;
 
-                console.log('Fetched Substation Data:', data);
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.substationNames || [],
@@ -142,7 +140,6 @@ const Substations = () => {
 
         substationNames();
     }, [region]);
-    console.log('widgetsData', widgetsData);
 
     const handleRegionClick = (region) => {
         setSelectedRegion(region); // Set region when clicked
@@ -272,7 +269,6 @@ const Substations = () => {
     };
 
     try {
-        console.log('Rendering Substations component, timeRange:', timeframe);
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>

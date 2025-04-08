@@ -23,7 +23,6 @@ const UserEdcDashboard = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                console.log('Fetching EDC dashboard data for:', edc);
 
                 // Replace with actual API endpoint for EDC dashboard data
                 const response = await apiClient.get(

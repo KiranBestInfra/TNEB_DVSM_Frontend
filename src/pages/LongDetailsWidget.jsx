@@ -16,7 +16,6 @@ const LongDetailsWidget = () => {
     });
 
     let entityId = regionId || region;
-    console.log('LongDetailsWidget - Region ID:', regionId);
 
     if (feederId) {
         entityId = feederId;

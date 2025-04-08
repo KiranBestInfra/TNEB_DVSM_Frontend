@@ -24,10 +24,6 @@ const UserSubstationDashboard = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                console.log(
-                    'Fetching Substation dashboard data for:',
-                    substation
-                );
 
                 // Replace with actual API endpoint for Substation dashboard data
                 const response = await apiClient.get(

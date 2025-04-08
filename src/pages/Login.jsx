@@ -52,7 +52,6 @@ const Login = () => {
                 password: value.password,
                 rememberMe: value.remember,
             });
-            console.log(response);
             if (response.status === 'error') {
                 setErrors({
                     submit:
@@ -87,13 +86,11 @@ const Login = () => {
                         if (!region && decoded.userId && decoded.userId.includes('_')) {
                             // Try to extract region from userId
                             const possibleRegion = decoded.userId.split('_')[0].toLowerCase();
-                            console.log('Login - Extracted possible region from userId:', possibleRegion);
                             region = possibleRegion;
                         }
 
                         // Set a default region if none is found
                         region = region ? region.toLowerCase() : 'kancheepuram';
-                        console.log('Login - Redirecting to region:', region);
 
                         navigate(`/user/${region}/dashboard`);
                     }

@@ -97,9 +97,12 @@ const RegionEdcs = () => {
     }, []);
 
     useEffect(() => {
+        let ids = [];
         if (socket && widgetsData.edcNames.length > 0) {
+            widgetsData.edcNames.map((value) => ids.push(value.hierarchy_name));
+
             socket.emit('subscribeEdc', {
-                edcs: widgetsData.edcNames,
+                edcs: ids,
                 region: region,
             });
         }
@@ -111,9 +114,6 @@ const RegionEdcs = () => {
                 setLoading(true);
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response.data || {};
-
-                console.log('Fetched EDC data:', data);
-
                 const transformedData = {
                     totalEdcs: data.edcNames?.length || 0,
                     totalSubstations:
@@ -138,39 +138,6 @@ const RegionEdcs = () => {
                     feederCount: data.feederCounts || {},
                     edcDemandData: widgetsData.edcDemandData || {},
                 };
-
-                console.log(
-                    'Communication Meters:',
-                    transformedData.commMeters
-                );
-                console.log(
-                    'Non-Communication Meters:',
-                    transformedData.nonCommMeters
-                );
-                console.log(typeof transformedData.commMeters); // Should be 'number'
-                console.log(typeof transformedData.nonCommMeters); // Should be 'number'
-                console.log(
-                    'Total Meters:',
-                    transformedData.commMeters + transformedData.nonCommMeters
-                );
-                console.log(
-                    'Communication Percentage:',
-                    (
-                        (transformedData.commMeters /
-                            (transformedData.commMeters +
-                                transformedData.nonCommMeters)) *
-                        100
-                    ).toFixed(1) + '%'
-                );
-                console.log(
-                    'Non-Communication Percentage:',
-                    (
-                        (transformedData.nonCommMeters /
-                            (transformedData.commMeters +
-                                transformedData.nonCommMeters)) *
-                        100
-                    ).toFixed(1) + '%'
-                );
 
                 setWidgetsData(transformedData);
                 setLoading(false);
@@ -276,32 +243,46 @@ const RegionEdcs = () => {
                             className={styles.individual_region_stats}>
                             <ShortDetailsWidget
                                 region={region}
-                                edc={edc}
-                                name={edc}
+                                edc={edc.hierarchy_id}
+                                name={edc.hierarchy_name}
+                                edcId={edc.hierarchy_id}
                                 substationCount={
-                                    widgetsData.substationCount[edc] || 0
+                                    widgetsData.substationCount[
+                                        edc.hierarchy_name
+                                    ] || 0
                                 }
-                                feederCount={widgetsData.feederCount[edc] || 0}
+                                feederCount={
+                                    widgetsData.feederCount[
+                                        edc.hierarchy_name
+                                    ] || 0
+                                }
                                 edcCount={widgetsData.totalEdcs}
                                 graphData={
-                                    widgetsData.edcDemandData?.[edc.trim()] ?? {
+                                    widgetsData.edcDemandData?.[
+                                        edc.hierarchy_name
+                                    ] ?? {
                                         xAxis: [],
                                         series: [],
                                     }
                                 }
                                 currentValue={parseFloat(
                                     widgetsData.edcDemandData?.[
-                                        edc.trim()
+                                        edc.hierarchy_name
                                     ]?.series?.[0]?.data?.slice(-1)[0] || 0
                                 ).toFixed(1)}
                                 previousValue={parseFloat(
                                     widgetsData.edcDemandData?.[
-                                        edc.trim()
+                                        edc.hierarchy_name
                                     ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
                                 ).toFixed(1)}
                                 pageType="edcs"
                                 handleRegionClick={() => handleEdcClick(edc)}
                             />
+                            <div>
+                                {/* <h3>{edc.hierarchy_name}</h3> */}
+                                {/* <p>Substation Count: {widgetsData.substationCount[edc.hierarchy_name] || 0}</p> */}
+                                {/* <p>Feeder Count: {widgetsData.feederCount[edc.hierarchy_name] || 0}</p> */}
+                            </div>
                         </div>
                     ))}
                 </div>

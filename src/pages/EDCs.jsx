@@ -121,14 +121,12 @@ const EDCs = () => {
     }, [widgetsData.edcNames, socket]);
 
     useEffect(() => {
-        console.log('region', region);
         if (!region) return;
 
         const fetchEdcNames = async () => {
             try {
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response;
-                console.log('Fetched EDC data:', data); // Log to check response
                 const edcSubstationCounts =
                     data.data?.substationCounts?.reduce((acc, edc) => {
                         acc[edc.edc_name] = edc.substation_count;
@@ -156,7 +154,6 @@ const EDCs = () => {
         fetchEdcNames();
     }, [region]);
 
-    console.log('widgetsData', widgetsData);
 
     const handleRegionClick = (region) => {
         setSelectedRegion(region); // Set region when clicked

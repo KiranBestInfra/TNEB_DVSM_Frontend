@@ -60,7 +60,6 @@ const SubstationsUserPage = () => {
                     `/edcs/widgets/${region}/substations`
                 );
                 const data = response;
-                console.log('Fetched Substation Data:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
