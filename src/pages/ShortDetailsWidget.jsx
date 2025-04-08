@@ -30,6 +30,7 @@ const ShortDetailsWidget = ({
     edc,
     name,
     id = null,
+    edcId = null,
     substationId = null,
     edcCount,
     substationCount,
@@ -56,13 +57,17 @@ const ShortDetailsWidget = ({
     const handleClick = () => {
         let detailsUrl = '';
         const routePrefix = isUserRoute ? '/user' : '/admin';
-        const formattedRegion = id
+        const formattedRegion = region.toLowerCase().replace(/\s+/g, '-');
+        const formattedName = id
             ? id
-            : region.toLowerCase().replace(/\s+/g, '-');
-        const formattedName = name
+            : name
             ? name.toLowerCase().replace(/\s+/g, '-')
             : '';
-        const formattedEdc = edc ? edc.toLowerCase().replace(/\s+/g, '-') : '';
+        const formattedEdc = edcId
+            ? edcId
+            : edc
+            ? edc.toLowerCase().replace(/\s+/g, '-')
+            : '';
         const formattedSubstationId = substationId
             ? substationId.toLowerCase().replace(/\s+/g, '-')
             : '';
@@ -73,9 +78,7 @@ const ShortDetailsWidget = ({
                 break;
             case 'edcs':
                 if (edc) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/edcs/${edc
-                        .toLowerCase()
-                        .replace(/\s+/g, '-')}/details`;
+                    detailsUrl = `${routePrefix}/${formattedRegion}/edcs/${formattedEdc}/details`;
                 } else {
                     detailsUrl = `${routePrefix}/${formattedRegion}/edcs`;
                 }
@@ -86,14 +89,11 @@ const ShortDetailsWidget = ({
                 } else {
                     detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/details`;
                 }
-                console.log('Navigating to:', detailsUrl);
                 break;
             case 'feeders':
                 if (substationId && edc) {
-                    // This is a feeder belonging to a specific substation within an EDC
                     detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
                 } else if (substationId) {
-                    // This is a feeder belonging to a specific substation
                     detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
                 } else if (edc) {
                     detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/feeders/${formattedName}/details`;
@@ -116,10 +116,16 @@ const ShortDetailsWidget = ({
         const formattedRegion = id
             ? id
             : region.toLowerCase().replace(/\s+/g, '-');
-        const formattedName = name
+        const formattedName = id
+            ? id
+            : name
             ? name.toLowerCase().replace(/\s+/g, '-')
             : '';
-        const formattedEdc = edc ? edc.toLowerCase().replace(/\s+/g, '-') : '';
+        const formattedEdc = edcId
+            ? edcId
+            : edc
+            ? edc.toLowerCase().replace(/\s+/g, '-')
+            : '';
 
         switch (pageType) {
             case 'edcs':

@@ -83,7 +83,6 @@ const BarChart = ({
                         .filter((date) => date && !isNaN(date.getTime()));
 
                     if (dates.length === 0) {
-                        console.log('No valid dates found in xAxisData');
                         return '';
                     }
 

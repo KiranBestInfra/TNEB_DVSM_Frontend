@@ -15,7 +15,6 @@ const PDFViewer = () => {
                     const response = await apiClient.get(
                         `/invoice?id=${invoiceId}`
                     );
-                    console.log(response);
                     const data = response.data;
                     setBillData(data);
                 }

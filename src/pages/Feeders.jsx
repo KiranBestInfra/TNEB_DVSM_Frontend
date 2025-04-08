@@ -15,7 +15,6 @@ const Feeders = () => {
     const totalFeeders = 416; 
 
     const { region } = useParams();
-    console.log('Feeders - Region from params:', region);
 
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
