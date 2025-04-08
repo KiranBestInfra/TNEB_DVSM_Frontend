@@ -312,23 +312,23 @@ const RegionSubstations = () => {
                                             id={value.id}
                                             edcCount={0}
                                             substationCount={0}
-                                            // feederCount={
-                                            //     widgetsData.substationFeederCounts?.[key] || 0
-                                            // }
-                                            // graphData={
-                                            //     widgetsData.substationDemandData?.[key.trim()] ?? {
-                                            //         xAxis: [],
-                                            //         series: [],
-                                            //     }
-                                            // }
-                                            // currentValue={parseFloat(
-                                            //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-1)[0] || 0
-                                            // ).toFixed(1)}
-                                            // previousValue={parseFloat(
-                                            //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
-                                            // ).toFixed(1)}
+                                            feederCount={
+                                                widgetsData.substationFeederCounts?.[value.id] || 0
+                                            }
+                                            graphData={
+                                                widgetsData.substationDemandData?.[value.id] ?? {
+                                                    xAxis: [],
+                                                    series: [],
+                                                }
+                                            }
+                                            currentValue={parseFloat(
+                                                widgetsData.substationDemandData?.[value.id]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                            ).toFixed(1)}
+                                            previousValue={parseFloat(
+                                                widgetsData.substationDemandData?.[value.id]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                            ).toFixed(1)}
                                             pageType="substations"
-                                            handleRegionClick={() => setSelectedSubstation(key)}
+                                            handleRegionClick={() => setSelectedSubstation(value.id)}
                                         />
                                     </div>
                                 
