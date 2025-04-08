@@ -23,6 +23,7 @@ const SubstationDetails = () => {
                     `/substations/graph/${entityId}/demand`
                 );
                 const data = response.data;
+                console.log('dataaaaa', data);
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
