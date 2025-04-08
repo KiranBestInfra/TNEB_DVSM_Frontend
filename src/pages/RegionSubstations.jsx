@@ -143,13 +143,10 @@ const RegionSubstations = () => {
 
     useEffect(() => {
         let ids = [];
-        console.log('widgetsData 1212', widgetsData.substationIds);
         if (socket && widgetsData.substationIds.length > 0) {
             widgetsData.substationIds.map((value) =>
-                //Object.entries(value).map(([key, value]) => ids.push(value))
                 ids.push(value.id)
             );
-            console.log('ids', ids);
             socket.emit('subscribeSubstation', {
                 substations: ids,
             });
@@ -312,15 +309,15 @@ const RegionSubstations = () => {
                                             id={value.id}
                                             edcCount={0}
                                             substationCount={0}
-                                            // feederCount={
-                                            //     widgetsData.substationFeederCounts?.[key] || 0
-                                            // }
-                                            // graphData={
-                                            //     widgetsData.substationDemandData?.[key.trim()] ?? {
-                                            //         xAxis: [],
-                                            //         series: [],
-                                            //     }
-                                            // }
+                                            feederCount={
+                                                widgetsData.substationFeederCounts?.[value.substation_names] || 0
+                                            }
+                                            graphData={
+                                                widgetsData.substationDemandData?.[value.id] ?? {
+                                                    xAxis: [],
+                                                    series: [],
+                                                }
+                                            }
                                             // currentValue={parseFloat(
                                             //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-1)[0] || 0
                                             // ).toFixed(1)}
@@ -328,7 +325,7 @@ const RegionSubstations = () => {
                                             //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
                                             // ).toFixed(1)}
                                             pageType="substations"
-                                            handleRegionClick={() => setSelectedSubstation(key)}
+                                            handleRegionClick={() => setSelectedSubstation(value.substation_names)}
                                         />
                                     </div>
                                 

@@ -268,6 +268,7 @@ const EdcSubstations = () => {
         newSocket.on('connect', () => {});
 
         newSocket.on('substationUpdate', (data) => {
+            console.log('data 2', data);
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -314,10 +315,10 @@ const EdcSubstations = () => {
         let ids = [];
         if (socket && widgetsData.substationNames.length > 0) {
             widgetsData.substationNames.map((value) =>
-                ids.push(value.substation_names)
+                ids.push(value.hierarchy_id)
             );
             socket.emit('subscribeSubstation', {
-                substations: widgetsData.substationNames,
+                substations: ids,
             });
         }
         console.log('ids', ids);
@@ -425,7 +426,8 @@ const EdcSubstations = () => {
                                               region={region}
                                               edc={edcs}
                                               name={substation.substation_names}
-                                              id={substation.hierarchy_id}
+                                              subID={substation.hierarchy_id}
+                                              //   id={substation.hierarchy_id}
                                               feederCount={
                                                   widgetsData
                                                       .substationFeederCounts?.[
@@ -451,7 +453,7 @@ const EdcSubstations = () => {
                                               graphData={
                                                   widgetsData
                                                       .substationDemandData?.[
-                                                      substation.substation_names.trim()
+                                                      substation.hierarchy_id
                                                   ] ?? {
                                                       xAxis: [],
                                                       series: [],

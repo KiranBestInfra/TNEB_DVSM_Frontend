@@ -31,6 +31,7 @@ const ShortDetailsWidget = ({
     name,
     id = null,
     edcId = null,
+    subID = null,
     substationId = null,
     edcCount,
     substationCount,
@@ -84,7 +85,11 @@ const ShortDetailsWidget = ({
                 }
                 break;
             case 'substations':
-                if (edc) {
+                if (substationId && edc) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/details`;
+                } else if (substationId) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/details`;
+                } else if (edc) {
                     detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedName}/details`;
                 } else {
                     detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/details`;
@@ -116,7 +121,9 @@ const ShortDetailsWidget = ({
         const formattedRegion = id
             ? id
             : region.toLowerCase().replace(/\s+/g, '-');
-        const formattedName = id
+        const formattedName = subID
+            ? subID
+            : id
             ? id
             : name
             ? name.toLowerCase().replace(/\s+/g, '-')
