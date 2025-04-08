@@ -86,6 +86,7 @@ const EdcSubstations = () => {
                     `/substations/widgets/${edcs}/substations`
                 );
                 const data = response;
+                console.log('data', data);
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.edcsubstationNames || [],
@@ -209,10 +210,10 @@ const EdcSubstations = () => {
         },
     };
 
-    const demoSubstationDemandData = {};
-    demoSubstationNames.forEach((substation) => {
-        demoSubstationDemandData[substation] = graphData.daily;
-    });
+    // const demoSubstationDemandData = {};
+    // demoSubstationNames.forEach((substation) => {
+    //     demoSubstationDemandData[substation] = graphData.daily;
+    // });
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedSubstationData = localStorage.getItem('substationData');
@@ -310,103 +311,70 @@ const EdcSubstations = () => {
     }, []);
 
     useEffect(() => {
+        let ids = [];
         if (socket && widgetsData.substationNames.length > 0) {
+            widgetsData.substationNames.map((value) =>
+                ids.push(value.substation_names)
+            );
             socket.emit('subscribeSubstation', {
                 substations: widgetsData.substationNames,
             });
         }
+        console.log('ids', ids);
     }, [widgetsData.substationNames, socket]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                try {
-                    const data = await apiClient.get(`/edcs/${edcs}/widgets`);
-                    const edcWidgets = data.data;
+    // useEffect(() => {
+    //     if (!edcs) return;
 
-                    setWidgetsData((prev) => {
-                        const newData = {
-                            ...prev,
-                            totalsubstations:
-                                edcWidgets.totalsubstations ||
-                                prev.totalsubstations,
-                            totalFeeders:
-                                edcWidgets.totalFeeders || prev.totalFeeders,
-                            commMeters:
-                                edcWidgets.commMeters || prev.commMeters,
-                            nonCommMeters:
-                                edcWidgets.nonCommMeters || prev.nonCommMeters,
-                        };
-                        return newData;
-                    });
-                } catch (error) {
-                    console.error(
-                        'API error, using demo data for widgets:',
-                        error
-                    );
-                }
-            } catch (error) {
-                console.error('Error fetching widget data:', error);
-            }
-        };
+    //     const substationNames = async () => {
+    //         try {
+    //             try {
+    //                 const response = await apiClient.get(
+    //                     `/edcs/${edcs}/substations`
+    //                 );
+    //                 const data = response;
+    //                 console.log('data', data);
+    //                 setWidgetsData((prev) => {
+    //                     const newData = {
+    //                         ...prev,
+    //                         substationNames: data.data?.substationNames || [],
+    //                         edcSubstationCount:
+    //                             data.data?.substationNames?.length || 0,
+    //                         totalDistricts:
+    //                             data.data?.totalDistricts ||
+    //                             data.data?.substationNames?.length ||
+    //                             0,
+    //                         substationFeederCounts:
+    //                             data.data?.substationFeederCounts || {},
+    //                     };
 
-        if (edcs) {
-            fetchData();
-        }
-    }, [edcs]);
+    //                     const cacheData = {
+    //                         substationNames: newData.substationNames,
+    //                         substationFeederCounts:
+    //                             newData.substationFeederCounts,
+    //                         totalDistricts: newData.totalDistricts,
+    //                     };
 
-    useEffect(() => {
-        if (!edcs) return;
+    //                     localStorage.setItem(
+    //                         'substationData',
+    //                         JSON.stringify(cacheData)
+    //                     );
+    //                     localStorage.setItem(
+    //                         'substationDataTimestamp',
+    //                         Date.now().toString()
+    //                     );
+    //                     return newData;
+    //                 });
+    //             } catch (error) {
+    //                 console.error('API error fetching substations:', error);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching substation names:', error);
+    //         }
+    //     };
 
-        const substationNames = async () => {
-            try {
-                try {
-                    const response = await apiClient.get(
-                        `/edcs/${edcs}/substations`
-                    );
-                    const data = response;
-
-                    setWidgetsData((prev) => {
-                        const newData = {
-                            ...prev,
-                            substationNames: data.data?.substationNames || [],
-                            edcSubstationCount:
-                                data.data?.substationNames?.length || 0,
-                            totalDistricts:
-                                data.data?.totalDistricts ||
-                                data.data?.substationNames?.length ||
-                                0,
-                            substationFeederCounts:
-                                data.data?.substationFeederCounts || {},
-                        };
-
-                        const cacheData = {
-                            substationNames: newData.substationNames,
-                            substationFeederCounts:
-                                newData.substationFeederCounts,
-                            totalDistricts: newData.totalDistricts,
-                        };
-
-                        localStorage.setItem(
-                            'substationData',
-                            JSON.stringify(cacheData)
-                        );
-                        localStorage.setItem(
-                            'substationDataTimestamp',
-                            Date.now().toString()
-                        );
-                        return newData;
-                    });
-                } catch (error) {
-                    console.error('API error fetching substations:', error);
-                }
-            } catch (error) {
-                console.error('Error fetching substation names:', error);
-            }
-        };
-
-        substationNames();
-    }, [edcs]);
+    //     substationNames();
+    // }, [edcs]);
 
     try {
         return (
@@ -456,23 +424,25 @@ const EdcSubstations = () => {
                                           <ShortDetailsWidget
                                               region={region}
                                               edc={edcs}
-                                              name={substation}
+                                              name={substation.substation_names}
+                                              id={substation.hierarchy_id}
                                               feederCount={
                                                   widgetsData
                                                       .substationFeederCounts?.[
                                                       substation
+                                                          .substation_names
                                                   ] || 0
                                               }
                                               currentValue={parseFloat(
                                                   widgetsData.substationDemandData?.[
-                                                      substation.trim()
+                                                      substation.substation_names.trim()
                                                   ]?.series?.[0]?.data?.slice(
                                                       -1
                                                   )[0] || 0
                                               ).toFixed(1)}
                                               previousValue={parseFloat(
                                                   widgetsData.substationDemandData?.[
-                                                      substation.trim()
+                                                      substation.substation_names.trim()
                                                   ]?.series?.[0]?.data?.slice(
                                                       -2,
                                                       -1
@@ -481,7 +451,7 @@ const EdcSubstations = () => {
                                               graphData={
                                                   widgetsData
                                                       .substationDemandData?.[
-                                                      substation.trim()
+                                                      substation.substation_names.trim()
                                                   ] ?? {
                                                       xAxis: [],
                                                       series: [],
