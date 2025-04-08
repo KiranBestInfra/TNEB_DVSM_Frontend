@@ -261,6 +261,7 @@ const SubstationFeeders = () => {
                         `/substations/${substationId}/widgets`
                     );
                     const substationWidgets = data.data;
+                    console.log('substationWidgets', substationWidgets);
 
                     setWidgetsData((prev) => {
                         const newData = {
