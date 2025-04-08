@@ -66,7 +66,6 @@ const RegionSubstationFeederDetails = () => {
 
     const routePrefix = isUserRoute ? '/user' : '/admin';
 
-    // Generate appropriate links based on route structure
     const substationLink = edcs
         ? `${routePrefix}/${region}/${edcs}/substations/${substationId}/details`
         : `${routePrefix}/${region}/substations/${substationId}/details`;
@@ -186,7 +185,7 @@ const RegionSubstationFeederDetails = () => {
                     </div>
                 </div>
 
-                <div className={styles.voltage_container}>
+                {/* <div className={styles.voltage_container}>
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
@@ -202,7 +201,7 @@ const RegionSubstationFeederDetails = () => {
                             </span>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div className={styles.chart_container}>

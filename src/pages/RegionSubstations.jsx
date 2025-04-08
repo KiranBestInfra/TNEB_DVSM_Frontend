@@ -102,9 +102,7 @@ const RegionSubstations = () => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
 
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
+        newSocket.on('connect', () => {});
 
         newSocket.on('substationUpdate', (data) => {
             setWidgetsData((prevData) => {
@@ -143,14 +141,13 @@ const RegionSubstations = () => {
         };
     }, []);
 
-    console.log('widgetsData', widgetsData);
-
     useEffect(() => {
         let ids = [];
-        console.log('widgetsData 1212');
+        console.log('widgetsData 1212', widgetsData.substationIds);
         if (socket && widgetsData.substationIds.length > 0) {
             widgetsData.substationIds.map((value) =>
-                Object.entries(value).map(([key, value]) => ids.push(value))
+                //Object.entries(value).map(([key, value]) => ids.push(value))
+                ids.push(value.id)
             );
             console.log('ids', ids);
             socket.emit('subscribeSubstation', {
@@ -164,7 +161,6 @@ const RegionSubstations = () => {
             try {
                 const data = await apiClient.get(`/regions/widgets`);
                 const regionWidgets = data.data;
-                console.log('regionWidgets', regionWidgets);
                 setWidgetsData((prev) => ({
                     ...prev,
                     totalRegions:
@@ -220,9 +216,9 @@ const RegionSubstations = () => {
 
     const regionName = region
         ? region
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
         : 'Unknown';
 
     const getSummaryData = () => {
@@ -233,7 +229,7 @@ const RegionSubstations = () => {
                 totalSubstations: widgetsData.regionSubstationCount,
                 totalFeeders: widgetsData.totalFeeders,
                 commMeters: widgetsData.commMeters,
-                nonCommMeters: widgetsData.nonCommMeters
+                nonCommMeters: widgetsData.nonCommMeters,
             };
         }
 
@@ -241,9 +237,10 @@ const RegionSubstations = () => {
             totalRegions: widgetsData.totalRegions,
             totalEdcs: widgetsData.totalEdcs,
             totalSubstations: 1,
-            totalFeeders: widgetsData.substationFeederCounts?.[selectedSubstation] || 0,
+            totalFeeders:
+                widgetsData.substationFeederCounts?.[selectedSubstation] || 0,
             commMeters: widgetsData.commMeters,
-            nonCommMeters: widgetsData.nonCommMeters
+            nonCommMeters: widgetsData.nonCommMeters,
         };
     };
 

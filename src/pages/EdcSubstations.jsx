@@ -54,7 +54,6 @@ ErrorBoundary.propTypes = {
 //                 `/widgets/:edcs/substations`
 //             );
 //             const data = response;
-//             console.log('data', data);
 
 //             setWidgetsData((prev) => ({
 //                 ...prev,
@@ -87,8 +86,6 @@ const EdcSubstations = () => {
                     `/substations/widgets/${edcs}/substations`
                 );
                 const data = response;
-                console.log('data', data);
-
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.edcsubstationNames || [],
@@ -267,28 +264,12 @@ const EdcSubstations = () => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
 
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
+        newSocket.on('connect', () => {});
 
         newSocket.on('substationUpdate', (data) => {
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
-                    // substationNames:
-                    //     data.substationNames || prevData.substationNames,
-                    // substationFeederCounts:
-                    //     data.substationFeederCounts ||
-                    //     prevData.substationFeederCounts,
-                    // edcSubstationCount:
-                    //     data.substationNames?.length ||
-                    //     prevData.edcSubstationCount,
-                    // totalDistricts:
-                    //     data.totalDistricts ||
-                    //     data.substationNames?.length ||
-                    //     prevData.totalDistricts,
-                    // substationStats:
-                    //     data.substationStats || prevData.substationStats,
                     ...prevData,
                     substationDemandData: {
                         ...prevData.substationDemandData,
@@ -297,10 +278,6 @@ const EdcSubstations = () => {
                 };
 
                 const cacheData = {
-                    // substationNames: newData.substationNames,
-                    // substationFeederCounts: newData.substationFeederCounts,
-                    // totalDistricts: newData.totalDistricts,
-                    // substationStats: newData.substationStats,
                     substationDemandData: newData.substationDemandData,
                 };
 
@@ -346,14 +323,10 @@ const EdcSubstations = () => {
                 try {
                     const data = await apiClient.get(`/edcs/${edcs}/widgets`);
                     const edcWidgets = data.data;
-                    console.log('edcWidgets', edcWidgets);
 
                     setWidgetsData((prev) => {
                         const newData = {
                             ...prev,
-                            // totalRegions:
-                            //     edcWidgets.totalRegions || prev.totalRegions,
-                            // totalEdcs: edcWidgets.totalEdcs || prev.totalEdcs,
                             totalsubstations:
                                 edcWidgets.totalsubstations ||
                                 prev.totalsubstations,
@@ -434,8 +407,6 @@ const EdcSubstations = () => {
 
         substationNames();
     }, [edcs]);
-
-    console.log('widgetsData', widgetsData);
 
     try {
         return (

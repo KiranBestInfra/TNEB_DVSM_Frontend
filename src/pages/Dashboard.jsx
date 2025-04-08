@@ -11,7 +11,6 @@ import { apiClient } from '../api/client';
 
 const Dashboard = () => {
     const { region } = useParams();
-    console.log('Dashboard - Region from params:', region);
 
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
@@ -58,7 +57,6 @@ const Dashboard = () => {
             try {
                 const response = await apiClient.get('/main/graphs');
                 const data = response.data;
-                console.log("Graph time range",data);
             } catch (error) {
                 console.error('Error fetching graph time range:', error);
             }
@@ -72,7 +70,6 @@ const Dashboard = () => {
             try {
                 const response = await apiClient.get('/regions/graph/demand');
                 const data = response.data;
-                console.log("Graph data",data);
                 setGraphData({
                     xAxis: data.xAxis || [],
                     series: data.series || [],
