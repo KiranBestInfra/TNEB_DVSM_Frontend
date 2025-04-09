@@ -9,13 +9,14 @@ import { Link } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 
-const EdcFeeders = () => {
+const EdcSubstationFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
-    const { region, edcs } = useParams();
-    const location = window.location.pathname;
-    const isUserRoute = location.includes('/user/');
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
+
+    const { region, edcs, substationId } = useParams();
+    const location = window.location.pathname;
+    const isUserRoute = location.includes('/user/');
 
     const feederNames = [
         'Adyar Feeder 1',
@@ -133,14 +134,16 @@ const EdcFeeders = () => {
         },
     };
 
-    // const demoFeederDemandData = {};
-    // feederNames.forEach((feeder) => {
-    //     demoFeederDemandData[feeder] = graphData.daily;
-    // });
+    const demoFeederDemandData = {};
+    feederNames.forEach((feeder) => {
+        demoFeederDemandData[feeder] = graphData.daily;
+    });
 
     const [widgetsData, setWidgetsData] = useState(() => {
-        const savedFeederData = localStorage.getItem('edcFeederData');
-        const savedTimestamp = localStorage.getItem('edcFeederDataTimestamp');
+        const savedFeederData = localStorage.getItem('edcSubstationFeederData');
+        const savedTimestamp = localStorage.getItem(
+            'edcSubstationFeederDataTimestamp'
+        );
 
         if (savedFeederData && savedTimestamp) {
             const timestamp = parseInt(savedTimestamp);
@@ -168,7 +171,7 @@ const EdcFeeders = () => {
             totalRegions: 13,
             totalEdcs: 95,
             totalSubstations: 260,
-            totalFeeders: 0,
+            totalFeeders: 416,
             commMeters: 942,
             nonCommMeters: 301,
             feederNames: [],
@@ -176,7 +179,7 @@ const EdcFeeders = () => {
             meterCount: {},
             feederStats: {},
             feederDemandData: {},
-            feederIds: {},
+            feederIds: [],
         };
     });
 
@@ -187,7 +190,6 @@ const EdcFeeders = () => {
         newSocket.on('connect', () => {});
 
         newSocket.on('feederUpdate', (data) => {
-            console.log('data', data);
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -205,14 +207,14 @@ const EdcFeeders = () => {
                     feederIds: newData.feederIds,
                 };
 
-                // localStorage.setItem(
-                //     'edcFeederData',
-                //     JSON.stringify(cacheData)
-                // );
-                // localStorage.setItem(
-                //     'edcFeederDataTimestamp',
-                //     Date.now().toString()
-                // );
+                localStorage.setItem(
+                    'edcSubstationFeederData',
+                    JSON.stringify(cacheData)
+                );
+                localStorage.setItem(
+                    'edcSubstationFeederDataTimestamp',
+                    Date.now().toString()
+                );
                 return newData;
             });
 
@@ -220,8 +222,8 @@ const EdcFeeders = () => {
                 clearTimeout(cacheTimeoutRef.current);
             }
             cacheTimeoutRef.current = setTimeout(() => {
-                localStorage.removeItem('edcFeederData');
-                localStorage.removeItem('edcFeederDataTimestamp');
+                localStorage.removeItem('edcSubstationFeederData');
+                localStorage.removeItem('edcSubstationFeederDataTimestamp');
             }, 30000);
         });
 
@@ -234,61 +236,75 @@ const EdcFeeders = () => {
     }, []);
 
     useEffect(() => {
-        let ids = [];
-        if (socket && widgetsData.feederNames.length > 0) {
-            widgetsData.feederNames.map((value) => ids.push(value.id));
-            socket.emit('subscribeFeeder', {
-                feeders: ids,
-            });
-        }
-    }, [widgetsData.feederNames, socket]);
-
-    useEffect(() => {
         const fetchData = async () => {
             try {
-                try {
-                    const data = await apiClient.get(`/edcs/${edcs}/widgets`);
-                    const edcWidgets = data.data;
-                    console.log('edcWidgets', edcWidgets);
+                const feederResponse = await apiClient.get(
+                    `/feeders/edc-substation/${edcs}/${substationId}`
+                );
+                const data = feederResponse.data;
 
-                    setWidgetsData((prev) => {
-                        const newData = {
-                            ...prev,
-                            totalRegions:
-                                edcWidgets.totalRegions || prev.totalRegions,
-                            totalEdcs: edcWidgets.totalEdcs || prev.totalEdcs,
-                            totalSubstations:
-                                edcWidgets.totalSubstations ||
-                                prev.totalSubstations,
-                            totalFeeders:
-                                edcWidgets.totalFeeders || prev.totalFeeders,
-                            commMeters:
-                                edcWidgets.commMeters || prev.commMeters,
-                            nonCommMeters:
-                                edcWidgets.nonCommMeters || prev.nonCommMeters,
-                            feederNames: edcWidgets.regionFeederNames,
-                        };
-                        return newData;
-                    });
-                } catch (error) {
-                    console.error(
-                        'API error, using demo data for widgets:',
-                        error
-                    );
-                }
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    feederNames: data.feederNames || feederNames,
+                    feederCount: data.feederNames?.length || feederNames.length,
+                    meterCount: data.meterCount || feederMeterCounts,
+                    feederStats: data.feederStats || feederStats,
+                    feederDemandData:
+                        data.feederGraphData || demoFeederDemandData,
+                    feederIds: data.feederIds || [],
+                }));
+
+                const cacheData = {
+                    feederNames: data.feederNames || feederNames,
+                    meterCount: data.meterCount || feederMeterCounts,
+                    feederStats: data.feederStats || feederStats,
+                    feederDemandData:
+                        data.feederGraphData || demoFeederDemandData,
+                    feederIds: data.feederIds || [],
+                };
+
+                localStorage.setItem(
+                    'edcSubstationFeederData',
+                    JSON.stringify(cacheData)
+                );
+                localStorage.setItem(
+                    'edcSubstationFeederDataTimestamp',
+                    Date.now().toString()
+                );
             } catch (error) {
-                console.error('Error fetching widget data:', error);
+                console.error('Error fetching data:', error);
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    feederNames: feederNames,
+                    feederCount: feederNames.length,
+                    meterCount: feederMeterCounts,
+                    feederStats: feederStats,
+                    feederDemandData: demoFeederDemandData,
+                }));
             }
         };
 
         fetchData();
-    }, [edcs]);
+    }, [edcs, substationId]);
 
+    const substationName = substationId
+        ? substationId
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
+        : 'Unknown';
+
+    const edcName = edcs
+        ? edcs
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
+        : 'Unknown';
 
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">Feeders</h2>
+                <h2 className="title">{substationName} Substation Feeders</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -315,101 +331,44 @@ const EdcFeeders = () => {
                 </div>
             </div>
             <Breadcrumb />
-
             <SummarySection
-                widgetsData={{
-                    totalRegions: widgetsData.totalRegions,
-                    totalEdcs: widgetsData.totalEdcs,
-                    totalSubstations: widgetsData.totalSubstations,
-                    totalFeeders: widgetsData.totalFeeders,
-                    commMeters: widgetsData.commMeters,
-                    nonCommMeters: widgetsData.nonCommMeters,
-                    totalDistricts: 0,
-                }}
-                isUserRoute={isUserRoute}
-                isBiUserRoute={location.includes('/bi/user/')}
-                showRegions={false}
-                showEdcs={false}
-                showSubstations={false}
-                showDistricts={false}
+                title="Total Feeders"
+                value={widgetsData.feederCount}
+                icon="icons/electric-meter.svg"
             />
 
-            <div className={styles.section_header}>
-                <h2 className="title">
-                    Feeders:{' '}
-                    <span
-                        className={
-                            styles.region_count
-                        }>{`[ ${widgetsData.feederCount} ]`}</span>
-                </h2>
-            </div>
-            <div className={styles.region_stats_container}>
-                {widgetsData.feederNames &&
-                widgetsData.feederNames.length > 0 ? (
-                    widgetsData.feederNames.map((value) => (
-                        <div
-                            key={value.id}
-                            className={styles.individual_region_stats}>
-                            <ShortDetailsWidget
-                                region={region}
-                                edc={edcs}
-                                name={value.name}
-                                id={value.id}
-                                feederCount={
-                                    widgetsData.meterCount[value.name] || 0
+            <div className={styles.widget_row_container}>
+                {widgetsData.feederNames.map((feederName, index) => (
+                    <div key={index} className={styles.widget_item}>
+                        <ShortDetailsWidget
+                            region={region}
+                            edc={edcs}
+                            name={feederName}
+                            substationId={substationId}
+                            edcCount={0}
+                            substationCount={0}
+                            feederCount={0}
+                            currentValue={
+                                widgetsData.feederStats[feederName]
+                                    ?.currentValue || 0
+                            }
+                            previousValue={
+                                widgetsData.feederStats[feederName]
+                                    ?.previousValue || 0
+                            }
+                            pageType="feeders"
+                            graphData={
+                                widgetsData.feederDemandData[feederName] || {
+                                    xAxis: [],
+                                    series: [],
                                 }
-                                edcCount={widgetsData.totalEdcs || 0}
-                                substationCount={
-                                    widgetsData.totalSubstations || 0
-                                }
-                                currentValue={
-                                    parseFloat(
-                                        widgetsData.feederDemandData?.[
-                                            value.name
-                                        ]?.series?.[0]?.data?.slice(-1)[0]
-                                    ) ||
-                                    parseFloat(
-                                        widgetsData.feederStats[value.name]
-                                            ?.currentValue
-                                    ) ||
-                                    parseFloat(
-                                        feederStats[value.name]?.currentValue
-                                    ) ||
-                                    0
-                                }
-                                previousValue={
-                                    parseFloat(
-                                        widgetsData.feederDemandData?.[
-                                            value.name
-                                        ]?.series?.[0]?.data?.slice(-2, -1)[0]
-                                    ) ||
-                                    parseFloat(
-                                        widgetsData.feederStats[value.name]
-                                            ?.previousValue
-                                    ) ||
-                                    parseFloat(
-                                        feederStats[value.name]?.previousValue
-                                    ) ||
-                                    0
-                                }
-                                graphData={
-                                    widgetsData.feederDemandData[
-                                        value.id
-                                    ] || {
-                                        xAxis: [],
-                                        series: [],
-                                    }
-                                }
-                                pageType="feeders"
-                            />
-                        </div>
-                    ))
-                ) : (
-                    <p>No feeders available for this EDC.</p>
-                )}
+                            }
+                        />
+                    </div>
+                ))}
             </div>
         </div>
     );
 };
 
-export default EdcFeeders;
+export default EdcSubstationFeeders;

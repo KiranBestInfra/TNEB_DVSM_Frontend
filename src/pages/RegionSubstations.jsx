@@ -78,6 +78,7 @@ const RegionSubstations = () => {
                     regionSubstationCount: 0,
                     substationFeederCounts: {},
                     substationDemandData: parsedDemandData,
+                    substationIds: {},
                 };
             }
         }
@@ -93,6 +94,7 @@ const RegionSubstations = () => {
             regionSubstationCount: 0,
             substationFeederCounts: {},
             substationDemandData: {},
+            substationIds: {},
         };
     });
 
@@ -100,9 +102,7 @@ const RegionSubstations = () => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
 
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
+        newSocket.on('connect', () => {});
 
         newSocket.on('substationUpdate', (data) => {
             setWidgetsData((prevData) => {
@@ -141,23 +141,23 @@ const RegionSubstations = () => {
         };
     }, []);
 
-    console.log('widgetsData', widgetsData);
-
     useEffect(() => {
-        console.log('substationNames', widgetsData.substationNames);
-        if (socket && widgetsData.substationNames.length > 0) {
+        let ids = [];
+        if (socket && widgetsData.substationIds.length > 0) {
+            widgetsData.substationIds.map((value) =>
+                ids.push(value.id)
+            );
             socket.emit('subscribeSubstation', {
-                substations: widgetsData.substationNames,
+                substations: ids,
             });
         }
-    }, [widgetsData.substationNames, socket]);
+    }, [widgetsData.substationIds, socket]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await apiClient.get(`/regions/widgets`);
                 const regionWidgets = data.data;
-                console.log('regionWidgets', regionWidgets);
                 setWidgetsData((prev) => ({
                     ...prev,
                     totalRegions:
@@ -188,18 +188,16 @@ const RegionSubstations = () => {
                     `/edcs/widgets/${region}/substations`
                 );
                 const data = response;
-                console.log('data', data);
+                console.log('dataaa', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.substationNames || [],
-                    regionSubstationCount:
-                        data.data?.substationNames?.length || 0,
-                    substationFeederCounts:
-                        data.data?.substationFeederCounts || {},
+                    regionSubstationCount: data.data?.substationNames?.length || 0,
+                    substationFeederCounts: data.data?.substationFeederCounts || {},
                     commMeters: data.data?.commMeters || prev.commMeters,
-                    nonCommMeters:
-                        data.data?.nonCommMeters || prev.nonCommMeters,
+                    nonCommMeters: data.data?.nonCommMeters || prev.nonCommMeters,
+                    substationIds: data.data?.substationNames,
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);
@@ -215,9 +213,9 @@ const RegionSubstations = () => {
 
     const regionName = region
         ? region
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
         : 'Unknown';
 
     const getSummaryData = () => {
@@ -228,7 +226,7 @@ const RegionSubstations = () => {
                 totalSubstations: widgetsData.regionSubstationCount,
                 totalFeeders: widgetsData.totalFeeders,
                 commMeters: widgetsData.commMeters,
-                nonCommMeters: widgetsData.nonCommMeters
+                nonCommMeters: widgetsData.nonCommMeters,
             };
         }
 
@@ -236,9 +234,10 @@ const RegionSubstations = () => {
             totalRegions: widgetsData.totalRegions,
             totalEdcs: widgetsData.totalEdcs,
             totalSubstations: 1,
-            totalFeeders: widgetsData.substationFeederCounts?.[selectedSubstation] || 0,
+            totalFeeders:
+                widgetsData.substationFeederCounts?.[selectedSubstation] || 0,
             commMeters: widgetsData.commMeters,
-            nonCommMeters: widgetsData.nonCommMeters
+            nonCommMeters: widgetsData.nonCommMeters,
         };
     };
 
@@ -298,57 +297,40 @@ const RegionSubstations = () => {
                         </h2>
                     </div>
                     <div className={styles.region_stats_container}>
-                        {widgetsData.substationNames &&
-                            widgetsData.substationNames.length > 0
-                            ? widgetsData.substationNames.map(
-                                (substation, index) => (
+                        {widgetsData.substationIds && widgetsData.substationIds.length > 0 ? (
+                            widgetsData.substationIds.map((value) =>
+                                //Object.entries(value).map(([key, value]) => (
                                     <div
-                                        key={index}
-                                        className={
-                                            styles.individual_region_stats
-                                        }>
+                                        key={value}
+                                        className={styles.individual_region_stats}>
                                         <ShortDetailsWidget
                                             region={region}
-                                            name={substation}
+                                            name={value.substation_names}
+                                            id={value.id}
                                             edcCount={0}
                                             substationCount={0}
                                             feederCount={
-                                                widgetsData
-                                                    .substationFeederCounts?.[
-                                                substation
-                                                ] || 0
+                                                widgetsData.substationFeederCounts?.[value.substation_names] || 0
                                             }
                                             graphData={
-                                                widgetsData
-                                                    .substationDemandData?.[
-                                                substation.trim()
-                                                ] ?? {
+                                                widgetsData.substationDemandData?.[value.id] ?? {
                                                     xAxis: [],
                                                     series: [],
                                                 }
                                             }
-                                            currentValue={parseFloat(
-                                                widgetsData.substationDemandData?.[
-                                                    substation.trim()
-                                                ]?.series?.[0]?.data?.slice(
-                                                    -1
-                                                )[0] || 0
-                                            ).toFixed(1)}
-                                            previousValue={parseFloat(
-                                                widgetsData.substationDemandData?.[
-                                                    substation.trim()
-                                                ]?.series?.[0]?.data?.slice(
-                                                    -2,
-                                                    -1
-                                                )[0] || 0
-                                            ).toFixed(1)}
+                                            // currentValue={parseFloat(
+                                            //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                            // ).toFixed(1)}
+                                            // previousValue={parseFloat(
+                                            //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                            // ).toFixed(1)}
                                             pageType="substations"
-                                            handleRegionClick={() => setSelectedSubstation(substation)}
+                                            handleRegionClick={() => setSelectedSubstation(value.substation_names)}
                                         />
                                     </div>
-                                )
+                                
                             )
-                            : null}
+                        ) : null}
                     </div>
                 </div>
             </ErrorBoundary>

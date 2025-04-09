@@ -16,26 +16,20 @@ export const AuthProvider = ({ children }) => {
         if (accessToken) {
             try {
                 const decoded = jwtDecode(accessToken);
-                console.log('AuthProvider - Raw token data:', decoded);
 
                 let region = null;
 
                 // Try to extract region from different possible fields
                 if (decoded.region) {
                     region = decoded.region;
-                    console.log('AuthProvider - Found region field in token:', region);
                 } else if (decoded.userRegion) {
                     region = decoded.userRegion;
-                    console.log('AuthProvider - Found userRegion field in token:', region);
                 } else if (decoded.tiruvannamalai) {
                     region = 'tiruvannamalai';
-                    console.log('AuthProvider - Found tiruvannamalai field, using as region');
                 } else if (decoded.chennai) {
                     region = 'chennai';
-                    console.log('AuthProvider - Found chennai field, using as region');
                 } else if (decoded.kancheepuram) {
                     region = 'kancheepuram';
-                    console.log('AuthProvider - Found kancheepuram field, using as region');
                 }
 
                 // Try to extract region from userId if it exists (format: region_sometype)
@@ -43,7 +37,6 @@ export const AuthProvider = ({ children }) => {
                     const possibleRegion = decoded.userId.split('_')[0];
                     // Add validation for known regions if needed
                     region = possibleRegion;
-                    console.log('AuthProvider - Extracted region from userId:', region);
                 }
 
                 // If we still don't have a region, check for specific flags in the token
@@ -59,7 +52,6 @@ export const AuthProvider = ({ children }) => {
                     for (const r of possibleRegions) {
                         if (tokenStr.includes(r)) {
                             region = r;
-                            console.log(`AuthProvider - Found region ${r} in token string`);
                             break;
                         }
                     }
@@ -68,7 +60,6 @@ export const AuthProvider = ({ children }) => {
                 // Standardize region to lowercase if we found one
                 if (region) {
                     region = region.toLowerCase();
-                    console.log('AuthProvider - Standardized region:', region);
                 }
 
                 // If we still don't have a region, we'll log the issue but continue without setting one
@@ -95,7 +86,6 @@ export const AuthProvider = ({ children }) => {
                     user: userObject
                 }));
 
-                console.log('AuthProvider - Updated user with region:', region);
             } catch (error) {
                 console.error('Error decoding token:', error);
                 setUser(null);

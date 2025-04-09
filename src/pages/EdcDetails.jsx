@@ -122,8 +122,8 @@ const EdcDetails = () => {
                                 <Link
                                     to={
                                         region
-                                            ? `/admin/${region}/${edcId}/feeder`
-                                            : `/admin/${edcId}/feeder`
+                                            ? `/admin/${region}/${edcId}/feeders`
+                                            : `/admin/${edcId}/feeders`
                                     }>
                                     Feeders
                                 </Link>

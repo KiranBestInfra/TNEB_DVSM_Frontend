@@ -1,27 +1,26 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
-import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 
-const FeederDetails = () => {
-    const { region, feederId } = useParams();
+const RegionSubstationFeederDetails = () => {
+    const { region, edcs, substationId, feederId } = useParams();
+    const location = useLocation();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
     });
-
-    const entityId = feederId;
+    const isUserRoute = location.pathname.includes('/user/');
 
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
                 const response = await apiClient.get(
-                    `/feeders/graph/${entityId}/demand`
+                    `/feeders/graph/${feederId}/demand`
                 );
                 const data = response.data;
                 setGraphData(data);
@@ -31,10 +30,28 @@ const FeederDetails = () => {
         };
 
         fetchGraphData();
-    }, [entityId, timeRange]);
+    }, [feederId, timeRange]);
 
-    const entityName = entityId
-        ? entityId
+    const feederName = feederId
+        ? feederId
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
+        : 'Unknown';
+
+    const substationName = substationId
+        ? substationId
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
+        : 'Unknown';
+
+    const regionName = region
+        ? region.charAt(0).toUpperCase() + region.slice(1)
+        : 'Unknown';
+
+    const edcName = edcs
+        ? edcs
               .split('-')
               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
               .join(' ')
@@ -44,12 +61,25 @@ const FeederDetails = () => {
         meterCount: 150,
         currentValue: 5.8,
         previousValue: 5.2,
+        voltageLevel: '11kV',
     };
+
+    const routePrefix = isUserRoute ? '/user' : '/admin';
+
+    const substationLink = edcs
+        ? `${routePrefix}/${region}/${edcs}/substations/${substationId}/details`
+        : `${routePrefix}/${region}/substations/${substationId}/details`;
+
+    const regionLink = `${routePrefix}/${region}/dashboard`;
+
+    const edcLink = edcs
+        ? `${routePrefix}/${region}/edcs/${edcs}/details`
+        : null;
 
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">{entityName} Feeder</h2>
+                <h2 className="title">{feederName} Feeder</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -72,7 +102,6 @@ const FeederDetails = () => {
                                 }
                             />
                         </div>
-                        
                     </div>
                 </div>
             </div>
@@ -102,40 +131,73 @@ const FeederDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/location.svg"
-                                alt="Location"
+                                src="icons/electric-factory.svg"
+                                alt="Substation"
                                 className={styles.TNEB_icons}
                             />
                         </div>
                         <div className={styles.total_title_value}>
-                            <span className="title">Region</span>
+                            <span className="title">Substation</span>
                             <span className={styles.summary_value}>
-                                <Link to={`/admin/${region}/dashboard`}>
-                                    {region
-                                        ? region.charAt(0).toUpperCase() +
-                                          region.slice(1)
-                                        : 'N/A'}
+                                <Link to={substationLink}>
+                                    {substationName}
                                 </Link>
                             </span>
                         </div>
                     </div>
                 </div>
 
-                {/* <div className={styles.status_container}>
+                {edcs && (
+                    <div className={styles.total_units_container}>
+                        <div className={styles.total_main_info}>
+                            <div className={styles.TNEB_icons}>
+                                <img
+                                    src="icons/energy-factory.svg"
+                                    alt="EDC"
+                                    className={styles.TNEB_icons}
+                                />
+                            </div>
+                            <div className={styles.total_title_value}>
+                                <span className="title">EDC</span>
+                                <span className={styles.summary_value}>
+                                    <Link to={edcLink}>{edcName}</Link>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div className={styles.total_units_container}>
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/status.svg"
-                                alt="Status"
+                                src="icons/district.svg"
+                                alt="Region"
                                 className={styles.TNEB_icons}
                             />
                         </div>
                         <div className={styles.total_title_value}>
-                            <span className="title">Status</span>
+                            <span className="title">Region</span>
                             <span className={styles.summary_value}>
-                                <span className={styles.status_active}>
-                                    Active
-                                </span>
+                                <Link to={regionLink}>{regionName}</Link>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* <div className={styles.voltage_container}>
+                    <div className={styles.total_main_info}>
+                        <div className={styles.TNEB_icons}>
+                            <img
+                                src="icons/electric-voltage.svg"
+                                alt="Voltage"
+                                className={styles.TNEB_icons}
+                            />
+                        </div>
+                        <div className={styles.total_title_value}>
+                            <span className="title">Voltage Level</span>
+                            <span className={styles.summary_value}>
+                                {stats.voltageLevel}
                             </span>
                         </div>
                     </div>
@@ -149,4 +211,4 @@ const FeederDetails = () => {
     );
 };
 
-export default FeederDetails;
+export default RegionSubstationFeederDetails;

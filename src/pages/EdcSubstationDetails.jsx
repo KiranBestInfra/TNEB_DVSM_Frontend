@@ -1,55 +1,72 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
-import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 
-const FeederDetails = () => {
-    const { region, feederId } = useParams();
+const EdcSubstationDetails = () => {
+    const { region, edc, edcId, edcs, substationId } = useParams();
+    const location = useLocation();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
     });
 
-    const entityId = feederId;
+    const entityId = substationId;
+    const edcIdentifier = edcId || edcs || edc;
+    const isUserRoute = location.pathname.includes('/user/');
 
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
                 const response = await apiClient.get(
-                    `/feeders/graph/${entityId}/demand`
+                    `/substations/graph/${entityId}/demand`
                 );
                 const data = response.data;
                 setGraphData(data);
             } catch (error) {
-                console.error('Error fetching feeder graph data:', error);
+                console.error('Error fetching substation graph data:', error);
             }
         };
 
         fetchGraphData();
     }, [entityId, timeRange]);
 
-    const entityName = entityId
+    const substationName = entityId
         ? entityId
               .split('-')
               .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
               .join(' ')
         : 'Unknown';
 
+    const edcName = edcIdentifier
+        ? edcIdentifier
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
+        : 'Unknown';
+
     const stats = {
-        meterCount: 150,
-        currentValue: 5.8,
+        feederCount: 20,
+        currentValue: 5.7,
         previousValue: 5.2,
     };
+
+    const routePrefix = isUserRoute ? '/user' : '/admin';
+    const feedersLink = region
+        ? `${routePrefix}/${region}/${edcIdentifier}/substations/${substationId}/feeders`
+        : `${routePrefix}/${edcIdentifier}/substations/${substationId}/feeders`;
+    const edcLink = region
+        ? `${routePrefix}/${region}/edcs/${edcIdentifier}/details`
+        : `${routePrefix}/${edcIdentifier}/dashboard`;
 
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
-                <h2 className="title">{entityName} Feeder</h2>
+                <h2 className="title">{substationName} Substation</h2>
                 <div className={styles.action_container}>
                     <div className={styles.action_cont}>
                         <div className={styles.time_range_select_dropdown}>
@@ -72,7 +89,6 @@ const FeederDetails = () => {
                                 }
                             />
                         </div>
-                        
                     </div>
                 </div>
             </div>
@@ -84,15 +100,17 @@ const FeederDetails = () => {
                         <div className={styles.TNEB_icons}>
                             <img
                                 src="icons/electric-meter.svg"
-                                alt="Meter"
+                                alt="Feeder"
                                 className={styles.TNEB_icons}
                             />
                         </div>
 
                         <div className={styles.total_title_value}>
-                            <span className="title">Meters</span>
+                            <span className="title">
+                                <Link to={feedersLink}>Feeders</Link>
+                            </span>
                             <span className={styles.summary_value}>
-                                {stats.meterCount}
+                                {stats.feederCount}
                             </span>
                         </div>
                     </div>
@@ -102,44 +120,19 @@ const FeederDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/location.svg"
-                                alt="Location"
+                                src="icons/electric-factory.svg"
+                                alt="EDC"
                                 className={styles.TNEB_icons}
                             />
                         </div>
                         <div className={styles.total_title_value}>
-                            <span className="title">Region</span>
+                            <span className="title">EDC</span>
                             <span className={styles.summary_value}>
-                                <Link to={`/admin/${region}/dashboard`}>
-                                    {region
-                                        ? region.charAt(0).toUpperCase() +
-                                          region.slice(1)
-                                        : 'N/A'}
-                                </Link>
+                                <Link to={edcLink}>{edcName}</Link>
                             </span>
                         </div>
                     </div>
                 </div>
-
-                {/* <div className={styles.status_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/status.svg"
-                                alt="Status"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">Status</span>
-                            <span className={styles.summary_value}>
-                                <span className={styles.status_active}>
-                                    Active
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                </div> */}
             </div>
 
             <div className={styles.chart_container}>
@@ -149,4 +142,4 @@ const FeederDetails = () => {
     );
 };
 
-export default FeederDetails;
+export default EdcSubstationDetails;

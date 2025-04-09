@@ -16,7 +16,6 @@ const Regions = () => {
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('regionDemandData');
         const savedTimestamp = localStorage.getItem('regionDemandTimestamp');
-        console.log('savedDemandData', savedDemandData);
 
         if (savedDemandData && savedTimestamp) {
             const timestamp = parseInt(savedTimestamp);
@@ -65,7 +64,6 @@ const Regions = () => {
         });
 
         newSocket.on('regionUpdate', (data) => {
-            console.log('regionUpdate', data);
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -115,10 +113,8 @@ const Regions = () => {
             const response = await apiClient.get('/regions/widgets');
 
             const data = response.data;
-            console.log('dataaaa', data);
 
 
-            console.log('RegionDataSASAS', data);
             
             setWidgetsData((prev) => ({
                 totalRegions: data.totalRegions || prev.totalRegions,

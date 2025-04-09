@@ -116,7 +116,6 @@ const Profile = () => {
         }
 
         // TODO: Implement password change logic with backend
-        console.log('Password change submitted:', passwordData);
         
         // Clear the form after submission
         setPasswordData({

@@ -54,7 +54,6 @@ const FeedersUserPage = () => {
     }, []);
 
     useEffect(() => {
-        console.log('region', region);
         if (!region) return;
 
         const fetchFeederNames = async () => {
@@ -63,7 +62,6 @@ const FeedersUserPage = () => {
                     `http://localhost:3000/api/v1/edcs/widgets/${region}`
                 );
                 const data = await response.json();
-                console.log('Fetched Feeder Data:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -81,7 +79,6 @@ const FeedersUserPage = () => {
         fetchFeederNames();
     }, [region]);
 
-    console.log('widgetsData', widgetsData);
 
     // Feeder meter counts
     const feederMeterCounts = {

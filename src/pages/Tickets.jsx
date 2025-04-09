@@ -49,11 +49,8 @@ const Tickets = () => {
             setLoading(true);
             setError(null);
             try {
-                console.log('API Base URL:', apiClient.baseURL);
-                console.log('Cookies:', document.cookie);
                 
                 const res = await apiClient.get('/tickets');
-                console.log('API Response:', res);
                 
                 if (Array.isArray(res)) {
                     setAllTickets(res);

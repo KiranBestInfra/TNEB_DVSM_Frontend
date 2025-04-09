@@ -23,7 +23,6 @@ const Header = () => {
 
     // Simulated profile data - in a real app, this would come from user context/auth
     const { user } = useAuth(); // Get user details from auth context
-    //console.log(user);
 
     const profileData = {
         profilePicture: user?.profilePicture || null,
@@ -64,7 +63,6 @@ const Header = () => {
 
     const handleResultClick = (result) => {
         const { id, hierarchy_type_id, hierarchy_name} = result;
-        console.log('result', result);
         let redirectPath = '';
 
         const formatName = (name) => {
@@ -163,11 +161,7 @@ const Header = () => {
                         `/regions/search?term=${debouncedSearchTerm}`
                     );
                     const results = response.data;
-                    console.log('Search API Response:', {
-                        term: debouncedSearchTerm,
-                        results: results,
-                        firstResult: results[0]
-                    });
+                   
                     setSearchResults(results);
                 } catch (error) {
                     console.error('Search error:', error);

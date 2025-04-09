@@ -30,6 +30,9 @@ const ShortDetailsWidget = ({
     edc,
     name,
     id = null,
+    edcId = null,
+    subID = null,
+    substationId = null,
     edcCount,
     substationCount,
     feederCount,
@@ -55,35 +58,52 @@ const ShortDetailsWidget = ({
     const handleClick = () => {
         let detailsUrl = '';
         const routePrefix = isUserRoute ? '/user' : '/admin';
-        const formattedRegion = id ? id : region.toLowerCase().replace(/\s+/g, '-');
-        const formattedName = name
+        const formattedRegion = region.toLowerCase().replace(/\s+/g, '-');
+        const formattedName = id
+            ? id
+            : name
             ? name.toLowerCase().replace(/\s+/g, '-')
+            : '';
+        const formattedEdc = edcId
+            ? edcId
+            : edc
+            ? edc.toLowerCase().replace(/\s+/g, '-')
+            : '';
+        const formattedSubstationId = substationId
+            ? substationId.toLowerCase().replace(/\s+/g, '-')
             : '';
 
         switch (pageType) {
             case 'regions':
-                detailsUrl = `${routePrefix}/regions/${formattedRegion}`;
+                detailsUrl = `${routePrefix}/regions/${formattedRegion}/details`;
                 break;
             case 'edcs':
                 if (edc) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/edcs/${edc
-                        .toLowerCase()
-                        .replace(/\s+/g, '-')}/details`;
+                    detailsUrl = `${routePrefix}/${formattedRegion}/edcs/${formattedEdc}/details`;
                 } else {
                     detailsUrl = `${routePrefix}/${formattedRegion}/edcs`;
                 }
                 break;
             case 'substations':
-                detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`;
-                console.log('Navigating to:', detailsUrl);
+                if (substationId && edc) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/details`;
+                } else if (substationId) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/details`;
+                } else if (edc) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedName}/details`;
+                } else {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/details`;
+                }
                 break;
             case 'feeders':
-                if (edc) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/feeders/${edc
-                        .toLowerCase()
-                        .replace(/\s+/g, '-')}/details`;
+                if (substationId && edc) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
+                } else if (substationId) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
+                } else if (edc) {
+                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/feeders/${formattedName}/details`;
                 } else {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/feeders`;
+                    detailsUrl = `${routePrefix}/${formattedRegion}/feeders/${formattedName}/details`;
                 }
                 break;
             default:
@@ -98,9 +118,20 @@ const ShortDetailsWidget = ({
 
     const renderNavigationLinks = () => {
         const routePrefix = isUserRoute ? '/user' : '/admin';
-        const formattedRegion = id ? id : region.toLowerCase().replace(/\s+/g, '-');
-        const formattedName = name
+        const formattedRegion = id
+            ? id
+            : region.toLowerCase().replace(/\s+/g, '-');
+        const formattedName = subID
+            ? subID
+            : id
+            ? id
+            : name
             ? name.toLowerCase().replace(/\s+/g, '-')
+            : '';
+        const formattedEdc = edcId
+            ? edcId
+            : edc
+            ? edc.toLowerCase().replace(/\s+/g, '-')
             : '';
 
         switch (pageType) {
@@ -110,30 +141,36 @@ const ShortDetailsWidget = ({
                 return (
                     <>
                         <Link
-                            to={`${routePrefix}/${formattedRegion}/${edc
-                                .toLowerCase()
-                                .replace(/\s+/g, '-')}/substations`}
+                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/substations`}
                             className={styles.nav_link}>
                             {substationCount} Substations
                         </Link>
                         {' / '}
                         <Link
-                            to={`${routePrefix}/${formattedRegion}/${edc
-                                .toLowerCase()
-                                .replace(/\s+/g, '-')}/feeder`}
+                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/feeders`}
                             className={styles.nav_link}>
                             {feederCount} Feeders
                         </Link>
                     </>
                 );
             case 'substations':
-                return (
-                    <Link
-                        to={`${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`}
-                        className={styles.nav_link}>
-                        {feederCount} Feeders
-                    </Link>
-                );
+                if (edc) {
+                    return (
+                        <Link
+                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedName}/feeders`}
+                            className={styles.nav_link}>
+                            {feederCount} Feeders
+                        </Link>
+                    );
+                } else {
+                    return (
+                        <Link
+                            to={`${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`}
+                            className={styles.nav_link}>
+                            {feederCount} Feeders
+                        </Link>
+                    );
+                }
             case 'feeders':
                 return null;
             default:
@@ -196,11 +233,13 @@ const ShortDetailsWidget = ({
                                 {previousValue} MW
                             </div>
                             <div
-                                className={`${styles.region_percentage_change
-                                    } ${isPositiveChange
+                                className={`${
+                                    styles.region_percentage_change
+                                } ${
+                                    isPositiveChange
                                         ? styles.positive
                                         : styles.negative
-                                    }`}>
+                                }`}>
                                 <img
                                     src={
                                         isPositiveChange
@@ -212,12 +251,17 @@ const ShortDetailsWidget = ({
                                             ? 'Increase'
                                             : 'Decrease'
                                     }
-                                    className={`${styles.region_trend_arrow} ${isPositiveChange
-                                        ? styles.positive
-                                        : styles.negative
-                                        }`}
+                                    className={`${styles.region_trend_arrow} ${
+                                        isPositiveChange
+                                            ? styles.positive
+                                            : styles.negative
+                                    }`}
                                 />
-                                <RollingNumber n={Math.abs(parseFloat(percentageChange))} decimals={1} />%
+                                <RollingNumber
+                                    n={Math.abs(parseFloat(percentageChange))}
+                                    decimals={1}
+                                />
+                                %
                             </div>
                         </div>
                     </div>
@@ -242,6 +286,8 @@ ShortDetailsWidget.propTypes = {
     region: PropTypes.string.isRequired,
     edc: PropTypes.string,
     name: PropTypes.string,
+    id: PropTypes.string,
+    substationId: PropTypes.string,
     edcCount: PropTypes.number.isRequired,
     substationCount: PropTypes.number.isRequired,
     feederCount: PropTypes.number.isRequired,

@@ -1,7 +1,6 @@
 import styles from '../styles/LongDetailsWidget.module.css';
 import { useParams } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
-import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
@@ -24,6 +23,7 @@ const SubstationDetails = () => {
                     `/substations/graph/${entityId}/demand`
                 );
                 const data = response.data;
+                console.log('dataaaaa', data);
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
@@ -35,9 +35,9 @@ const SubstationDetails = () => {
 
     const entityName = entityId
         ? entityId
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
         : 'Unknown';
 
     const stats = {
@@ -72,7 +72,6 @@ const SubstationDetails = () => {
                                 }
                             />
                         </div>
-                       
                     </div>
                 </div>
             </div>
@@ -92,11 +91,7 @@ const SubstationDetails = () => {
                         <div className={styles.total_title_value}>
                             <span className="title">
                                 <Link
-                                    to={
-                                        region
-                                            ? `/admin/${region}/feeders`
-                                            : `/admin/feeders`
-                                    }>
+                                    to={`/admin/${region}/substations/${substationId}/feeders`}>
                                     Feeders
                                 </Link>
                             </span>
@@ -111,7 +106,7 @@ const SubstationDetails = () => {
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
-                                src="icons/location.svg"
+                                src="icons/district.svg"
                                 alt="Location"
                                 className={styles.TNEB_icons}
                             />
@@ -122,26 +117,10 @@ const SubstationDetails = () => {
                                 <Link to={`/admin/${region}/dashboard`}>
                                     {region
                                         ? region.charAt(0).toUpperCase() +
-                                        region.slice(1)
+                                          region.slice(1)
                                         : 'N/A'}
                                 </Link>
                             </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.voltage_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-voltage.svg"
-                                alt="Voltage"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">Voltage Level</span>
-                            <span className={styles.summary_value}>110kV</span>
                         </div>
                     </div>
                 </div>
