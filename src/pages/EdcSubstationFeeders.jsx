@@ -347,7 +347,7 @@ const EdcSubstationFeeders = () => {
                                 substationId={substationId}
                                 edcCount={0}
                                 substationCount={0}
-                                feederCount={0}
+                                feederCount={widgetsData.feederCount}
                                 currentValue={parseFloat(
                                     widgetsData.feederDemandData[feeder.id]?.series?.[0]?.data?.slice(-1)[0] || 0
                                 )}
