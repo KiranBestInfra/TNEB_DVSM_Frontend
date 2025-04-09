@@ -152,10 +152,10 @@ const EdcFeeders = () => {
                     totalEdcs: 95,
                     totalSubstations: 260,
                     totalFeeders: parsedData.feederNames?.length || 0,
-                    commMeters: 942,
+                    commMeters: parsedData.commMeters || 0,
                     nonCommMeters: 301,
                     feederNames: parsedData.feederNames || [],
-                    feederCount: parsedData.feederNames?.length || 0,
+                    feederCount: parsedData.regionFeederNames?.length || 0,
                     meterCount: parsedData.meterCount || {},
                     feederStats: parsedData.feederStats || {},
                     feederDemandData: parsedData.feederDemandData,
@@ -261,12 +261,15 @@ const EdcFeeders = () => {
                                 edcWidgets.totalSubstations ||
                                 prev.totalSubstations,
                             totalFeeders:
-                                edcWidgets.totalFeeders || prev.totalFeeders,
+                                edcWidgets.regionFeederNames?.length ||
+                                prev.totalFeeders,
                             commMeters:
                                 edcWidgets.commMeters || prev.commMeters,
                             nonCommMeters:
                                 edcWidgets.nonCommMeters || prev.nonCommMeters,
                             feederNames: edcWidgets.regionFeederNames,
+                            feederCount:
+                                edcWidgets.regionFeederNames?.length || 0,
                         };
                         return newData;
                     });
@@ -283,7 +286,6 @@ const EdcFeeders = () => {
 
         fetchData();
     }, [edcs]);
-
 
     return (
         <div className={styles.main_content}>
@@ -318,13 +320,14 @@ const EdcFeeders = () => {
 
             <SummarySection
                 widgetsData={{
-                    totalRegions: widgetsData.totalRegions,
-                    totalEdcs: widgetsData.totalEdcs,
-                    totalSubstations: widgetsData.totalSubstations,
+                    // totalRegions: widgetsData.totalRegions,
+                    // totalEdcs: widgetsData.totalEdcs,
+                    // totalSubstations: widgetsData.totalSubstations,
                     totalFeeders: widgetsData.totalFeeders,
                     commMeters: widgetsData.commMeters,
                     nonCommMeters: widgetsData.nonCommMeters,
                     totalDistricts: 0,
+                    feederCount: widgetsData.feederCount,
                 }}
                 isUserRoute={isUserRoute}
                 isBiUserRoute={location.includes('/bi/user/')}
@@ -365,37 +368,19 @@ const EdcFeeders = () => {
                                 currentValue={
                                     parseFloat(
                                         widgetsData.feederDemandData?.[
-                                            value.name
+                                            value.id
                                         ]?.series?.[0]?.data?.slice(-1)[0]
-                                    ) ||
-                                    parseFloat(
-                                        widgetsData.feederStats[value.name]
-                                            ?.currentValue
-                                    ) ||
-                                    parseFloat(
-                                        feederStats[value.name]?.currentValue
-                                    ) ||
-                                    0
+                                    ) || 0
                                 }
                                 previousValue={
                                     parseFloat(
                                         widgetsData.feederDemandData?.[
-                                            value.name
-                                        ]?.series?.[0]?.data?.slice(-2, -1)[0]
-                                    ) ||
-                                    parseFloat(
-                                        widgetsData.feederStats[value.name]
-                                            ?.previousValue
-                                    ) ||
-                                    parseFloat(
-                                        feederStats[value.name]?.previousValue
-                                    ) ||
-                                    0
+                                            value.id
+                                        ]?.series?.[1]?.data?.slice(-1)[0]
+                                    ) || 0
                                 }
                                 graphData={
-                                    widgetsData.feederDemandData[
-                                        value.id
-                                    ] || {
+                                    widgetsData.feederDemandData[value.id] || {
                                         xAxis: [],
                                         series: [],
                                     }

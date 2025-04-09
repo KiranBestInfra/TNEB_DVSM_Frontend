@@ -437,14 +437,14 @@ const EdcSubstations = () => {
                                               }
                                               currentValue={parseFloat(
                                                   widgetsData.substationDemandData?.[
-                                                      substation.substation_names.trim()
+                                                      substation.hierarchy_id
                                                   ]?.series?.[0]?.data?.slice(
                                                       -1
                                                   )[0] || 0
                                               ).toFixed(1)}
                                               previousValue={parseFloat(
                                                   widgetsData.substationDemandData?.[
-                                                      substation.substation_names.trim()
+                                                      substation.hierarchy_id
                                                   ]?.series?.[0]?.data?.slice(
                                                       -2,
                                                       -1

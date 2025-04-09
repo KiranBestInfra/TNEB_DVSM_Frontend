@@ -347,15 +347,13 @@ const EdcSubstationFeeders = () => {
                                 substationId={substationId}
                                 edcCount={0}
                                 substationCount={0}
-                                feederCount={0}
-                                currentValue={
-                                    widgetsData.feederStats[feeder.id]
-                                        ?.currentValue || 0
-                                }
-                                previousValue={
-                                    widgetsData.feederStats[feeder.id]
-                                        ?.previousValue || 0
-                                }
+                                feederCount={widgetsData.feederCount}
+                                currentValue={parseFloat(
+                                    widgetsData.feederDemandData[feeder.id]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                )}
+                                previousValue={parseFloat(
+                                    widgetsData.feederDemandData[feeder.id]?.series?.[1]?.data?.slice(-1)[0] || 0
+                                )}
                                 pageType="feeders"
                                 graphData={
                                     widgetsData.feederDemandData[feeder.id] || {

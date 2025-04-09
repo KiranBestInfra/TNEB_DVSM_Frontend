@@ -155,7 +155,7 @@ const ShortDetailsWidget = ({
                 if (edc) {
                     return (
                         <Link
-                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedName}/feeders`}
+                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/${formattedName}/feeders`}
                             className={styles.nav_link}>
                             {feederCount} Feeders
                         </Link>
