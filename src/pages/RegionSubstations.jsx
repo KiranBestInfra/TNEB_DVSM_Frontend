@@ -330,12 +330,20 @@ const RegionSubstations = () => {
                                                   series: [],
                                               }
                                           }
-                                          // currentValue={parseFloat(
-                                          //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-1)[0] || 0
-                                          // ).toFixed(1)}
-                                          // previousValue={parseFloat(
-                                          //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
-                                          // ).toFixed(1)}
+                                          currentValue={(() => {
+                                            const seriesData =
+                                                widgetsData.substationDemandData?.[value.id]?.series?.[0]?.data;
+                                            return seriesData && seriesData.length
+                                                ? parseFloat(seriesData.slice(-1)[0]).toFixed(1)
+                                                : '0.0';
+                                        })()}
+                                        previousValue={(() => {
+                                            const seriesData =
+                                                widgetsData.substationDemandData?.[value.id]?.series?.[0]?.data;
+                                            return seriesData && seriesData.length > 1
+                                                ? parseFloat(seriesData.slice(-2, -1)[0]).toFixed(1)
+                                                : '0.0';
+                                        })()}
                                           pageType="substations"
                                           handleRegionClick={() =>
                                               setSelectedSubstation(
