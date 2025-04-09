@@ -164,7 +164,8 @@ const SubstationFeeders = () => {
                     meterCount: parsedData.meterCount || {},
                     feederStats: parsedData.feederStats || {},
                     feederDemandData: parsedData.feederDemandData,
-                    feederIds: {},                };
+                    feederIds: {},
+                };
             }
         }
 
@@ -254,49 +255,25 @@ const SubstationFeeders = () => {
     }, [widgetsData.feederIds, socket]);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchWidgets = async () => {
             try {
-                try {
-                    const data = await apiClient.get(
-                        `/substations/${substationId}/widgets`
-                    );
-                    const substationWidgets = data.data;
+                const response = await apiClient.get(
+                    `/substations/${substationId}/widgets`
+                );
+                const { commMeters, nonCommMeters } = response.data.data;
 
-                    setWidgetsData((prev) => {
-                        const newData = {
-                            ...prev,
-                            totalRegions:
-                                substationWidgets.totalRegions ||
-                                prev.totalRegions,
-                            totalEdcs:
-                                substationWidgets.totalEdcs || prev.totalEdcs,
-                            totalSubstations:
-                                substationWidgets.totalSubstations ||
-                                prev.totalSubstations,
-                            totalFeeders:
-                                substationWidgets.totalFeeders ||
-                                prev.totalFeeders,
-                            commMeters:
-                                substationWidgets.commMeters || prev.commMeters,
-                            nonCommMeters:
-                                substationWidgets.nonCommMeters ||
-                                prev.nonCommMeters,
-                        };
-                        return newData;
-                    });
-                } catch (error) {
-                    console.error(
-                        'API error, using demo data for widgets:',
-                        error
-                    );
-                }
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    commMeters,
+                    nonCommMeters,
+                }));
             } catch (error) {
-                console.error('Error fetching widget data:', error);
+                console.error('Error fetching substation widgets:', error);
             }
         };
 
         if (substationId) {
-            fetchData();
+            fetchWidgets();
         }
     }, [substationId]);
 
@@ -332,9 +309,10 @@ const SubstationFeeders = () => {
                                 };
                                 return acc;
                             }, {}),
-                            feederIds: feedersData.map((feeder) => ({
-                                [feeder.name]: feeder.id,
-                            })) || [],
+                            feederIds:
+                                feedersData.map((feeder) => ({
+                                    [feeder.name]: feeder.id,
+                                })) || [],
                         };
 
                         const cacheData = {
