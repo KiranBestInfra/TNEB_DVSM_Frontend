@@ -143,13 +143,10 @@ const RegionSubstations = () => {
 
     useEffect(() => {
         let ids = [];
-        console.log('widgetsData 1212', widgetsData.substationIds);
         if (socket && widgetsData.substationIds.length > 0) {
             widgetsData.substationIds.map((value) =>
-                //Object.entries(value).map(([key, value]) => ids.push(value))
                 ids.push(value.id)
             );
-            console.log('ids', ids);
             socket.emit('subscribeSubstation', {
                 substations: ids,
             });
@@ -313,7 +310,7 @@ const RegionSubstations = () => {
                                             edcCount={0}
                                             substationCount={0}
                                             feederCount={
-                                                widgetsData.substationFeederCounts?.[value.id] || 0
+                                                widgetsData.substationFeederCounts?.[value.substation_names] || 0
                                             }
                                             graphData={
                                                 widgetsData.substationDemandData?.[value.id] ?? {
