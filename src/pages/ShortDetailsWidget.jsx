@@ -258,8 +258,7 @@ const ShortDetailsWidget = ({
                                 <RollingNumber
                                     n={Math.abs(parseFloat(percentageChange))}
                                     decimals={1}
-                                />
-                                %
+                                />%
                             </div>
                         </div>
                     </div>
