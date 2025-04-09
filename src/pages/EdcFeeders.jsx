@@ -365,32 +365,16 @@ const EdcFeeders = () => {
                                 currentValue={
                                     parseFloat(
                                         widgetsData.feederDemandData?.[
-                                            value.name
+                                            value.id
                                         ]?.series?.[0]?.data?.slice(-1)[0]
-                                    ) ||
-                                    parseFloat(
-                                        widgetsData.feederStats[value.name]
-                                            ?.currentValue
-                                    ) ||
-                                    parseFloat(
-                                        feederStats[value.name]?.currentValue
-                                    ) ||
-                                    0
+                                    ) || 0
                                 }
                                 previousValue={
                                     parseFloat(
                                         widgetsData.feederDemandData?.[
-                                            value.name
-                                        ]?.series?.[0]?.data?.slice(-2, -1)[0]
-                                    ) ||
-                                    parseFloat(
-                                        widgetsData.feederStats[value.name]
-                                            ?.previousValue
-                                    ) ||
-                                    parseFloat(
-                                        feederStats[value.name]?.previousValue
-                                    ) ||
-                                    0
+                                            value.id
+                                        ]?.series?.[1]?.data?.slice(-1)[0]
+                                    ) || 0
                                 }
                                 graphData={
                                     widgetsData.feederDemandData[

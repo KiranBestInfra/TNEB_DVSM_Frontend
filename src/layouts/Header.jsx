@@ -62,7 +62,8 @@ const Header = () => {
     };
 
     const handleResultClick = (result) => {
-        const { id, hierarchy_type_id, hierarchy_name} = result;
+        const { id, hierarchy_type_id, hierarchy_name, region } = result;
+        console.log(result);
         let redirectPath = '';
 
         const formatName = (name) => {
@@ -71,13 +72,13 @@ const Header = () => {
 
         switch (hierarchy_type_id) {
             case 10: // Region
-                redirectPath = `${basePath}/regions/${formatName(hierarchy_name)}`;
+                redirectPath = `${basePath}/regions/${formatName(hierarchy_name)}/details`;
                 break;
             case 11: // EDC
                 redirectPath = `${basePath}/${formatName(region)}/edcs/${id}/details`;
                 break;
             case 35: // Substation
-                redirectPath = `${basePath}/${formatName(region)}/substations/${id}/feeders`;
+                redirectPath = `${basePath}/${formatName(region)}/substations/${id}/details`;
                 break;
             default:
                 redirectPath = `${basePath}/details/${id}`;
