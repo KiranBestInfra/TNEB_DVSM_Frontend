@@ -164,6 +164,7 @@ const SubstationFeeders = () => {
                     feederDemandData: parsedData.feederDemandData,
                     feederIds: {},
                 };
+            }
         }
 
         return {
@@ -187,11 +188,10 @@ const SubstationFeeders = () => {
         setSocket(newSocket);
 
         newSocket.on('connect', () => {
-            // ... existing code ...
+            console.log('Connected to socket server');
         });
 
         newSocket.on('feederUpdate', (data) => {
-            // ... existing code ...
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
