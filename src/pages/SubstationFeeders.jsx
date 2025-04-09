@@ -164,9 +164,6 @@ const SubstationFeeders = () => {
                     feederDemandData: parsedData.feederDemandData,
                     feederIds: {},
                 };
-                    feederIds: {},
-                };
-            }
         }
 
         return {
