@@ -134,10 +134,10 @@ const SubstationFeeders = () => {
         },
     };
 
-    const demoFeederDemandData = {};
-    feederNames.forEach((feeder) => {
-        demoFeederDemandData[feeder] = graphData.daily;
-    });
+    // const demoFeederDemandData = {};
+    // feederNames.forEach((feeder) => {
+    //     demoFeederDemandData[feeder] = graphData.daily;
+    // });
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedFeederData = localStorage.getItem('substationFeederData');

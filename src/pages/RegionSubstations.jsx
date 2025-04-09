@@ -158,6 +158,7 @@ const RegionSubstations = () => {
             try {
                 const data = await apiClient.get(`/regions/widgets`);
                 const regionWidgets = data.data;
+                console.log('regionWidgets', regionWidgets);
                 setWidgetsData((prev) => ({
                     ...prev,
                     totalRegions:
@@ -306,7 +307,6 @@ const RegionSubstations = () => {
                                         <ShortDetailsWidget
                                             region={region}
                                             name={value.substation_names}
-                                            id={value.id}
                                             edcCount={0}
                                             substationCount={0}
                                             feederCount={
