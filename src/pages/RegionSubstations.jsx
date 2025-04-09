@@ -144,9 +144,7 @@ const RegionSubstations = () => {
     useEffect(() => {
         let ids = [];
         if (socket && widgetsData.substationIds.length > 0) {
-            widgetsData.substationIds.map((value) =>
-                ids.push(value.id)
-            );
+            widgetsData.substationIds.map((value) => ids.push(value.id));
             socket.emit('subscribeSubstation', {
                 substations: ids,
             });
@@ -158,6 +156,7 @@ const RegionSubstations = () => {
             try {
                 const data = await apiClient.get(`/regions/widgets`);
                 const regionWidgets = data.data;
+                console.log('regionWidgets', regionWidgets);
                 setWidgetsData((prev) => ({
                     ...prev,
                     totalRegions:
@@ -193,10 +192,13 @@ const RegionSubstations = () => {
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.substationNames || [],
-                    regionSubstationCount: data.data?.substationNames?.length || 0,
-                    substationFeederCounts: data.data?.substationFeederCounts || {},
+                    regionSubstationCount:
+                        data.data?.substationNames?.length || 0,
+                    substationFeederCounts:
+                        data.data?.substationFeederCounts || {},
                     commMeters: data.data?.commMeters || prev.commMeters,
-                    nonCommMeters: data.data?.nonCommMeters || prev.nonCommMeters,
+                    nonCommMeters:
+                        data.data?.nonCommMeters || prev.nonCommMeters,
                     substationIds: data.data?.substationNames,
                 }));
             } catch (error) {
@@ -242,6 +244,7 @@ const RegionSubstations = () => {
     };
 
     try {
+        console.log(widgetsData.substationIds);
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
@@ -297,40 +300,52 @@ const RegionSubstations = () => {
                         </h2>
                     </div>
                     <div className={styles.region_stats_container}>
-                        {widgetsData.substationIds && widgetsData.substationIds.length > 0 ? (
-                            widgetsData.substationIds.map((value) =>
-                                //Object.entries(value).map(([key, value]) => (
-                                    <div
-                                        key={value}
-                                        className={styles.individual_region_stats}>
-                                        <ShortDetailsWidget
-                                            region={region}
-                                            name={value.substation_names}
-                                            id={value.id}
-                                            edcCount={0}
-                                            substationCount={0}
-                                            feederCount={
-                                                widgetsData.substationFeederCounts?.[value.substation_names] || 0
-                                            }
-                                            graphData={
-                                                widgetsData.substationDemandData?.[value.id] ?? {
-                                                    xAxis: [],
-                                                    series: [],
-                                                }
-                                            }
-                                            currentValue={parseFloat(
-                                                widgetsData.substationDemandData?.[value.id]?.series?.[0]?.data?.slice(-1)[0] || 0
-                                            ).toFixed(1)}
-                                            previousValue={parseFloat(
-                                                widgetsData.substationDemandData?.[value.id]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
-                                            ).toFixed(1)}
-                                            pageType="substations"
-                                            handleRegionClick={() => setSelectedSubstation(value.id)}
-                                        />
-                                    </div>
-                                
-                            )
-                        ) : null}
+                        {widgetsData.substationIds &&
+                        widgetsData.substationIds.length > 0
+                            ? widgetsData.substationIds.map((value) => (
+                                  //Object.entries(value).map(([key, value]) => (
+                                  <div
+                                      key={value}
+                                      className={
+                                          styles.individual_region_stats
+                                      }>
+                                      <ShortDetailsWidget
+                                          region={region}
+                                          name={value.substation_names}
+                                          id={value.id}
+                                          edcCount={0}
+                                          substationCount={0}
+                                          feederCount={
+                                              widgetsData
+                                                  .substationFeederCounts?.[
+                                                  value.substation_names
+                                              ] || 0
+                                          }
+                                          graphData={
+                                              widgetsData
+                                                  .substationDemandData?.[
+                                                  value.id
+                                              ] ?? {
+                                                  xAxis: [],
+                                                  series: [],
+                                              }
+                                          }
+                                          // currentValue={parseFloat(
+                                          //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                          // ).toFixed(1)}
+                                          // previousValue={parseFloat(
+                                          //     widgetsData.substationDemandData?.[key.trim()]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                          // ).toFixed(1)}
+                                          pageType="substations"
+                                          handleRegionClick={() =>
+                                              setSelectedSubstation(
+                                                  value.substation_names
+                                              )
+                                          }
+                                      />
+                                  </div>
+                              ))
+                            : null}
                     </div>
                 </div>
             </ErrorBoundary>

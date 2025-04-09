@@ -186,7 +186,7 @@ const EdcSubstationFeederDetails = () => {
                     </div>
                 )}
 
-                <div className={styles.voltage_container}>
+                {/* <div className={styles.voltage_container}>
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
                             <img
@@ -202,7 +202,7 @@ const EdcSubstationFeederDetails = () => {
                             </span>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
 
             <div className={styles.chart_container}>
