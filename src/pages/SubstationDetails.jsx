@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
+import SummarySection from '../components/SummarySection';
 
 const SubstationDetails = () => {
     const { region, substationId } = useParams();
@@ -13,7 +14,45 @@ const SubstationDetails = () => {
         xAxis: [],
         series: [],
     });
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedDemandData = localStorage.getItem('edcDemandData');
+        const savedTimestamp = localStorage.getItem('edcDemandTimestamp');
 
+        if (savedDemandData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedDemandData = JSON.parse(savedDemandData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    edcNames: Object.keys(parsedDemandData),
+                    regionEdcCount: 0,
+                    substationCount: {},
+                    feederCount: {},
+                    edcDemandData: parsedDemandData,
+                };
+            }
+        }
+
+        return {
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            edcNames: [],
+            substationCount: {},
+            feederCount: {},
+            regionEdcCount: 0,
+            edcDemandData: {},
+        };
+    });
     const entityId = substationId;
 
     useEffect(() => {
@@ -23,7 +62,6 @@ const SubstationDetails = () => {
                     `/substations/graph/${entityId}/demand`
                 );
                 const data = response.data;
-                console.log('dataaaaa', data);
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
@@ -76,56 +114,25 @@ const SubstationDetails = () => {
                 </div>
             </div>
             <Breadcrumb />
-
-            <div className={styles.performance_stats}>
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-meter.svg"
-                                alt="Feeder"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link
-                                    to={`/admin/${region}/substations/${substationId}/feeders`}>
-                                    Feeders
-                                </Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.feederCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.total_units_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/district.svg"
-                                alt="Location"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">Region</span>
-                            <span className={styles.summary_value}>
-                                <Link to={`/admin/${region}/dashboard`}>
-                                    {region
-                                        ? region.charAt(0).toUpperCase() +
-                                          region.slice(1)
-                                        : 'N/A'}
-                                </Link>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+            <SummarySection
+                widgetsData={{
+                    totalRegions: 0,
+                    totalEdcs: stats.edcCount,
+                    totalSubstations: stats.substationCount,
+                    totalFeeders: stats.feederCount,
+                    commMeters: stats.commMeters,
+                    nonCommMeters: stats.nonCommMeters,
+                    totalDistricts: stats.edcCount || 0
+                }}
+                isUserRoute={false}
+                isBiUserRoute={false}
+                showRegions={false}
+                showEdcs={false}
+                showSubstations={false}
+                showDistricts={false}
+                showMeters={true}
+            />
+           
             <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />
             </div>

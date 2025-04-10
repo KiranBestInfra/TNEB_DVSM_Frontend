@@ -3,6 +3,7 @@ import LineChartTNEB from '../components/graphs/LineChartTNEB/LineChartTNEB';
 import { Link, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import RollingNumber from '../components/RollingNumber';
+import { useAuth } from '../components/AuthProvider';
 
 // const graphData = {
 //   daily: {
@@ -46,8 +47,7 @@ const ShortDetailsWidget = ({
     },
 }) => {
     const navigate = useNavigate();
-
-    const isUserRoute = false;
+    const { isRegion, isCircle, isSubstation } = useAuth();
 
     const percentageChange = (
         ((currentValue - previousValue) / previousValue) *
@@ -57,7 +57,6 @@ const ShortDetailsWidget = ({
 
     const handleClick = () => {
         let detailsUrl = '';
-        const routePrefix = isUserRoute ? '/user' : '/admin';
         const formattedRegion =
             typeof region === 'number'
                 ? region
@@ -76,41 +75,109 @@ const ShortDetailsWidget = ({
             ? substationId.toLowerCase().replace(/\s+/g, '-')
             : '';
 
+        // Determine route prefix based on user role
+        let routePrefix;
+        if (isRegion()) {
+            routePrefix = '/user/region';
+        } else if (isCircle()) {
+            routePrefix = '/user/edc';
+        } else if (isSubstation()) {
+            routePrefix = '/user/substation';
+        } else {
+            routePrefix = '/admin';
+        }
+
         switch (pageType) {
             case 'regions':
-                detailsUrl = `${routePrefix}/regions/${formattedRegion}/details`;
+                if (isRegion()) {
+                    detailsUrl = `${routePrefix}/dashboard`;
+                } else {
+                    detailsUrl = `${routePrefix}/regions/${formattedRegion}/details`;
+                }
                 break;
             case 'edcs':
-                if (edc) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/edcs/${formattedEdc}/details`;
+                if (isRegion()) {
+                    if (edc) {
+                        detailsUrl = `${routePrefix}/edcs/${formattedEdc}/details`;
+                    } else {
+                        detailsUrl = `${routePrefix}/edcs`;
+                    }
+                } else if (isCircle()) {
+                    detailsUrl = `${routePrefix}/${formattedEdc}/dashboard`;
                 } else {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/edcs`;
+                    if (edc) {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/edcs/${formattedEdc}/details`;
+                    } else {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/edcs`;
+                    }
                 }
                 break;
             case 'substations':
-                if (substationId && edc) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/details`;
-                } else if (substationId) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/details`;
-                } else if (edc) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedName}/details`;
+                if (isRegion()) {
+                    if (substationId && edc) {
+                        detailsUrl = `${routePrefix}/${formattedEdc}/${formattedSubstationId}/feeders`;
+                    } else if (substationId) {
+                        detailsUrl = `${routePrefix}/substations/${formattedSubstationId}/feeders`;
+                    } else {
+                        detailsUrl = `${routePrefix}/substations`;
+                    }
+                } else if (isCircle()) {
+                    if (substationId) {
+                        detailsUrl = `${routePrefix}/${formattedEdc}/substations/${formattedSubstationId}/details`;
+                    } else {
+                        detailsUrl = `${routePrefix}/${formattedEdc}/substations`;
+                    }
+                } else if (isSubstation()) {
+                    detailsUrl = `${routePrefix}/${formattedName}/dashboard`;
                 } else {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/details`;
+                    if (substationId && edc) {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/details`;
+                    } else if (substationId) {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/details`;
+                    } else if (edc) {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedName}/details`;
+                    } else {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/details`;
+                    }
                 }
                 break;
             case 'feeders':
-                if (substationId && edc) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
-                } else if (substationId) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
-                } else if (edc) {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/feeders/${formattedName}/details`;
+                if (isRegion()) {
+                    if (substationId && edc) {
+                        detailsUrl = `${routePrefix}/${formattedEdc}/${formattedSubstationId}/feeders/${formattedName}/details`;
+                    } else if (substationId) {
+                        detailsUrl = `${routePrefix}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
+                    } else if (edc) {
+                        detailsUrl = `${routePrefix}/${formattedEdc}/feeders/${formattedName}/details`;
+                    } else {
+                        detailsUrl = `${routePrefix}/feeders/${formattedName}/details`;
+                    }
+                } else if (isCircle()) {
+                    if (substationId) {
+                        detailsUrl = `${routePrefix}/${formattedEdc}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
+                    } else {
+                        detailsUrl = `${routePrefix}/${formattedEdc}/feeders/${formattedName}/details`;
+                    }
+                } else if (isSubstation()) {
+                    detailsUrl = `${routePrefix}/${formattedSubstationId}/feeders/${formattedName}/details`;
                 } else {
-                    detailsUrl = `${routePrefix}/${formattedRegion}/feeders/${formattedName}/details`;
+                    if (substationId && edc) {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
+                    } else if (substationId) {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/feeders/${formattedName}/details`;
+                    } else if (edc) {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/feeders/${formattedName}/details`;
+                    } else {
+                        detailsUrl = `${routePrefix}/${formattedRegion}/feeders/${formattedName}/details`;
+                    }
                 }
                 break;
             default:
-                detailsUrl = `${routePrefix}/regions/${formattedRegion}`;
+                if (isRegion()) {
+                    detailsUrl = `${routePrefix}/dashboard`;
+                } else {
+                    detailsUrl = `${routePrefix}/regions/${formattedRegion}`;
+                }
         }
 
         navigate(detailsUrl);
@@ -120,7 +187,6 @@ const ShortDetailsWidget = ({
     };
 
     const renderNavigationLinks = () => {
-        const routePrefix = isUserRoute ? '/user' : '/admin';
         const formattedRegion =
             typeof region === 'number'
                 ? region
@@ -138,67 +204,173 @@ const ShortDetailsWidget = ({
             ? edc.toLowerCase().replace(/\s+/g, '-')
             : '';
 
+        // Determine route prefix based on user role
+        let routePrefix;
+        if (isRegion()) {
+            routePrefix = '/user/region';
+        } else if (isCircle()) {
+            routePrefix = '/user/edc';
+        } else if (isSubstation()) {
+            routePrefix = '/user/substation';
+        } else {
+            routePrefix = '/admin';
+        }
+
         switch (pageType) {
             case 'edcs':
                 if (!edc) return null;
 
-                return (
-                    <>
+                if (isRegion()) {
+                    return (
+                        <>
+                            <Link
+                                to={`${routePrefix}/${formattedEdc}/substations`}
+                                className={styles.nav_link}>
+                                {substationCount} Substations
+                            </Link>
+                            {' / '}
+                            <Link
+                                to={`${routePrefix}/${formattedEdc}/feeders`}
+                                className={styles.nav_link}>
+                                {feederCount} Feeders
+                            </Link>
+                        </>
+                    );
+                } else if (isCircle()) {
+                    return (
+                        <>
+                            <Link
+                                to={`${routePrefix}/${formattedEdc}/substations`}
+                                className={styles.nav_link}>
+                                {substationCount} Substations
+                            </Link>
+                            {' / '}
+                            <Link
+                                to={`${routePrefix}/${formattedEdc}/feeders`}
+                                className={styles.nav_link}>
+                                {feederCount} Feeders
+                            </Link>
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            <Link
+                                to={`${routePrefix}/${formattedRegion}/${formattedEdc}/substations`}
+                                className={styles.nav_link}>
+                                {substationCount} Substations
+                            </Link>
+                            {' / '}
+                            <Link
+                                to={`${routePrefix}/${formattedRegion}/${formattedEdc}/feeders`}
+                                className={styles.nav_link}>
+                                {feederCount} Feeders
+                            </Link>
+                        </>
+                    );
+                }
+            case 'substations':
+                if (isRegion()) {
+                    if (edc) {
+                        return (
+                            <Link
+                                to={`${routePrefix}/${formattedEdc}/${formattedName}/feeders`}
+                                className={styles.nav_link}>
+                                {feederCount} Feeders
+                            </Link>
+                        );
+                    } else {
+                        return (
+                            <Link
+                                to={`${routePrefix}/substations/${formattedName}/feeders`}
+                                className={styles.nav_link}>
+                                {feederCount} Feeders
+                            </Link>
+                        );
+                    }
+                } else if (isCircle()) {
+                    return (
                         <Link
-                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/substations`}
-                            className={styles.nav_link}>
-                            {substationCount} Substations
-                        </Link>
-                        {' / '}
-                        <Link
-                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/feeders`}
+                            to={`${routePrefix}/${formattedEdc}/substations/${formattedName}/feeders`}
                             className={styles.nav_link}>
                             {feederCount} Feeders
                         </Link>
-                    </>
-                );
-            case 'substations':
-                if (edc) {
+                    );
+                } else if (isSubstation()) {
                     return (
                         <Link
-                            to={`${routePrefix}/${formattedRegion}/${formattedEdc}/${formattedName}/feeders`}
+                            to={`${routePrefix}/${formattedName}/feeders`}
                             className={styles.nav_link}>
                             {feederCount} Feeders
                         </Link>
                     );
                 } else {
-                    return (
-                        <Link
-                            to={`${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`}
-                            className={styles.nav_link}>
-                            {feederCount} Feeders
-                        </Link>
-                    );
+                    if (edc) {
+                        return (
+                            <Link
+                                to={`${routePrefix}/${formattedRegion}/${formattedEdc}/${formattedName}/feeders`}
+                                className={styles.nav_link}>
+                                {feederCount} Feeders
+                            </Link>
+                        );
+                    } else {
+                        return (
+                            <Link
+                                to={`${routePrefix}/${formattedRegion}/substations/${formattedName}/feeders`}
+                                className={styles.nav_link}>
+                                {feederCount} Feeders
+                            </Link>
+                        );
+                    }
                 }
             case 'feeders':
                 return null;
             default:
-                return (
-                    <>
-                        <Link
-                            to={`${routePrefix}/${formattedRegion}/edcs`}
-                            className={styles.nav_link}>
-                            {edcCount} EDCs
-                        </Link>
-                        {' / '}
-                        <Link
-                            to={`${routePrefix}/${formattedRegion}/substations`}
-                            className={styles.nav_link}>
-                            {substationCount} Substations
-                        </Link>
-                        {' / '}
-                        <Link
-                            to={`${routePrefix}/${formattedRegion}/feeders`}
-                            className={styles.nav_link}>
-                            {feederCount} Feeders
-                        </Link>
-                    </>
-                );
+                if (isRegion()) {
+                    return (
+                        <>
+                            <Link
+                                to={`${routePrefix}/edcs`}
+                                className={styles.nav_link}>
+                                {edcCount} EDCs
+                            </Link>
+                            {' / '}
+                            <Link
+                                to={`${routePrefix}/substations`}
+                                className={styles.nav_link}>
+                                {substationCount} Substations
+                            </Link>
+                            {' / '}
+                            <Link
+                                to={`${routePrefix}/feeders`}
+                                className={styles.nav_link}>
+                                {feederCount} Feeders
+                            </Link>
+                        </>
+                    );
+                } else {
+                    return (
+                        <>
+                            <Link
+                                to={`${routePrefix}/${formattedRegion}/edcs`}
+                                className={styles.nav_link}>
+                                {edcCount} EDCs
+                            </Link>
+                            {' / '}
+                            <Link
+                                to={`${routePrefix}/${formattedRegion}/substations`}
+                                className={styles.nav_link}>
+                                {substationCount} Substations
+                            </Link>
+                            {' / '}
+                            <Link
+                                to={`${routePrefix}/${formattedRegion}/feeders`}
+                                className={styles.nav_link}>
+                                {feederCount} Feeders
+                            </Link>
+                        </>
+                    );
+                }
         }
     };
 
@@ -260,7 +432,8 @@ const ShortDetailsWidget = ({
                                             ? styles.positive
                                             : styles.negative
                                     }`}
-                                /> {''}
+                                />{' '}
+                                {''}
                                 <RollingNumber
                                     n={Math.abs(parseFloat(percentageChange))}
                                     decimals={1}

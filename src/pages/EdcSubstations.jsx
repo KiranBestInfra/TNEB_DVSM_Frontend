@@ -7,6 +7,7 @@ import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import PropTypes from 'prop-types';
 import SummarySection from '../components/SummarySection';
+import { useAuth } from '../components/AuthProvider';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -45,30 +46,11 @@ const ErrorBoundary = ({ children }) => {
 ErrorBoundary.propTypes = {
     children: PropTypes.node.isRequired,
 };
-// useEffect(() => {
-//     if (!edcs) return;
-
-//     const substationNames = async () => {
-//         try {
-//             const response = await apiClient.get(`/widgets/:edcs/substations`);
-//             const data = response;
-
-//             setWidgetsData((prev) => ({
-//                 ...prev,
-//                 substationNames: data.data?.substationNames || [],
-//                 regionSubstationCount: data.data?.substationNames?.length || 0,
-//                 substationFeederCounts: data.data?.substationFeederCounts || {},
-//             }));
-//         } catch (error) {
-//             console.error('Error fetching substation data:', error);
-//         }
-//     };
-
-//     substationNames();
-// }, [edcs]);
 
 const EdcSubstations = () => {
-    const { edcs, region } = useParams();
+    const { edcs, region: regionParam } = useParams();
+    const { user, isRegion } = useAuth();
+    const region = isRegion() && user?.id ? user.id : regionParam;
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const location = window.location.pathname;
@@ -82,7 +64,6 @@ const EdcSubstations = () => {
                     `/substations/widgets/${edcs}/substations`
                 );
                 const data = response;
-                console.log('data', data);
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.edcsubstationNames || [],
@@ -106,7 +87,6 @@ const EdcSubstations = () => {
         const fetchEdcWidgets = async () => {
             try {
                 const response = await apiClient.get(`/edcs/${edcs}/widgets`);
-                console.log('EDC Widgets:', response);
                 const feederCount =
                     response?.data?.regionFeederNames?.length || 0;
                 setWidgetsData((prev) => ({
@@ -123,118 +103,6 @@ const EdcSubstations = () => {
 
         fetchEdcWidgets();
     }, [edcs]);
-
-    const demoSubstationNames = [
-        'Adyar Substation',
-        'Velachery Substation',
-        'T Nagar Substation',
-        'Mylapore Substation',
-        'Anna Nagar Substation',
-        'Tambaram Substation',
-        'Guindy Substation',
-        'Porur Substation',
-        'Kodambakkam Substation',
-        'Royapuram Substation',
-        'Perambur Substation',
-        'Ambattur Substation',
-    ];
-
-    const demoSubstationFeederCounts = {
-        'Adyar Substation': 8,
-        'Velachery Substation': 6,
-        'T Nagar Substation': 10,
-        'Mylapore Substation': 7,
-        'Anna Nagar Substation': 9,
-        'Tambaram Substation': 5,
-        'Guindy Substation': 8,
-        'Porur Substation': 6,
-        'Kodambakkam Substation': 7,
-        'Royapuram Substation': 4,
-        'Perambur Substation': 5,
-        'Ambattur Substation': 6,
-    };
-
-    const demoSubstationStats = {
-        'Adyar Substation': { currentValue: 42, previousValue: 38 },
-        'Velachery Substation': { currentValue: 45, previousValue: 40 },
-        'T Nagar Substation': { currentValue: 48, previousValue: 42 },
-        'Mylapore Substation': { currentValue: 39, previousValue: 35 },
-        'Anna Nagar Substation': { currentValue: 44, previousValue: 40 },
-        'Tambaram Substation': { currentValue: 41, previousValue: 36 },
-        'Guindy Substation': { currentValue: 46, previousValue: 41 },
-        'Porur Substation': { currentValue: 40, previousValue: 36 },
-        'Kodambakkam Substation': { currentValue: 43, previousValue: 38 },
-        'Royapuram Substation': { currentValue: 38, previousValue: 34 },
-        'Perambur Substation': { currentValue: 37, previousValue: 33 },
-        'Ambattur Substation': { currentValue: 42, previousValue: 37 },
-    };
-
-    const graphData = {
-        daily: {
-            xAxis: [
-                '2025-03-16 23:59:59',
-                '2025-03-16 08:30:00',
-                '2025-03-16 08:15:00',
-                '2025-03-16 08:00:00',
-                '2025-03-16 07:45:00',
-                '2025-03-16 07:30:00',
-                '2025-03-16 07:15:00',
-                '2025-03-16 07:00:00',
-                '2025-03-16 06:45:00',
-                '2025-03-16 06:30:00',
-                '2025-03-16 06:15:00',
-                '2025-03-16 06:00:00',
-                '2025-03-16 05:45:00',
-                '2025-03-16 05:30:00',
-                '2025-03-16 05:15:00',
-                '2025-03-16 05:00:00',
-                '2025-03-16 04:45:00',
-                '2025-03-16 04:30:00',
-                '2025-03-16 04:15:00',
-                '2025-03-16 04:00:00',
-                '2025-03-16 03:45:00',
-                '2025-03-16 03:30:00',
-                '2025-03-16 03:15:00',
-                '2025-03-16 03:00:00',
-                '2025-03-16 02:45:00',
-                '2025-03-16 02:30:00',
-                '2025-03-16 02:15:00',
-                '2025-03-16 02:00:00',
-                '2025-03-16 01:45:00',
-                '2025-03-16 01:30:00',
-                '2025-03-16 01:15:00',
-                '2025-03-16 01:00:00',
-                '2025-03-16 00:45:00',
-                '2025-03-16 00:30:00',
-                '2025-03-16 00:15:00',
-            ],
-            series: [
-                {
-                    name: 'Current Day',
-                    data: [
-                        13.6, 12.0, 11.2, 11.2, 11.6, 10.4, 12.0, 10.8, 12.4,
-                        12.0, 12.8, 13.6, 12.4, 13.6, 12.0, 13.6, 12.8, 13.2,
-                        13.6, 12.4, 14.0, 12.4, 14.0, 12.4, 13.6, 12.8, 13.2,
-                        14.0, 12.8, 14.0, 12.4, 13.6, 12.4, 13.6, 12.4,
-                    ],
-                },
-                {
-                    name: 'Previous Day',
-                    data: [
-                        13.2, 10.8, 10.0, 11.2, 10.8, 10.8, 11.6, 10.8, 12.0,
-                        11.6, 13.2, 12.8, 13.2, 14.0, 12.8, 14.4, 13.2, 14.8,
-                        13.6, 14.4, 14.8, 13.2, 14.8, 13.2, 14.4, 13.2, 14.4,
-                        13.6, 13.6, 14.4, 13.2, 14.4, 12.8, 14.4, 12.8,
-                    ],
-                },
-            ],
-        },
-    };
-
-    // const demoSubstationDemandData = {};
-    // demoSubstationNames.forEach((substation) => {
-    //     demoSubstationDemandData[substation] = graphData.daily;
-    // });
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedSubstationData = localStorage.getItem('substationData');
@@ -289,7 +157,6 @@ const EdcSubstations = () => {
         newSocket.on('connect', () => {});
 
         newSocket.on('substationUpdate', (data) => {
-            console.log('data 2', data);
             setWidgetsData((prevData) => {
                 const newData = {
                     ...prevData,
@@ -342,61 +209,7 @@ const EdcSubstations = () => {
                 substations: ids,
             });
         }
-        console.log('ids', ids);
     }, [widgetsData.substationNames, socket]);
-
-    // useEffect(() => {
-    //     if (!edcs) return;
-
-    //     const substationNames = async () => {
-    //         try {
-    //             try {
-    //                 const response = await apiClient.get(
-    //                     `/edcs/${edcs}/substations`
-    //                 );
-    //                 const data = response;
-    //                 console.log('data', data);
-    //                 setWidgetsData((prev) => {
-    //                     const newData = {
-    //                         ...prev,
-    //                         substationNames: data.data?.substationNames || [],
-    //                         edcSubstationCount:
-    //                             data.data?.substationNames?.length || 0,
-    //                         totalDistricts:
-    //                             data.data?.totalDistricts ||
-    //                             data.data?.substationNames?.length ||
-    //                             0,
-    //                         substationFeederCounts:
-    //                             data.data?.substationFeederCounts || {},
-    //                     };
-
-    //                     const cacheData = {
-    //                         substationNames: newData.substationNames,
-    //                         substationFeederCounts:
-    //                             newData.substationFeederCounts,
-    //                         totalDistricts: newData.totalDistricts,
-    //                     };
-
-    //                     localStorage.setItem(
-    //                         'substationData',
-    //                         JSON.stringify(cacheData)
-    //                     );
-    //                     localStorage.setItem(
-    //                         'substationDataTimestamp',
-    //                         Date.now().toString()
-    //                     );
-    //                     return newData;
-    //                 });
-    //             } catch (error) {
-    //                 console.error('API error fetching substations:', error);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching substation names:', error);
-    //         }
-    //     };
-
-    //     substationNames();
-    // }, [edcs]);
 
     try {
         return (
@@ -405,7 +218,7 @@ const EdcSubstations = () => {
                     <div className={styles.section_header}>
                         <h2 className="title">Substations</h2>
                     </div>
-                    
+
                     <Breadcrumb />
 
                     <SummarySection
@@ -417,7 +230,7 @@ const EdcSubstations = () => {
                             nonCommMeters: widgetsData.nonCommMeters,
                             totalDistricts: widgetsData.totalDistricts,
                         }}
-                        isUserRoute={location.includes('/user/')}
+                        isUserRoute={isRegion()}
                         isBiUserRoute={location.includes('/bi/user/')}
                         showRegions={false}
                         showDistricts={false}
@@ -448,7 +261,6 @@ const EdcSubstations = () => {
                                               edc={edcs}
                                               name={substation.substation_names}
                                               subID={substation.hierarchy_id}
-                                              //   id={substation.hierarchy_id}
                                               feederCount={
                                                   widgetsData
                                                       .substationFeederCounts?.[

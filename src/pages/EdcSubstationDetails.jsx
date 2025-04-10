@@ -4,7 +4,7 @@ import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
-import { Link } from 'react-router-dom';
+import SummarySection from '../components/SummarySection';
 
 const EdcSubstationDetails = () => {
     const { region, edc, edcId, edcs, substationId } = useParams();
@@ -14,7 +14,43 @@ const EdcSubstationDetails = () => {
         xAxis: [],
         series: [],
     });
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedDemandData = localStorage.getItem('regionEdcDemandData');
+        const savedTimestamp = localStorage.getItem('regionEdcDemandTimestamp');
 
+        if (savedDemandData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedDemandData = JSON.parse(savedDemandData);
+                return {
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    totalDistricts: 0,
+                    edcNames: Object.keys(parsedDemandData),
+                    substationCount: {},
+                    feederCount: {},
+                    edcDemandData: parsedDemandData,
+                };
+            }
+        }
+
+        return {
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            totalDistricts: 0,
+            edcNames: [],
+            substationCount: {},
+            feederCount: {},
+            edcDemandData: {},
+        };
+    });
     const entityId = substationId;
     const edcIdentifier = edcId || edcs || edc;
     const isUserRoute = location.pathname.includes('/user/');
@@ -94,48 +130,18 @@ const EdcSubstationDetails = () => {
             </div>
             <Breadcrumb />
 
-            <div className={styles.performance_stats}>
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-meter.svg"
-                                alt="Feeder"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
+            <SummarySection
+                widgetsData={widgetsData}
+                    isUserRoute={location.pathname.includes('/user/')}
+                    isBiUserRoute={location.pathname.includes('/bi/user/')}
+                showRegions={false}
+                showEdcs={false}
+                showMeters={false}
+                showSubstations={false}
+                showDistricts={false}
+            />
 
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link to={feedersLink}>Feeders</Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.feederCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.total_units_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-factory.svg"
-                                alt="EDC"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">EDC</span>
-                            <span className={styles.summary_value}>
-                                <Link to={edcLink}>{edcName}</Link>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className={styles.chart_container}>
+            <div className={styles.detail_chart}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />
             </div>
         </div>

@@ -6,6 +6,7 @@ import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import SummarySection from '../components/SummarySection';
 
+
 const RegionDetails = () => {
     const { region } = useParams();
     const [timeRange, setTimeRange] = useState('Daily');
@@ -85,7 +86,6 @@ const RegionDetails = () => {
                 try {
                     const response = await apiClient.get(`/edcs/widgets/${region}`);
                     const data = response;
-                    console.log('dataaa:',data)
                     const edcSubstationCounts =
                         data.data?.substationCounts?.reduce((acc, edc) => {
                             acc[edc.edc_name] = edc.substation_count;
@@ -110,9 +110,6 @@ const RegionDetails = () => {
             fetchEdcNames();
         }, [region]);
 
-        useEffect(() => {
-            console.log('Updated widgetsData:', widgetsData);
-        }, [widgetsData]);
 
     const stats = {
         edcCount: widgetsData.regionEdcCount || 0,
