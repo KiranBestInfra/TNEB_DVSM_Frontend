@@ -6,14 +6,14 @@ import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import SummarySection from '../components/SummarySection';
+import { useAuth } from '../components/AuthProvider';
 
 const RegionFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
-    const { region } = useParams();
+    const { region: regionParam } = useParams();
+    const { user, isRegion } = useAuth();
+    const region = isRegion() && user?.id ? user.id : regionParam;
     const [socket, setSocket] = useState(null);
-
-    const location = window.location.pathname;
-    const isUserRoute = location.includes('/user/');
 
     const feederStats = {
         'Adyar Feeder 1': { currentValue: 850, previousValue: 780 },
@@ -141,17 +141,20 @@ const RegionFeeders = () => {
             }
         };
 
-        if (region) {
-            fetchFeeders();
-        }
+        // if (region) {
+        fetchFeeders();
+        // }
     }, [region]);
 
-    const regionName = region
-        ? region
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
-        : 'Unknown';
+    const regionName =
+        isRegion() && user?.name
+            ? user.name.split(' ')[0]
+            : region
+            ? region
+                  .split('-')
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')
+            : 'Unknown';
 
     return (
         <div
@@ -200,7 +203,7 @@ const RegionFeeders = () => {
                     nonCommMeters: widgetsData.nonCommMeters,
                     totalDistricts: 0,
                 }}
-                isUserRoute={isUserRoute}
+                isUserRoute={isRegion()}
                 isBiUserRoute={false}
                 showRegions={false}
                 showDistricts={false}
