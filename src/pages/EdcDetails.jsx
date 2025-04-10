@@ -164,7 +164,7 @@ const EdcDetails = () => {
         // isBiUserRoute={location.includes("/bi/user/")}
         showDistricts={true}
         showFeeders={true}
-        showEdcs={true}
+        showEdcs={false}
         showSubstations={true}
         showRegions={false}
       />           
