@@ -70,6 +70,34 @@ const EdcSubstationDetails = () => {
 
         fetchGraphData();
     }, [entityId, timeRange]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const feederResponse = await apiClient.get(
+                    `/substations/${substationId}/feeders`
+                );
+                const data = feederResponse.data;
+                console.log('dataaa:',data);
+
+
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    feederNames: data.feeders.map((feeder) => feeder.name),
+                    feeders: data.feeders,
+                    feederCount: data.feeders?.length,
+                    commMeters: data.commMeters,
+                    nonCommMeters: data.nonCommMeters,
+                  
+                }));
+
+        
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+        fetchData();
+    }, [edcs, substationId]);
 
     const substationName = entityId
         ? entityId
@@ -86,9 +114,11 @@ const EdcSubstationDetails = () => {
         : 'Unknown';
 
     const stats = {
-        feederCount: 0,
-        currentValue: 0,
-        previousValue: 0,
+        feederCount: widgetsData.feederCount,
+        commMeters: widgetsData.commMeters,
+        nonCommMeters: widgetsData.nonCommMeters,
+        currentValue: 5.7,
+        previousValue: 5.2,
     };
 
     const routePrefix = isUserRoute ? '/user' : '/admin';
@@ -131,9 +161,14 @@ const EdcSubstationDetails = () => {
             <Breadcrumb />
 
             <SummarySection
-                widgetsData={widgetsData}
-                isUserRoute={location.pathname.includes('/user/')}
-                isBiUserRoute={location.pathname.includes('/bi/user/')}
+                //widgetsData={widgetsData}
+                widgetsData={{
+                    totalFeeders: stats.feederCount,
+                    commMeters: stats.commMeters,
+                    nonCommMeters: stats.nonCommMeters,
+                }}
+                    isUserRoute={location.pathname.includes('/user/')}
+                    isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
                 showEdcs={false}
                 showMeters={false}
