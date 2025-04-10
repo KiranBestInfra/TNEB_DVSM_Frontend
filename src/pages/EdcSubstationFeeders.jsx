@@ -107,6 +107,8 @@ const EdcSubstationFeeders = () => {
                     `/substations/${substationId}/feeders`
                 );
                 const data = feederResponse.data;
+                //console.log('dataaa:',data);
+
 
 
                 setWidgetsData((prev) => ({
