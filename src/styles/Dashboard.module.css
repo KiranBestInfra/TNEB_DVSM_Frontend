@@ -1122,3 +1122,67 @@ filter: brightness(0) invert(1);
     font-weight: 600;
     color: var(--black);
 }
+
+.pagination_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.625rem;
+    gap: 0.5rem;
+}
+
+.pages_handler {
+    display: flex;
+    align-items: center;
+    gap: 0.9375rem;
+}
+
+.select_pagination {
+    text-align: center;
+    height: 2.2rem;
+    border: 0.0625rem solid var(--primary-bg);
+    background-color: var(--white);
+    font-size: 0.875rem;
+    cursor: pointer;
+    outline: none;
+}
+
+.select_pagination:hover {
+    border-color: var(--primary-bg);
+}
+
+.total_pages {
+    font-size: 0.875rem;
+    white-space: nowrap;
+    color: var(--grey);
+}
+
+.paginationControls {
+    display: flex;
+    align-items: center;
+    gap: 0.9375rem;
+}
+
+.paginationButton {
+    padding: 0.5rem 1rem;
+    border: 0.0625rem solid var(--primary-bg);
+    background-color: var(--white);
+    border-radius: 1rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: var(--brand-blue);
+}
+
+.paginationButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pageInfo {
+    font-size: 0.875rem;
+    color: var(--grey);
+}

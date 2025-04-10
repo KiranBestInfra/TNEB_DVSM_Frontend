@@ -13,6 +13,8 @@ const Regions = () => {
     const [timeRange, setTimeRange] = useState('Daily');
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [regionsPerPage, setRegionsPerPage] = useState(5);
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('regionDemandData');
         const savedTimestamp = localStorage.getItem('regionDemandTimestamp');
@@ -164,6 +166,15 @@ const Regions = () => {
         }
     };
 
+    const handlePageChange = (newPage, newPerPage = regionsPerPage) => {
+        if (newPerPage !== regionsPerPage) {
+            setCurrentPage(1);
+            setRegionsPerPage(newPerPage);
+        } else {
+            setCurrentPage(newPage);
+        }
+    };
+
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
@@ -210,12 +221,49 @@ const Regions = () => {
                         [ {widgetsData.totalRegions} ]
                     </span>
                 </h2>
+                <div className={styles.action_container}>
+                    <div className={styles.pagination_container}>
+                        <div className={styles.pages_handler}>
+                            <select
+                                value={regionsPerPage}
+                                onChange={(e) => handlePageChange(currentPage, Number(e.target.value))}
+                                className={styles.select_pagination}>
+                                {[6, 9].map((option) => (
+                                    <option key={option} value={option}>
+                                        {option} Per Page
+                                    </option>
+                                ))}
+                            </select>
+                            {/* <span className={styles.total_pages}>
+                                Total: {widgetsData.regionNames.length}
+                            </span> */}
+                        </div>
+                        <div className={styles.paginationControls}>
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={styles.paginationButton}>
+                                Previous
+                            </button>
+                            <span className={styles.pageInfo}>
+                                Page {currentPage} of {Math.ceil(widgetsData.regionNames.length / regionsPerPage)}
+                            </span>
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === Math.ceil(widgetsData.regionNames.length / regionsPerPage)}
+                                className={styles.paginationButton}>
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div className={styles.region_stats_container}>
-                {widgetsData.regionNames &&
-                    widgetsData.regionNames.length > 0 ? (
-                    widgetsData.regionNames.map((region, index) => (
+                {widgetsData.regionNames && widgetsData.regionNames.length > 0 ? (
+                    widgetsData.regionNames
+                        .slice((currentPage - 1) * regionsPerPage, currentPage * regionsPerPage)
+                        .map((region, index) => (
                         <div
                             key={index}
                             className={styles.individual_region_stats}>
