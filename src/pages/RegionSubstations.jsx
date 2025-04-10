@@ -188,7 +188,11 @@ const RegionSubstations = () => {
                     `/edcs/widgets/${region}/substations`
                 );
                 const data = response;
-                console.log('dataaa', data);
+                const substationFeederCounts =
+                    data.data?.substationFeederCounts;
+                const feedersCount = Object.values(
+                    substationFeederCounts
+                ).reduce((sum, count) => sum + count, 0);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -197,9 +201,9 @@ const RegionSubstations = () => {
                         data.data?.substationNames?.length || 0,
                     substationFeederCounts:
                         data.data?.substationFeederCounts || {},
-                    commMeters: data.data?.commMeters || prev.commMeters,
-                    nonCommMeters:
-                        data.data?.nonCommMeters || prev.nonCommMeters,
+                    totalFeeders: feedersCount,
+                    commMeters: data.data?.commMeters,
+                    nonCommMeters: data.data?.nonCommMeters,
                     substationIds: data.data?.substationNames,
                 }));
             } catch (error) {
@@ -248,7 +252,6 @@ const RegionSubstations = () => {
     };
 
     try {
-        console.log(widgetsData.substationIds);
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
