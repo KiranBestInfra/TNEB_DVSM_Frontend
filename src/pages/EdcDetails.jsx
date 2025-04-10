@@ -44,6 +44,8 @@ const EdcDetails = () => {
     const stats = {
         substationCount: 15,
         feederCount: 35,
+        commMeters: 10,
+        nonCommMeters: 25,
         currentValue: 10.2,
         previousValue: 9.8,
     };
@@ -89,7 +91,7 @@ const EdcDetails = () => {
         // isBiUserRoute={location.includes("/bi/user/")}
         showDistricts={true}
         showFeeders={true}
-        showEdcs={true}
+        showEdcs={false}
         showSubstations={true}
         showRegions={false}
       />           
