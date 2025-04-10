@@ -254,7 +254,7 @@ const ShortDetailsWidget = ({
                                             ? styles.positive
                                             : styles.negative
                                     }`}
-                                />
+                                /> {''}
                                 <RollingNumber
                                     n={Math.abs(parseFloat(percentageChange))}
                                     decimals={1}
