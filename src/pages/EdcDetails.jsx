@@ -15,6 +15,51 @@ const EdcDetails = () => {
         xAxis: [],
         series: [],
     });
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedDemandData = localStorage.getItem('edcDemandData');
+        const savedTimestamp = localStorage.getItem('edcDemandTimestamp');
+
+        if (savedDemandData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedDemandData = JSON.parse(savedDemandData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    edcSubstationCount: 0,
+                    edcFeederCount: parsedData.feederCount || 0,
+                    edcNames: Object.keys(parsedDemandData),
+                    regionEdcCount: 0,
+                    substationCount: {},
+                    feederCount: {},
+                    edcDemandData: parsedDemandData,
+                    districtcounts: 0,
+                };
+            }
+        }
+
+        return {
+            totalRegions: 0,
+            districtcounts: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            edcSubstationCount :0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            edcFeederCount: 0,
+            edcNames: [],
+            substationCount: {},
+            feederCount: {},
+            regionEdcCount: 0,
+            edcDemandData: {},
+        };
+    });
 
     const entityId = edcId;
 
@@ -41,13 +86,39 @@ const EdcDetails = () => {
               .join(' ')
         : 'Unknown';
 
+        useEffect(() => {
+            if (!edcId) return;
+    
+            const fetchEdcWidgets = async () => {
+                try {
+                    const response = await apiClient.get(`/edcs/${edcId}/widgets`);
+                    console.log('EDC Widgets:', response);
+                    const feederCount =
+                        response?.data?.regionFeederNames?.length || 0;
+                    setWidgetsData((prev) => ({
+                        ...prev,
+                        commMeters: response?.data?.commMeters || 0,
+                        nonCommMeters: response?.data?.nonCommMeters || 0,
+                        edcSubstationCount: response?.data?.substationCounts || 0,
+                        edcFeederCount: feederCount,
+                        districtcounts: response.data?.districtCounts || 0,
+                    }));
+                } catch (error) {
+                    console.error('Error fetching EDC widgets:', error);
+                }
+            };
+    
+            fetchEdcWidgets();
+        }, [edcId]);
+
     const stats = {
-        substationCount: 15,
-        feederCount: 35,
-        commMeters: 10,
-        nonCommMeters: 25,
+        substationCount: widgetsData.edcSubstationCount,
+        feederCount: widgetsData.edcFeederCount,
         currentValue: 10.2,
         previousValue: 9.8,
+        districtcounts: widgetsData.districtcounts,
+        commMeters: widgetsData.commMeters || 0,
+        nonCommMeters: widgetsData.nonCommMeters || 0
     };
 
     return (
@@ -83,6 +154,8 @@ const EdcDetails = () => {
             <Breadcrumb />
                       <SummarySection
         widgetsData={{
+        totalDistricts:stats.districtcounts,
+        totalSubstations:stats.substationCount,
           totalFeeders: stats.feederCount,
           commMeters: stats.commMeters,
           nonCommMeters: stats.nonCommMeters,
