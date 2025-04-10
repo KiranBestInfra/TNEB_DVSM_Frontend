@@ -236,18 +236,15 @@ const EdcSubstationFeeders = () => {
         
         console.log("dataHEy", data);
 
-        setWidgetsData((prev) => ({
-          ...prev,
-          feederNames: data.feeders.map((feeder) => feeder.name),
-          feeders: data.feeders,
-          feederCount: data.feeders?.length,    
-          nonCommMeters: data.nonCommMeters,
-          commMeters: data.commMeters,
-
-          // meterCount: data.meterCount,
-          // feederStats: data.feederStats,
-          // feederIds: data.feederIds || [],
-        }));
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    feederNames: data.feeders.map((feeder) => feeder.name),
+                    feeders: data.feeders,
+                    feederCount: data.feeders?.length,
+                    // meterCount: data.meterCount,
+                    // feederStats: data.feederStats,
+                    // feederIds: data.feederIds || [],
+                }));
 
         // const cacheData = {
         //     feederDemandData: data.feederGraphData,
