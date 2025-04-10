@@ -246,7 +246,7 @@ const RegionEdcs = () => {
 
             <SummarySection
                 widgetsData={getSummaryData()}
-                isUserRoute={location.pathname.includes('/user/')}
+                isUserRoute={isRegion()}
                 isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
                 showDistricts={true}

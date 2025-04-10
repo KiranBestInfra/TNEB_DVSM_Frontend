@@ -152,43 +152,13 @@ const RegionSubstations = () => {
         }
     }, [widgetsData.substationIds, socket]);
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const data = await apiClient.get(`/regions/widgets`);
-    //             const regionWidgets = data.data;
-    //             console.log('regionWidgets', regionWidgets);
-    //             setWidgetsData((prev) => ({
-    //                 ...prev,
-    //                 totalRegions:
-    //                     regionWidgets.totalRegions || prev.totalRegions,
-    //                 totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
-    //                 totalSubstations:
-    //                     regionWidgets.totalSubstations || prev.totalSubstations,
-    //                 totalFeeders:
-    //                     regionWidgets.totalFeeders || prev.totalFeeders,
-    //                 commMeters: regionWidgets.commMeters || prev.commMeters,
-    //                 nonCommMeters:
-    //                     regionWidgets.nonCommMeters || prev.nonCommMeters,
-    //             }));
-    //         } catch (error) {
-    //             console.error('Error fetching widget data:', error);
-    //         }
-    //     };
-
-    //     fetchData();
-    // }, [region]);
-
     useEffect(() => {
-        // if (!region) return;
-
         const substationNames = async () => {
             try {
                 const response = await apiClient.get(
                     `/edcs/widgets/${region}/substations`
                 );
                 const data = response;
-                console.log('dataaa', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -248,7 +218,6 @@ const RegionSubstations = () => {
     };
 
     try {
-        console.log(widgetsData.substationIds);
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
