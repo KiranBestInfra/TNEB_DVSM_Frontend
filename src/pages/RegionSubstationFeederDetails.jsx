@@ -58,9 +58,9 @@ const RegionSubstationFeederDetails = () => {
         : 'Unknown';
 
     const stats = {
-        meterCount: 150,
-        currentValue: 5.8,
-        previousValue: 5.2,
+        meterCount: 0,
+        currentValue: 0,
+        previousValue: 0,
         voltageLevel: '11kV',
     };
 
@@ -184,24 +184,6 @@ const RegionSubstationFeederDetails = () => {
                         </div>
                     </div>
                 </div>
-
-                { /* <div className={styles.voltage_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-voltage.svg"
-                                alt="Voltage"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">Voltage Level</span>
-                            <span className={styles.summary_value}>
-                                {stats.voltageLevel}
-                            </span>
-                        </div>
-                    </div>
-                </div> */}
             </div>
 
             <div className={styles.chart_container}>

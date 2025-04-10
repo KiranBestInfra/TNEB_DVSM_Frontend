@@ -6,7 +6,6 @@ import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import SummarySection from '../components/SummarySection';
 
-
 const RegionDetails = () => {
     const { region } = useParams();
     const [timeRange, setTimeRange] = useState('Daily');
@@ -74,51 +73,56 @@ const RegionDetails = () => {
 
     const entityName = entityId
         ? entityId
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
         : 'Unknown';
 
-        useEffect(() => {
-            if (!region) return;
-    
-            const fetchEdcNames = async () => {
-                try {
-                    const response = await apiClient.get(`/edcs/widgets/${region}`);
-                    const data = response;
-                    const edcSubstationCounts =
-                        data.data?.substationCounts?.reduce((acc, edc) => {
-                            acc[edc.edc_name] = edc.substation_count;
-                            return acc;
-                        }, {}) || {};
-    
-                    setWidgetsData((prev) => ({
-                        ...prev,
-                        edcNames: data.data?.edcNames || [],
-                        regionEdcCount: data.data?.edcNames?.length || 0,
-                        substationNames: data.data?.substationNames || [],
-                        substationCount: edcSubstationCounts,
-                        feederCount: data.data?.feederCounts || {},
-                        commMeters: data.data?.commMeters || 0,
-                        nonCommMeters: data.data?.nonCommMeters || 0
-                    }));
-                } catch (error) {
-                    console.error('Error fetching EDC names:', error);
-                }
-            };
-    
-            fetchEdcNames();
-        }, [region]);
+    useEffect(() => {
+        if (!region) return;
 
+        const fetchEdcNames = async () => {
+            try {
+                const response = await apiClient.get(`/edcs/widgets/${region}`);
+                const data = response;
+                const edcSubstationCounts =
+                    data.data?.substationCounts?.reduce((acc, edc) => {
+                        acc[edc.edc_name] = edc.substation_count;
+                        return acc;
+                    }, {}) || {};
+
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    edcNames: data.data?.edcNames || [],
+                    regionEdcCount: data.data?.edcNames?.length || 0,
+                    substationNames: data.data?.substationNames || [],
+                    substationCount: edcSubstationCounts,
+                    feederCount: data.data?.feederCounts || {},
+                    commMeters: data.data?.commMeters || 0,
+                    nonCommMeters: data.data?.nonCommMeters || 0,
+                }));
+            } catch (error) {
+                console.error('Error fetching EDC names:', error);
+            }
+        };
+
+        fetchEdcNames();
+    }, [region]);
 
     const stats = {
         edcCount: widgetsData.regionEdcCount || 0,
-        substationCount: Object.values(widgetsData.substationCount).reduce((sum, count) => sum + count, 0) || 0,
-        feederCount: Object.values(widgetsData.feederCount).reduce((sum, count) => sum + count, 0) || 0,
-        //currentValue: 13.6,
-        //previousValue: 12.8,
+        substationCount:
+            Object.values(widgetsData.substationCount).reduce(
+                (sum, count) => sum + count,
+                0
+            ) || 0,
+        feederCount:
+            Object.values(widgetsData.feederCount).reduce(
+                (sum, count) => sum + count,
+                0
+            ) || 0,
         commMeters: widgetsData.commMeters || 0,
-        nonCommMeters: widgetsData.nonCommMeters || 0
+        nonCommMeters: widgetsData.nonCommMeters || 0,
     };
 
     return (
@@ -147,7 +151,6 @@ const RegionDetails = () => {
                                 }
                             />
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -161,7 +164,7 @@ const RegionDetails = () => {
                     totalFeeders: stats.feederCount,
                     commMeters: stats.commMeters,
                     nonCommMeters: stats.nonCommMeters,
-                    totalDistricts: stats.edcCount || 0
+                    totalDistricts: stats.edcCount || 0,
                 }}
                 isUserRoute={false}
                 isBiUserRoute={false}
