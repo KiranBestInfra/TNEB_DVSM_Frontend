@@ -50,18 +50,14 @@ ErrorBoundary.propTypes = {
 
 //     const substationNames = async () => {
 //         try {
-//             const response = await apiClient.get(
-//                 `/widgets/:edcs/substations`
-//             );
+//             const response = await apiClient.get(`/widgets/:edcs/substations`);
 //             const data = response;
 
 //             setWidgetsData((prev) => ({
 //                 ...prev,
 //                 substationNames: data.data?.substationNames || [],
-//                 regionSubstationCount:
-//                     data.data?.substationNames?.length || 0,
-//                 substationFeederCounts:
-//                     data.data?.substationFeederCounts || {},
+//                 regionSubstationCount: data.data?.substationNames?.length || 0,
+//                 substationFeederCounts: data.data?.substationFeederCounts || {},
 //             }));
 //         } catch (error) {
 //             console.error('Error fetching substation data:', error);
@@ -94,6 +90,7 @@ const EdcSubstations = () => {
                         data.data?.substationNames?.length || 0,
                     substationFeederCounts:
                         data.data?.substationFeederCountsedc || {},
+                    feederCount: data.data?.regionFeederNames?.length || 0,
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);
@@ -101,6 +98,30 @@ const EdcSubstations = () => {
         };
 
         substationNames();
+    }, [edcs]);
+
+    useEffect(() => {
+        if (!edcs) return;
+
+        const fetchEdcWidgets = async () => {
+            try {
+                const response = await apiClient.get(`/edcs/${edcs}/widgets`);
+                console.log('EDC Widgets:', response);
+                const feederCount =
+                    response?.data?.regionFeederNames?.length || 0;
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    commMeters: response?.data?.commMeters || 0,
+                    nonCommMeters: response?.data?.nonCommMeters || 0,
+                    edcSubstationCount: response?.data?.substationCount || 0,
+                    edcFeederCount: feederCount,
+                }));
+            } catch (error) {
+                console.error('Error fetching EDC widgets:', error);
+            }
+        };
+
+        fetchEdcWidgets();
     }, [edcs]);
 
     const demoSubstationNames = [
@@ -228,7 +249,7 @@ const EdcSubstations = () => {
                     totalRegions: 0,
                     totalEdcs: 0,
                     totalsubstations: 0,
-                    totalFeeders: 0,
+                    edcFeederCount: parsedData.feederCount || 0,
                     commMeters: 0,
                     nonCommMeters: 0,
                     edcSubstationCount: parsedData.substationNames?.length || 0,
@@ -249,7 +270,7 @@ const EdcSubstations = () => {
             totalRegions: 0,
             totalEdcs: 0,
             totalsubstations: 0,
-            totalFeeders: 0,
+            edcFeederCount: 0,
             commMeters: 0,
             nonCommMeters: 0,
             edcSubstationCount: 0,
@@ -389,10 +410,9 @@ const EdcSubstations = () => {
 
                     <SummarySection
                         widgetsData={{
-                            totalRegions: widgetsData.totalRegions,
-                            totalEdcs: widgetsData.totalEdcs,
-                            totalSubstations: widgetsData.totalsubstations,
-                            totalFeeders: widgetsData.totalFeeders,
+                            totalSubstations:
+                                widgetsData.substationNames.length,
+                            totalFeeders: widgetsData.edcFeederCount,
                             commMeters: widgetsData.commMeters,
                             nonCommMeters: widgetsData.nonCommMeters,
                             totalDistricts: widgetsData.totalDistricts,
