@@ -1,12 +1,10 @@
 import styles from '../styles/LongDetailsWidget.module.css';
 import { useParams } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
-import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import SummarySection from '../components/SummarySection';
-import { Link } from 'react-router-dom';
 
 const RegionDetails = () => {
     const { region } = useParams();

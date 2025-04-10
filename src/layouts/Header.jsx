@@ -21,16 +21,14 @@ const Header = () => {
 
     const debouncedSearchTerm = useDebounce(searchQuery, 500);
 
-    // Simulated profile data - in a real app, this would come from user context/auth
-    const { user } = useAuth(); // Get user details from auth context
+    const { user } = useAuth();
 
     const profileData = {
         profilePicture: user?.profilePicture || null,
-        firstName: user?.id || 'User',
-        lastName: user?.lastName || '',
+        firstName: user?.name || 'User',
+        lastName: '',
     };
 
-    // Update date and time every second
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentDateTime(new Date());
@@ -39,18 +37,17 @@ const Header = () => {
         return () => clearInterval(timer);
     }, []);
 
-    // Format date and time
     const formattedDate = currentDateTime.toLocaleDateString('en-IN', {
         day: '2-digit',
         month: 'short',
-        year: 'numeric'
+        year: 'numeric',
     });
 
     const formattedTime = currentDateTime.toLocaleTimeString('en-IN', {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
-        hour12: true
+        hour12: true,
     });
 
     const handleSearchChange = (e) => {
@@ -62,7 +59,7 @@ const Header = () => {
     };
 
     const handleResultClick = (result) => {
-        const { id, hierarchy_type_id, hierarchy_name} = result;
+        const { id, hierarchy_type_id, hierarchy_name, region } = result;
         let redirectPath = '';
 
         const formatName = (name) => {
@@ -70,14 +67,20 @@ const Header = () => {
         };
 
         switch (hierarchy_type_id) {
-            case 10: // Region
-                redirectPath = `${basePath}/regions/${formatName(hierarchy_name)}`;
+            case 10: 
+                redirectPath = `${basePath}/regions/${formatName(
+                    hierarchy_name
+                )}`;
                 break;
-            case 11: // EDC
-                redirectPath = `${basePath}/${formatName(region)}/edcs/${id}/details`;
+            case 11: 
+                redirectPath = `${basePath}/${formatName(
+                    region
+                )}/edcs/${id}/details`;
                 break;
-            case 35: // Substation
-                redirectPath = `${basePath}/${formatName(region)}/substations/${id}/feeders`;
+            case 35: 
+                redirectPath = `${basePath}/${formatName(
+                    region
+                )}/substations/${id}/feeders`;
                 break;
             default:
                 redirectPath = `${basePath}/details/${id}`;
@@ -161,7 +164,7 @@ const Header = () => {
                         `/regions/search?term=${debouncedSearchTerm}`
                     );
                     const results = response.data;
-                   
+
                     setSearchResults(results);
                 } catch (error) {
                     console.error('Search error:', error);
@@ -230,7 +233,6 @@ const Header = () => {
                                 key={result.id}
                                 className={styles.search_result_item}
                                 onClick={() => handleResultClick(result)}>
-
                                 <span className={styles.result_name}>
                                     {result.hierarchy_name}
                                 </span>
@@ -253,7 +255,6 @@ const Header = () => {
                             onClick={handleProfileClick}>
                             <img src="icons/clock-up-arrow.svg" alt="Clock" />
                         </div>
-
                     </div>
 
                     <span
