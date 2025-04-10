@@ -25,6 +25,7 @@ const Regions = () => {
                 return {
                     totalRegions: 0,
                     totalEdcs: 0,
+                    totalDistricts: 0,
                     totalSubstations: 0,
                     totalFeeders: 0,
                     commMeters: 0,
@@ -42,6 +43,7 @@ const Regions = () => {
         return {
             totalRegions: 0,
             totalEdcs: 0,
+            totalDistricts: 0,
             totalSubstations: 0,
             totalFeeders: 0,
             commMeters: 0,
@@ -119,6 +121,7 @@ const Regions = () => {
             setWidgetsData((prev) => ({
                 totalRegions: data.totalRegions || prev.totalRegions,
                 totalEdcs: data.totalEdcs || prev.totalEdcs,
+                totalDistricts: data.totalDistricts || prev.totalDistricts,
                 totalSubstations:
                     data.totalSubstations || prev.totalSubstations,
                 totalFeeders: data.totalFeeders || prev.totalFeeders,
@@ -197,6 +200,7 @@ const Regions = () => {
                 onEdcClick={isRegionUser ? handleEdcClick : null}
                 onSubstationClick={isRegionUser ? handleSubstationClick : null}
                 showRegions={false}
+                showDistricts={true}
             />
 
             <div className={styles.section_header}>

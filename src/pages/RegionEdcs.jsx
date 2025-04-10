@@ -11,6 +11,7 @@ const RegionEdcs = () => {
     const { region } = useParams();
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
+    const [timeRange, setTimeRange] = useState('Daily');
     const cacheTimeoutRef = useRef(null);
     const [selectedEdc, setSelectedEdc] = useState(null);
     const [widgetsData, setWidgetsData] = useState(() => {
@@ -127,8 +128,7 @@ const RegionEdcs = () => {
                     ),
                     commMeters: data.commMeters || 0,
                     nonCommMeters: data.nonCommMeters || 0,
-                    totalDistricts:
-                        data.totalDistricts || data.edcNames?.length || 0,
+                    totalDistricts: data.totalDistricts || 0,
                     edcNames: data.edcNames || [],
                     substationCount:
                         data.substationCounts?.reduce((acc, item) => {
@@ -171,6 +171,7 @@ const RegionEdcs = () => {
                 totalFeeders: widgetsData.totalFeeders,
                 commMeters: widgetsData.commMeters || 0,
                 nonCommMeters: widgetsData.nonCommMeters || 0,
+                totalDistricts: widgetsData.totalDistricts,
             };
         }
 
@@ -213,6 +214,26 @@ const RegionEdcs = () => {
         <div className={styles.main_content}>
             <div className={styles.section_header}>
                 <h2 className="title">{regionName} Region EDCs</h2>
+                <div className={styles.action_container}>
+                    <div className={styles.action_cont}>
+                        <div className={styles.time_range_select_dropdown}>
+                            <select
+                                value={timeRange}
+                                onChange={(e) => setTimeRange(e.target.value)}
+                                className={styles.time_range_select}>
+                                <option value="Daily">Daily</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="PreviousMonth">Previous Month</option>
+                                <option value="Year">Year</option>
+                            </select>
+                            <img
+                                src="icons/arrow-down.svg"
+                                alt="Select Time"
+                                className={styles.time_range_select_dropdown_icon}
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
             <Breadcrumb />
 
@@ -221,7 +242,7 @@ const RegionEdcs = () => {
                 isUserRoute={location.pathname.includes('/user/')}
                 isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
-                showDistricts={false}
+                showDistricts={true}
             />
 
             <div className={styles.section_header}>

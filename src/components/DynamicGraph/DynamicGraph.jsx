@@ -8,7 +8,7 @@ const DynamicGraph = ({
     data,
     className,
     lineColor = '#3f68b2',
-    yAxisLabel = 'Value',
+    yAxisLabel = 'MW',
     refreshInterval = 15000,
     timeRange,
     onTimeRangeChange,
@@ -144,7 +144,7 @@ const DynamicGraph = ({
                     type: 'value',
                     boundaryGap: [0, '10%'],
                     axisLabel: {
-                        formatter: `{value} ${yAxisLabel}`,
+                        formatter: '{value}MW',
                         fontFamily: 'Roboto',
                         fontSize: '0.75rem',
                         color: '#424242',

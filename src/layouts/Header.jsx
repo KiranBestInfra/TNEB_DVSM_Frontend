@@ -67,20 +67,16 @@ const Header = () => {
         };
 
         switch (hierarchy_type_id) {
-            case 10: 
-                redirectPath = `${basePath}/regions/${formatName(
-                    hierarchy_name
-                )}`;
+            case 10: // Region
+                redirectPath = `${basePath}/regions/${formatName(hierarchy_name)}/details`;
                 break;
             case 11: 
                 redirectPath = `${basePath}/${formatName(
                     region
                 )}/edcs/${id}/details`;
                 break;
-            case 35: 
-                redirectPath = `${basePath}/${formatName(
-                    region
-                )}/substations/${id}/feeders`;
+            case 35: // Substation
+                redirectPath = `${basePath}/${formatName(region)}/substations/${id}/details`;
                 break;
             default:
                 redirectPath = `${basePath}/details/${id}`;

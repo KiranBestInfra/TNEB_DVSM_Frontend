@@ -121,7 +121,7 @@ const App = () => {
                                 element={<EdcFeederDetails />}
                             />
                             <Route
-                                path=":region/:edcs/substations/:substationId/feeders"
+                                path=":region/:edcs/:substationId/feeders"
                                 element={<EdcSubstationFeeders />}
                             />
                             <Route
