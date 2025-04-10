@@ -167,20 +167,20 @@ const App = () => {
                             <Route path="feeders" element={<RegionFeeders />} />
 
                             <Route
-                                path="edcs/:edcId/details"
-                                element={<EdcDetails />}
+                                path="substations/:substationId/feeders"
+                                element={<SubstationFeeders />}
                             />
                             <Route
-                                path="substations/:substationId/details"
-                                element={<SubstationDetails />}
+                                path=":edcs/feeders"
+                                element={<EdcFeeders />}
                             />
                             <Route
-                                path="feeders/:feederId/details"
-                                element={<FeederDetails />}
+                                path=":edcs/substations"
+                                element={<EdcSubstations />}
                             />
                             <Route
-                                path="substations/:substationId/feeders/:feederId/details"
-                                element={<RegionSubstationFeederDetails />}
+                                path=":edcs/:substationId/feeders"
+                                element={<EdcSubstationFeeders />}
                             />
                         </Route>
 

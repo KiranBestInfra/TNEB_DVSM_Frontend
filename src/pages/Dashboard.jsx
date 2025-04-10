@@ -1,10 +1,7 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Buttons from '../components/ui/Buttons/Buttons';
 import styles from '../styles/Dashboard.module.css';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
-import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import SummarySection from '../components/SummarySection/SummarySection';
 import { apiClient } from '../api/client';
@@ -53,7 +50,6 @@ const Dashboard = () => {
     }, []);
 
 
-    {/* Fetching graph time range */}
     useEffect(() => {
         const fetchGraphTimeRange = async () => {   
             try {
@@ -66,7 +62,6 @@ const Dashboard = () => {
         fetchGraphTimeRange();
     }, []);
 
-    {/* Fetching graph data */}
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
