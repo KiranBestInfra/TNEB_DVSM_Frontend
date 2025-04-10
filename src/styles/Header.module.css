@@ -298,6 +298,6 @@
 }
 
 .date {
-    font-size: 0.75rem;
-    color: var(--black);
+    font-size: 0.9rem;
+    color: var(--grey);
 }
