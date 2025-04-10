@@ -141,9 +141,7 @@ const RegionFeeders = () => {
             }
         };
 
-        // if (region) {
         fetchFeeders();
-        // }
     }, [region]);
 
     const regionName =
