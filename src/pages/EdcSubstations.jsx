@@ -405,6 +405,7 @@ const EdcSubstations = () => {
                     <div className={styles.section_header}>
                         <h2 className="title">Substations</h2>
                     </div>
+                    
                     <Breadcrumb />
 
                     <SummarySection

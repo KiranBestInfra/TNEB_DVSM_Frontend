@@ -28,6 +28,7 @@ const Dashboard = () => {
         totalFeeders: 0,
         commMeters: 0,
         nonCommMeters: 0,
+        totalDistricts: 0,
     });
 
     useEffect(() => {
@@ -44,7 +45,8 @@ const Dashboard = () => {
                 totalFeeders: data.totalFeeders || prev.totalFeeders,
                 commMeters: data.commMeters || prev.commMeters,
                 nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
-            }));
+                totalDistricts: data.totalDistricts || prev.totalDistricts,
+                }));
         };
 
         fetchData();
@@ -115,6 +117,7 @@ const Dashboard = () => {
                 widgetsData={widgetsData}
                 isUserRoute={isUserRoute}
                 isBiUserRoute={isBiUserRoute}
+                showDistricts={true}
             />
 
             <div className={styles.detail_chart}>
