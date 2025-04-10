@@ -6,9 +6,12 @@ import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import SummarySection from '../components/SummarySection';
 import { apiClient } from '../api/client';
 import ShortDetailsWidget from './ShortDetailsWidget';
+import { useAuth } from '../components/AuthProvider';
 
 const RegionEdcs = () => {
-    const { region } = useParams();
+    const { region: regionParam } = useParams();
+    const { user, isRegion } = useAuth();
+    const region = isRegion() && user?.id ? user.id : regionParam;
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
     const [timeRange, setTimeRange] = useState('Daily');
@@ -104,10 +107,9 @@ const RegionEdcs = () => {
 
             socket.emit('subscribeEdc', {
                 edcs: ids,
-                region: region,
             });
         }
-    }, [widgetsData.edcNames, socket, region]);
+    }, [widgetsData.edcNames, socket]);
 
     useEffect(() => {
         const fetchEdcs = async () => {
@@ -147,17 +149,18 @@ const RegionEdcs = () => {
             }
         };
 
-        if (region) {
-            fetchEdcs();
-        }
+        fetchEdcs();
     }, [region]);
 
-    const regionName = region
-        ? region
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
-        : 'Unknown';
+    const regionName =
+        isRegion() && user?.name
+            ? user.name.split(' ')[0]
+            : region
+            ? region
+                  .split('-')
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')
+            : 'Unknown';
 
     const handleEdcClick = (edc) => {
         setSelectedEdc(edc);
@@ -223,13 +226,17 @@ const RegionEdcs = () => {
                                 className={styles.time_range_select}>
                                 <option value="Daily">Daily</option>
                                 <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">Previous Month</option>
+                                <option value="PreviousMonth">
+                                    Previous Month
+                                </option>
                                 <option value="Year">Year</option>
                             </select>
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
                             />
                         </div>
                     </div>

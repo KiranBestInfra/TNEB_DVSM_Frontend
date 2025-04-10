@@ -58,7 +58,10 @@ const ShortDetailsWidget = ({
     const handleClick = () => {
         let detailsUrl = '';
         const routePrefix = isUserRoute ? '/user' : '/admin';
-        const formattedRegion = region.toLowerCase().replace(/\s+/g, '-');
+        const formattedRegion =
+            typeof region === 'number'
+                ? region
+                : region.toLowerCase().replace(/\s+/g, '-');
         const formattedName = id
             ? id
             : name
@@ -118,7 +121,10 @@ const ShortDetailsWidget = ({
 
     const renderNavigationLinks = () => {
         const routePrefix = isUserRoute ? '/user' : '/admin';
-        const formattedRegion = region.toLowerCase().replace(/\s+/g, '-');
+        const formattedRegion =
+            typeof region === 'number'
+                ? region
+                : region.toLowerCase().replace(/\s+/g, '-');
         const formattedName = subID
             ? subID
             : id
@@ -258,7 +264,8 @@ const ShortDetailsWidget = ({
                                 <RollingNumber
                                     n={Math.abs(parseFloat(percentageChange))}
                                     decimals={1}
-                                />%
+                                />
+                                %
                             </div>
                         </div>
                     </div>

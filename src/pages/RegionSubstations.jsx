@@ -8,6 +8,7 @@ import SummarySection from '../components/SummarySection';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 import PropTypes from 'prop-types';
+import { useAuth } from '../components/AuthProvider';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -51,10 +52,10 @@ const RegionSubstations = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
-    const { region } = useParams();
+    const { region: regionParam } = useParams();
+    const { user, isRegion } = useAuth();
+    const region = isRegion() && user?.id ? user.id : regionParam;
     const [selectedSubstation, setSelectedSubstation] = useState(null);
-
-    const isRegionUser = false;
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('substationDemandData');
@@ -151,35 +152,35 @@ const RegionSubstations = () => {
         }
     }, [widgetsData.substationIds, socket]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await apiClient.get(`/regions/widgets`);
-                const regionWidgets = data.data;
-                console.log('regionWidgets', regionWidgets);
-                setWidgetsData((prev) => ({
-                    ...prev,
-                    totalRegions:
-                        regionWidgets.totalRegions || prev.totalRegions,
-                    totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
-                    totalSubstations:
-                        regionWidgets.totalSubstations || prev.totalSubstations,
-                    totalFeeders:
-                        regionWidgets.totalFeeders || prev.totalFeeders,
-                    commMeters: regionWidgets.commMeters || prev.commMeters,
-                    nonCommMeters:
-                        regionWidgets.nonCommMeters || prev.nonCommMeters,
-                }));
-            } catch (error) {
-                console.error('Error fetching widget data:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const data = await apiClient.get(`/regions/widgets`);
+    //             const regionWidgets = data.data;
+    //             console.log('regionWidgets', regionWidgets);
+    //             setWidgetsData((prev) => ({
+    //                 ...prev,
+    //                 totalRegions:
+    //                     regionWidgets.totalRegions || prev.totalRegions,
+    //                 totalEdcs: regionWidgets.totalEdcs || prev.totalEdcs,
+    //                 totalSubstations:
+    //                     regionWidgets.totalSubstations || prev.totalSubstations,
+    //                 totalFeeders:
+    //                     regionWidgets.totalFeeders || prev.totalFeeders,
+    //                 commMeters: regionWidgets.commMeters || prev.commMeters,
+    //                 nonCommMeters:
+    //                     regionWidgets.nonCommMeters || prev.nonCommMeters,
+    //             }));
+    //         } catch (error) {
+    //             console.error('Error fetching widget data:', error);
+    //         }
+    //     };
 
-        fetchData();
-    }, [region]);
+    //     fetchData();
+    // }, [region]);
 
     useEffect(() => {
-        if (!region) return;
+        // if (!region) return;
 
         const substationNames = async () => {
             try {
@@ -213,12 +214,15 @@ const RegionSubstations = () => {
         setTimeframe(e.target.value);
     };
 
-    const regionName = region
-        ? region
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
-        : 'Unknown';
+    const regionName =
+        isRegion() && user?.name
+            ? user.name.split(' ')[0]
+            : region
+            ? region
+                  .split('-')
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')
+            : 'Unknown';
 
     const getSummaryData = () => {
         if (!selectedSubstation) {
@@ -282,7 +286,7 @@ const RegionSubstations = () => {
 
                     <SummarySection
                         widgetsData={getSummaryData()}
-                        isUserRoute={isRegionUser}
+                        isUserRoute={isRegion()}
                         isBiUserRoute={location.pathname.includes('/bi/user/')}
                         showRegions={false}
                         showEdcs={false}
@@ -305,7 +309,7 @@ const RegionSubstations = () => {
                             ? widgetsData.substationIds.map((value) => (
                                   //Object.entries(value).map(([key, value]) => (
                                   <div
-                                      key={value}
+                                      key={value.id}
                                       className={
                                           styles.individual_region_stats
                                       }>
@@ -331,19 +335,34 @@ const RegionSubstations = () => {
                                               }
                                           }
                                           currentValue={(() => {
-                                            const seriesData =
-                                                widgetsData.substationDemandData?.[value.id]?.series?.[0]?.data;
-                                            return seriesData && seriesData.length
-                                                ? parseFloat(seriesData.slice(-1)[0]).toFixed(1)
-                                                : '0.0';
-                                        })()}
-                                        previousValue={(() => {
-                                            const seriesData =
-                                                widgetsData.substationDemandData?.[value.id]?.series?.[0]?.data;
-                                            return seriesData && seriesData.length > 1
-                                                ? parseFloat(seriesData.slice(-2, -1)[0]).toFixed(1)
-                                                : '0.0';
-                                        })()}
+                                              const seriesData =
+                                                  widgetsData
+                                                      .substationDemandData?.[
+                                                      value.id
+                                                  ]?.series?.[0]?.data;
+                                              return seriesData &&
+                                                  seriesData.length
+                                                  ? parseFloat(
+                                                        seriesData.slice(-1)[0]
+                                                    ).toFixed(1)
+                                                  : '0.0';
+                                          })()}
+                                          previousValue={(() => {
+                                              const seriesData =
+                                                  widgetsData
+                                                      .substationDemandData?.[
+                                                      value.id
+                                                  ]?.series?.[0]?.data;
+                                              return seriesData &&
+                                                  seriesData.length > 1
+                                                  ? parseFloat(
+                                                        seriesData.slice(
+                                                            -2,
+                                                            -1
+                                                        )[0]
+                                                    ).toFixed(1)
+                                                  : '0.0';
+                                          })()}
                                           pageType="substations"
                                           handleRegionClick={() =>
                                               setSelectedSubstation(
