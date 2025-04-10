@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
+import SummarySection from '../components/SummarySection';
 
 const EdcDetails = () => {
     const { region, edcId } = useParams();
@@ -78,8 +79,21 @@ const EdcDetails = () => {
                 </div>
             </div>
             <Breadcrumb />
-
-            <div className={styles.performance_stats}>
+                      <SummarySection
+        widgetsData={{
+          totalFeeders: stats.feederCount,
+          commMeters: stats.commMeters,
+          nonCommMeters: stats.nonCommMeters,
+        }}
+        // isUserRoute={location.includes("/user/")}
+        // isBiUserRoute={location.includes("/bi/user/")}
+        showDistricts={true}
+        showFeeders={true}
+        showEdcs={true}
+        showSubstations={true}
+        showRegions={false}
+      />           
+            {/* <div className={styles.performance_stats}>
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <div className={styles.TNEB_icons}>
@@ -157,7 +171,7 @@ const EdcDetails = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />

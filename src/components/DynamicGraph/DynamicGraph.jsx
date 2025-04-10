@@ -144,7 +144,7 @@ const DynamicGraph = ({
                     type: 'value',
                     boundaryGap: [0, '10%'],
                     axisLabel: {
-                        formatter: '{value}MW',
+                        formatter: '{value} MW',
                         fontFamily: 'Roboto',
                         fontSize: '0.75rem',
                         color: '#424242',

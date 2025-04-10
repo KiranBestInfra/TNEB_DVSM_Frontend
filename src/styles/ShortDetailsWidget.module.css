@@ -124,12 +124,14 @@
 .region_percentage_change {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     background-color: var(--white);
     padding: 0.5rem 1rem;
     border-radius: 2rem;
     font-weight: 600;
     width: fit-content;
+}
+.region_trend_arrow  {
+    margin-right: 0.5rem;
 }
 
 .region_percentage_change.positive {
