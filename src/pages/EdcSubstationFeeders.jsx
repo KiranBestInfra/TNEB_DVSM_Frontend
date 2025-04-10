@@ -246,7 +246,7 @@ const EdcSubstationFeeders = () => {
                     ...prev,
                     feederNames: data.feeders.map((feeder) => feeder.name),
                     feeders: data.feeders,
-                    feederCount: data.feederNames?.length,
+                    feederCount: data.feeders?.length,
                     // meterCount: data.meterCount,
                     // feederStats: data.feederStats,
                     // feederIds: data.feederIds || [],
@@ -348,12 +348,14 @@ const EdcSubstationFeeders = () => {
                                 edcCount={0}
                                 substationCount={0}
                                 feederCount={widgetsData.feederCount}
-                                currentValue={parseFloat(
-                                    widgetsData.feederDemandData[feeder.id]?.series?.[0]?.data?.slice(-1)[0] || 0
-                                )}
-                                previousValue={parseFloat(
-                                    widgetsData.feederDemandData[feeder.id]?.series?.[1]?.data?.slice(-1)[0] || 0
-                                )}
+                                currentValue={
+                                    widgetsData.feederStats[feeder.id]
+                                        ?.currentValue || 0
+                                }
+                                previousValue={
+                                    widgetsData.feederStats[feeder.id]
+                                        ?.previousValue || 0
+                                }
                                 pageType="feeders"
                                 graphData={
                                     widgetsData.feederDemandData[feeder.id] || {
