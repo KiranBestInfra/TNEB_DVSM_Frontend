@@ -129,29 +129,6 @@ const SubstationFeeders = () => {
     }, [widgetsData.feederIds, socket]);
 
     useEffect(() => {
-        const fetchWidgets = async () => {
-            try {
-                const response = await apiClient.get(
-                    `/substations/${substationId}/widgets`
-                );
-                const { commMeters, nonCommMeters } = response.data.data;
-
-                setWidgetsData((prev) => ({
-                    ...prev,
-                    commMeters,
-                    nonCommMeters,
-                }));
-            } catch (error) {
-                console.error('Error fetching substation widgets:', error);
-            }
-        };
-
-        if (substationId) {
-            fetchWidgets();
-        }
-    }, [substationId]);
-
-    useEffect(() => {
         const fetchFeeders = async () => {
             try {
                 try {
@@ -163,6 +140,8 @@ const SubstationFeeders = () => {
                     setWidgetsData((prev) => {
                         const newData = {
                             ...prev,
+                            commMeters: response.data.commMeters,
+                            nonCommMeters: response.data.nonCommMeters,
                             feederNames: feedersData.map((f) => f.name) || [],
                             feederCount: feedersData.length || 0,
                             totalFeeders: feedersData.length || 0,
