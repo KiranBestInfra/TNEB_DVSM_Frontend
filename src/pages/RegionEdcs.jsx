@@ -130,7 +130,7 @@ const RegionEdcs = () => {
                     ),
                     commMeters: data.commMeters || 0,
                     nonCommMeters: data.nonCommMeters || 0,
-                    totalDistricts: data.totalDistricts || 0,
+                    totalDistricts: data.regionDistricts || 0,
                     edcNames: data.edcNames || [],
                     substationCount:
                         data.substationCounts?.reduce((acc, item) => {
@@ -184,6 +184,7 @@ const RegionEdcs = () => {
             totalFeeders: widgetsData.feederCount[selectedEdc] || 0,
             commMeters: widgetsData.commMeters || 0,
             nonCommMeters: widgetsData.nonCommMeters || 0,
+            totalDistricts: widgetsData.totalDistricts,
         };
     };
     // const getSummaryData = () => {
