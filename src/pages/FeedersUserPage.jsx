@@ -6,19 +6,24 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
-
+import { apiClient } from '../api/client';
 const FeedersUserPage = () => {
     const [timeRange, setTimeRange] = useState('Daily');
     const { region } = useParams();
     const location = useLocation();
 
     // Determine if this is a region user path
-    const isRegionUser = location.pathname.includes('/user/') ||
+    const isRegionUser =
+        location.pathname.includes('/user/') ||
         (location.pathname.includes('/user/') &&
             !location.pathname.includes('/admin/'));
-    const currentBaseRoute = isRegionUser ?
-        (location.pathname.includes('/user/') ? '/user' : '/user') :
-        (location.pathname.includes('/user/') ? '/user' : '/admin');
+    const currentBaseRoute = isRegionUser
+        ? location.pathname.includes('/user/')
+            ? '/user'
+            : '/user'
+        : location.pathname.includes('/user/')
+        ? '/user'
+        : '/admin';
 
     const [widgetsData, setWidgetsData] = useState({
         totalEdcs: 0,
@@ -32,9 +37,7 @@ const FeedersUserPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/v1/regions/widgets'
-            );
+            const response = await apiClient.get(`/regions/widgets`);
             const data = await response.json();
             const regionWidgets = data.data;
 
@@ -58,9 +61,7 @@ const FeedersUserPage = () => {
 
         const fetchFeederNames = async () => {
             try {
-                const response = await fetch(
-                    `http://localhost:3000/api/v1/edcs/widgets/${region}`
-                );
+                const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = await response.json();
 
                 setWidgetsData((prev) => ({
@@ -69,53 +70,49 @@ const FeedersUserPage = () => {
                     regionFeederCount: data.data?.feederNames?.length || 0,
                 }));
             } catch (error) {
-                console.error(
-                    'Error fetching feeder names:',
-                    error
-                );
+                console.error('Error fetching feeder names:', error);
             }
         };
 
         fetchFeederNames();
     }, [region]);
 
-
     // Feeder meter counts
     const feederMeterCounts = {
-        "Adyar Feeder 1": 45,
-        "Velachery Feeder 2": 38,
-        "T Nagar Feeder 3": 42,
-        "Mylapore Feeder 4": 35,
-        "Anna Nagar Feeder 5": 40,
-        "Porur Feeder 6": 32,
-        "Ambattur Feeder 7": 36,
-        "Perambur Feeder 8": 34,
-        "Guindy Feeder 9": 41,
-        "Kodambakkam Feeder 10": 37,
-        "Royapuram Feeder 11": 33,
-        "Thiruvanmiyur Feeder 12": 39,
-        "Kilpauk Feeder 13": 35,
-        "Egmore Feeder 14": 31,
-        "Nungambakkam Feeder 15": 38
+        'Adyar Feeder 1': 45,
+        'Velachery Feeder 2': 38,
+        'T Nagar Feeder 3': 42,
+        'Mylapore Feeder 4': 35,
+        'Anna Nagar Feeder 5': 40,
+        'Porur Feeder 6': 32,
+        'Ambattur Feeder 7': 36,
+        'Perambur Feeder 8': 34,
+        'Guindy Feeder 9': 41,
+        'Kodambakkam Feeder 10': 37,
+        'Royapuram Feeder 11': 33,
+        'Thiruvanmiyur Feeder 12': 39,
+        'Kilpauk Feeder 13': 35,
+        'Egmore Feeder 14': 31,
+        'Nungambakkam Feeder 15': 38,
     };
 
     // Feeder consumption stats
     const feederStats = {
-        "Adyar Feeder 1": { currentValue: 850, previousValue: 780 },
-        "Velachery Feeder 2": { currentValue: 720, previousValue: 680 },
-        "T Nagar Feeder 3": { currentValue: 920, previousValue: 850 },
-        "Mylapore Feeder 4": { currentValue: 780, previousValue: 720 },
-        "Anna Nagar Feeder 5": { currentValue: 820, previousValue: 760 },
-        "Porur Feeder 6": { currentValue: 680, previousValue: 620 },
-        "Ambattur Feeder 7": { currentValue: 740, previousValue: 680 },
-        "Perambur Feeder 8": { currentValue: 700, previousValue: 650 },
-        "Guindy Feeder 9": { currentValue: 840, previousValue: 780 },
-        "Kodambakkam Feeder 10": { currentValue: 760, previousValue: 700 },
-        "Royapuram Feeder 11": { currentValue: 680, previousValue: 620 },
-        "Thiruvanmiyur Feeder 12": { currentValue: 800, previousValue: 740 },
-        "Kilpauk Feeder 13": { currentValue: 720, previousValue: 660 },
-        "Egmore Feeder 14": { currentValue: 640, previousValue: 580 },
-        "Nungambakkam Feeder 15": { currentValue: 780, previousValue: 720 }
+        'Adyar Feeder 1': { currentValue: 850, previousValue: 780 },
+        'Velachery Feeder 2': { currentValue: 720, previousValue: 680 },
+        'T Nagar Feeder 3': { currentValue: 920, previousValue: 850 },
+        'Mylapore Feeder 4': { currentValue: 780, previousValue: 720 },
+        'Anna Nagar Feeder 5': { currentValue: 820, previousValue: 760 },
+        'Porur Feeder 6': { currentValue: 680, previousValue: 620 },
+        'Ambattur Feeder 7': { currentValue: 740, previousValue: 680 },
+        'Perambur Feeder 8': { currentValue: 700, previousValue: 650 },
+        'Guindy Feeder 9': { currentValue: 840, previousValue: 780 },
+        'Kodambakkam Feeder 10': { currentValue: 760, previousValue: 700 },
+        'Royapuram Feeder 11': { currentValue: 680, previousValue: 620 },
+        'Thiruvanmiyur Feeder 12': { currentValue: 800, previousValue: 740 },
+        'Kilpauk Feeder 13': { currentValue: 720, previousValue: 660 },
+        'Egmore Feeder 14': { currentValue: 640, previousValue: 580 },
+        'Nungambakkam Feeder 15': { currentValue: 780, previousValue: 720 },
     };
 
     return (
@@ -138,7 +135,9 @@ const FeedersUserPage = () => {
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
                             />
                         </div>
                     </div>
@@ -155,7 +154,12 @@ const FeedersUserPage = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/edcs`
+                                            : `${currentBaseRoute}/edcs`
+                                    }>
                                     EDCs
                                 </Link>
                             </p>
@@ -174,7 +178,12 @@ const FeedersUserPage = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/substations`
+                                            : `${currentBaseRoute}/substations`
+                                    }>
                                     Substations
                                 </Link>
                             </p>
@@ -193,7 +202,12 @@ const FeedersUserPage = () => {
                         />
                         <div className={styles.total_meters}>
                             <div className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/feeders`
+                                            : `${currentBaseRoute}/feeders`
+                                    }>
                                     Feeders
                                 </Link>
                             </div>
@@ -261,7 +275,8 @@ const FeedersUserPage = () => {
                 </h2>
             </div>
             <div className={styles.region_stats_container}>
-                {widgetsData.feederNames && widgetsData.feederNames.length > 0 ? (
+                {widgetsData.feederNames &&
+                widgetsData.feederNames.length > 0 ? (
                     widgetsData.feederNames.map((feeder, index) => (
                         <div
                             key={index}
@@ -287,4 +302,4 @@ const FeedersUserPage = () => {
     );
 };
 
-export default FeedersUserPage; 
+export default FeedersUserPage;

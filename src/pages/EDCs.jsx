@@ -70,11 +70,6 @@ const EDCs = () => {
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
-
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
-
         newSocket.on('edcUpdate', (data) => {
             setWidgetsData((prevData) => {
                 const newData = {
@@ -137,16 +132,11 @@ const EDCs = () => {
                     ...prev,
                     edcNames: data.data?.edcNames || [],
                     regionEdcCount: data.data?.edcNames?.length || 0,
-                    substationNames: data.data?.substationNames || [], // Added line
-                    // regionSubstationCount:
-                    //     data.data?.substationNames?.length || 0, // Added line
-                    //SubstationCount: data.data?.substationCounts || [],
+                    substationNames: data.data?.substationNames || [], 
                     substationCount: edcSubstationCounts,
-                    //feederCount: edcFeederCounts, // Store feeder count
                     feederCount: data.data?.feederCounts || {},
                 }));
             } catch (error) {
-                console.error('Error fetching EDC names:', error);
                 console.error('Error fetching EDC names:', error);
             }
         };
@@ -156,7 +146,7 @@ const EDCs = () => {
 
 
     const handleRegionClick = (region) => {
-        setSelectedRegion(region); // Set region when clicked
+        setSelectedRegion(region); 
     };
 
     const handleTimeframeChange = (e) => {
@@ -541,7 +531,6 @@ const EDCs = () => {
                                 substationCount={
                                     widgetsData.substationCount?.[edc] || 0
                                 }
-                                // feederCount={edcFeederCounts?.[edc] || 0}
                                 edcCount={widgetsData.edcNames.length}
                                 feederCount={
                                     widgetsData.feederCount?.[edc] || 0

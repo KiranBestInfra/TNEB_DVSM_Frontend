@@ -23,8 +23,6 @@ const UserEdcDashboard = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-
-                // Replace with actual API endpoint for EDC dashboard data
                 const response = await apiClient.get(
                     `/api/dashboard/edc/${edc}`
                 );
@@ -40,7 +38,6 @@ const UserEdcDashboard = () => {
                 }
             } catch (error) {
                 console.error('Error fetching EDC dashboard data:', error);
-                // Set sample data for demonstration
                 setStats({
                     totalSubstations: 15,
                     totalFeeders: 45,
@@ -65,9 +62,9 @@ const UserEdcDashboard = () => {
     ];
 
     const colors = [
-        '#4bC0C0', // Healthy - green
-        '#ffce56', // Warning - yellow
-        '#ff6384', // Critical - red
+        '#4bC0C0', 
+        '#ffce56', 
+        '#ff6384', 
     ];
 
     if (loading) {

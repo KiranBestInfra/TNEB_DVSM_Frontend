@@ -92,7 +92,6 @@ const EdcDetails = () => {
             const fetchEdcWidgets = async () => {
                 try {
                     const response = await apiClient.get(`/edcs/${edcId}/widgets`);
-                    console.log('EDC Widgets:', response);
                     const feederCount =
                         response?.data?.regionFeederNames?.length || 0;
                     setWidgetsData((prev) => ({

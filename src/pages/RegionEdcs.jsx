@@ -58,11 +58,6 @@ const RegionEdcs = () => {
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
-
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
-
         newSocket.on('edcUpdate', (data) => {
             setWidgetsData((prevData) => {
                 const newData = {
@@ -187,32 +182,6 @@ const RegionEdcs = () => {
             totalDistricts: widgetsData.totalDistricts,
         };
     };
-    // const getSummaryData = () => {
-    //     const comm = widgetsData?.commMeters ?? 0;
-    //     const nonComm = widgetsData?.nonCommMeters ?? 0;
-    //     const total = comm + nonComm;
-
-    //     const commPercentage = total ? ((comm / total) * 100).toFixed(1) : '0.0';
-    //     const nonCommPercentage = total ? ((nonComm / total) * 100).toFixed(1) : '0.0';
-
-    //     if (!selectedEdc) {
-    //         return {
-    //             totalEdcs: widgetsData.totalEdcs,
-    //             totalSubstations: widgetsData.totalSubstations,
-    //             totalFeeders: widgetsData.totalFeeders,
-    //             commMeters: widgetsData.commMeters,
-    //             nonCommMeters: widgetsData.nonCommMeters,
-    //         };
-    //     }
-
-    //     return {
-    //         totalEdcs: 1,
-    //         totalSubstations: widgetsData.substationCount?.[selectedEdc] || 0,
-    //         totalFeeders: widgetsData.feederCount?.[selectedEdc] || 0,
-    //         commMeters: `${commPercentage}%`,
-    //         nonCommMeters: `${nonCommPercentage}%`,
-    //     };
-    // };
 
     return (
         <div className={styles.main_content}>
@@ -307,11 +276,6 @@ const RegionEdcs = () => {
                                 pageType="edcs"
                                 handleRegionClick={() => handleEdcClick(edc)}
                             />
-                            <div>
-                                {/* <h3>{edc.hierarchy_name}</h3> */}
-                                {/* <p>Substation Count: {widgetsData.substationCount[edc.hierarchy_name] || 0}</p> */}
-                                {/* <p>Feeder Count: {widgetsData.feederCount[edc.hierarchy_name] || 0}</p> */}
-                            </div>
                         </div>
                     ))}
                 </div>

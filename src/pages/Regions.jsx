@@ -61,10 +61,6 @@ const Regions = () => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
 
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
-
         newSocket.on('regionUpdate', (data) => {
             setWidgetsData((prevData) => {
                 const newData = {
@@ -116,8 +112,6 @@ const Regions = () => {
 
             const data = response.data;
 
-
-            
             setWidgetsData((prev) => ({
                 totalRegions: data.totalRegions || prev.totalRegions,
                 totalEdcs: data.totalEdcs || prev.totalEdcs,
@@ -177,16 +171,19 @@ const Regions = () => {
                                 className={styles.time_range_select}>
                                 <option value="Daily">Daily</option>
                                 <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">Previous Month</option>
+                                <option value="PreviousMonth">
+                                    Previous Month
+                                </option>
                                 <option value="Year">Year</option>
                             </select>
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
                             />
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -214,7 +211,7 @@ const Regions = () => {
 
             <div className={styles.region_stats_container}>
                 {widgetsData.regionNames &&
-                    widgetsData.regionNames.length > 0 ? (
+                widgetsData.regionNames.length > 0 ? (
                     widgetsData.regionNames.map((region, index) => (
                         <div
                             key={index}
@@ -227,7 +224,7 @@ const Regions = () => {
                                 }
                                 substationCount={
                                     widgetsData.substationCount?.[
-                                    region.trim()
+                                        region.trim()
                                     ] ?? 0
                                 }
                                 feederCount={
@@ -236,7 +233,7 @@ const Regions = () => {
                                 }
                                 graphData={
                                     widgetsData.regionDemandData?.[
-                                    region.trim()
+                                        region.trim()
                                     ] ?? { xAxis: [], series: [] }
                                 }
                                 currentValue={parseFloat(
