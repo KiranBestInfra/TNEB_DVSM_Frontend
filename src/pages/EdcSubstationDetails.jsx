@@ -86,9 +86,9 @@ const EdcSubstationDetails = () => {
         : 'Unknown';
 
     const stats = {
-        feederCount: 20,
-        currentValue: 5.7,
-        previousValue: 5.2,
+        feederCount: 0,
+        currentValue: 0,
+        previousValue: 0,
     };
 
     const routePrefix = isUserRoute ? '/user' : '/admin';
@@ -132,8 +132,8 @@ const EdcSubstationDetails = () => {
 
             <SummarySection
                 widgetsData={widgetsData}
-                    isUserRoute={location.pathname.includes('/user/')}
-                    isBiUserRoute={location.pathname.includes('/bi/user/')}
+                isUserRoute={location.pathname.includes('/user/')}
+                isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
                 showEdcs={false}
                 showMeters={false}

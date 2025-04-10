@@ -22,8 +22,6 @@ const TicketDetails = () => {
                     setLoading(true);
                     const res = await apiClient.get(`/tickets/${id}`);
                     const data = res.data;
-
-                    // Normalize API fields to match UI logic
                     const formattedTicket = {
                         id: data.TicketId,
                         subject: data.Subject,

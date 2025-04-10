@@ -281,7 +281,6 @@ const RegionSubstations = () => {
                         {widgetsData.substationIds &&
                         widgetsData.substationIds.length > 0
                             ? widgetsData.substationIds.map((value) => (
-                                  //Object.entries(value).map(([key, value]) => (
                                   <div
                                       key={value.id}
                                       className={

@@ -27,12 +27,12 @@ const EdcFeeders = () => {
             if (now - timestamp < 30000) {
                 const parsedData = JSON.parse(savedFeederData);
                 return {
-                    totalRegions: 13,
-                    totalEdcs: 95,
-                    totalSubstations: 260,
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
                     totalFeeders: parsedData.feederNames?.length || 0,
                     commMeters: parsedData.commMeters || 0,
-                    nonCommMeters: 301,
+                    nonCommMeters: 0,
                     feederNames: parsedData.feederNames || [],
                     feederCount: parsedData.regionFeederNames?.length || 0,
                     meterCount: parsedData.meterCount || {},
@@ -44,12 +44,12 @@ const EdcFeeders = () => {
         }
 
         return {
-            totalRegions: 13,
-            totalEdcs: 95,
-            totalSubstations: 260,
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
             totalFeeders: 0,
-            commMeters: 942,
-            nonCommMeters: 301,
+            commMeters: 0,
+            nonCommMeters: 0,
             feederNames: [],
             feederCount: 0,
             meterCount: {},
@@ -180,9 +180,6 @@ const EdcFeeders = () => {
 
             <SummarySection
                 widgetsData={{
-                    // totalRegions: widgetsData.totalRegions,
-                    // totalEdcs: widgetsData.totalEdcs,
-                    // totalSubstations: widgetsData.totalSubstations,
                     totalFeeders: widgetsData.totalFeeders,
                     commMeters: widgetsData.commMeters,
                     nonCommMeters: widgetsData.nonCommMeters,

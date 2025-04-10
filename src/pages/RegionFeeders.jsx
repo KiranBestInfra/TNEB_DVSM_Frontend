@@ -15,24 +15,6 @@ const RegionFeeders = () => {
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [socket, setSocket] = useState(null);
 
-    const feederStats = {
-        'Adyar Feeder 1': { currentValue: 850, previousValue: 780 },
-        'Velachery Feeder 2': { currentValue: 720, previousValue: 680 },
-        'T Nagar Feeder 3': { currentValue: 920, previousValue: 850 },
-        'Mylapore Feeder 4': { currentValue: 780, previousValue: 720 },
-        'Anna Nagar Feeder 5': { currentValue: 820, previousValue: 760 },
-        'Porur Feeder 6': { currentValue: 680, previousValue: 620 },
-        'Ambattur Feeder 7': { currentValue: 740, previousValue: 680 },
-        'Perambur Feeder 8': { currentValue: 700, previousValue: 650 },
-        'Guindy Feeder 9': { currentValue: 840, previousValue: 780 },
-        'Kodambakkam Feeder 10': { currentValue: 760, previousValue: 700 },
-        'Royapuram Feeder 11': { currentValue: 680, previousValue: 620 },
-        'Thiruvanmiyur Feeder 12': { currentValue: 800, previousValue: 740 },
-        'Kilpauk Feeder 13': { currentValue: 720, previousValue: 660 },
-        'Egmore Feeder 14': { currentValue: 640, previousValue: 580 },
-        'Nungambakkam Feeder 15': { currentValue: 780, previousValue: 720 },
-    };
-
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedFeederData = localStorage.getItem('feederDemandData');
         const savedTimestamp = localStorage.getItem('feederDemandTimestamp');
@@ -43,9 +25,9 @@ const RegionFeeders = () => {
             if (now - timestamp < 30000) {
                 const parsedFeederData = JSON.parse(savedFeederData);
                 return {
-                    totalRegions: 13,
-                    totalEdcs: 95,
-                    totalSubstations: 260,
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
                     totalFeeders: 0,
                     commMeters: 0,
                     nonCommMeters: 0,
@@ -59,9 +41,9 @@ const RegionFeeders = () => {
         }
 
         return {
-            totalRegions: 13,
-            totalEdcs: 95,
-            totalSubstations: 260,
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
             totalFeeders: 0,
             commMeters: 0,
             nonCommMeters: 0,
@@ -76,11 +58,6 @@ const RegionFeeders = () => {
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
-
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
-
         newSocket.on('feederUpdate', (data) => {
             setWidgetsData((prevData) => {
                 const newData = {
@@ -242,20 +219,12 @@ const RegionFeeders = () => {
                                         ]?.series?.[0]?.data?.slice(
                                             -2,
                                             -1
-                                        )[0] ||
-                                            widgetsData.feederStats[key]
-                                                ?.previousValue ||
-                                            feederStats[key]?.previousValue ||
-                                            0
+                                        )[0] || 0
                                     )}
                                     currentValue={parseFloat(
                                         widgetsData.feederDemandData?.[
                                             value
-                                        ]?.series?.[0]?.data?.slice(-1)[0] ||
-                                            widgetsData.feederStats[key]
-                                                ?.currentValue ||
-                                            feederStats[key]?.currentValue ||
-                                            0
+                                        ]?.series?.[0]?.data?.slice(-1)[0] || 0
                                     )}
                                     pageType="feeders"
                                     feederCount={widgetsData.feederCount}

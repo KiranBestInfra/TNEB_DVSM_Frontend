@@ -50,12 +50,10 @@ const EdcFeederDetails = () => {
         : 'Unknown';
 
     const stats = {
-        currentValue: 3.2,
-        previousValue: 2.9,
+        currentValue: 0,
+        previousValue: 0,
         voltageLevel: '11kV',
     };
-
-    // Determine the route prefix based on location
     const routePrefix = isUserRoute ? '/user' : '/admin';
     const edcLink = region
         ? `${routePrefix}/${region}/edcs/${edcIdentifier}/details`
@@ -110,24 +108,6 @@ const EdcFeederDetails = () => {
                         </div>
                     </div>
                 </div>
-
-                {/* <div className={styles.voltage_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-voltage.svg"
-                                alt="Voltage"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">Voltage Level</span>
-                            <span className={styles.summary_value}>
-                                {stats.voltageLevel}
-                            </span>
-                        </div>
-                    </div>
-                </div> */}
             </div>
 
             <div className={styles.chart_container}>

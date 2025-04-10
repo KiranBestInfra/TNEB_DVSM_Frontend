@@ -24,8 +24,6 @@ const UserSubstationDashboard = () => {
         const fetchData = async () => {
             setLoading(true);
             try {
-
-                // Replace with actual API endpoint for Substation dashboard data
                 const response = await apiClient.get(
                     `/api/dashboard/substation/${substation}`
                 );
@@ -44,12 +42,11 @@ const UserSubstationDashboard = () => {
                     'Error fetching Substation dashboard data:',
                     error
                 );
-                // Set sample data for demonstration
                 setStats({
-                    totalFeeders: 12,
-                    healthyFeeders: 8,
-                    criticalFeeders: 2,
-                    warningFeeders: 2,
+                    totalFeeders: 0,
+                    healthyFeeders: 0,
+                    criticalFeeders: 0,
+                    warningFeeders: 0,
                     feeders: [
                         {
                             id: 1,

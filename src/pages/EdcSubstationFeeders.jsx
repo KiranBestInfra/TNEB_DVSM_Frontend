@@ -30,9 +30,9 @@ const EdcSubstationFeeders = () => {
       if (now - timestamp < 30000) {
         const parsedData = JSON.parse(savedFeederData);
         return {
-          totalRegions: 13,
-          totalEdcs: 95,
-          totalSubstations: 260,
+          totalRegions: 0,
+          totalEdcs: 0,
+          totalSubstations: 0,
           totalFeeders: parsedData.feederNames?.length || 0,
           commMeters: parsedData.commMeters || 0,
           nonCommMeters: parsedData.nonCommMeters || 0,
@@ -48,10 +48,10 @@ const EdcSubstationFeeders = () => {
     }
 
         return {
-            totalRegions: 13,
-            totalEdcs: 95,
-            totalSubstations: 260,
-            totalFeeders: 416,
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
             commMeters: 0,
             nonCommMeters: 0,
             feederNames: [],
