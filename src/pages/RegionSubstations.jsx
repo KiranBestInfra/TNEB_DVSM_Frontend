@@ -9,6 +9,7 @@ import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 import PropTypes from 'prop-types';
 import { useAuth } from '../components/AuthProvider';
+import SectionHeader from '../components/SectionHeader/SectionHeader';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -56,6 +57,9 @@ const RegionSubstations = () => {
     const { user, isRegion } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [selectedSubstation, setSelectedSubstation] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [substationsPerPage, setSubstationsPerPage] = useState(6);
+    const [viewMode, setViewMode] = useState('card');
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('substationDemandData');
@@ -222,40 +226,39 @@ const RegionSubstations = () => {
         };
     };
 
+    const handlePageChange = (newPage, newPerPage = substationsPerPage) => {
+        if (newPerPage !== substationsPerPage) {
+            setCurrentPage(1);
+            setSubstationsPerPage(newPerPage);
+        } else {
+            setCurrentPage(newPage);
+        }
+    };
+
     try {
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
-                    <div className={styles.section_header}>
-                        <h2 className="title">{regionName} - Substations</h2>
-                        <div className={styles.action_container}>
-                            <div className={styles.action_cont}>
-                                <div
-                                    className={
-                                        styles.time_range_select_dropdown
-                                    }>
-                                    <select
-                                        value={timeframe}
-                                        onChange={handleTimeframeChange}
-                                        className={styles.time_range_select}>
-                                        <option value="Daily">Daily</option>
-                                        <option value="Monthly">Monthly</option>
-                                        <option value="PreviousMonth">
-                                            Previous Month
-                                        </option>
-                                        <option value="Year">Year</option>
-                                    </select>
-                                    <img
-                                        src="icons/arrow-down.svg"
-                                        alt="Select Time"
-                                        className={
-                                            styles.time_range_select_dropdown_icon
-                                        }
-                                    />
-                                </div>
+                    <SectionHeader title={`${regionName} - Substations`}>
+                        <div className={styles.action_cont}>
+                            <div className={styles.time_range_select_dropdown}>
+                                <select
+                                    value={timeframe}
+                                    onChange={handleTimeframeChange}
+                                    className={styles.time_range_select}>
+                                    <option value="Daily">Daily</option>
+                                    <option value="Monthly">Monthly</option>
+                                    <option value="PreviousMonth">Previous Month</option>
+                                    <option value="Year">Year</option>
+                                </select>
+                                <img
+                                    src="icons/arrow-down.svg"
+                                    alt="Select Time"
+                                    className={styles.time_range_select_dropdown_icon}
+                                />
                             </div>
                         </div>
-                    </div>
+                    </SectionHeader>
                     <Breadcrumb />
 
                     <SummarySection
@@ -269,19 +272,26 @@ const RegionSubstations = () => {
                         showFeeders={true}
                     />
 
-                    <div className={styles.section_header}>
-                        <h2 className="title">
-                            Substations:{' '}
-                            <span className={styles.region_count}>
-                                [ {widgetsData.regionSubstationCount} ]
-                            </span>
-                        </h2>
-                    </div>
-                    <div className={styles.region_stats_container}>
+                    <SectionHeader
+                        title={`Substations: [ ${widgetsData.regionSubstationCount} ]`}
+                        showSearch={true}
+                        showViewToggle={true}
+                        viewMode={viewMode}
+                        setViewMode={setViewMode}
+                        showPagination={true}
+                        currentPage={currentPage}
+                        totalPages={Math.ceil(widgetsData.substationIds?.length / substationsPerPage)}
+                        itemsPerPage={substationsPerPage}
+                        onPageChange={handlePageChange}
+                        onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                    />
+
+                    <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
                         {widgetsData.substationIds &&
                         widgetsData.substationIds.length > 0
-                            ? widgetsData.substationIds.map((value) => (
-                                  //Object.entries(value).map(([key, value]) => (
+                            ? widgetsData.substationIds
+                                .slice((currentPage - 1) * substationsPerPage, currentPage * substationsPerPage)
+                                .map((value) => (
                                   <div
                                       key={value.id}
                                       className={

@@ -7,6 +7,7 @@ import Breadcrumb from "../components/Breadcrumb/Breadcrumb";
 import SummarySection from "../components/SummarySection";
 import ShortDetailsWidget from "./ShortDetailsWidget";
 import { apiClient } from "../api/client";
+import SectionHeader from "../components/SectionHeader/SectionHeader";
 
 const Regions = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const Regions = () => {
   const cacheTimeoutRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [regionsPerPage, setRegionsPerPage] = useState(6);
+  const [viewMode, setViewMode] = useState('card');
   const [widgetsData, setWidgetsData] = useState(() => {
     const savedDemandData = localStorage.getItem("regionDemandData");
     const savedTimestamp = localStorage.getItem("regionDemandTimestamp");
@@ -168,30 +170,27 @@ const Regions = () => {
 
   return (
     <div className={styles.main_content}>
-      <div className={styles.section_header}>
-        <h2 className="title">Regions</h2>
-        <div className={styles.action_container}>
-          <div className={styles.action_cont}>
-            <div className={styles.time_range_select_dropdown}>
-              <select
-                value={timeRange}
-                onChange={(e) => setTimeRange(e.target.value)}
-                className={styles.time_range_select}
-              >
-                <option value="Daily">Daily</option>
-                <option value="Monthly">Monthly</option>
-                <option value="PreviousMonth">Previous Month</option>
-                <option value="Year">Year</option>
-              </select>
-              <img
-                src="icons/arrow-down.svg"
-                alt="Select Time"
-                className={styles.time_range_select_dropdown_icon}
-              />
-            </div>
+      <SectionHeader title="Regions">
+        <div className={styles.action_cont}>
+          <div className={styles.time_range_select_dropdown}>
+            <select
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
+              className={styles.time_range_select}
+            >
+              <option value="Daily">Daily</option>
+              <option value="Monthly">Monthly</option>
+              <option value="PreviousMonth">Previous Month</option>
+              <option value="Year">Year</option>
+            </select>
+            <img
+              src="icons/arrow-down.svg"
+              alt="Select Time"
+              className={styles.time_range_select_dropdown_icon}
+            />
           </div>
         </div>
-      </div>
+      </SectionHeader>
 
       <Breadcrumb />
 
@@ -205,80 +204,21 @@ const Regions = () => {
         showDistricts={true}
       />
 
-      <div className={styles.section_header}>
-        <div className={styles.section_header_left}>
-        <h2 className="title">
-          Regions:{" "}
-          <span className={styles.region_count}>
-            [ {widgetsData.totalRegions} ]
-          </span>
-        </h2>
-        <div className={styles.search_cont}>
-            <input type="text" placeholder="Search" />
-            <span className={styles.search_icon}>
-                    <img src="icons/search-icon.svg" alt="Search" />
-                </span>
-          </div>
-          <div className={styles.sorting}>
-            <span className={styles.sorting_icons} onClick={() => {}}>
-              <img src="icons/apps.svg" alt="cardView" />
-            </span>
-            <span className={styles.sorting_icons} onClick={() => {}}>
-              <img src="icons/bars-staggered.svg" alt="listView" />
-            </span>
-          </div>
-        </div>
-        
-        <div className={styles.action_container}>
-          <div className={styles.pagination_container}>
-            <div className={styles.pages_handler}>
-              <select
-                value={regionsPerPage}
-                onChange={(e) =>
-                  handlePageChange(currentPage, Number(e.target.value))
-                }
-                className={styles.select_pagination}
-              >
-                {[6, 9, 12].map((option) => (
-                  <option key={option} value={option}>
-                    {option} Per Page
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className={styles.paginationControls}>
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className={styles.previous_button}
-              >
-                <span className={styles.previous_button_icon} onClick={() => {}}>
-                  <img src="icons/arrow-left.svg" alt="Previous" />
-                </span>
-              </button>
-              <span className={styles.pageInfo}>
-                Page {currentPage} of{" "}
-                {Math.ceil(widgetsData.regionNames.length / regionsPerPage)}
-              </span>
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={
-                  currentPage ===
-                  Math.ceil(widgetsData.regionNames.length / regionsPerPage)
-                }
-                className={styles.next_button}
-              >
-                 <span className={styles.next_button_icon} onClick={() => {}}>  
-                  <img src="icons/arrow-right.svg" alt="Next" />
-                </span>
-              </button>
-            </div>
-          </div>
-          
-        </div>
-      </div>
+      <SectionHeader
+        title={`Regions: [ ${widgetsData.totalRegions} ]`}
+        showSearch={true}
+        showViewToggle={true}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        showPagination={true}
+        currentPage={currentPage}
+        totalPages={Math.ceil(widgetsData.regionNames.length / regionsPerPage)}
+        itemsPerPage={regionsPerPage}
+        onPageChange={handlePageChange}
+        onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+      />
 
-      <div className={styles.region_stats_container}>
+      <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
         {widgetsData.regionNames && widgetsData.regionNames.length > 0 ? (
           widgetsData.regionNames
             .slice(
