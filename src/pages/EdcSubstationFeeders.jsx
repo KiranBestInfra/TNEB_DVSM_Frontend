@@ -24,28 +24,28 @@ const EdcSubstationFeeders = () => {
             'edcSubstationFeederDataTimestamp'
         );
 
-        if (savedFeederData && savedTimestamp) {
-            const timestamp = parseInt(savedTimestamp);
-            const now = Date.now();
-            if (now - timestamp < 30000) {
-                const parsedData = JSON.parse(savedFeederData);
-                return {
-                    totalRegions: 13,
-                    totalEdcs: 95,
-                    totalSubstations: 260,
-                    totalFeeders: parsedData.feederNames?.length || 0,
-                    commMeters: 0,
-                    nonCommMeters: 0,
-                    feederNames: parsedData.name || [],
-                    feeders: [],
-                    feederCount: parsedData.feederNames?.length || 0,
-                    meterCount: parsedData.meterCount || {},
-                    feederStats: parsedData.feederStats || {},
-                    feederDemandData: parsedData.feederDemandData,
-                    feederIds: {},
-                };
-            }
-        }
+    if (savedFeederData && savedTimestamp) {
+      const timestamp = parseInt(savedTimestamp);
+      const now = Date.now();
+      if (now - timestamp < 30000) {
+        const parsedData = JSON.parse(savedFeederData);
+        return {
+          totalRegions: 13,
+          totalEdcs: 95,
+          totalSubstations: 260,
+          totalFeeders: parsedData.feederNames?.length || 0,
+          commMeters: parsedData.commMeters || 0,
+          nonCommMeters: parsedData.nonCommMeters || 0,
+          feederNames: parsedData.name || [],
+          feeders: [],
+          feederCount: parsedData.feederNames?.length || 0,
+          meterCount: parsedData.meterCount || {},
+          feederStats: parsedData.feederStats || {},
+          feederDemandData: parsedData.feederDemandData,
+          feederIds: {},
+        };
+      }
+    }
 
         return {
             totalRegions: 13,
@@ -114,12 +114,16 @@ const EdcSubstationFeeders = () => {
                     feederNames: data.feeders.map((feeder) => feeder.name),
                     feeders: data.feeders,
                     feederCount: data.feeders?.length,
+                    commMeters: data.commMeters,
+                    nonCommMeters: data.nonCommMeters,
+                  
                 }));
 
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
+        
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
         fetchData();
     }, [edcs, substationId]);
