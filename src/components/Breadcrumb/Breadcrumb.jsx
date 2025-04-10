@@ -92,6 +92,7 @@ const Breadcrumb = ({ items }) => {
 
                     // Format the display name
                     const displayName = name.charAt(0).toUpperCase() + name.slice(1);
+                    
 
                     return (
                         <li key={name} className={styles.breadcrumb_item}>

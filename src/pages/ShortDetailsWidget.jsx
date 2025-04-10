@@ -128,16 +128,16 @@ const ShortDetailsWidget = ({
                         detailsUrl = `${routePrefix}/${formattedEdc}/substations`;
                     }
                 } else if (isSubstation()) {
-                    detailsUrl = `${routePrefix}/${formattedName}/dashboard`;
+                    detailsUrl = `${routePrefix}/${subID}/dashboard`;
                 } else {
                     if (substationId && edc) {
                         detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedSubstationId}/details`;
                     } else if (substationId) {
                         detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedSubstationId}/details`;
                     } else if (edc) {
-                        detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${formattedName}/details`;
+                        detailsUrl = `${routePrefix}/${formattedRegion}/${formattedEdc}/substations/${subID}/details`;
                     } else {
-                        detailsUrl = `${routePrefix}/${formattedRegion}/substations/${formattedName}/details`;
+                        detailsUrl = `${routePrefix}/${formattedRegion}/substations/${subID}/details`;
                     }
                 }
                 break;
