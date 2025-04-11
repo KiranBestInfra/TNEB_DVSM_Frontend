@@ -238,6 +238,7 @@ const EdcSubstationFeeders = () => {
                                         series: [],
                                     }
                                 }
+                                showInfoIcon={true}
                             />
                         </div>
                     ))}

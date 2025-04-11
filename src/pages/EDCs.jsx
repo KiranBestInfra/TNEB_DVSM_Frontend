@@ -548,6 +548,7 @@ const EDCs = () => {
                                     }
                                 }
                                 pageType="edcs"
+                                showInfoIcon={true}
                             />
                         </div>
                     ))

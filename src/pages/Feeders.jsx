@@ -313,6 +313,7 @@ const Feeders = () => {
                             currentValue={feederStats[feeder].currentValue}
                             previousValue={feederStats[feeder].previousValue}
                             pageType="feeders"
+                            showInfoIcon={true}
                         />
                     </div>
                 ))}

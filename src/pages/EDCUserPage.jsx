@@ -274,6 +274,7 @@ const EDCUserPage = () => {
                                     edcStats?.[edc]?.previousValue || 0
                                 }
                                 pageType="edcs"
+                                showInfoIcon={true}
                             />
                         </div>
                     ))

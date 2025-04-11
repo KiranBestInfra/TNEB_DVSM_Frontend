@@ -237,6 +237,7 @@ const Regions = () => {
                       region.trim()
                     ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
                   ).toFixed(1)}
+                  showInfoIcon={true}
                 />
               </div>
             ))
