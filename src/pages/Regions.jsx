@@ -11,16 +11,17 @@ import SectionHeader from '../components/SectionHeader/SectionHeader';
 import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
 
 const Regions = () => {
-    const navigate = useNavigate();
-    const [timeRange, setTimeRange] = useState('Daily');
-    const [socket, setSocket] = useState(null);
-    const cacheTimeoutRef = useRef(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [regionsPerPage, setRegionsPerPage] = useState(6);
-    const [viewMode, setViewMode] = useState('card');
-    const [widgetsData, setWidgetsData] = useState(() => {
-        const savedDemandData = localStorage.getItem('regionDemandData');
-        const savedTimestamp = localStorage.getItem('regionDemandTimestamp');
+  const navigate = useNavigate();
+  const [timeRange, setTimeRange] = useState("Daily");
+  const [socket, setSocket] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const cacheTimeoutRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [regionsPerPage, setRegionsPerPage] = useState(6);
+  const [viewMode, setViewMode] = useState('card');
+  const [widgetsData, setWidgetsData] = useState(() => {
+    const savedDemandData = localStorage.getItem("regionDemandData");
+    const savedTimestamp = localStorage.getItem("regionDemandTimestamp");
 
         if (savedDemandData && savedTimestamp) {
             const timestamp = parseInt(savedTimestamp);
@@ -163,14 +164,23 @@ const Regions = () => {
         }
     };
 
-    const handlePageChange = (newPage, newPerPage = regionsPerPage) => {
-        if (newPerPage !== regionsPerPage) {
-            setCurrentPage(1);
-            setRegionsPerPage(newPerPage);
-        } else {
-            setCurrentPage(newPage);
-        }
-    };
+  const handlePageChange = (newPage, newPerPage = regionsPerPage) => {
+    if (newPerPage !== regionsPerPage) {
+      setCurrentPage(1);
+      setRegionsPerPage(newPerPage);
+    } else {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const filteredRegions = widgetsData.regionNames.filter(region => 
+    region.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
 
     return (
         <div className={styles.main_content}>
@@ -195,87 +205,65 @@ const Regions = () => {
                 showDistricts={true}
             />
 
-            <SectionHeader
-                title={`Regions: [ ${widgetsData.totalRegions} ]`}
-                showSearch={true}
-                showViewToggle={true}
-                viewMode={viewMode}
-                setViewMode={setViewMode}
-                showPagination={true}
-                currentPage={currentPage}
-                totalPages={Math.ceil(
-                    widgetsData.regionNames.length / regionsPerPage
-                )}
-                itemsPerPage={regionsPerPage}
-                onPageChange={handlePageChange}
-                onItemsPerPageChange={(newPerPage) =>
-                    handlePageChange(1, newPerPage)
-                }
-            />
+      <SectionHeader
+        title={`Regions: [ ${filteredRegions.length} ]`}
+        showSearch={true}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearch}
+        showViewToggle={true}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        showPagination={true}
+        currentPage={currentPage}
+        totalPages={Math.ceil(filteredRegions.length / regionsPerPage)}
+        itemsPerPage={regionsPerPage}
+        onPageChange={handlePageChange}
+        onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+      />
 
-            <div
-                className={`${styles.region_stats_container} ${
-                    viewMode === 'list' ? styles.list_view : ''
-                }`}>
-                {widgetsData.regionNames &&
-                widgetsData.regionNames.length > 0 ? (
-                    widgetsData.regionNames
-                        .slice(
-                            (currentPage - 1) * regionsPerPage,
-                            currentPage * regionsPerPage
-                        )
-                        .map((region, index) => (
-                            <div
-                                key={index}
-                                className={styles.individual_region_stats}>
-                                <ShortDetailsWidget
-                                    region={region}
-                                    name={region}
-                                    edcCount={
-                                        widgetsData.edcCount?.[region.trim()] ||
-                                        0
-                                    }
-                                    substationCount={
-                                        widgetsData.substationCount?.[
-                                            region.trim()
-                                        ] ?? 0
-                                    }
-                                    feederCount={
-                                        widgetsData.feederCount?.[
-                                            region.trim()
-                                        ] ?? 0
-                                    }
-                                    graphData={
-                                        widgetsData.regionDemandData?.[
-                                            region.trim()
-                                        ] ?? {
-                                            xAxis: [],
-                                            series: [],
-                                        }
-                                    }
-                                    currentValue={parseFloat(
-                                        widgetsData.regionDemandData?.[
-                                            region.trim()
-                                        ]?.series?.[0]?.data?.slice(-1)[0] || 0
-                                    ).toFixed(1)}
-                                    previousValue={parseFloat(
-                                        widgetsData.regionDemandData?.[
-                                            region.trim()
-                                        ]?.series?.[0]?.data?.slice(
-                                            -2,
-                                            -1
-                                        )[0] || 0
-                                    ).toFixed(1)}
-                                    showInfoIcon={true}
-                                />
-                            </div>
-                        ))
-                ) : (
-                    <p>No regions available</p>
-                )}
-            </div>
-        </div>
-    );
+      <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+        {filteredRegions && filteredRegions.length > 0 ? (
+          filteredRegions
+            .slice(
+              (currentPage - 1) * regionsPerPage,
+              currentPage * regionsPerPage
+            )
+            .map((region, index) => (
+              <div key={index} className={styles.individual_region_stats}>
+                <ShortDetailsWidget
+                  region={region}
+                  name={region}
+                  edcCount={widgetsData.edcCount?.[region.trim()] || 0}
+                  substationCount={
+                    widgetsData.substationCount?.[region.trim()] ?? 0
+                  }
+                  feederCount={widgetsData.feederCount?.[region.trim()] ?? 0}
+                  graphData={
+                    widgetsData.regionDemandData?.[region.trim()] ?? {
+                      xAxis: [],
+                      series: [],
+                    }
+                  }
+                  currentValue={parseFloat(
+                    widgetsData.regionDemandData?.[
+                      region.trim()
+                    ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                  ).toFixed(1)}
+                  previousValue={parseFloat(
+                    widgetsData.regionDemandData?.[
+                      region.trim()
+                    ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                  ).toFixed(1)}
+                  showInfoIcon={true}
+                />
+              </div>
+            ))
+        ) : (
+          <p>No regions available</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default Regions;
