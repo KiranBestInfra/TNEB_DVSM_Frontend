@@ -8,6 +8,7 @@ import { io } from 'socket.io-client';
 import PropTypes from 'prop-types';
 import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
+import SectionHeader from '../components/SectionHeader/SectionHeader';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -54,6 +55,9 @@ const EdcSubstations = () => {
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const location = window.location.pathname;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [substationsPerPage, setSubstationsPerPage] = useState(6);
+    const [viewMode, setViewMode] = useState('card');
 
     useEffect(() => {
         if (!edcs) return;
@@ -211,13 +215,20 @@ const EdcSubstations = () => {
         }
     }, [widgetsData.substationNames, socket]);
 
+    const handlePageChange = (newPage, newPerPage = substationsPerPage) => {
+        if (newPerPage !== substationsPerPage) {
+            setCurrentPage(1);
+            setSubstationsPerPage(newPerPage);
+        } else {
+            setCurrentPage(newPage);
+        }
+    };
+
     try {
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
-                    <div className={styles.section_header}>
-                        <h2 className="title">Substations</h2>
-                    </div>
+                    <SectionHeader title="Substations" />
 
                     <Breadcrumb />
 
@@ -238,65 +249,71 @@ const EdcSubstations = () => {
                         showSubstations={true}
                     />
 
-                    <div className={styles.section_header}>
-                        <h2 className="title">
-                            Substations:{' '}
-                            <span className={styles.region_count}>
-                                {widgetsData.substationNames.length}
-                            </span>
-                        </h2>
-                    </div>
-                    <div className={styles.region_stats_container}>
+                    <SectionHeader
+                        title={`Substations: [ ${widgetsData.substationNames.length} ]`}
+                        showSearch={true}
+                        showViewToggle={true}
+                        viewMode={viewMode}
+                        setViewMode={setViewMode}
+                        showPagination={true}
+                        currentPage={currentPage}
+                        totalPages={Math.ceil(widgetsData.substationNames?.length / substationsPerPage)}
+                        itemsPerPage={substationsPerPage}
+                        onPageChange={handlePageChange}
+                        onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                    />
+
+                    <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
                         {widgetsData.substationNames &&
                         widgetsData.substationNames.length > 0
-                            ? widgetsData.substationNames.map(
-                                  (substation, index) => (
-                                      <div
-                                          key={index}
-                                          className={
-                                              styles.individual_region_stats
-                                          }>
-                                          <ShortDetailsWidget
-                                              region={region}
-                                              edc={edcs}
-                                              name={substation.substation_names}
-                                              subID={substation.hierarchy_id}
-                                              feederCount={
-                                                  widgetsData
-                                                      .substationFeederCounts?.[
-                                                      substation
-                                                          .substation_names
-                                                  ] || 0
-                                              }
-                                              currentValue={parseFloat(
-                                                  widgetsData.substationDemandData?.[
-                                                      substation.hierarchy_id
-                                                  ]?.series?.[0]?.data?.slice(
-                                                      -1
-                                                  )[0] || 0
-                                              ).toFixed(1)}
-                                              previousValue={parseFloat(
-                                                  widgetsData.substationDemandData?.[
-                                                      substation.hierarchy_id
-                                                  ]?.series?.[0]?.data?.slice(
-                                                      -2,
-                                                      -1
-                                                  )[0] || 0
-                                              ).toFixed(1)}
-                                              graphData={
-                                                  widgetsData
-                                                      .substationDemandData?.[
-                                                      substation.hierarchy_id
-                                                  ] ?? {
-                                                      xAxis: [],
-                                                      series: [],
-                                                  }
-                                              }
-                                              pageType="substations"
-                                          />
-                                      </div>
-                                  )
-                              )
+                            ? widgetsData.substationNames
+                                .slice((currentPage - 1) * substationsPerPage, currentPage * substationsPerPage)
+                                .map((substation, index) => (
+                                    <div
+                                        key={index}
+                                        className={
+                                            styles.individual_region_stats
+                                        }>
+                                        <ShortDetailsWidget
+                                            region={region}
+                                            edc={edcs}
+                                            name={substation.substation_names}
+                                            subID={substation.hierarchy_id}
+                                            feederCount={
+                                                widgetsData
+                                                    .substationFeederCounts?.[
+                                                    substation
+                                                        .substation_names
+                                                ] || 0
+                                            }
+                                            currentValue={parseFloat(
+                                                widgetsData.substationDemandData?.[
+                                                    substation.hierarchy_id
+                                                ]?.series?.[0]?.data?.slice(
+                                                    -1
+                                                )[0] || 0
+                                            ).toFixed(1)}
+                                            previousValue={parseFloat(
+                                                widgetsData.substationDemandData?.[
+                                                    substation.hierarchy_id
+                                                ]?.series?.[0]?.data?.slice(
+                                                    -2,
+                                                    -1
+                                                )[0] || 0
+                                            ).toFixed(1)}
+                                            graphData={
+                                                widgetsData
+                                                    .substationDemandData?.[
+                                                    substation.hierarchy_id
+                                                ] ?? {
+                                                    xAxis: [],
+                                                    series: [],
+                                                }
+                                            }
+                                            pageType="substations"
+                                        />
+                                    </div>
+                                ))
                             : null}
                     </div>
                 </div>
