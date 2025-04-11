@@ -50,15 +50,11 @@ const ShortDetailsWidget = ({
     const navigate = useNavigate();
     const { isRegion, isCircle, isSubstation } = useAuth();
 
-    const percentageChange = isNaN(
+    const percentageChange = (
         ((currentValue - previousValue) / previousValue) *
         100
-    ) ? 0 : ((currentValue - previousValue) / previousValue) * 100;
+    ).toFixed(1);
     const isPositiveChange = currentValue >= previousValue;
-
-    const formatPercentage = (value) => {
-        return parseFloat(value).toFixed(1);
-    };
 
     const handleClick = () => {
         let detailsUrl = '';
@@ -410,10 +406,10 @@ const ShortDetailsWidget = ({
                         <p className="titles">Demand Usage</p>
                         <div className={styles.region_stats_values}>
                             <div className={styles.region_current_value}>
-                                <RollingNumber n={parseFloat(currentValue)} decimals={1} />
+                                {currentValue}
                             </div>
                             <div className={styles.region_previous_value}>
-                                <RollingNumber n={parseFloat(previousValue)} decimals={1} /> MW
+                                {previousValue} MW
                             </div>
                             <div
                                 className={`${
@@ -441,7 +437,11 @@ const ShortDetailsWidget = ({
                                     }`}
                                 />{' '}
                                 {''}
-                                {Math.abs(parseFloat(percentageChange)).toFixed(1)}%
+                                <RollingNumber
+                                    n={Math.abs(parseFloat(percentageChange))}
+                                    decimals={1}
+                                />
+                                %
                             </div>
                         </div>
                     </div>
