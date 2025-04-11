@@ -119,6 +119,7 @@
     font-size: 1.2rem;
     color: var(--gray);
     font-weight: 700;
+    display: flex;
 }
 
 .region_percentage_change {
