@@ -227,16 +227,14 @@ const Regions = () => {
                       series: [],
                     }
                   }
-                  currentValue={parseFloat(
-                    widgetsData.regionDemandData?.[
-                      region.trim()
-                    ]?.series?.[0]?.data?.slice(-1)[0] || 0
-                  ).toFixed(1)}
-                  previousValue={parseFloat(
-                    widgetsData.regionDemandData?.[
-                      region.trim()
-                    ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
-                  ).toFixed(1)}
+                  currentValue={(() => {
+                    const value = widgetsData.regionDemandData?.[region.trim()]?.series?.[0]?.data?.slice(-1)[0];
+                    return value !== undefined && value !== null ? parseFloat(value).toFixed(1) : '0.0';
+                  })()}
+                  previousValue={(() => {
+                    const value = widgetsData.regionDemandData?.[region.trim()]?.series?.[0]?.data?.slice(-2, -1)[0];
+                    return value !== undefined && value !== null ? parseFloat(value).toFixed(1) : '0.0';
+                  })()}
                   showInfoIcon={true}
                 />
               </div>

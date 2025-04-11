@@ -5,26 +5,6 @@ import PropTypes from 'prop-types';
 import RollingNumber from '../components/RollingNumber';
 import { useAuth } from '../components/AuthProvider';
 
-// const graphData = {
-//   daily: {
-//     xAxis: [
-//       "2025-03-16 23:59:59", "2025-03-16 08:30:00", "2025-03-16 08:15:00",
-//       "2025-03-16 08:00:00", "2025-03-16 07:45:00", "2025-03-16 07:30:00",
-//       "2025-03-16 07:15:00", "2025-03-16 07:00:00", "2025-03-16 06:45:00",
-//       "2025-03-16 06:30:00", "2025-03-16 06:15:00", "2025-03-16 06:00:00"
-//     ],
-//     series: [
-//       {
-//         name: 'Current Day',
-//         data: [13.6, 12.0, 11.2, 11.2, 11.6, 10.4, 12.0, 10.8, 12.4, 12.0, 12.8, 13.6]
-//       },
-//       {
-//         name: 'Previous Day',
-//         data: [13.2, 10.8, 10.0, 11.2, 10.8, 10.8, 11.6, 10.8, 12.0, 11.6, 13.2, 12.8]
-//       }
-//     ]
-//   }
-// };
 
 const ShortDetailsWidget = ({
     region,
@@ -50,15 +30,11 @@ const ShortDetailsWidget = ({
     const navigate = useNavigate();
     const { isRegion, isCircle, isSubstation } = useAuth();
 
-    const percentageChange = isNaN(
+    const percentageChange = (
         ((currentValue - previousValue) / previousValue) *
         100
-    ) ? 0 : ((currentValue - previousValue) / previousValue) * 100;
+    ).toFixed(1);
     const isPositiveChange = currentValue >= previousValue;
-
-    const formatPercentage = (value) => {
-        return parseFloat(value).toFixed(1);
-    };
 
     const handleClick = () => {
         let detailsUrl = '';
@@ -410,10 +386,10 @@ const ShortDetailsWidget = ({
                         <p className="titles">Demand Usage</p>
                         <div className={styles.region_stats_values}>
                             <div className={styles.region_current_value}>
-                                <RollingNumber n={parseFloat(currentValue)} decimals={1} />
+                                {currentValue}
                             </div>
                             <div className={styles.region_previous_value}>
-                                <RollingNumber n={parseFloat(previousValue)} decimals={1} /> MW
+                                {previousValue} MW
                             </div>
                             <div
                                 className={`${
@@ -441,7 +417,11 @@ const ShortDetailsWidget = ({
                                     }`}
                                 />{' '}
                                 {''}
-                                {Math.abs(parseFloat(percentageChange)).toFixed(1)}%
+                                <RollingNumber
+                                    n={Math.abs(parseFloat(percentageChange))}
+                                    decimals={1}
+                                />
+                                %
                             </div>
                         </div>
                     </div>
