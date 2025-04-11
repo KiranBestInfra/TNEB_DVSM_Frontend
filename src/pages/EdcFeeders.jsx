@@ -142,9 +142,27 @@ const EdcFeeders = () => {
                         'API error, using demo data for widgets:',
                         error
                     );
+                    try {
+                        await apiClient.post('/log/error', {
+                            message: error.message,
+                            stack: error.stack || 'No stack trace',
+                            time: new Date().toISOString(),
+                        });
+                    } catch (logError) {
+                        console.error('Error logging to backend:', logError);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching widget data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -171,7 +189,9 @@ const EdcFeeders = () => {
                             className={styles.time_range_select}>
                             <option value="Daily">Daily</option>
                             <option value="Monthly">Monthly</option>
-                            <option value="PreviousMonth">Previous Month</option>
+                            <option value="PreviousMonth">
+                                Previous Month
+                            </option>
                             <option value="Year">Year</option>
                         </select>
                         <img
@@ -208,17 +228,27 @@ const EdcFeeders = () => {
                 setViewMode={setViewMode}
                 showPagination={true}
                 currentPage={currentPage}
-                totalPages={Math.ceil(widgetsData.feederNames?.length / feedersPerPage)}
+                totalPages={Math.ceil(
+                    widgetsData.feederNames?.length / feedersPerPage
+                )}
                 itemsPerPage={feedersPerPage}
                 onPageChange={handlePageChange}
-                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                onItemsPerPageChange={(newPerPage) =>
+                    handlePageChange(1, newPerPage)
+                }
             />
 
-            <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+            <div
+                className={`${styles.region_stats_container} ${
+                    viewMode === 'list' ? styles.list_view : ''
+                }`}>
                 {widgetsData.feederNames &&
                 widgetsData.feederNames.length > 0 ? (
                     widgetsData.feederNames
-                        .slice((currentPage - 1) * feedersPerPage, currentPage * feedersPerPage)
+                        .slice(
+                            (currentPage - 1) * feedersPerPage,
+                            currentPage * feedersPerPage
+                        )
                         .map((value) => (
                             <div
                                 key={value.id}
@@ -239,18 +269,20 @@ const EdcFeeders = () => {
                                         parseFloat(
                                             widgetsData.feederDemandData?.[
                                                 value.id
-                                            ]?.series?.[0]?.data?.slice(-2,-1)[0] ||0
-                                        ).toFixed(1)
+                                            ]?.series?.[0]?.data?.slice(-1)[0]
+                                        ) || 0
                                     }
                                     previousValue={
                                         parseFloat(
                                             widgetsData.feederDemandData?.[
                                                 value.id
-                                            ]?.series?.[1]?.data?.slice(-2,-1)[0] ||0
-                                        ).toFixed(1)
+                                            ]?.series?.[1]?.data?.slice(-1)[0]
+                                        ) || 0
                                     }
                                     graphData={
-                                        widgetsData.feederDemandData[value.id] || {
+                                        widgetsData.feederDemandData[
+                                            value.id
+                                        ] || {
                                             xAxis: [],
                                             series: [],
                                         }

@@ -71,6 +71,15 @@ const EDCUserPage = () => {
                 }));
             } catch (error) {
                 console.error('Error fetching EDC names:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 

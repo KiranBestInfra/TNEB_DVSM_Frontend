@@ -24,28 +24,28 @@ const EdcSubstationFeeders = () => {
             'edcSubstationFeederDataTimestamp'
         );
 
-    if (savedFeederData && savedTimestamp) {
-      const timestamp = parseInt(savedTimestamp);
-      const now = Date.now();
-      if (now - timestamp < 30000) {
-        const parsedData = JSON.parse(savedFeederData);
-        return {
-          totalRegions: 0,
-          totalEdcs: 0,
-          totalSubstations: 0,
-          totalFeeders: parsedData.feederNames?.length || 0,
-          commMeters: parsedData.commMeters || 0,
-          nonCommMeters: parsedData.nonCommMeters || 0,
-          feederNames: parsedData.name || [],
-          feeders: [],
-          feederCount: parsedData.feederNames?.length || 0,
-          meterCount: parsedData.meterCount || {},
-          feederStats: parsedData.feederStats || {},
-          feederDemandData: parsedData.feederDemandData,
-          feederIds: {},
-        };
-      }
-    }
+        if (savedFeederData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedData = JSON.parse(savedFeederData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: parsedData.feederNames?.length || 0,
+                    commMeters: parsedData.commMeters || 0,
+                    nonCommMeters: parsedData.nonCommMeters || 0,
+                    feederNames: parsedData.name || [],
+                    feeders: [],
+                    feederCount: parsedData.feederNames?.length || 0,
+                    meterCount: parsedData.meterCount || {},
+                    feederStats: parsedData.feederStats || {},
+                    feederDemandData: parsedData.feederDemandData,
+                    feederIds: {},
+                };
+            }
+        }
 
         return {
             totalRegions: 0,
@@ -109,8 +109,6 @@ const EdcSubstationFeeders = () => {
                 const data = feederResponse.data;
                 //console.log('dataaa:',data);
 
-
-
                 setWidgetsData((prev) => ({
                     ...prev,
                     feederNames: data.feeders.map((feeder) => feeder.name),
@@ -118,14 +116,20 @@ const EdcSubstationFeeders = () => {
                     feederCount: data.feeders?.length,
                     commMeters: data.commMeters,
                     nonCommMeters: data.nonCommMeters,
-                  
                 }));
-
-        
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
+            }
+        };
 
         fetchData();
     }, [edcs, substationId]);

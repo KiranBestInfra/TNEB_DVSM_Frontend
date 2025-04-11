@@ -132,21 +132,29 @@ const EDCs = () => {
                     ...prev,
                     edcNames: data.data?.edcNames || [],
                     regionEdcCount: data.data?.edcNames?.length || 0,
-                    substationNames: data.data?.substationNames || [], 
+                    substationNames: data.data?.substationNames || [],
                     substationCount: edcSubstationCounts,
                     feederCount: data.data?.feederCounts || {},
                 }));
             } catch (error) {
                 console.error('Error fetching EDC names:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
         fetchEdcNames();
     }, [region]);
 
-
     const handleRegionClick = (region) => {
-        setSelectedRegion(region); 
+        setSelectedRegion(region);
     };
 
     const handleTimeframeChange = (e) => {
@@ -298,11 +306,11 @@ const EDCs = () => {
             // For region user
             const formattedRegionName = region
                 ? region
-                    .split('-')
-                    .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                    )
-                    .join(' ')
+                      .split('-')
+                      .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')
                 : 'Unknown';
 
             const items = [
@@ -351,10 +359,11 @@ const EDCs = () => {
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
                             />
                         </div>
-
                     </div>
                 </div>
             </div>
