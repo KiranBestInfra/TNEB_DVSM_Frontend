@@ -13,7 +13,9 @@ const SectionHeader = ({
   itemsPerPage,
   onPageChange,
   onItemsPerPageChange,
-  children,
+  searchQuery,
+  onSearchChange,
+  children 
 }) => {
   return (
     <div className={styles.section_header}>
@@ -22,7 +24,12 @@ const SectionHeader = ({
         
         <div className={styles.search_sorting}>{showSearch && (
           <div className={styles.search_cont}>
-            <input type="text" placeholder="Search" />
+            <input 
+              type="text" 
+              placeholder="Search" 
+              value={searchQuery}
+              onChange={onSearchChange}
+            />
             <span className={styles.search_icon}>
               <img src="icons/search-icon.svg" alt="Search" />
             </span>

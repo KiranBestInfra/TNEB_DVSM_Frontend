@@ -44,9 +44,9 @@ const ThemeToggle = () => {
       <label htmlFor='themeToggle' className={styles.toggleLabel}>
         <span className={styles.toggleIcon}>
           {isDarkMode ? (
-            <img src='/icons/light.svg' alt='sun' />
+            <img src='icons/sun.svg' alt='sun' />
           ) : (
-            <img src='/icons/dark.svg' alt='moon' />
+            <img src='icons/moon.svg' alt='moon' />
           )}
         </span>
       </label>

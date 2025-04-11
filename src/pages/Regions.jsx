@@ -14,6 +14,7 @@ const Regions = () => {
   const navigate = useNavigate();
   const [timeRange, setTimeRange] = useState("Daily");
   const [socket, setSocket] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const cacheTimeoutRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [regionsPerPage, setRegionsPerPage] = useState(6);
@@ -167,6 +168,15 @@ const Regions = () => {
     }
   };
 
+  const filteredRegions = widgetsData.regionNames.filter(region => 
+    region.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
   return (
     <div className={styles.main_content}>
       <SectionHeader title="Regions">
@@ -191,22 +201,24 @@ const Regions = () => {
       />
 
       <SectionHeader
-        title={`Regions: [ ${widgetsData.totalRegions} ]`}
+        title={`Regions: [ ${filteredRegions.length} ]`}
         showSearch={true}
+        searchQuery={searchQuery}
+        onSearchChange={handleSearch}
         showViewToggle={true}
         viewMode={viewMode}
         setViewMode={setViewMode}
         showPagination={true}
         currentPage={currentPage}
-        totalPages={Math.ceil(widgetsData.regionNames.length / regionsPerPage)}
+        totalPages={Math.ceil(filteredRegions.length / regionsPerPage)}
         itemsPerPage={regionsPerPage}
         onPageChange={handlePageChange}
         onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
       />
 
       <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
-        {widgetsData.regionNames && widgetsData.regionNames.length > 0 ? (
-          widgetsData.regionNames
+        {filteredRegions && filteredRegions.length > 0 ? (
+          filteredRegions
             .slice(
               (currentPage - 1) * regionsPerPage,
               currentPage * regionsPerPage

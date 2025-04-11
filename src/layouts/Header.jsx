@@ -275,7 +275,7 @@ const Header = () => {
                  <div className={styles.theme_toggle}>
                         <ThemeToggle />
                     </div>
-                    <div className={styles.date_time_display}>
+                    <div className={styles.date_time_display}>  
                     
                         <div className={styles.time}>{formattedTime}</div>
                         <div className={styles.date}>{formattedDate}</div>
@@ -308,7 +308,7 @@ const Header = () => {
                     </span>
 
                     <span
-                        className={styles.white_icons}
+                        className={`${styles.white_icons} ${styles.mobile_exit_icon}`}
                         onClick={handleLogout}>
                         <img src="icons/exit-button.svg" alt="Logout" />
                     </span>
