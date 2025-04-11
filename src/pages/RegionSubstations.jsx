@@ -10,6 +10,8 @@ import { apiClient } from '../api/client';
 import PropTypes from 'prop-types';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
+import TimeRangeSelectDropdown from "../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown";
+
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -55,6 +57,7 @@ const RegionSubstations = () => {
     const cacheTimeoutRef = useRef(null);
     const { region: regionParam } = useParams();
     const { user, isRegion } = useAuth();
+    const [searchQuery, setSearchQuery] = useState("");
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [selectedSubstation, setSelectedSubstation] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);

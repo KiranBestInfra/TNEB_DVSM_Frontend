@@ -8,6 +8,8 @@ import { apiClient } from '../api/client';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
+import TimeRangeSelectDropdown from "../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown";
+
 
 const RegionEdcs = () => {
     const { region: regionParam } = useParams();
@@ -58,6 +60,8 @@ const RegionEdcs = () => {
             edcDemandData: {},
         };
     });
+
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
@@ -196,26 +200,23 @@ const RegionEdcs = () => {
         }
     };
 
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1); // Reset to first page when searching
+    };
+
+    const filteredEdcs = widgetsData.edcNames.filter(edc => 
+        edc.hierarchy_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div className={styles.main_content}>
             <SectionHeader title={`${regionName} - EDCs`}>
                 <div className={styles.action_cont}>
-                    <div className={styles.time_range_select_dropdown}>
-                        <select
-                            value={timeRange}
-                            onChange={(e) => setTimeRange(e.target.value)}
-                            className={styles.time_range_select}>
-                            <option value="Daily">Daily</option>
-                            <option value="Monthly">Monthly</option>
-                            <option value="PreviousMonth">Previous Month</option>
-                            <option value="Year">Year</option>
-                        </select>
-                        <img
-                            src="icons/arrow-down.svg"
-                            alt="Select Time"
-                            className={styles.time_range_select_dropdown_icon}
-                        />
-                    </div>
+                    <TimeRangeSelectDropdown
+                        value={timeRange}
+                        onChange={(e) => setTimeRange(e.target.value)}
+                    />
                 </div>
             </SectionHeader>
             <Breadcrumb />
@@ -229,14 +230,16 @@ const RegionEdcs = () => {
             />
 
             <SectionHeader
-                title={`EDCs: [ ${widgetsData.totalEdcs} ]`}
+                title={`EDCs: [ ${filteredEdcs.length} ]`}
                 showSearch={true}
+                searchQuery={searchQuery}
+                onSearchChange={handleSearch}
                 showViewToggle={true}
                 viewMode={viewMode}
                 setViewMode={setViewMode}
                 showPagination={true}
                 currentPage={currentPage}
-                totalPages={Math.ceil(widgetsData.edcNames.length / edcsPerPage)}
+                totalPages={Math.ceil(filteredEdcs.length / edcsPerPage)}
                 itemsPerPage={edcsPerPage}
                 onPageChange={handlePageChange}
                 onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
@@ -246,7 +249,7 @@ const RegionEdcs = () => {
                 <div className={styles.loading}>Loading EDCs...</div>
             ) : (
                 <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
-                    {widgetsData.edcNames
+                    {filteredEdcs
                         .slice((currentPage - 1) * edcsPerPage, currentPage * edcsPerPage)
                         .map((edc, index) => (
                             <div
