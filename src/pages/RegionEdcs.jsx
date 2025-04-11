@@ -7,6 +7,7 @@ import SummarySection from '../components/SummarySection';
 import { apiClient } from '../api/client';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { useAuth } from '../components/AuthProvider';
+import SectionHeader from '../components/SectionHeader/SectionHeader';
 
 const RegionEdcs = () => {
     const { region: regionParam } = useParams();
@@ -17,6 +18,9 @@ const RegionEdcs = () => {
     const [timeRange, setTimeRange] = useState('Daily');
     const cacheTimeoutRef = useRef(null);
     const [selectedEdc, setSelectedEdc] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [edcsPerPage, setEdcsPerPage] = useState(6);
+    const [viewMode, setViewMode] = useState('card');
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('regionEdcDemandData');
         const savedTimestamp = localStorage.getItem('regionEdcDemandTimestamp');
@@ -183,35 +187,37 @@ const RegionEdcs = () => {
         };
     };
 
+    const handlePageChange = (newPage, newPerPage = edcsPerPage) => {
+        if (newPerPage !== edcsPerPage) {
+            setCurrentPage(1);
+            setEdcsPerPage(newPerPage);
+        } else {
+            setCurrentPage(newPage);
+        }
+    };
+
     return (
         <div className={styles.main_content}>
-            <div className={styles.section_header}>
-                <h2 className="title">{regionName} Region EDCs</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                                className={styles.time_range_select}>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">
-                                    Previous Month
-                                </option>
-                                <option value="Year">Year</option>
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
-                            />
-                        </div>
+            <SectionHeader title={`${regionName} - EDCs`}>
+                <div className={styles.action_cont}>
+                    <div className={styles.time_range_select_dropdown}>
+                        <select
+                            value={timeRange}
+                            onChange={(e) => setTimeRange(e.target.value)}
+                            className={styles.time_range_select}>
+                            <option value="Daily">Daily</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="PreviousMonth">Previous Month</option>
+                            <option value="Year">Year</option>
+                        </select>
+                        <img
+                            src="icons/arrow-down.svg"
+                            alt="Select Time"
+                            className={styles.time_range_select_dropdown_icon}
+                        />
                     </div>
                 </div>
-            </div>
+            </SectionHeader>
             <Breadcrumb />
 
             <SummarySection
@@ -222,62 +228,74 @@ const RegionEdcs = () => {
                 showDistricts={true}
             />
 
-            <div className={styles.section_header}>
-                <h2 className="title">
-                    EDCs:{' '}
-                    <span className={styles.region_count}>
-                        [ {widgetsData.totalEdcs} ]
-                    </span>
-                </h2>
-            </div>
+            <SectionHeader
+                title={`EDCs: [ ${widgetsData.totalEdcs} ]`}
+                showSearch={true}
+                showViewToggle={true}
+                viewMode={viewMode}
+                setViewMode={setViewMode}
+                showPagination={true}
+                currentPage={currentPage}
+                totalPages={Math.ceil(widgetsData.edcNames.length / edcsPerPage)}
+                itemsPerPage={edcsPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+            />
 
             {loading ? (
                 <div className={styles.loading}>Loading EDCs...</div>
             ) : (
-                <div className={styles.region_stats_container}>
-                    {widgetsData.edcNames.map((edc, index) => (
-                        <div
-                            key={index}
-                            className={styles.individual_region_stats}>
-                            <ShortDetailsWidget
-                                region={region}
-                                edc={edc.hierarchy_id}
-                                name={edc.hierarchy_name}
-                                edcId={edc.hierarchy_id}
-                                substationCount={
-                                    widgetsData.substationCount[
-                                        edc.hierarchy_name
-                                    ] || 0
-                                }
-                                feederCount={
-                                    widgetsData.feederCount[
-                                        edc.hierarchy_name
-                                    ] || 0
-                                }
-                                edcCount={widgetsData.totalEdcs}
-                                graphData={
-                                    widgetsData.edcDemandData?.[
-                                        edc.hierarchy_name
-                                    ] ?? {
-                                        xAxis: [],
-                                        series: [],
+                <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+                    {widgetsData.edcNames
+                        .slice((currentPage - 1) * edcsPerPage, currentPage * edcsPerPage)
+                        .map((edc, index) => (
+                            <div
+                                key={index}
+                                className={styles.individual_region_stats}>
+                                <ShortDetailsWidget
+                                    region={region}
+                                    edc={edc.hierarchy_id}
+                                    name={edc.hierarchy_name}
+                                    edcId={edc.hierarchy_id}
+                                    substationCount={
+                                        widgetsData.substationCount[
+                                            edc.hierarchy_name
+                                        ] || 0
                                     }
-                                }
-                                currentValue={parseFloat(
-                                    widgetsData.edcDemandData?.[
-                                        edc.hierarchy_name
-                                    ]?.series?.[0]?.data?.slice(-1)[0] || 0
-                                ).toFixed(1)}
-                                previousValue={parseFloat(
-                                    widgetsData.edcDemandData?.[
-                                        edc.hierarchy_name
-                                    ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
-                                ).toFixed(1)}
-                                pageType="edcs"
-                                handleRegionClick={() => handleEdcClick(edc)}
-                            />
-                        </div>
-                    ))}
+                                    feederCount={
+                                        widgetsData.feederCount[
+                                            edc.hierarchy_name
+                                        ] || 0
+                                    }
+                                    edcCount={widgetsData.totalEdcs}
+                                    graphData={
+                                        widgetsData.edcDemandData?.[
+                                            edc.hierarchy_name
+                                        ] ?? {
+                                            xAxis: [],
+                                            series: [],
+                                        }
+                                    }
+                                    currentValue={parseFloat(
+                                        widgetsData.edcDemandData?.[
+                                            edc.hierarchy_name
+                                        ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                    ).toFixed(1)}
+                                    previousValue={parseFloat(
+                                        widgetsData.edcDemandData?.[
+                                            edc.hierarchy_name
+                                        ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                    ).toFixed(1)}
+                                    pageType="edcs"
+                                    handleRegionClick={() => handleEdcClick(edc)}
+                                />
+                                <div>
+                                    {/* <h3>{edc.hierarchy_name}</h3> */}
+                                    {/* <p>Substation Count: {widgetsData.substationCount[edc.hierarchy_name] || 0}</p> */}
+                                    {/* <p>Feeder Count: {widgetsData.feederCount[edc.hierarchy_name] || 0}</p> */}
+                                </div>
+                            </div>
+                        ))}
                 </div>
             )}
         </div>
