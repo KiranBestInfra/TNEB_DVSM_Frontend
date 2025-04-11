@@ -322,7 +322,6 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
 @media screen and (max-width: 768px) {
     .header_container {
         flex-direction: column;
-        padding: 0.5rem;
         gap: 0.5rem;
     }
     
@@ -366,9 +365,9 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
         gap: 0.5rem;
     }
     
-    .welcome_message {
+    /* .welcome_message {
         display: none;
-    }
+    } */
     
     .date_time_display {
         margin-right: 0;
@@ -394,12 +393,15 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
 /* For even smaller screens */
 @media screen and (max-width: 480px) {
     .date_time_display {
-        flex-direction: column;
+        flex-direction: row-reverse;
         align-items: center;
-        padding: 0.25rem;
-        gap: 0.1rem;
+        display: flex;
+        height: 2rem;
     }
     
+    .logout_button {
+        display: none;
+    }
     .white_icons {
         height: 2rem;
         width: 2rem;
@@ -407,6 +409,7 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
     }
     
     .right_cont_item {
+        justify-content: space-between;
         gap: 0.25rem;
     }
     
