@@ -151,24 +151,6 @@ const RegionSubstations = () => {
             });
         }
     }, [widgetsData.substationIds, socket]);
-    useEffect(() => {
-        const sendDummyWarning = async () => {
-            try {
-                await apiClient.post('/log/error', {
-                    level: 'warn',
-                    message:
-                        'This is a dummy warning message from the frontend.',
-                    stack: 'No stack trace',
-                    time: new Date().toISOString(),
-                });
-                console.warn('Dummy warning sent to backend.');
-            } catch (error) {
-                console.error('Failed to send dummy warning:', error);
-            }
-        };
-
-        sendDummyWarning();
-    }, []);
 
     useEffect(() => {
         const substationNames = async () => {

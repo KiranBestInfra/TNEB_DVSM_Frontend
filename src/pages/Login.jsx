@@ -52,7 +52,6 @@ const Login = () => {
                 password: value.password,
                 rememberMe: value.remember,
             });
-
             if (response.status === 'error') {
                 setErrors({
                     submit:
@@ -60,39 +59,48 @@ const Login = () => {
                 });
                 return;
             }
+            let accessToken;
 
-            let token;
-            while (!token) {
-                token = document.cookie
-                    .split('; ')
-                    .find((row) => row.startsWith('accessTokenDuplicate='));
-                if (!token)
-                    await new Promise((resolve) => setTimeout(resolve, 100));
-            }
-            token = token.split('=')[1];
-
-            try {
-                const decoded = jwtDecode(token);
-                updateUserFromToken(token);
-
-                let region = null;
-                if (decoded.region) {
-                    region = decoded.region;
-                } else if (decoded.userRegion) {
-                    region = decoded.userRegion;
-                } else if (decoded.userId && decoded.userId.includes('_')) {
-                    region = decoded.userId.split('_')[0].toLowerCase();
+            let attempts = 0;
+            while (!accessToken) {
+                if (attempts >= 20) {
+                    setErrors({
+                        submit: 'Failed to retrieve access token after multiple attempts',
+                    });
+                    break;
                 }
-
-                region = region ? region.toLowerCase() : 'kancheepuram';
-                navigate(`/user/${region}/dashboard`);
-            } catch (err) {
-                console.error('Error decoding token:', err);
-                navigate('/user/dashboard');
+                accessToken = document.cookie
+                    .split('; ')
+                    .find((row) => row.startsWith('accessTokenDuplicate='))
+                    ?.split('=')[1];
+                attempts++;
             }
-        } catch (err) {
+
+            if (accessToken) {
+                try {
+                    updateUserFromToken();
+
+                    const decoded = jwtDecode(accessToken);
+                    const role = decoded.role;
+
+                    if (role.toLowerCase().includes('admin')) {
+                        navigate('/admin/dashboard');
+                    } else if (role.toLowerCase().includes('region')) {
+                        navigate(`/user/region`);
+                    } else if (role.toLowerCase().includes('substation')) {
+                        navigate(`/user/substation`);
+                    } else if (role.toLowerCase().includes('circle')) {
+                        navigate(`/user/edc`);
+                    }
+                    return;
+                } catch (error) {
+                    console.error('Error decoding token:', error);
+                    return 'User';
+                }
+            }
+        } catch (error) {
             setErrors({
-                submit: err.message || 'Login failed. Please try again.',
+                submit: error.message || 'Login failed. Please try again.',
             });
         } finally {
             setIsLoading(false);
