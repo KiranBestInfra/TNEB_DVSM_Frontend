@@ -56,6 +56,21 @@ const Dashboard = () => {
                 const data = response.data;
             } catch (error) {
                 console.error('Error fetching graph time range:', error);
+                // Send error to backend
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
+
+                // Set error message for UI
+                // setErrorMessage(
+                //     'Failed to load graph data. Please try again later.'
+                // );
             }
         };
         fetchGraphTimeRange();
@@ -72,6 +87,15 @@ const Dashboard = () => {
                 });
             } catch (error) {
                 console.error('Error fetching graph data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
         fetchGraphData();
