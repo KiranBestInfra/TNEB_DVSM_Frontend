@@ -119,6 +119,15 @@ const RegionFeeders = () => {
                 }));
             } catch (error) {
                 console.error('API error:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -161,7 +170,9 @@ const RegionFeeders = () => {
                             className={styles.time_range_select}>
                             <option value="Daily">Daily</option>
                             <option value="Monthly">Monthly</option>
-                            <option value="PreviousMonth">Previous Month</option>
+                            <option value="PreviousMonth">
+                                Previous Month
+                            </option>
                             <option value="Year">Year</option>
                         </select>
                         <img
@@ -200,16 +211,26 @@ const RegionFeeders = () => {
                 setViewMode={setViewMode}
                 showPagination={true}
                 currentPage={currentPage}
-                totalPages={Math.ceil(widgetsData.feederIds?.length / feedersPerPage)}
+                totalPages={Math.ceil(
+                    widgetsData.feederIds?.length / feedersPerPage
+                )}
                 itemsPerPage={feedersPerPage}
                 onPageChange={handlePageChange}
-                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                onItemsPerPageChange={(newPerPage) =>
+                    handlePageChange(1, newPerPage)
+                }
             />
 
-            <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+            <div
+                className={`${styles.region_stats_container} ${
+                    viewMode === 'list' ? styles.list_view : ''
+                }`}>
                 {widgetsData.feederIds && widgetsData.feederIds.length > 0 ? (
                     widgetsData.feederIds
-                        .slice((currentPage - 1) * feedersPerPage, currentPage * feedersPerPage)
+                        .slice(
+                            (currentPage - 1) * feedersPerPage,
+                            currentPage * feedersPerPage
+                        )
                         .map((value) =>
                             Object.entries(value).map(([key, value]) => (
                                 <div
@@ -222,7 +243,9 @@ const RegionFeeders = () => {
                                         edcCount={0}
                                         substationCount={0}
                                         commMeters={widgetsData.commMeters}
-                                        nonCommMeters={widgetsData.nonCommMeters}
+                                        nonCommMeters={
+                                            widgetsData.nonCommMeters
+                                        }
                                         graphData={
                                             widgetsData.feederDemandData[value]
                                         }
@@ -237,7 +260,9 @@ const RegionFeeders = () => {
                                         currentValue={parseFloat(
                                             widgetsData.feederDemandData?.[
                                                 value
-                                            ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                            ]?.series?.[0]?.data?.slice(
+                                                -1
+                                            )[0] || 0
                                         )}
                                         pageType="feeders"
                                         feederCount={widgetsData.feederCount}

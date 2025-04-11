@@ -49,7 +49,7 @@ const EdcDetails = () => {
             totalEdcs: 0,
             totalSubstations: 0,
             totalFeeders: 0,
-            edcSubstationCount :0,
+            edcSubstationCount: 0,
             commMeters: 0,
             nonCommMeters: 0,
             edcFeederCount: 0,
@@ -73,6 +73,15 @@ const EdcDetails = () => {
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching edc graph data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -86,29 +95,38 @@ const EdcDetails = () => {
               .join(' ')
         : 'Unknown';
 
-        useEffect(() => {
-            if (!edcId) return;
-    
-            const fetchEdcWidgets = async () => {
+    useEffect(() => {
+        if (!edcId) return;
+
+        const fetchEdcWidgets = async () => {
+            try {
+                const response = await apiClient.get(`/edcs/${edcId}/widgets`);
+                const feederCount =
+                    response?.data?.regionFeederNames?.length || 0;
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    commMeters: response?.data?.commMeters || 0,
+                    nonCommMeters: response?.data?.nonCommMeters || 0,
+                    edcSubstationCount: response?.data?.substationCounts || 0,
+                    edcFeederCount: feederCount,
+                    districtcounts: response.data?.districtCounts || 0,
+                }));
+            } catch (error) {
+                console.error('Error fetching EDC widgets:', error);
                 try {
-                    const response = await apiClient.get(`/edcs/${edcId}/widgets`);
-                    const feederCount =
-                        response?.data?.regionFeederNames?.length || 0;
-                    setWidgetsData((prev) => ({
-                        ...prev,
-                        commMeters: response?.data?.commMeters || 0,
-                        nonCommMeters: response?.data?.nonCommMeters || 0,
-                        edcSubstationCount: response?.data?.substationCounts || 0,
-                        edcFeederCount: feederCount,
-                        districtcounts: response.data?.districtCounts || 0,
-                    }));
-                } catch (error) {
-                    console.error('Error fetching EDC widgets:', error);
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
                 }
-            };
-    
-            fetchEdcWidgets();
-        }, [edcId]);
+            }
+        };
+
+        fetchEdcWidgets();
+    }, [edcId]);
 
     const stats = {
         substationCount: widgetsData.edcSubstationCount,
@@ -117,7 +135,7 @@ const EdcDetails = () => {
         previousValue: 9.8,
         districtcounts: widgetsData.districtcounts,
         commMeters: widgetsData.commMeters || 0,
-        nonCommMeters: widgetsData.nonCommMeters || 0
+        nonCommMeters: widgetsData.nonCommMeters || 0,
     };
 
     return (
@@ -146,27 +164,26 @@ const EdcDetails = () => {
                                 }
                             />
                         </div>
-                       
                     </div>
                 </div>
             </div>
             <Breadcrumb />
-                      <SummarySection
-        widgetsData={{
-        totalDistricts:stats.districtcounts,
-        totalSubstations:stats.substationCount,
-          totalFeeders: stats.feederCount,
-          commMeters: stats.commMeters,
-          nonCommMeters: stats.nonCommMeters,
-        }}
-        // isUserRoute={location.includes("/user/")}
-        // isBiUserRoute={location.includes("/bi/user/")}
-        showDistricts={true}
-        showFeeders={true}
-        showEdcs={false}
-        showSubstations={true}
-        showRegions={false}
-      />           
+            <SummarySection
+                widgetsData={{
+                    totalDistricts: stats.districtcounts,
+                    totalSubstations: stats.substationCount,
+                    totalFeeders: stats.feederCount,
+                    commMeters: stats.commMeters,
+                    nonCommMeters: stats.nonCommMeters,
+                }}
+                // isUserRoute={location.includes("/user/")}
+                // isBiUserRoute={location.includes("/bi/user/")}
+                showDistricts={true}
+                showFeeders={true}
+                showEdcs={false}
+                showSubstations={true}
+                showRegions={false}
+            />
             {/* <div className={styles.performance_stats}>
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>

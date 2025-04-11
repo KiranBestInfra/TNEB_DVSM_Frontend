@@ -38,12 +38,21 @@ const UserEdcDashboard = () => {
                 }
             } catch (error) {
                 console.error('Error fetching EDC dashboard data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
                 setStats({
-                    totalSubstations: 15,
-                    totalFeeders: 45,
-                    healthyFeeders: 30,
-                    criticalFeeders: 5,
-                    warningFeeders: 10,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    healthyFeeders: 0,
+                    criticalFeeders: 0,
+                    warningFeeders: 0,
                 });
             } finally {
                 setLoading(false);
@@ -61,11 +70,7 @@ const UserEdcDashboard = () => {
         { name: 'Critical', value: stats.criticalFeeders },
     ];
 
-    const colors = [
-        '#4bC0C0', 
-        '#ffce56', 
-        '#ff6384', 
-    ];
+    const colors = ['#4bC0C0', '#ffce56', '#ff6384'];
 
     if (loading) {
         return <Loader />;

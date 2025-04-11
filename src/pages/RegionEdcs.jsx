@@ -144,6 +144,15 @@ const RegionEdcs = () => {
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching EDCs for region:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
                 setLoading(false);
             }
         };
@@ -207,7 +216,9 @@ const RegionEdcs = () => {
                             className={styles.time_range_select}>
                             <option value="Daily">Daily</option>
                             <option value="Monthly">Monthly</option>
-                            <option value="PreviousMonth">Previous Month</option>
+                            <option value="PreviousMonth">
+                                Previous Month
+                            </option>
                             <option value="Year">Year</option>
                         </select>
                         <img
@@ -236,18 +247,28 @@ const RegionEdcs = () => {
                 setViewMode={setViewMode}
                 showPagination={true}
                 currentPage={currentPage}
-                totalPages={Math.ceil(widgetsData.edcNames.length / edcsPerPage)}
+                totalPages={Math.ceil(
+                    widgetsData.edcNames.length / edcsPerPage
+                )}
                 itemsPerPage={edcsPerPage}
                 onPageChange={handlePageChange}
-                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                onItemsPerPageChange={(newPerPage) =>
+                    handlePageChange(1, newPerPage)
+                }
             />
 
             {loading ? (
                 <div className={styles.loading}>Loading EDCs...</div>
             ) : (
-                <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+                <div
+                    className={`${styles.region_stats_container} ${
+                        viewMode === 'list' ? styles.list_view : ''
+                    }`}>
                     {widgetsData.edcNames
-                        .slice((currentPage - 1) * edcsPerPage, currentPage * edcsPerPage)
+                        .slice(
+                            (currentPage - 1) * edcsPerPage,
+                            currentPage * edcsPerPage
+                        )
                         .map((edc, index) => (
                             <div
                                 key={index}
@@ -284,10 +305,15 @@ const RegionEdcs = () => {
                                     previousValue={parseFloat(
                                         widgetsData.edcDemandData?.[
                                             edc.hierarchy_name
-                                        ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                        ]?.series?.[0]?.data?.slice(
+                                            -2,
+                                            -1
+                                        )[0] || 0
                                     ).toFixed(1)}
                                     pageType="edcs"
-                                    handleRegionClick={() => handleEdcClick(edc)}
+                                    handleRegionClick={() =>
+                                        handleEdcClick(edc)
+                                    }
                                     showInfoIcon={true}
                                 />
 
