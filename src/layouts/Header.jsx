@@ -300,6 +300,12 @@ const Header = () => {
                         <img src="icons/bell.svg" alt="notifications" />
                     </span>
 
+                    <span
+                        className={styles.white_icons}
+                        onClick={handleLogout}>
+                        <img src="icons/exit-button.svg" alt="Logout" />
+                    </span>
+
                     <Buttons
                         label="Logout"
                         onClick={handleLogout}
@@ -307,6 +313,7 @@ const Header = () => {
                         icon="icons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
+                        className={styles.logout_button}
                     />
                 </div>
             </div>

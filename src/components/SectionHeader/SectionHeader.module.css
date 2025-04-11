@@ -23,6 +23,13 @@
   width: 100%;
 }
 
+.search_sorting {
+  display: flex;
+  flex-direction: row;
+  gap:0.5rem;
+  width:100%;
+}
+
 .search_cont {
   position: relative;
 }
@@ -31,7 +38,6 @@
   border-radius: 2rem;
   font-size: 1rem;
   outline: none;
-  width: fit-content;
   height: 2.5rem;
   padding: 0 1rem;
   min-width: 9rem;
@@ -239,3 +245,17 @@
   width: 0.7rem;
   height: 0.7rem;
 } 
+@media screen and (max-width: 480px) {
+  .section_header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .section_header_left {
+    display: flex;
+    flex-direction: column;
+  }
+  .pagination_container {
+    width: 100%;
+  }
+}
