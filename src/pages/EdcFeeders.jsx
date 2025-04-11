@@ -239,15 +239,15 @@ const EdcFeeders = () => {
                                         parseFloat(
                                             widgetsData.feederDemandData?.[
                                                 value.id
-                                            ]?.series?.[0]?.data?.slice(-1)[0]
-                                        ) || 0
+                                            ]?.series?.[0]?.data?.slice(-2,-1)[0] ||0
+                                        ).toFixed(1)
                                     }
                                     previousValue={
                                         parseFloat(
                                             widgetsData.feederDemandData?.[
                                                 value.id
-                                            ]?.series?.[1]?.data?.slice(-1)[0]
-                                        ) || 0
+                                            ]?.series?.[1]?.data?.slice(-2,-1)[0] ||0
+                                        ).toFixed(1)
                                     }
                                     graphData={
                                         widgetsData.feederDemandData[value.id] || {
