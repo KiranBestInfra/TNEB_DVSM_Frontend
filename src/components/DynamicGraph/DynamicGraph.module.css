@@ -13,7 +13,6 @@
 }
 
 .graph_container {
-    background: #FFFFFF;
     border-radius: 8px;
     height: 100%;
     display: flex;
@@ -69,7 +68,7 @@
 .chart {
     width: 100%;
     height: 100%;
-    min-height: 400px;
+    /* min-height: 500px; */
 }
 /*Dropdown for time range*/
 

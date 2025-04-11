@@ -20,7 +20,7 @@ const SectionHeader = ({
       <div className={styles.section_header_left}>
         <h2 className="title">{title}</h2>
         
-        {showSearch && (
+        <div className={styles.search_sorting}>{showSearch && (
           <div className={styles.search_cont}>
             <input type="text" placeholder="Search" />
             <span className={styles.search_icon}>
@@ -44,7 +44,7 @@ const SectionHeader = ({
               <img src="icons/bars-staggered.svg" alt="listView" />
             </span>
           </div>
-        )}
+        )}</div>
       </div>
       
       {showPagination && (
@@ -74,7 +74,7 @@ const SectionHeader = ({
                 </span>
               </button>
               <span className={styles.pageInfo}>
-                Page {currentPage} of {totalPages}
+                 {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => onPageChange(currentPage + 1)}
