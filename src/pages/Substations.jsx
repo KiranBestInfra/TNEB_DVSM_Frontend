@@ -382,6 +382,7 @@ const Substations = () => {
                                                       ?.previousValue
                                               }
                                               pageType="substations"
+                                              showInfoIcon={true}
                                           />
                                       </div>
                                   )

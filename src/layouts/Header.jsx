@@ -16,6 +16,7 @@ const Header = () => {
     const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
         useState(false);
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isAdmin } = useAuth();
     const basePath = isAdmin() ? '/admin' : '/user';
 
@@ -28,6 +29,22 @@ const Header = () => {
         firstName: user?.name || 'User',
         lastName: '',
     };
+
+    // Check if the screen is mobile-sized
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    // Add event listener for window resize
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+            if (window.innerWidth > 768) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -192,6 +209,11 @@ const Header = () => {
         return () => clearInterval(intervalId);
     }, [placeholders.length]);
 
+    // Toggle mobile menu
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
     return (
         <div className={styles.header_container}>
             <div className={styles.logo_container}>
@@ -205,8 +227,19 @@ const Header = () => {
                 <span className={styles.welcome_message}>
                     Welcome {profileData.firstName}!
                 </span>
+                {isMobile && (
+                    <div 
+                        className={styles.mobile_menu_toggle}
+                        onClick={toggleMobileMenu}
+                    >
+                        <img 
+                            src={isMobileMenuOpen ? "icons/close-button.svg" : "icons/hamburger-menu.svg"} 
+                            alt="Menu"
+                        />
+                    </div>
+                )}
             </div>
-            <div className={styles.search_cont}>
+            <div className={`${styles.search_cont} ${isMobile && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
                 <input
                     type="text"
                     name="query"
@@ -237,12 +270,8 @@ const Header = () => {
                     </div>
                 )}
             </div>
-            <div className={styles.right_cont}>
+            <div className={`${styles.right_cont} ${isMobile && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
                 <div className={styles.right_cont_item}>
-                    {/* <div className={styles.white_icons} onClick={handleProfileClick}>
-                        {renderProfilePicture()}
-                    </div> */}
-
                     <div className={styles.date_time_display}>
                         <div className={styles.time}>{formattedTime}</div>
                         <div className={styles.date}>{formattedDate}</div>

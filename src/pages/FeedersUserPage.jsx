@@ -291,6 +291,7 @@ const FeedersUserPage = () => {
                                     feederStats?.[feeder]?.previousValue || 0
                                 }
                                 pageType="feeders"
+                                showInfoIcon={true}
                             />
                         </div>
                     ))

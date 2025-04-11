@@ -353,6 +353,7 @@ const RegionSubstations = () => {
                                                   value.substation_names
                                               )
                                           }
+                                          showInfoIcon={true}
                                       />
                                   </div>
                               ))
