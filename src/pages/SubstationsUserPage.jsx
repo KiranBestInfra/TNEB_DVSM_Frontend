@@ -14,7 +14,8 @@ const SubstationsUserPage = () => {
     const location = useLocation();
 
     // Determine if this is a region user path
-    const isRegionUser = location.pathname.includes('/user/') &&
+    const isRegionUser =
+        location.pathname.includes('/user/') &&
         !location.pathname.includes('/admin/');
     const currentBaseRoute = '/user';
 
@@ -30,9 +31,7 @@ const SubstationsUserPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(
-                'http://localhost:3000/api/v1/regions/widgets'
-            );
+            const response = await apiClient.get(`/regions/widgets`);
             const data = await response.json();
             const regionWidgets = data.data;
 
@@ -64,7 +63,8 @@ const SubstationsUserPage = () => {
                 setWidgetsData((prev) => ({
                     ...prev,
                     substationNames: data.data?.substationNames || [],
-                    regionSubstationCount: data.data?.substationNames?.length || 0,
+                    regionSubstationCount:
+                        data.data?.substationNames?.length || 0,
                 }));
             } catch (error) {
                 console.error('Error fetching substation names:', error);
@@ -74,57 +74,25 @@ const SubstationsUserPage = () => {
         substationNames();
     }, [region]);
 
-    // Substation feeder counts
-    const substationFeederCounts = {
-        'Adyar SS': 8,
-        'Velachery SS': 6,
-        'T Nagar SS': 7,
-        'Mylapore SS': 5,
-        'Anna Nagar SS': 6,
-        'Porur SS': 4,
-        'Ambattur SS': 5,
-        'Perambur SS': 6,
-        'Guindy SS': 7,
-        'Kodambakkam SS': 5,
-        'Royapuram SS': 4,
-        'Thiruvanmiyur SS': 6,
-        'Kilpauk SS': 5,
-        'Egmore SS': 4,
-        'Nungambakkam SS': 6,
-    };
-
-    // Substation consumption stats (in MVA)
-    const substationStats = {
-        'Adyar SS': { currentValue: 42, previousValue: 38 },
-        'Velachery SS': { currentValue: 35, previousValue: 32 },
-        'T Nagar SS': { currentValue: 45, previousValue: 41 },
-        'Mylapore SS': { currentValue: 38, previousValue: 35 },
-        'Anna Nagar SS': { currentValue: 40, previousValue: 37 },
-        'Porur SS': { currentValue: 32, previousValue: 29 },
-        'Ambattur SS': { currentValue: 36, previousValue: 33 },
-        'Perambur SS': { currentValue: 34, previousValue: 31 },
-        'Guindy SS': { currentValue: 41, previousValue: 38 },
-        'Kodambakkam SS': { currentValue: 37, previousValue: 34 },
-        'Royapuram SS': { currentValue: 33, previousValue: 30 },
-        'Thiruvanmiyur SS': { currentValue: 39, previousValue: 36 },
-        'Kilpauk SS': { currentValue: 35, previousValue: 32 },
-        'Egmore SS': { currentValue: 31, previousValue: 28 },
-        'Nungambakkam SS': { currentValue: 38, previousValue: 35 },
-    };
-
-    // Build breadcrumb items based on current path
     const getBreadcrumbItems = () => {
         if (isRegionUser && region) {
-            const formattedRegionName = region.charAt(0).toUpperCase() + region.slice(1);
+            const formattedRegionName =
+                region.charAt(0).toUpperCase() + region.slice(1);
             return [
                 { label: 'Dashboard', path: '/user/dashboard' },
-                { label: `Region : ${formattedRegionName}`, path: `/user/${region}/dashboard` },
-                { label: 'Substations', path: `/user/${region}/substations` }
+                {
+                    label: `Region : ${formattedRegionName}`,
+                    path: `/user/${region}/dashboard`,
+                },
+                { label: 'Substations', path: `/user/${region}/substations` },
             ];
         } else {
             return [
                 { label: 'Dashboard', path: `${currentBaseRoute}/dashboard` },
-                { label: 'Substations', path: `${currentBaseRoute}/substations` }
+                {
+                    label: 'Substations',
+                    path: `${currentBaseRoute}/substations`,
+                },
             ];
         }
     };
@@ -149,7 +117,9 @@ const SubstationsUserPage = () => {
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
                             />
                         </div>
                     </div>
@@ -166,7 +136,12 @@ const SubstationsUserPage = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/edcs`
+                                            : `${currentBaseRoute}/edcs`
+                                    }>
                                     EDCs
                                 </Link>
                             </p>
@@ -185,7 +160,12 @@ const SubstationsUserPage = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/substations`
+                                            : `${currentBaseRoute}/substations`
+                                    }>
                                     Substations
                                 </Link>
                             </p>
@@ -204,7 +184,12 @@ const SubstationsUserPage = () => {
                         />
                         <div className={styles.total_meters}>
                             <div className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/feeders`
+                                            : `${currentBaseRoute}/feeders`
+                                    }>
                                     Feeders
                                 </Link>
                             </div>
@@ -215,32 +200,47 @@ const SubstationsUserPage = () => {
                     </div>
                 </div>
                 <div className={styles.total_meters_container}>
-
                     <div className={styles.metrics_communication_info}>
                         <div className="titles">Communication Status</div>
                         <div className={styles.overall_communication_status}>
-                            <div className={styles.communication_status_container}>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
                                 <div className={styles.communication_value}>
                                     {widgetsData.commMeters}
                                 </div>
-                                <div className={styles.communication_positive_percentage}>
+                                <div
+                                    className={
+                                        styles.communication_positive_percentage
+                                    }>
                                     <img
                                         src="icons/up-right-arrow.svg"
                                         alt="Positive"
-                                        className={styles.communication_positive_arrow}
+                                        className={
+                                            styles.communication_positive_arrow
+                                        }
                                     />
                                     87%
                                 </div>
                             </div>
-                            <div className={styles.communication_status_container}>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
                                 <div className={styles.communication_value}>
                                     {widgetsData.nonCommMeters}
                                 </div>
-                                <div className={styles.communication_negative_percentage}>
+                                <div
+                                    className={
+                                        styles.communication_negative_percentage
+                                    }>
                                     <img
                                         src="icons/up-right-arrow.svg"
                                         alt="Positive"
-                                        className={styles.communication_negative_arrow}
+                                        className={
+                                            styles.communication_negative_arrow
+                                        }
                                     />
                                     13%
                                 </div>
@@ -259,16 +259,25 @@ const SubstationsUserPage = () => {
                 </h2>
             </div>
             <div className={styles.region_stats_container}>
-                {widgetsData.substationNames && widgetsData.substationNames.length > 0 ? (
+                {widgetsData.substationNames &&
+                widgetsData.substationNames.length > 0 ? (
                     widgetsData.substationNames.map((substation, index) => (
                         <div
                             key={index}
                             className={styles.individual_region_stats}>
                             <ShortDetailsWidget
                                 region={substation}
-                                feederCount={substationFeederCounts?.[substation] || 0}
-                                currentValue={substationStats?.[substation]?.currentValue || 0}
-                                previousValue={substationStats?.[substation]?.previousValue || 0}
+                                feederCount={
+                                    substationFeederCounts?.[substation] || 0
+                                }
+                                currentValue={
+                                    substationStats?.[substation]
+                                        ?.currentValue || 0
+                                }
+                                previousValue={
+                                    substationStats?.[substation]
+                                        ?.previousValue || 0
+                                }
                                 pageType="substations"
                             />
                         </div>
@@ -281,4 +290,4 @@ const SubstationsUserPage = () => {
     );
 };
 
-export default SubstationsUserPage; 
+export default SubstationsUserPage;

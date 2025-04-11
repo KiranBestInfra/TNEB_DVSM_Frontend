@@ -44,18 +44,13 @@ const LongDetailsWidget = () => {
         fetchGraphData();
     }, [entityId, timeRange]);
 
-    // const entityName = entityId
-    //     .split('-')
-    //     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    //     .join(' ');
-
     const stats = {
-        edcCount: 8,
-        substationCount: 25,
-        feederCount: 45,
-        currentValue: 13.6,
-        previousValue: 12.8,
-    }
+        edcCount: 0,
+        substationCount: 0,
+        feederCount: 0,
+        currentValue: 0,
+        previousValue: 0,
+    };
 
     return (
         <div className={styles.main_content}>
@@ -83,7 +78,6 @@ const LongDetailsWidget = () => {
                                 }
                             />
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -167,7 +161,6 @@ const LongDetailsWidget = () => {
                             </span>
                             <span className={styles.summary_value}>
                                 {stats.feederCount}
-                                
                             </span>
                         </div>
                     </div>
@@ -175,7 +168,6 @@ const LongDetailsWidget = () => {
 
                 <div className={styles.total_units_container}>
                     <div className={styles.total_main_info}>
-                        {/* Location */}
                         <div className={styles.total_main_info}>
                             <div className={styles.TNEB_icons}>
                                 <img
@@ -186,29 +178,21 @@ const LongDetailsWidget = () => {
                             </div>
 
                             <div className={styles.total_title_value}>
-                                <span className='title'>
-                                    <Link to={entityId ? `${baseRoute}/${entityId}/feeders` : `${baseRoute}/feeders`}>
+                                <span className="title">
+                                    <Link
+                                        to={
+                                            entityId
+                                                ? `${baseRoute}/${entityId}/feeders`
+                                                : `${baseRoute}/feeders`
+                                        }>
                                         Feeder
-                                    </Link></span>
-                                <span className={styles.summary_value}>[ {stats.feederCount} ]</span>
+                                    </Link>
+                                </span>
+                                <span className={styles.summary_value}>
+                                    [ {stats.feederCount} ]
+                                </span>
                             </div>
                         </div>
-                        {/* <div className={styles.total_title_value}>
-              <span className='title'>Actual Demand</span>
-              <span className={`${styles.summary_value} ${isPositiveChange ? styles.positive : styles.negative}`}>
-                {stats.currentValue} MW
-                <div className={styles.percentage_change} >
-                  <img
-                    src={isPositiveChange ? "icons/up-right-arrow.svg" : "icons/down-right-arrow.svg"}
-                    alt={isPositiveChange ? "Increase" : "Decrease"}
-                    className={isPositiveChange ? styles.communication_positive_arrow_ : styles.communication_negative_arrow}
-                  />
-                  {Math.abs(percentageChange)}%
-                </div>
-              </span>
-            </div> */}
-
-                        {/* Communication Your are Working here */}
                         <div className={styles.regions_communication_info}>
                             <div className="titles">Communication Status</div>
                             <div

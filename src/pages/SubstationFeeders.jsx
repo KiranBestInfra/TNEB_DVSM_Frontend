@@ -30,12 +30,12 @@ const SubstationFeeders = () => {
             if (now - timestamp < 30000) {
                 const parsedData = JSON.parse(savedFeederData);
                 return {
-                    totalRegions: 13,
-                    totalEdcs: 95,
-                    totalSubstations: 260,
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
                     totalFeeders: parsedData.feederNames?.length || 0,
-                    commMeters: 942,
-                    nonCommMeters: 301,
+                    commMeters: 0,
+                    nonCommMeters: 0,
                     feederNames: parsedData.feederNames || [],
                     feederCount: parsedData.feederNames?.length || 0,
                     meterCount: parsedData.meterCount || {},
@@ -47,12 +47,12 @@ const SubstationFeeders = () => {
         }
 
         return {
-            totalRegions: 13,
-            totalEdcs: 95,
-            totalSubstations: 260,
-            totalFeeders: 416,
-            commMeters: 942,
-            nonCommMeters: 301,
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
             feederNames: [],
             feederCount: 0,
             meterCount: {},
@@ -65,11 +65,6 @@ const SubstationFeeders = () => {
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
-
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
-
         newSocket.on('feederUpdate', (data) => {
             setWidgetsData((prevData) => {
                 const newData = {

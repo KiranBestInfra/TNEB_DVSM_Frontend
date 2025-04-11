@@ -62,11 +62,6 @@ const RegionEdcs = () => {
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
-
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
-
         newSocket.on('edcUpdate', (data) => {
             setWidgetsData((prevData) => {
                 const newData = {

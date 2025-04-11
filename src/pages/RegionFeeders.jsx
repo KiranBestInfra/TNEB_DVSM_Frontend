@@ -7,6 +7,7 @@ import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
+import SectionHeader from '../components/SectionHeader/SectionHeader';
 
 const RegionFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
@@ -14,24 +15,9 @@ const RegionFeeders = () => {
     const { user, isRegion } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [socket, setSocket] = useState(null);
-
-    const feederStats = {
-        'Adyar Feeder 1': { currentValue: 850, previousValue: 780 },
-        'Velachery Feeder 2': { currentValue: 720, previousValue: 680 },
-        'T Nagar Feeder 3': { currentValue: 920, previousValue: 850 },
-        'Mylapore Feeder 4': { currentValue: 780, previousValue: 720 },
-        'Anna Nagar Feeder 5': { currentValue: 820, previousValue: 760 },
-        'Porur Feeder 6': { currentValue: 680, previousValue: 620 },
-        'Ambattur Feeder 7': { currentValue: 740, previousValue: 680 },
-        'Perambur Feeder 8': { currentValue: 700, previousValue: 650 },
-        'Guindy Feeder 9': { currentValue: 840, previousValue: 780 },
-        'Kodambakkam Feeder 10': { currentValue: 760, previousValue: 700 },
-        'Royapuram Feeder 11': { currentValue: 680, previousValue: 620 },
-        'Thiruvanmiyur Feeder 12': { currentValue: 800, previousValue: 740 },
-        'Kilpauk Feeder 13': { currentValue: 720, previousValue: 660 },
-        'Egmore Feeder 14': { currentValue: 640, previousValue: 580 },
-        'Nungambakkam Feeder 15': { currentValue: 780, previousValue: 720 },
-    };
+    const [currentPage, setCurrentPage] = useState(1);
+    const [feedersPerPage, setFeedersPerPage] = useState(6);
+    const [viewMode, setViewMode] = useState('card');
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedFeederData = localStorage.getItem('feederDemandData');
@@ -43,9 +29,9 @@ const RegionFeeders = () => {
             if (now - timestamp < 30000) {
                 const parsedFeederData = JSON.parse(savedFeederData);
                 return {
-                    totalRegions: 13,
-                    totalEdcs: 95,
-                    totalSubstations: 260,
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
                     totalFeeders: 0,
                     commMeters: 0,
                     nonCommMeters: 0,
@@ -59,9 +45,9 @@ const RegionFeeders = () => {
         }
 
         return {
-            totalRegions: 13,
-            totalEdcs: 95,
-            totalSubstations: 260,
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
             totalFeeders: 0,
             commMeters: 0,
             nonCommMeters: 0,
@@ -76,11 +62,6 @@ const RegionFeeders = () => {
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
-
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
-
         newSocket.on('feederUpdate', (data) => {
             setWidgetsData((prevData) => {
                 const newData = {
@@ -154,6 +135,15 @@ const RegionFeeders = () => {
                   .join(' ')
             : 'Unknown';
 
+    const handlePageChange = (newPage, newPerPage = feedersPerPage) => {
+        if (newPerPage !== feedersPerPage) {
+            setCurrentPage(1);
+            setFeedersPerPage(newPerPage);
+        } else {
+            setCurrentPage(newPage);
+        }
+    };
+
     return (
         <div
             className={styles.main_content}
@@ -162,33 +152,26 @@ const RegionFeeders = () => {
                     passive: true,
                 })
             }>
-            <div className={styles.section_header}>
-                <h2 className="title">{regionName} - Feeders</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                                className={styles.time_range_select}>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">
-                                    Previous Month
-                                </option>
-                                <option value="Year">Year</option>
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
-                            />
-                        </div>
+            <SectionHeader title={`${regionName} - Feeders`}>
+                <div className={styles.action_cont}>
+                    <div className={styles.time_range_select_dropdown}>
+                        <select
+                            value={timeRange}
+                            onChange={(e) => setTimeRange(e.target.value)}
+                            className={styles.time_range_select}>
+                            <option value="Daily">Daily</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="PreviousMonth">Previous Month</option>
+                            <option value="Year">Year</option>
+                        </select>
+                        <img
+                            src="icons/arrow-down.svg"
+                            alt="Select Time"
+                            className={styles.time_range_select_dropdown_icon}
+                        />
                     </div>
                 </div>
-            </div>
+            </SectionHeader>
             <Breadcrumb />
 
             <SummarySection
@@ -209,60 +192,59 @@ const RegionFeeders = () => {
                 showSubstations={false}
             />
 
-            <div className={styles.section_header}>
-                <h2 className="title">
-                    Feeders:{' '}
-                    <span
-                        className={
-                            styles.region_count
-                        }>{`[ ${widgetsData.feederCount} ]`}</span>
-                </h2>
-            </div>
-            <div className={styles.region_stats_container}>
+            <SectionHeader
+                title={`Feeders: [ ${widgetsData.feederCount} ]`}
+                showSearch={true}
+                showViewToggle={true}
+                viewMode={viewMode}
+                setViewMode={setViewMode}
+                showPagination={true}
+                currentPage={currentPage}
+                totalPages={Math.ceil(widgetsData.feederIds?.length / feedersPerPage)}
+                itemsPerPage={feedersPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+            />
+
+            <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
                 {widgetsData.feederIds && widgetsData.feederIds.length > 0 ? (
-                    widgetsData.feederIds.map((value) =>
-                        Object.entries(value).map(([key, value]) => (
-                            <div
-                                key={value}
-                                className={styles.individual_region_stats}>
-                                <ShortDetailsWidget
-                                    region={region}
-                                    name={key}
-                                    id={String(value)}
-                                    edcCount={0}
-                                    substationCount={0}
-                                    commMeters={widgetsData.commMeters}
-                                    nonCommMeters={widgetsData.nonCommMeters}
-                                    graphData={
-                                        widgetsData.feederDemandData[value]
-                                    }
-                                    previousValue={parseFloat(
-                                        widgetsData.feederDemandData?.[
-                                            value
-                                        ]?.series?.[0]?.data?.slice(
-                                            -2,
-                                            -1
-                                        )[0] ||
-                                            widgetsData.feederStats[key]
-                                                ?.previousValue ||
-                                            feederStats[key]?.previousValue ||
-                                            0
-                                    )}
-                                    currentValue={parseFloat(
-                                        widgetsData.feederDemandData?.[
-                                            value
-                                        ]?.series?.[0]?.data?.slice(-1)[0] ||
-                                            widgetsData.feederStats[key]
-                                                ?.currentValue ||
-                                            feederStats[key]?.currentValue ||
-                                            0
-                                    )}
-                                    pageType="feeders"
-                                    feederCount={widgetsData.feederCount}
-                                />
-                            </div>
-                        ))
-                    )
+                    widgetsData.feederIds
+                        .slice((currentPage - 1) * feedersPerPage, currentPage * feedersPerPage)
+                        .map((value) =>
+                            Object.entries(value).map(([key, value]) => (
+                                <div
+                                    key={value}
+                                    className={styles.individual_region_stats}>
+                                    <ShortDetailsWidget
+                                        region={region}
+                                        name={key}
+                                        id={String(value)}
+                                        edcCount={0}
+                                        substationCount={0}
+                                        commMeters={widgetsData.commMeters}
+                                        nonCommMeters={widgetsData.nonCommMeters}
+                                        graphData={
+                                            widgetsData.feederDemandData[value]
+                                        }
+                                        previousValue={parseFloat(
+                                            widgetsData.feederDemandData?.[
+                                                value
+                                            ]?.series?.[0]?.data?.slice(
+                                                -2,
+                                                -1
+                                            )[0] || 0
+                                        )}
+                                        currentValue={parseFloat(
+                                            widgetsData.feederDemandData?.[
+                                                value
+                                            ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                        )}
+                                        pageType="feeders"
+                                        feederCount={widgetsData.feederCount}
+                                    />
+                                </div>
+                            ))
+                        )
                 ) : (
                     <p>No feeders available for this region.</p>
                 )}

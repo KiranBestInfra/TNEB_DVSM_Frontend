@@ -8,11 +8,11 @@ import { Link } from 'react-router-dom';
 
 const Feeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
-    const totalMeters = 1243;
-    const totalRegions = 13; 
-    const totalEDCs = 95; 
-    const totalSubstations = 260; 
-    const totalFeeders = 416; 
+    const totalMeters = 0;
+    const totalRegions = 0;
+    const totalEDCs = 0;
+    const totalSubstations = 0;
+    const totalFeeders = 0;
 
     const { region } = useParams();
 

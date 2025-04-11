@@ -6,14 +6,15 @@ import 'react-datepicker/dist/react-datepicker.css';
 import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
+import { apiClient } from '../api/client';
 
 const EDCUserPage = () => {
     const [timeRange, setTimeRange] = useState('Daily');
     const { region } = useParams();
     const location = useLocation();
 
-    // Determine if this is a region user path
-    const isRegionUser = location.pathname.includes('/user/') &&
+    const isRegionUser =
+        location.pathname.includes('/user/') &&
         !location.pathname.includes('/admin/');
     const currentBaseRoute = '/user';
 
@@ -57,9 +58,7 @@ const EDCUserPage = () => {
 
         const fetchEdcNames = async () => {
             try {
-                const response = await fetch(
-                    `http://localhost:3000/api/v1/edcs/widgets/${region}`
-                );
+                const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = await response.json();
 
                 setWidgetsData((prev) => ({
@@ -77,63 +76,6 @@ const EDCUserPage = () => {
 
         fetchEdcNames();
     }, [region]);
-
-    // EDC substation counts
-    const edcSubstationCounts = {
-        'Chennai North': 18,
-        'Chennai South': 22,
-        'Chennai Central': 20,
-        'Chennai West': 15,
-        'Coimbatore North': 16,
-        'Coimbatore South': 19,
-        'Madurai Urban': 17,
-        'Madurai Rural': 14,
-        'Trichy Urban': 15,
-        'Trichy Rural': 13,
-        'Thanjavur': 16,
-        'Villupuram': 14,
-        'Vellore': 17,
-        'Salem': 18,
-        'Erode': 16,
-    };
-
-    // EDC feeder counts
-    const edcFeederCounts = {
-        'Chennai North': 35,
-        'Chennai South': 42,
-        'Chennai Central': 38,
-        'Chennai West': 32,
-        'Coimbatore North': 28,
-        'Coimbatore South': 34,
-        'Madurai Urban': 30,
-        'Madurai Rural': 25,
-        'Trichy Urban': 28,
-        'Trichy Rural': 24,
-        'Thanjavur': 29,
-        'Villupuram': 26,
-        'Vellore': 31,
-        'Salem': 33,
-        'Erode': 29,
-    };
-
-    // EDC consumption stats
-    const edcStats = {
-        'Chennai North': { currentValue: 380, previousValue: 350 },
-        'Chennai South': { currentValue: 420, previousValue: 390 },
-        'Chennai Central': { currentValue: 390, previousValue: 360 },
-        'Chennai West': { currentValue: 360, previousValue: 340 },
-        'Coimbatore North': { currentValue: 340, previousValue: 310 },
-        'Coimbatore South': { currentValue: 370, previousValue: 350 },
-        'Madurai Urban': { currentValue: 350, previousValue: 320 },
-        'Madurai Rural': { currentValue: 310, previousValue: 290 },
-        'Trichy Urban': { currentValue: 330, previousValue: 300 },
-        'Trichy Rural': { currentValue: 290, previousValue: 270 },
-        'Thanjavur': { currentValue: 320, previousValue: 300 },
-        'Villupuram': { currentValue: 300, previousValue: 280 },
-        'Vellore': { currentValue: 340, previousValue: 310 },
-        'Salem': { currentValue: 350, previousValue: 320 },
-        'Erode': { currentValue: 330, previousValue: 300 },
-    };
 
     return (
         <div className={styles.main_content}>
@@ -155,7 +97,9 @@ const EDCUserPage = () => {
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
                             />
                         </div>
                     </div>
@@ -191,7 +135,12 @@ const EDCUserPage = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/edcs` : `${currentBaseRoute}/edcs`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/edcs`
+                                            : `${currentBaseRoute}/edcs`
+                                    }>
                                     EDCs
                                 </Link>
                             </p>
@@ -210,7 +159,12 @@ const EDCUserPage = () => {
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/substations` : `${currentBaseRoute}/substations`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/substations`
+                                            : `${currentBaseRoute}/substations`
+                                    }>
                                     Substations
                                 </Link>
                             </p>
@@ -229,7 +183,12 @@ const EDCUserPage = () => {
                         />
                         <div className={styles.total_meters}>
                             <div className="title">
-                                <Link to={region ? `${currentBaseRoute}/${region}/feeders` : `${currentBaseRoute}/feeders`}>
+                                <Link
+                                    to={
+                                        region
+                                            ? `${currentBaseRoute}/${region}/feeders`
+                                            : `${currentBaseRoute}/feeders`
+                                    }>
                                     Feeders
                                 </Link>
                             </div>
@@ -241,28 +200,44 @@ const EDCUserPage = () => {
                     <div className={styles.metrics_communication_info}>
                         <div className="titles">Communication Status</div>
                         <div className={styles.overall_communication_status}>
-                            <div className={styles.communication_status_container}>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
                                 <div className={styles.communication_value}>
                                     {widgetsData.commMeters}
                                 </div>
-                                <div className={styles.communication_positive_percentage}>
+                                <div
+                                    className={
+                                        styles.communication_positive_percentage
+                                    }>
                                     <img
                                         src="icons/up-right-arrow.svg"
                                         alt="Positive"
-                                        className={styles.communication_positive_arrow}
+                                        className={
+                                            styles.communication_positive_arrow
+                                        }
                                     />
                                     87%
                                 </div>
                             </div>
-                            <div className={styles.communication_status_container}>
+                            <div
+                                className={
+                                    styles.communication_status_container
+                                }>
                                 <div className={styles.communication_value}>
                                     {widgetsData.nonCommMeters}
                                 </div>
-                                <div className={styles.communication_negative_percentage}>
+                                <div
+                                    className={
+                                        styles.communication_negative_percentage
+                                    }>
                                     <img
                                         src="icons/up-right-arrow.svg"
                                         alt="Positive"
-                                        className={styles.communication_negative_arrow}
+                                        className={
+                                            styles.communication_negative_arrow
+                                        }
                                     />
                                     13%
                                 </div>
@@ -310,4 +285,4 @@ const EDCUserPage = () => {
     );
 };
 
-export default EDCUserPage; 
+export default EDCUserPage;

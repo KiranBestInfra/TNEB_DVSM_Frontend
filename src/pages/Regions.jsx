@@ -8,6 +8,7 @@ import SummarySection from "../components/SummarySection";
 import ShortDetailsWidget from "./ShortDetailsWidget";
 import { apiClient } from "../api/client";
 import SectionHeader from "../components/SectionHeader/SectionHeader";
+import TimeRangeSelectDropdown from "../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown";
 
 const Regions = () => {
   const navigate = useNavigate();
@@ -61,13 +62,9 @@ const Regions = () => {
     };
   });
 
-  useEffect(() => {
-    const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
-    setSocket(newSocket);
-
-    newSocket.on("connect", () => {
-      console.log("Connected to socket server");
-    });
+    useEffect(() => {
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        setSocket(newSocket);
 
     newSocket.on("regionUpdate", (data) => {
       setWidgetsData((prevData) => {
@@ -115,24 +112,26 @@ const Regions = () => {
     const fetchData = async () => {
       const response = await apiClient.get("/regions/widgets");
 
-      const data = response.data;
+            const data = response.data;
 
-      setWidgetsData((prev) => ({
-        totalRegions: data.totalRegions || prev.totalRegions,
-        totalEdcs: data.totalEdcs || prev.totalEdcs,
-        totalDistricts: data.totalDistricts || prev.totalDistricts,
-        totalSubstations: data.totalSubstations || prev.totalSubstations,
-        totalFeeders: data.totalFeeders || prev.totalFeeders,
-        commMeters: data.commMeters || prev.commMeters,
-        nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
-        regionNames: data.regionNames || prev.regionNames,
-        edcCount: data.regionEdcCounts || prev.edcCount,
-        substationCount: data.regionSubstationCounts || prev.substationCount,
-        feederCount: data.regionFeederCounts || prev.feederCount,
-        //   regionDemandData: prev.regionDemandData,
-        // regionStats: prev.regionStats,
-      }));
-    };
+            setWidgetsData((prev) => ({
+                totalRegions: data.totalRegions || prev.totalRegions,
+                totalEdcs: data.totalEdcs || prev.totalEdcs,
+                totalDistricts: data.totalDistricts || prev.totalDistricts,
+                totalSubstations:
+                    data.totalSubstations || prev.totalSubstations,
+                totalFeeders: data.totalFeeders || prev.totalFeeders,
+                commMeters: data.commMeters || prev.commMeters,
+                nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
+                regionNames: data.regionNames || prev.regionNames,
+                edcCount: data.regionEdcCounts || prev.edcCount,
+                substationCount:
+                    data.regionSubstationCounts || prev.substationCount,
+                feederCount: data.regionFeederCounts || prev.feederCount,
+                //   regionDemandData: prev.regionDemandData,
+                // regionStats: prev.regionStats,
+            }));
+        };
 
     fetchData();
   }, []);
@@ -172,23 +171,10 @@ const Regions = () => {
     <div className={styles.main_content}>
       <SectionHeader title="Regions">
         <div className={styles.action_cont}>
-          <div className={styles.time_range_select_dropdown}>
-            <select
-              value={timeRange}
-              onChange={(e) => setTimeRange(e.target.value)}
-              className={styles.time_range_select}
-            >
-              <option value="Daily">Daily</option>
-              <option value="Monthly">Monthly</option>
-              <option value="PreviousMonth">Previous Month</option>
-              <option value="Year">Year</option>
-            </select>
-            <img
-              src="icons/arrow-down.svg"
-              alt="Select Time"
-              className={styles.time_range_select_dropdown_icon}
-            />
-          </div>
+          <TimeRangeSelectDropdown
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value)}
+          />
         </div>
       </SectionHeader>
 
