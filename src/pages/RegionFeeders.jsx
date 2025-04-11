@@ -241,6 +241,7 @@ const RegionFeeders = () => {
                                         )}
                                         pageType="feeders"
                                         feederCount={widgetsData.feederCount}
+                                        showInfoIcon={false}
                                     />
                                 </div>
                             ))

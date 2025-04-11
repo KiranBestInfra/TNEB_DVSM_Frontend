@@ -256,6 +256,7 @@ const EdcFeeders = () => {
                                         }
                                     }
                                     pageType="feeders"
+                                    showInfoIcon={false}
                                 />
                             </div>
                         ))
