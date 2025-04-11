@@ -78,6 +78,78 @@ const SubstationDetails = () => {
               .join(' ')
         : 'Unknown';
 
+        useEffect(() => {
+            const fetchFeeders = async () => {
+                try {
+                    try {
+                        const response = await apiClient.get(
+                            `/substations/${substationId}/feeders`
+                        );
+                        const feedersData = response.data.feeders || [];
+                        const commMeters = response.data.commMeters || 0;
+                        const nonCommMeters = response.data.nonCommMeters || 0;
+                        console.log('feedersData:',feedersData,commMeters,nonCommMeters);
+    
+                        setWidgetsData((prev) => {
+                            const newData = {
+                                ...prev,
+                                commMeters: commMeters,
+                                nonCommMeters: nonCommMeters,
+                                feederNames: feedersData.map((f) => f.name) || [],
+                                feederCount: feedersData.length || 0,
+                                totalFeeders: feedersData.length || 0,
+                                meterCount: feedersData.reduce((acc, f) => {
+                                    acc[f.name] = f.meter_count || 0;
+                                    return acc;
+                                }, {}),
+                                feederStats: feedersData.reduce((acc, f) => {
+                                    acc[f.name] = {
+                                        currentValue: f.current_value || 0,
+                                        previousValue: f.previous_value || 0,
+                                    };
+                                    return acc;
+                                }, {}),
+                                feederIds:
+                                    feedersData.map((feeder) => ({
+                                        [feeder.name]: feeder.id,
+                                    })) || [],
+                            };
+    
+                            const cacheData = {
+                                feederNames: newData.feederNames,
+                                meterCount: newData.meterCount,
+                                feederStats: newData.feederStats,
+                                feederDemandData: newData.feederDemandData,
+                                feederIds: newData.feederIds,
+                            };
+    
+                            localStorage.setItem(
+                                'substationFeederData',
+                                JSON.stringify(cacheData)
+                            );
+                            localStorage.setItem(
+                                'substationFeederDataTimestamp',
+                                Date.now().toString()
+                            );
+    
+                            return newData;
+                        });
+                    } catch (error) {
+                        console.error(
+                            'API error, using demo data for feeders:',
+                            error
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error fetching feeders for substation:', error);
+                }
+            };
+    
+            if (substationId) {
+                fetchFeeders();
+            }
+        }, [substationId]);
+
     const stats = {
         feederCount: 20,
         currentValue: 8.5,
@@ -119,9 +191,9 @@ const SubstationDetails = () => {
                     totalRegions: 0,
                     totalEdcs: stats.edcCount,
                     totalSubstations: stats.substationCount,
-                    totalFeeders: stats.feederCount,
-                    commMeters: stats.commMeters,
-                    nonCommMeters: stats.nonCommMeters,
+                    totalFeeders: widgetsData.feederCount,
+                    commMeters: widgetsData.commMeters,
+                    nonCommMeters: widgetsData.nonCommMeters,
                     totalDistricts: stats.edcCount || 0
                 }}
                 isUserRoute={false}
