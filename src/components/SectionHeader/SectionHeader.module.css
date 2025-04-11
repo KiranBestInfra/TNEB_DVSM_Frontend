@@ -83,8 +83,20 @@
   justify-content: center;
 }
 
-.sorting_icons:hover {
+.sorting_icons:hover:not(:disabled) {
+  background-color: var(--brand-blue);
+  border-color: var(--brand-blue);
+}
+
+.sorting_icons:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
   background-color: var(--primary-bg);
+}
+
+.sorting_icons:disabled:hover {
+  background-color: var(--primary-bg);
+  border-color: var(--primary-bg);
 }
 
 .sorting_icons.active {
@@ -159,6 +171,26 @@
   justify-content: center;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  border: 1px solid var(--primary-bg);
+}
+
+.previous_button_icon:hover:not(:disabled),
+.next_button_icon:hover:not(:disabled) {
+  background-color: var(--brand-blue);
+  border-color: var(--brand-blue);
+}
+
+.previous_button_icon:disabled,
+.next_button_icon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--primary-bg);
+}
+
+.previous_button_icon:disabled:hover,
+.next_button_icon:disabled:hover {
+  background-color: var(--primary-bg);
+  border-color: var(--primary-bg);
 }
 
 .previous_button_icon img,
