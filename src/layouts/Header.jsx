@@ -219,7 +219,7 @@ const Header = () => {
             <div className={styles.logo_container}>
                 <Link to={basePath}>
                     <img
-                        src="images/tangedco.png"
+                        src="images/bestinfra.png"
                         alt="Company Logo"
                         className={styles.logo_bestinfra}
                     />
@@ -283,9 +283,9 @@ const Header = () => {
                     </div>
 
                     <span
-                        className={styles.white_icons}
+                        className={styles.company_icon}
                         onClick={handleProfileClick}>
-                        <img src="icons/settings.svg" alt="Settings" />
+                        <img src="images/tangedco.png" alt="Settings" />
                     </span>
 
                     <span

@@ -136,6 +136,7 @@
 .pages_handler {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .select_pagination {
@@ -149,6 +150,15 @@
   min-width: 9rem;
   border: 1px solid var(--primary-bg);
   background-color: var(--white);
+}
+.select_pagination_icon { 
+    position: absolute;
+    right: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    width: 0.7rem;
+    height: 0.7rem;
 }
 
 .paginationControls {

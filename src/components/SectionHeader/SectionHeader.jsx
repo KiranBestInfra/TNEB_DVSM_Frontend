@@ -1,11 +1,11 @@
-import React from 'react';
-import styles from './SectionHeader.module.css';
+import React from "react";
+import styles from "./SectionHeader.module.css";
 
-const SectionHeader = ({ 
-  title, 
-  showSearch = false, 
-  showViewToggle = false, 
-  viewMode, 
+const SectionHeader = ({
+  title,
+  showSearch = false,
+  showViewToggle = false,
+  viewMode,
   setViewMode,
   showPagination = false,
   currentPage,
@@ -38,22 +38,26 @@ const SectionHeader = ({
 
         {showViewToggle && (
           <div className={styles.sorting}>
-            <span 
-              className={`${styles.sorting_icons} ${viewMode === 'card' ? styles.active : ''}`} 
-              onClick={() => setViewMode('card')}
+            <span
+              className={`${styles.sorting_icons} ${
+                viewMode === "card" ? styles.active : ""
+              }`}
+              onClick={() => setViewMode("card")}
             >
               <img src="icons/apps.svg" alt="cardView" />
             </span>
-            <span 
-              className={`${styles.sorting_icons} ${viewMode === 'list' ? styles.active : ''}`} 
-              onClick={() => setViewMode('list')}
+            <span
+              className={`${styles.sorting_icons} ${
+                viewMode === "list" ? styles.active : ""
+              }`}
+              onClick={() => setViewMode("list")}
             >
               <img src="icons/bars-staggered.svg" alt="listView" />
             </span>
           </div>
         )}</div>
       </div>
-      
+
       {showPagination && (
         <div className={styles.action_container}>
           <div className={styles.pagination_container}>
@@ -69,6 +73,11 @@ const SectionHeader = ({
                   </option>
                 ))}
               </select>
+              <img
+                src="icons/arrow-down.svg"
+                alt="Select Time"
+                className={styles.select_pagination_icon}
+              />
             </div>
             <div className={styles.paginationControls}>
               <button
@@ -102,4 +111,4 @@ const SectionHeader = ({
   );
 };
 
-export default SectionHeader; 
+export default SectionHeader;
