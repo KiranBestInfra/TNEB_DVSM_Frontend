@@ -41,6 +41,7 @@ const ShortDetailsWidget = ({
     previousValue,
     pageType = 'regions',
     handleRegionClick,
+    showInfoIcon = true,
     graphData = {
         xAxis: [],
         series: [],
@@ -386,15 +387,17 @@ const ShortDetailsWidget = ({
                     </p>
                 </div>
                 <div className={styles.individual_region_header_right}>
-                    <div className={styles.click_individual_region}>
-                        <img
-                            src="icons/information.svg"
-                            alt="Click Here"
-                            onClick={handleClick}
-                            style={{ cursor: 'pointer' }}
-                        />
-                        <div className={styles.tooltip}>View Information</div>
-                    </div>
+                    {showInfoIcon && (
+                        <div className={styles.click_individual_region}>
+                            <img
+                                src="icons/information.svg"
+                                alt="Click Here"
+                                onClick={handleClick}
+                                style={{ cursor: 'pointer' }}
+                            />
+                            <div className={styles.tooltip}>View Information</div>
+                        </div>
+                    )}
                 </div>
             </div>
             <div className={styles.individual_region_body}>
@@ -472,6 +475,7 @@ ShortDetailsWidget.propTypes = {
     previousValue: PropTypes.number.isRequired,
     pageType: PropTypes.oneOf(['regions', 'edcs', 'substations', 'feeders']),
     handleRegionClick: PropTypes.func,
+    showInfoIcon: PropTypes.bool,
     graphData: PropTypes.shape({
         xAxis: PropTypes.array,
         series: PropTypes.array,

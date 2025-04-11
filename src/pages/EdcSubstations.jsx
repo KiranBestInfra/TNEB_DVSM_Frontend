@@ -311,6 +311,7 @@ const EdcSubstations = () => {
                                                 }
                                             }
                                             pageType="substations"
+                                            showInfoIcon={true}
                                         />
                                     </div>
                                 ))

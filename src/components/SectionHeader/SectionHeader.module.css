@@ -30,7 +30,6 @@
 .search_cont input {
   border-radius: 2rem;
   font-size: 1rem;
-  cursor: pointer;
   outline: none;
   width: fit-content;
   height: 2.5rem;
@@ -55,6 +54,7 @@
   position: absolute;
   right: 0rem;
   top: 50%;
+  cursor: pointer;
   transform: translateY(-50%);
   pointer-events: none;
   height: 1rem;

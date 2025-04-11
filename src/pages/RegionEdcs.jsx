@@ -288,7 +288,9 @@ const RegionEdcs = () => {
                                     ).toFixed(1)}
                                     pageType="edcs"
                                     handleRegionClick={() => handleEdcClick(edc)}
+                                    showInfoIcon={true}
                                 />
+
                                 <div>
                                     {/* <h3>{edc.hierarchy_name}</h3> */}
                                     {/* <p>Substation Count: {widgetsData.substationCount[edc.hierarchy_name] || 0}</p> */}
