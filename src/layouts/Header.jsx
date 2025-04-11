@@ -219,7 +219,7 @@ const Header = () => {
             <div className={styles.logo_container}>
                 <Link to={basePath}>
                     <img
-                        src="images/tangedco.png"
+                        src="images/bestinfra.png"
                         alt="Company Logo"
                         className={styles.logo_bestinfra}
                     />
@@ -283,9 +283,9 @@ const Header = () => {
                     </div>
 
                     <span
-                        className={styles.white_icons}
+                        className={styles.company_icon}
                         onClick={handleProfileClick}>
-                        <img src="icons/settings.svg" alt="Settings" />
+                        <img src="images/tangedco.png" alt="Settings" />
                     </span>
 
                     <span
@@ -300,6 +300,12 @@ const Header = () => {
                         <img src="icons/bell.svg" alt="notifications" />
                     </span>
 
+                    <span
+                        className={styles.white_icons}
+                        onClick={handleLogout}>
+                        <img src="icons/exit-button.svg" alt="Logout" />
+                    </span>
+
                     <Buttons
                         label="Logout"
                         onClick={handleLogout}
@@ -307,6 +313,7 @@ const Header = () => {
                         icon="icons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
+                        className={styles.logout_button}
                     />
                 </div>
             </div>

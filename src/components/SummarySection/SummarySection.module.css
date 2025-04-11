@@ -142,3 +142,16 @@
         flex-direction: column;
     }
 }
+@media screen and (max-width: 480px) {
+    .total_meters_container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .overall_communication_status {
+        flex-direction: column;
+    }
+    .communication_value {
+        align-items: center;
+    }
+    
+}
