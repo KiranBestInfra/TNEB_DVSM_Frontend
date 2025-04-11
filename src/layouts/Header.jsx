@@ -301,7 +301,7 @@ const Header = () => {
                     </span>
 
                     <span
-                        className={styles.white_icons}
+                        className={`${styles.white_icons} ${styles.mobile_exit_icon}`}
                         onClick={handleLogout}>
                         <img src="icons/exit-button.svg" alt="Logout" />
                     </span>
