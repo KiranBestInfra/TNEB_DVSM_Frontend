@@ -82,6 +82,15 @@ const EdcSubstations = () => {
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -105,6 +114,15 @@ const EdcSubstations = () => {
                 }));
             } catch (error) {
                 console.error('Error fetching EDC widgets:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -280,7 +298,9 @@ const EdcSubstations = () => {
                         totalPages={Math.ceil(filteredSubstations.length / substationsPerPage)}
                         itemsPerPage={substationsPerPage}
                         onPageChange={handlePageChange}
-                        onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                        onItemsPerPageChange={(newPerPage) =>
+                            handlePageChange(1, newPerPage)
+                        }
                     />
 
                     <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>

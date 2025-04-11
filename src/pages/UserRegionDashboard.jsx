@@ -29,6 +29,15 @@ const UserRegionDashboard = () => {
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching region dashboard data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -76,7 +85,6 @@ const UserRegionDashboard = () => {
                                 }
                             />
                         </div>
-                       
                     </div>
                 </div>
             </div>

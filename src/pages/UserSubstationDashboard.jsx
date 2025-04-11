@@ -42,6 +42,15 @@ const UserSubstationDashboard = () => {
                     'Error fetching Substation dashboard data:',
                     error
                 );
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
                 setStats({
                     totalFeeders: 0,
                     healthyFeeders: 0,

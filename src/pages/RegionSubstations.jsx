@@ -60,9 +60,6 @@ const RegionSubstations = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [selectedSubstation, setSelectedSubstation] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [substationsPerPage, setSubstationsPerPage] = useState(6);
-    const [viewMode, setViewMode] = useState('card');
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('substationDemandData');
@@ -186,6 +183,15 @@ const RegionSubstations = () => {
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -229,39 +235,40 @@ const RegionSubstations = () => {
         };
     };
 
-    const handlePageChange = (newPage, newPerPage = substationsPerPage) => {
-        if (newPerPage !== substationsPerPage) {
-            setCurrentPage(1);
-            setSubstationsPerPage(newPerPage);
-        } else {
-            setCurrentPage(newPage);
-        }
-    };
-
     try {
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
-                    <SectionHeader title={`${regionName} - Substations`}>
-                        <div className={styles.action_cont}>
-                            <div className={styles.time_range_select_dropdown}>
-                                <select
-                                    value={timeframe}
-                                    onChange={handleTimeframeChange}
-                                    className={styles.time_range_select}>
-                                    <option value="Daily">Daily</option>
-                                    <option value="Monthly">Monthly</option>
-                                    <option value="PreviousMonth">Previous Month</option>
-                                    <option value="Year">Year</option>
-                                </select>
-                                <img
-                                    src="icons/arrow-down.svg"
-                                    alt="Select Time"
-                                    className={styles.time_range_select_dropdown_icon}
-                                />
+                    <div className={styles.section_header}>
+                        <h2 className="title">{regionName} - Substations</h2>
+                        <div className={styles.action_container}>
+                            <div className={styles.action_cont}>
+                                <div
+                                    className={
+                                        styles.time_range_select_dropdown
+                                    }>
+                                    <select
+                                        value={timeframe}
+                                        onChange={handleTimeframeChange}
+                                        className={styles.time_range_select}>
+                                        <option value="Daily">Daily</option>
+                                        <option value="Monthly">Monthly</option>
+                                        <option value="PreviousMonth">
+                                            Previous Month
+                                        </option>
+                                        <option value="Year">Year</option>
+                                    </select>
+                                    <img
+                                        src="icons/arrow-down.svg"
+                                        alt="Select Time"
+                                        className={
+                                            styles.time_range_select_dropdown_icon
+                                        }
+                                    />
+                                </div>
                             </div>
                         </div>
-                    </SectionHeader>
+                    </div>
                     <Breadcrumb />
 
                     <SummarySection
@@ -275,26 +282,18 @@ const RegionSubstations = () => {
                         showFeeders={true}
                     />
 
-                    <SectionHeader
-                        title={`Substations: [ ${widgetsData.regionSubstationCount} ]`}
-                        showSearch={true}
-                        showViewToggle={true}
-                        viewMode={viewMode}
-                        setViewMode={setViewMode}
-                        showPagination={true}
-                        currentPage={currentPage}
-                        totalPages={Math.ceil(widgetsData.substationIds?.length / substationsPerPage)}
-                        itemsPerPage={substationsPerPage}
-                        onPageChange={handlePageChange}
-                        onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
-                    />
-
-                    <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+                    <div className={styles.section_header}>
+                        <h2 className="title">
+                            Substations:{' '}
+                            <span className={styles.region_count}>
+                                [ {widgetsData.regionSubstationCount} ]
+                            </span>
+                        </h2>
+                    </div>
+                    <div className={styles.region_stats_container}>
                         {widgetsData.substationIds &&
                         widgetsData.substationIds.length > 0
-                            ? widgetsData.substationIds
-                                .slice((currentPage - 1) * substationsPerPage, currentPage * substationsPerPage)
-                                .map((value) => (
+                            ? widgetsData.substationIds.map((value) => (
                                   <div
                                       key={value.id}
                                       className={
@@ -356,7 +355,6 @@ const RegionSubstations = () => {
                                                   value.substation_names
                                               )
                                           }
-                                          showInfoIcon={true}
                                       />
                                   </div>
                               ))

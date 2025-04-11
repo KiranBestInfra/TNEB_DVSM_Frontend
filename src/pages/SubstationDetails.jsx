@@ -65,6 +65,15 @@ const SubstationDetails = () => {
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -78,77 +87,100 @@ const SubstationDetails = () => {
               .join(' ')
         : 'Unknown';
 
-        useEffect(() => {
-            const fetchFeeders = async () => {
+    useEffect(() => {
+        const fetchFeeders = async () => {
+            try {
                 try {
-                    try {
-                        const response = await apiClient.get(
-                            `/substations/${substationId}/feeders`
+                    const response = await apiClient.get(
+                        `/substations/${substationId}/feeders`
+                    );
+                    const feedersData = response.data.feeders || [];
+                    const commMeters = response.data.commMeters || 0;
+                    const nonCommMeters = response.data.nonCommMeters || 0;
+                    console.log(
+                        'feedersData:',
+                        feedersData,
+                        commMeters,
+                        nonCommMeters
+                    );
+
+                    setWidgetsData((prev) => {
+                        const newData = {
+                            ...prev,
+                            commMeters: commMeters,
+                            nonCommMeters: nonCommMeters,
+                            feederNames: feedersData.map((f) => f.name) || [],
+                            feederCount: feedersData.length || 0,
+                            totalFeeders: feedersData.length || 0,
+                            meterCount: feedersData.reduce((acc, f) => {
+                                acc[f.name] = f.meter_count || 0;
+                                return acc;
+                            }, {}),
+                            feederStats: feedersData.reduce((acc, f) => {
+                                acc[f.name] = {
+                                    currentValue: f.current_value || 0,
+                                    previousValue: f.previous_value || 0,
+                                };
+                                return acc;
+                            }, {}),
+                            feederIds:
+                                feedersData.map((feeder) => ({
+                                    [feeder.name]: feeder.id,
+                                })) || [],
+                        };
+
+                        const cacheData = {
+                            feederNames: newData.feederNames,
+                            meterCount: newData.meterCount,
+                            feederStats: newData.feederStats,
+                            feederDemandData: newData.feederDemandData,
+                            feederIds: newData.feederIds,
+                        };
+
+                        localStorage.setItem(
+                            'substationFeederData',
+                            JSON.stringify(cacheData)
                         );
-                        const feedersData = response.data.feeders || [];
-                        const commMeters = response.data.commMeters || 0;
-                        const nonCommMeters = response.data.nonCommMeters || 0;
-                        console.log('feedersData:',feedersData,commMeters,nonCommMeters);
-    
-                        setWidgetsData((prev) => {
-                            const newData = {
-                                ...prev,
-                                commMeters: commMeters,
-                                nonCommMeters: nonCommMeters,
-                                feederNames: feedersData.map((f) => f.name) || [],
-                                feederCount: feedersData.length || 0,
-                                totalFeeders: feedersData.length || 0,
-                                meterCount: feedersData.reduce((acc, f) => {
-                                    acc[f.name] = f.meter_count || 0;
-                                    return acc;
-                                }, {}),
-                                feederStats: feedersData.reduce((acc, f) => {
-                                    acc[f.name] = {
-                                        currentValue: f.current_value || 0,
-                                        previousValue: f.previous_value || 0,
-                                    };
-                                    return acc;
-                                }, {}),
-                                feederIds:
-                                    feedersData.map((feeder) => ({
-                                        [feeder.name]: feeder.id,
-                                    })) || [],
-                            };
-    
-                            const cacheData = {
-                                feederNames: newData.feederNames,
-                                meterCount: newData.meterCount,
-                                feederStats: newData.feederStats,
-                                feederDemandData: newData.feederDemandData,
-                                feederIds: newData.feederIds,
-                            };
-    
-                            localStorage.setItem(
-                                'substationFeederData',
-                                JSON.stringify(cacheData)
-                            );
-                            localStorage.setItem(
-                                'substationFeederDataTimestamp',
-                                Date.now().toString()
-                            );
-    
-                            return newData;
-                        });
-                    } catch (error) {
-                        console.error(
-                            'API error, using demo data for feeders:',
-                            error
+                        localStorage.setItem(
+                            'substationFeederDataTimestamp',
+                            Date.now().toString()
                         );
-                    }
+
+                        return newData;
+                    });
                 } catch (error) {
-                    console.error('Error fetching feeders for substation:', error);
+                    console.error(
+                        'API error, using demo data for feeders:',
+                        error
+                    );
+                    try {
+                        await apiClient.post('/log/error', {
+                            message: error.message,
+                            stack: error.stack || 'No stack trace',
+                            time: new Date().toISOString(),
+                        });
+                    } catch (logError) {
+                        console.error('Error logging to backend:', logError);
+                    }
                 }
-            };
-    
-            if (substationId) {
-                fetchFeeders();
+            } catch (error) {
+                console.error('Error fetching feeders for substation:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
-        }, [substationId]);
+        };
+
+        if (substationId) {
+            fetchFeeders();
+        }
+    }, [substationId]);
 
     const stats = {
         feederCount: 20,
@@ -194,7 +226,7 @@ const SubstationDetails = () => {
                     totalFeeders: widgetsData.feederCount,
                     commMeters: widgetsData.commMeters,
                     nonCommMeters: widgetsData.nonCommMeters,
-                    totalDistricts: stats.edcCount || 0
+                    totalDistricts: stats.edcCount || 0,
                 }}
                 isUserRoute={false}
                 isBiUserRoute={false}
@@ -204,7 +236,7 @@ const SubstationDetails = () => {
                 showDistricts={false}
                 showMeters={true}
             />
-           
+
             <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />
             </div>

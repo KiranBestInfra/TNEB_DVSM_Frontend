@@ -65,6 +65,15 @@ const EdcSubstationDetails = () => {
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -77,8 +86,7 @@ const EdcSubstationDetails = () => {
                     `/substations/${substationId}/feeders`
                 );
                 const data = feederResponse.data;
-                console.log('dataaa:',data);
-
+                console.log('dataaa:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -87,14 +95,20 @@ const EdcSubstationDetails = () => {
                     feederCount: data.feeders?.length,
                     commMeters: data.commMeters,
                     nonCommMeters: data.nonCommMeters,
-                  
                 }));
-
-        
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
+            }
+        };
 
         fetchData();
     }, [edcs, substationId]);
@@ -167,8 +181,8 @@ const EdcSubstationDetails = () => {
                     commMeters: stats.commMeters,
                     nonCommMeters: stats.nonCommMeters,
                 }}
-                    isUserRoute={location.pathname.includes('/user/')}
-                    isBiUserRoute={location.pathname.includes('/bi/user/')}
+                isUserRoute={location.pathname.includes('/user/')}
+                isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
                 showEdcs={false}
                 showMeters={false}

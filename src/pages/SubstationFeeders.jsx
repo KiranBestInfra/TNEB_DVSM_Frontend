@@ -187,9 +187,27 @@ const SubstationFeeders = () => {
                         'API error, using demo data for feeders:',
                         error
                     );
+                    try {
+                        await apiClient.post('/log/error', {
+                            message: error.message,
+                            stack: error.stack || 'No stack trace',
+                            time: new Date().toISOString(),
+                        });
+                    } catch (logError) {
+                        console.error('Error logging to backend:', logError);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching feeders for substation:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 

@@ -148,6 +148,15 @@ const RegionEdcs = () => {
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching EDCs for region:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
                 setLoading(false);
             }
         };
@@ -242,7 +251,9 @@ const RegionEdcs = () => {
                 totalPages={Math.ceil(filteredEdcs.length / edcsPerPage)}
                 itemsPerPage={edcsPerPage}
                 onPageChange={handlePageChange}
-                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                onItemsPerPageChange={(newPerPage) =>
+                    handlePageChange(1, newPerPage)
+                }
             />
 
             {loading ? (
@@ -287,10 +298,15 @@ const RegionEdcs = () => {
                                     previousValue={parseFloat(
                                         widgetsData.edcDemandData?.[
                                             edc.hierarchy_name
-                                        ]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
+                                        ]?.series?.[0]?.data?.slice(
+                                            -2,
+                                            -1
+                                        )[0] || 0
                                     ).toFixed(1)}
                                     pageType="edcs"
-                                    handleRegionClick={() => handleEdcClick(edc)}
+                                    handleRegionClick={() =>
+                                        handleEdcClick(edc)
+                                    }
                                     showInfoIcon={true}
                                 />
 
