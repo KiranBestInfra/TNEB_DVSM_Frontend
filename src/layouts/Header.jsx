@@ -7,6 +7,7 @@ import useDebounce from '../utils/debounce';
 import Cookies from 'js-cookie';
 import NotificationsPanel from '../components/NotificationsPanel/NotificationsPanel';
 import { useAuth } from '../components/AuthProvider';
+import ThemeToggle from '../components/ui/ThemeToggle/ThemeToggle';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -49,7 +50,7 @@ const Header = () => {
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentDateTime(new Date());
-        }, 1000);
+        }, 1000);   
 
         return () => clearInterval(timer);
     }, []);
@@ -63,7 +64,6 @@ const Header = () => {
     const formattedTime = currentDateTime.toLocaleTimeString('en-IN', {
         hour: '2-digit',
         minute: '2-digit',
-        second: '2-digit',
         hour12: true,
     });
 
@@ -272,9 +272,14 @@ const Header = () => {
             </div>
             <div className={`${styles.right_cont} ${isMobile && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
                 <div className={styles.right_cont_item}>
-                    <div className={styles.date_time_display}>
+                 <div className={styles.theme_toggle}>
+                        <ThemeToggle />
+                    </div>
+                    <div className={styles.date_time_display}>  
+                    
                         <div className={styles.time}>{formattedTime}</div>
                         <div className={styles.date}>{formattedDate}</div>
+                        
                         <div
                             className={styles.clock_icons}
                             onClick={handleProfileClick}>
@@ -293,6 +298,8 @@ const Header = () => {
                         onClick={handleTicketsClick}>
                         <img src="icons/support-tickets.svg" alt="Tickets" />
                     </span>
+
+                   
 
                     <span
                         className={styles.white_icons}

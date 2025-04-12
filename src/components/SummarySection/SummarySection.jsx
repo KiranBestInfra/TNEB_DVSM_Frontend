@@ -93,7 +93,7 @@ const SummarySection = ({
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/map-pin.svg"
+                            src="icons/map.svg"
                             alt="Total Districts"
                             className={styles.TNEB_icons}
                         />

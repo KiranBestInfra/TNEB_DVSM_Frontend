@@ -22,7 +22,7 @@ const SectionHeader = ({
       <div className={styles.section_header_left}>
         <h2 className={styles.title}>{title}</h2>
         
-        <div className={styles.search_sorting}>
+        {/* <div className={styles.search_sorting}>
           {showSearch && (
             <div className={styles.search_cont}>
               <input 
@@ -58,7 +58,7 @@ const SectionHeader = ({
               </span>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       {showPagination && (
