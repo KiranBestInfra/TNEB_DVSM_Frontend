@@ -8,6 +8,7 @@ import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
+import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
 
 const EdcFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
@@ -20,6 +21,7 @@ const EdcFeeders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [feedersPerPage, setFeedersPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
+    const [searchQuery, setSearchQuery] = useState("");
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedFeederData = localStorage.getItem('edcFeederData');
@@ -178,28 +180,23 @@ const EdcFeeders = () => {
         }
     };
 
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1); // Reset to first page when searching
+    };
+
+    const filteredFeeders = widgetsData.feederNames?.filter(feeder => 
+        feeder.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
+
     return (
         <div className={styles.main_content}>
             <SectionHeader title="Feeders">
                 <div className={styles.action_cont}>
-                    <div className={styles.time_range_select_dropdown}>
-                        <select
-                            value={timeRange}
-                            onChange={(e) => setTimeRange(e.target.value)}
-                            className={styles.time_range_select}>
-                            <option value="Daily">Daily</option>
-                            <option value="Monthly">Monthly</option>
-                            <option value="PreviousMonth">
-                                Previous Month
-                            </option>
-                            <option value="Year">Year</option>
-                        </select>
-                        <img
-                            src="icons/arrow-down.svg"
-                            alt="Select Time"
-                            className={styles.time_range_select_dropdown_icon}
-                        />
-                    </div>
+                    <TimeRangeSelectDropdown
+                        value={timeRange}
+                        onChange={(e) => setTimeRange(e.target.value)}
+                    />
                 </div>
             </SectionHeader>
             <Breadcrumb />
@@ -221,16 +218,16 @@ const EdcFeeders = () => {
             />
 
             <SectionHeader
-                title={`Feeders: [ ${widgetsData.feederCount} ]`}
+                title={`Feeders: [ ${filteredFeeders.length} ]`}
                 showSearch={true}
+                searchQuery={searchQuery}
+                onSearchChange={handleSearch}
                 showViewToggle={true}
                 viewMode={viewMode}
                 setViewMode={setViewMode}
                 showPagination={true}
                 currentPage={currentPage}
-                totalPages={Math.ceil(
-                    widgetsData.feederNames?.length / feedersPerPage
-                )}
+                totalPages={Math.ceil(filteredFeeders.length / feedersPerPage)}
                 itemsPerPage={feedersPerPage}
                 onPageChange={handlePageChange}
                 onItemsPerPageChange={(newPerPage) =>
@@ -238,17 +235,10 @@ const EdcFeeders = () => {
                 }
             />
 
-            <div
-                className={`${styles.region_stats_container} ${
-                    viewMode === 'list' ? styles.list_view : ''
-                }`}>
-                {widgetsData.feederNames &&
-                widgetsData.feederNames.length > 0 ? (
-                    widgetsData.feederNames
-                        .slice(
-                            (currentPage - 1) * feedersPerPage,
-                            currentPage * feedersPerPage
-                        )
+            <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+                {filteredFeeders.length > 0 ? (
+                    filteredFeeders
+                        .slice((currentPage - 1) * feedersPerPage, currentPage * feedersPerPage)
                         .map((value) => (
                             <div
                                 key={value.id}

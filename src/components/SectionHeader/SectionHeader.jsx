@@ -20,42 +20,45 @@ const SectionHeader = ({
   return (
     <div className={styles.section_header}>
       <div className={styles.section_header_left}>
-        <h2 className="title">{title}</h2>
+        <h2 className={styles.title}>{title}</h2>
         
-        <div className={styles.search_sorting}>{showSearch && (
-          <div className={styles.search_cont}>
-            <input 
-              type="text" 
-              placeholder="Search" 
-              value={searchQuery}
-              onChange={onSearchChange}
-            />
-            <span className={styles.search_icon}>
-              <img src="icons/search-icon.svg" alt="Search" />
-            </span>
-          </div>
-        )}
+        <div className={styles.search_sorting}>
+          {showSearch && (
+            <div className={styles.search_cont}>
+              <input 
+                type="text" 
+                placeholder="Search" 
+                value={searchQuery}
+                onChange={onSearchChange}
+                className={styles.search_input}
+              />
+              <span className={styles.search_icon}>
+                <img src="icons/search-icon.svg" alt="Search" />
+              </span>
+            </div>
+          )}
 
-        {showViewToggle && (
-          <div className={styles.sorting}>
-            <span
-              className={`${styles.sorting_icons} ${
-                viewMode === "card" ? styles.active : ""
-              }`}
-              onClick={() => setViewMode("card")}
-            >
-              <img src="icons/apps.svg" alt="cardView" />
-            </span>
-            <span
-              className={`${styles.sorting_icons} ${
-                viewMode === "list" ? styles.active : ""
-              }`}
-              onClick={() => setViewMode("list")}
-            >
-              <img src="icons/bars-staggered.svg" alt="listView" />
-            </span>
-          </div>
-        )}</div>
+          {showViewToggle && (
+            <div className={styles.sorting}>
+              <span
+                className={`${styles.sorting_icons} ${
+                  viewMode === "card" ? styles.active : ""
+                }`}
+                onClick={() => setViewMode("card")}
+              >
+                <img src="icons/apps.svg" alt="cardView" />
+              </span>
+              <span
+                className={`${styles.sorting_icons} ${
+                  viewMode === "list" ? styles.active : ""
+                }`}
+                onClick={() => setViewMode("list")}
+              >
+                <img src="icons/bars-staggered.svg" alt="listView" />
+              </span>
+            </div>
+          )}
+        </div>
       </div>
 
       {showPagination && (
@@ -90,7 +93,7 @@ const SectionHeader = ({
                 </span>
               </button>
               <span className={styles.pageInfo}>
-                 {currentPage} of {totalPages}
+                {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => onPageChange(currentPage + 1)}
