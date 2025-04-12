@@ -19,6 +19,7 @@ import EDCs from './pages/EDCs';
 import Substations from './pages/Substations';
 import Regions from './pages/Regions';
 import Feeders from './pages/Feeders';
+import ErrorLogs from './pages/ErrorLogs';
 import ProtectedRoute from './components/ProtectedRoute';
 import RegionDetails from './pages/RegionDetails';
 import EdcDetails from './pages/EdcDetails';
@@ -86,6 +87,7 @@ const App = () => {
                             <Route path="emulate" element={<Load />} />
                             <Route path="terms" element={<Terms />} />
                             <Route path="privacy" element={<Privacy />} />
+                            <Route path="error-logs" element={<ErrorLogs />} />
 
                             <Route
                                 path=":region/edcs"

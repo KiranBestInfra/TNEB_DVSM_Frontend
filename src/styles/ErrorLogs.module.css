@@ -1,0 +1,131 @@
+.main_content {
+    padding: 1.5rem;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.logs_container {
+    background-color: var(--white);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 1rem;
+}
+
+.loading, .error, .no_logs {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1rem;
+    color: var(--black);
+}
+
+.error {
+    color: #dc3545;
+}
+
+.logs_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.table_header {
+    display: flex;
+    background-color: var(--primary-bg);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.header_cell {
+    padding: 0.75rem 1rem;
+    flex: 1;
+}
+
+.table_row {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table_row:hover {
+    background-color: var(--hover-bg);
+}
+
+.cell {
+    padding: 0.75rem 1rem;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.message {
+    flex: 2;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.pagination_button {
+    padding: 0.5rem 1rem;
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.3s;
+}
+
+.pagination_button:hover:not(:disabled) {
+    background-color: var(--brand-blue);
+    color: var(--white);
+}
+
+.pagination_button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page_info {
+    margin: 0 0.5rem;
+    font-size: 0.875rem;
+}
+
+.items_per_page {
+    margin-left: 1rem;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    background-color: var(--white);
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.dummy_data_notice {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 0.25rem;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .table_header, .table_row {
+        font-size: 0.8rem;
+    }
+    
+    .header_cell, .cell {
+        padding: 0.5rem;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+} 
