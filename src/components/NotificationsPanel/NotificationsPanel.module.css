@@ -46,7 +46,7 @@
     padding: 0 1rem;
     border-bottom: 1px solid #eee;
     background: var(--primary-bg);
-    font-family: "Roboto", sans-serif;
+    font-family: "Roboto";
 }
 
 .tab {
@@ -55,11 +55,11 @@
     background: none;
     cursor: pointer;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--grey);
     position: relative;
     transition: color 0.3s;
-    font-family: "Roboto", sans-serif;
+    font-family: "Roboto";
 }
 
 .tab:hover {
@@ -68,7 +68,7 @@
 
 .activeTab {
     color: var(--brand-blue);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .activeTab::after {
@@ -121,7 +121,7 @@
     cursor: pointer;
     font-size: 0.7rem;
     transition: opacity 0.2s;
-    font-family: "Roboto", sans-serif;
+    font-family: "Roboto";
     text-transform: uppercase;
 }
 

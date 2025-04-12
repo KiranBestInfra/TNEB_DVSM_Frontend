@@ -13,7 +13,6 @@
 }
 
 .graph_container {
-    background: #FFFFFF;
     border-radius: 8px;
     height: 100%;
     display: flex;
@@ -69,7 +68,7 @@
 .chart {
     width: 100%;
     height: 100%;
-    min-height: 400px;
+    /* min-height: 500px; */
 }
 /*Dropdown for time range*/
 
@@ -99,4 +98,30 @@
     pointer-events: none;
     width: 0.7rem;
     height: 0.7rem;
+}
+
+.loading_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 400px;
+    color: #666;
+    font-family: 'Roboto', sans-serif;
+}
+
+.loading_spinner {
+    width: 1.8rem;
+    height: 1.8rem;
+    border: 3px solid var(--grey-light);
+    border-top: 3px solid var(--brand-blue);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

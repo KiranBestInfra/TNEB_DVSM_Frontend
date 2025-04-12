@@ -273,7 +273,7 @@ class ApiClient {
             );
         }
     }
-
+    
     async get(endpoint, options = {}) {
         return this.request(endpoint, { ...options, method: 'GET' });
     }

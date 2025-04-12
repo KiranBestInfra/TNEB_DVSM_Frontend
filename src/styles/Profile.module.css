@@ -194,11 +194,20 @@
 
 .paginationButton:hover:not(:disabled) {
     background-color: var(--brand-blue);
+    color: var(--white);
+    border-color: var(--brand-blue);
 }
 
 .paginationButton:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    background-color: var(--primary-bg);
+}
+
+.paginationButton:disabled:hover {
+    background-color: var(--primary-bg);
+    color: var(--grey);
+    border-color: var(--primary-bg);
 }
 
 .pageInfo {

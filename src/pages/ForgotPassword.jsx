@@ -26,8 +26,6 @@ const ForgotPassword = () => {
         try {
             setError('');
             setSuccess('Password reset instructions have been sent!');
-            // Here you would typically make an API call to send the reset email
-            // For now, we'll just simulate it with a timeout
             setTimeout(() => {
                 navigate(' /auth/verification');
             }, 1500);

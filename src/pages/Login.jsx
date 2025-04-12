@@ -52,7 +52,6 @@ const Login = () => {
                 password: value.password,
                 rememberMe: value.remember,
             });
-            console.log(response);
             if (response.status === 'error') {
                 setErrors({
                     submit:
@@ -62,11 +61,19 @@ const Login = () => {
             }
             let accessToken;
 
+            let attempts = 0;
             while (!accessToken) {
+                if (attempts >= 20) {
+                    setErrors({
+                        submit: 'Failed to retrieve access token after multiple attempts',
+                    });
+                    break;
+                }
                 accessToken = document.cookie
                     .split('; ')
                     .find((row) => row.startsWith('accessTokenDuplicate='))
                     ?.split('=')[1];
+                attempts++;
             }
 
             if (accessToken) {
@@ -74,28 +81,16 @@ const Login = () => {
                     updateUserFromToken();
 
                     const decoded = jwtDecode(accessToken);
-                    const role =
-                        decoded.role || decoded.Role || decoded.user_role;
+                    const role = decoded.role;
 
                     if (role.toLowerCase().includes('admin')) {
                         navigate('/admin/dashboard');
-                    } else {
-                        // For region users, get their region and redirect to that specific region
-                        let region = decoded.region || decoded.Region || null;
-
-                        // If no region in token, check if it's in userId (in case it follows a pattern)
-                        if (!region && decoded.userId && decoded.userId.includes('_')) {
-                            // Try to extract region from userId
-                            const possibleRegion = decoded.userId.split('_')[0].toLowerCase();
-                            console.log('Login - Extracted possible region from userId:', possibleRegion);
-                            region = possibleRegion;
-                        }
-
-                        // Set a default region if none is found
-                        region = region ? region.toLowerCase() : 'kancheepuram';
-                        console.log('Login - Redirecting to region:', region);
-
-                        navigate(`/user/${region}/dashboard`);
+                    } else if (role.toLowerCase().includes('region')) {
+                        navigate(`/user/region`);
+                    } else if (role.toLowerCase().includes('substation')) {
+                        navigate(`/user/substation`);
+                    } else if (role.toLowerCase().includes('circle')) {
+                        navigate(`/user/edc`);
                     }
                     return;
                 } catch (error) {

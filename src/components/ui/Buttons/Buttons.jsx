@@ -7,11 +7,12 @@ const Buttons = ({
     type = 'button',
     disabled = false,
     variant = 'primary',
+    className,
 }) => {
     return (
         <button
             type={type}
-            className={`${styles.button} ${styles[variant]}`}
+            className={`${styles.button} ${styles[variant]} ${className || ''}`}
             onClick={onClick}
             disabled={disabled}>
             <span className={styles.label}>{label}</span>

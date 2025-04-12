@@ -7,6 +7,7 @@ import useDebounce from '../utils/debounce';
 import Cookies from 'js-cookie';
 import NotificationsPanel from '../components/NotificationsPanel/NotificationsPanel';
 import { useAuth } from '../components/AuthProvider';
+import ThemeToggle from '../components/ui/ThemeToggle/ThemeToggle';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -16,22 +17,36 @@ const Header = () => {
     const [isNotificationsPanelOpen, setIsNotificationsPanelOpen] =
         useState(false);
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { isAdmin } = useAuth();
     const basePath = isAdmin() ? '/admin' : '/user';
 
     const debouncedSearchTerm = useDebounce(searchQuery, 500);
 
-    // Simulated profile data - in a real app, this would come from user context/auth
-    const { user } = useAuth(); // Get user details from auth context
-    //console.log(user);
+    const { user } = useAuth();
 
     const profileData = {
         profilePicture: user?.profilePicture || null,
-        firstName: user?.id || 'User',
-        lastName: user?.lastName || '',
+        firstName: user?.name || 'User',
+        lastName: '',
     };
 
-    // Update date and time every second
+    // Check if the screen is mobile-sized
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+    // Add event listener for window resize
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768);
+            if (window.innerWidth > 768) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentDateTime(new Date());
@@ -40,18 +55,16 @@ const Header = () => {
         return () => clearInterval(timer);
     }, []);
 
-    // Format date and time
     const formattedDate = currentDateTime.toLocaleDateString('en-IN', {
         day: '2-digit',
         month: 'short',
-        year: 'numeric'
+        year: 'numeric',
     });
 
     const formattedTime = currentDateTime.toLocaleTimeString('en-IN', {
         hour: '2-digit',
         minute: '2-digit',
-        second: '2-digit',
-        hour12: true
+        hour12: true,
     });
 
     const handleSearchChange = (e) => {
@@ -62,8 +75,35 @@ const Header = () => {
         setSearchQuery(query);
     };
 
-    const handleResultClick = (resultId) => {
-        navigate(`${basePath}/details/${resultId}`);
+    const handleResultClick = (result) => {
+        const { id, hierarchy_type_id, hierarchy_name, region } = result;
+        let redirectPath = '';
+
+        const formatName = (name) => {
+            return name.toLowerCase().replace(/\s+/g, '-');
+        };
+
+        switch (hierarchy_type_id) {
+            case 10: // Region
+                redirectPath = `${basePath}/regions/${formatName(
+                    hierarchy_name
+                )}/details`;
+                break;
+            case 11:
+                redirectPath = `${basePath}/${formatName(
+                    region
+                )}/edcs/${id}/details`;
+                break;
+            case 35: // Substation
+                redirectPath = `${basePath}/${formatName(
+                    region
+                )}/substations/${id}/details`;
+                break;
+            default:
+                redirectPath = `${basePath}/details/${id}`;
+        }
+
+        navigate(redirectPath);
         setSearchQuery('');
         setSearchResults([]);
     };
@@ -141,6 +181,7 @@ const Header = () => {
                         `/regions/search?term=${debouncedSearchTerm}`
                     );
                     const results = response.data;
+
                     setSearchResults(results);
                 } catch (error) {
                     console.error('Search error:', error);
@@ -155,7 +196,7 @@ const Header = () => {
 
     const placeholders = [
         'Search by Region',
-        'Search by District',
+        'Search by EDC',
         'Search by Substation',
     ];
 
@@ -172,12 +213,17 @@ const Header = () => {
         return () => clearInterval(intervalId);
     }, [placeholders.length]);
 
+    // Toggle mobile menu
+    const toggleMobileMenu = () => {
+        setIsMobileMenuOpen(!isMobileMenuOpen);
+    };
+
     return (
         <div className={styles.header_container}>
             <div className={styles.logo_container}>
                 <Link to={basePath}>
                     <img
-                        src="images/tangedco.png"
+                        src="images/bestinfra.png"
                         alt="Company Logo"
                         className={styles.logo_bestinfra}
                     />
@@ -185,8 +231,25 @@ const Header = () => {
                 <span className={styles.welcome_message}>
                     Welcome {profileData.firstName}!
                 </span>
+                {isMobile && (
+                    <div
+                        className={styles.mobile_menu_toggle}
+                        onClick={toggleMobileMenu}>
+                        <img
+                            src={
+                                isMobileMenuOpen
+                                    ? 'icons/close-button.svg'
+                                    : 'icons/hamburger-menu.svg'
+                            }
+                            alt="Menu"
+                        />
+                    </div>
+                )}
             </div>
-            <div className={styles.search_cont}>
+            <div
+                className={`${styles.search_cont} ${
+                    isMobile && !isMobileMenuOpen ? styles.mobile_hidden : ''
+                }`}>
                 <input
                     type="text"
                     name="query"
@@ -208,8 +271,7 @@ const Header = () => {
                             <div
                                 key={result.id}
                                 className={styles.search_result_item}
-                                onClick={() => handleResultClick(result.id)}>
-
+                                onClick={() => handleResultClick(result)}>
                                 <span className={styles.result_name}>
                                     {result.hierarchy_name}
                                 </span>
@@ -218,27 +280,29 @@ const Header = () => {
                     </div>
                 )}
             </div>
-            <div className={styles.right_cont}>
+            <div
+                className={`${styles.right_cont} ${
+                    isMobile && !isMobileMenuOpen ? styles.mobile_hidden : ''
+                }`}>
                 <div className={styles.right_cont_item}>
-                    {/* <div className={styles.white_icons} onClick={handleProfileClick}>
-                        {renderProfilePicture()}
-                    </div> */}
-
+                    <div className={styles.theme_toggle}>
+                        <ThemeToggle />
+                    </div>
                     <div className={styles.date_time_display}>
                         <div className={styles.time}>{formattedTime}</div>
                         <div className={styles.date}>{formattedDate}</div>
+
                         <div
                             className={styles.clock_icons}
                             onClick={handleProfileClick}>
                             <img src="icons/clock-up-arrow.svg" alt="Clock" />
                         </div>
-
                     </div>
 
                     <span
-                        className={styles.white_icons}
+                        className={styles.company_icon}
                         onClick={handleProfileClick}>
-                        <img src="icons/settings.svg" alt="Settings" />
+                        <img src="images/tangedco.png" alt="Settings" />
                     </span>
 
                     <span
@@ -253,6 +317,24 @@ const Header = () => {
                         <img src="icons/bell.svg" alt="notifications" />
                     </span>
 
+                    <span
+                        className={styles.white_icons}
+                        onClick={() => navigate(`${basePath}/error-logs`)}>
+                        <p
+                            style={{
+                                filter: 'invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%)',
+                                fontSize: '18px',
+                            }}>
+                            D
+                        </p>
+                    </span>
+
+                    <span
+                        className={`${styles.white_icons} ${styles.mobile_exit_icon}`}
+                        onClick={handleLogout}>
+                        <img src="icons/exit-button.svg" alt="Logout" />
+                    </span>
+
                     <Buttons
                         label="Logout"
                         onClick={handleLogout}
@@ -260,6 +342,7 @@ const Header = () => {
                         icon="icons/logout-icon.svg"
                         alt="Logout"
                         iconPosition="right"
+                        className={styles.logout_button}
                     />
                 </div>
             </div>

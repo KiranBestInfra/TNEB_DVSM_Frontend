@@ -70,11 +70,6 @@ const EDCs = () => {
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
         setSocket(newSocket);
-
-        newSocket.on('connect', () => {
-            console.log('Connected to socket server');
-        });
-
         newSocket.on('edcUpdate', (data) => {
             setWidgetsData((prevData) => {
                 const newData = {
@@ -121,14 +116,12 @@ const EDCs = () => {
     }, [widgetsData.edcNames, socket]);
 
     useEffect(() => {
-        console.log('region', region);
         if (!region) return;
 
         const fetchEdcNames = async () => {
             try {
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response;
-                console.log('Fetched EDC data:', data); // Log to check response
                 const edcSubstationCounts =
                     data.data?.substationCounts?.reduce((acc, edc) => {
                         acc[edc.edc_name] = edc.substation_count;
@@ -139,27 +132,29 @@ const EDCs = () => {
                     ...prev,
                     edcNames: data.data?.edcNames || [],
                     regionEdcCount: data.data?.edcNames?.length || 0,
-                    substationNames: data.data?.substationNames || [], // Added line
-                    // regionSubstationCount:
-                    //     data.data?.substationNames?.length || 0, // Added line
-                    //SubstationCount: data.data?.substationCounts || [],
+                    substationNames: data.data?.substationNames || [],
                     substationCount: edcSubstationCounts,
-                    //feederCount: edcFeederCounts, // Store feeder count
                     feederCount: data.data?.feederCounts || {},
                 }));
             } catch (error) {
                 console.error('Error fetching EDC names:', error);
-                console.error('Error fetching EDC names:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
         fetchEdcNames();
     }, [region]);
 
-    console.log('widgetsData', widgetsData);
-
     const handleRegionClick = (region) => {
-        setSelectedRegion(region); // Set region when clicked
+        setSelectedRegion(region);
     };
 
     const handleTimeframeChange = (e) => {
@@ -311,11 +306,11 @@ const EDCs = () => {
             // For region user
             const formattedRegionName = region
                 ? region
-                    .split('-')
-                    .map(
-                        (word) => word.charAt(0).toUpperCase() + word.slice(1)
-                    )
-                    .join(' ')
+                      .split('-')
+                      .map(
+                          (word) => word.charAt(0).toUpperCase() + word.slice(1)
+                      )
+                      .join(' ')
                 : 'Unknown';
 
             const items = [
@@ -364,10 +359,11 @@ const EDCs = () => {
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
                             />
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -544,7 +540,6 @@ const EDCs = () => {
                                 substationCount={
                                     widgetsData.substationCount?.[edc] || 0
                                 }
-                                // feederCount={edcFeederCounts?.[edc] || 0}
                                 edcCount={widgetsData.edcNames.length}
                                 feederCount={
                                     widgetsData.feederCount?.[edc] || 0
@@ -562,6 +557,7 @@ const EDCs = () => {
                                     }
                                 }
                                 pageType="edcs"
+                                showInfoIcon={true}
                             />
                         </div>
                     ))

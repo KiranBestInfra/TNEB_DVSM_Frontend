@@ -23,7 +23,6 @@
 .header_right img{
     width: 1.2rem;    
     rotate: 90deg;
-    /* filter: brightness(0) invert(1); */
 }
 .ticket_header div {
     width: 100%;

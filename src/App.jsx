@@ -19,12 +19,14 @@ import EDCs from './pages/EDCs';
 import Substations from './pages/Substations';
 import Regions from './pages/Regions';
 import Feeders from './pages/Feeders';
+import ErrorLogs from './pages/ErrorLogs';
 import ProtectedRoute from './components/ProtectedRoute';
 import RegionDetails from './pages/RegionDetails';
 import EdcDetails from './pages/EdcDetails';
 import SubstationDetails from './pages/SubstationDetails';
+import EdcSubstationDetails from './pages/EdcSubstationDetails';
+import EdcFeederDetails from './pages/EdcFeederDetails';
 import FeederDetails from './pages/FeederDetails';
-import UserRegionDashboard from './pages/UserRegionDashboard';
 import RegionEdcs from './pages/RegionEdcs';
 import EdcSubstations from './pages/EdcSubstations';
 import RegionSubstations from './pages/RegionSubstations';
@@ -33,6 +35,10 @@ import UserEdcDashboard from './pages/UserEdcDashboard';
 import UserSubstationDashboard from './pages/UserSubstationDashboard';
 import EdcFeeders from './pages/EdcFeeders';
 import SubstationFeeders from './pages/SubstationFeeders';
+import EdcSubstationFeeders from './pages/EdcSubstationFeeders';
+import RegionSubstationFeederDetails from './pages/RegionSubstationFeederDetails';
+import EdcSubstationFeederDetails from './pages/EdcSubstationFeederDetails';
+// import UserRegionDashboard from './pages/UserRegionDashboard';
 
 const App = () => {
     return (
@@ -49,7 +55,11 @@ const App = () => {
                             element={<Navigate to="/admin/dashboard" replace />}
                         />
 
-                        <Route path="admin" element={<ProtectedRoute />}>
+                        <Route
+                            path="admin"
+                            element={
+                                <ProtectedRoute allowedRoles={['admin']} />
+                            }>
                             <Route
                                 index
                                 element={
@@ -59,7 +69,7 @@ const App = () => {
                             <Route path="dashboard" element={<Dashboard />} />
                             <Route path="regions" element={<Regions />} />
                             <Route
-                                path="regions/:region"
+                                path="regions/:region/details"
                                 element={<RegionDetails />}
                             />
                             <Route path="edcs" element={<EDCs />} />
@@ -77,6 +87,7 @@ const App = () => {
                             <Route path="emulate" element={<Load />} />
                             <Route path="terms" element={<Terms />} />
                             <Route path="privacy" element={<Privacy />} />
+                            <Route path="error-logs" element={<ErrorLogs />} />
 
                             <Route
                                 path=":region/edcs"
@@ -100,57 +111,86 @@ const App = () => {
                                 element={<EdcSubstations />}
                             />
                             <Route
-                                path=":region/:edcs/feeder"
+                                path=":region/:edcs/feeders"
                                 element={<EdcFeeders />}
+                            />
+                            <Route
+                                path=":region/:edcId/substations/:substationId/details"
+                                element={<EdcSubstationDetails />}
+                            />
+                            <Route
+                                path=":region/:edcId/feeders/:feederId/details"
+                                element={<EdcFeederDetails />}
+                            />
+                            <Route
+                                path=":region/:edcs/:substationId/feeders"
+                                element={<EdcSubstationFeeders />}
+                            />
+                            <Route
+                                path=":region/:edcs/substations/:substationId/feeders/:feederId/details"
+                                element={<EdcSubstationFeederDetails />}
                             />
                             <Route
                                 path=":region/substations/:substationId/feeders"
                                 element={<SubstationFeeders />}
                             />
                             <Route
-                                path=":region/feeders/:feederId/details"
-                                element={<FeederDetails />}
-                            />
-                        </Route>
-
-                        <Route path="user/region" element={<ProtectedRoute />}>
-                            <Route
-                                index
-                                element={
-                                    <Navigate to=":region/dashboard" replace />
-                                }
-                            />
-                            <Route
-                                path=":region/dashboard"
-                                element={<UserRegionDashboard />}
-                            />
-                            <Route
-                                path=":region/edcs"
-                                element={<RegionEdcs />}
-                            />
-                            <Route
-                                path=":region/edcs/:edcId/details"
-                                element={<EdcDetails />}
-                            />
-                            <Route
-                                path=":region/substations"
-                                element={<RegionSubstations />}
+                                path=":region/substations/:substationId/feeders/:feederId/details"
+                                element={<RegionSubstationFeederDetails />}
                             />
                             <Route
                                 path=":region/substations/:substationId/details"
                                 element={<SubstationDetails />}
                             />
                             <Route
-                                path=":region/feeders"
-                                element={<RegionFeeders />}
-                            />
-                            <Route
                                 path=":region/feeders/:feederId/details"
                                 element={<FeederDetails />}
                             />
                         </Route>
 
-                        <Route path="user/edc" element={<ProtectedRoute />}>
+                        <Route
+                            path="user/region"
+                            element={
+                                <ProtectedRoute allowedRoles={['region']} />
+                            }>
+                            <Route
+                                index
+                                element={<Navigate to="dashboard" replace />}
+                            />
+                            <Route
+                                path="dashboard"
+                                element={<RegionDetails />}
+                            />
+                            <Route path="edcs" element={<RegionEdcs />} />
+                            <Route
+                                path="substations"
+                                element={<RegionSubstations />}
+                            />
+                            <Route path="feeders" element={<RegionFeeders />} />
+
+                            <Route
+                                path="substations/:substationId/feeders"
+                                element={<SubstationFeeders />}
+                            />
+                            <Route
+                                path=":edcs/feeders"
+                                element={<EdcFeeders />}
+                            />
+                            <Route
+                                path=":edcs/substations"
+                                element={<EdcSubstations />}
+                            />
+                            <Route
+                                path=":edcs/:substationId/feeders"
+                                element={<EdcSubstationFeeders />}
+                            />
+                        </Route>
+
+                        <Route
+                            path="user/edc"
+                            element={
+                                <ProtectedRoute allowedRoles={['circle']} />
+                            }>
                             <Route
                                 index
                                 element={
@@ -167,7 +207,7 @@ const App = () => {
                             />
                             <Route
                                 path=":edc/substations/:substationId/details"
-                                element={<SubstationDetails />}
+                                element={<EdcSubstationDetails />}
                             />
                             <Route
                                 path=":edc/feeders"
@@ -175,13 +215,23 @@ const App = () => {
                             />
                             <Route
                                 path=":edc/feeders/:feederId/details"
-                                element={<FeederDetails />}
+                                element={<EdcFeederDetails />}
+                            />
+                            <Route
+                                path=":edc/substations/:substationId/feeders"
+                                element={<EdcSubstationFeeders />}
+                            />
+                            <Route
+                                path=":edc/substations/:substationId/feeders/:feederId/details"
+                                element={<EdcSubstationFeederDetails />}
                             />
                         </Route>
 
                         <Route
                             path="user/substation"
-                            element={<ProtectedRoute />}>
+                            element={
+                                <ProtectedRoute allowedRoles={['substation']} />
+                            }>
                             <Route
                                 index
                                 element={

@@ -22,8 +22,6 @@ const TicketDetails = () => {
                     setLoading(true);
                     const res = await apiClient.get(`/tickets/${id}`);
                     const data = res.data;
-
-                    // Normalize API fields to match UI logic
                     const formattedTicket = {
                         id: data.TicketId,
                         subject: data.Subject,
@@ -81,6 +79,15 @@ const TicketDetails = () => {
             setStatusChange('');
         } catch (error) {
             console.error('Failed to update status:', error);
+            try {
+                await apiClient.post('/log/error', {
+                    message: error.message,
+                    stack: error.stack || 'No stack trace',
+                    time: new Date().toISOString(),
+                });
+            } catch (logError) {
+                console.error('Error logging to backend:', logError);
+            }
         }
     };
 

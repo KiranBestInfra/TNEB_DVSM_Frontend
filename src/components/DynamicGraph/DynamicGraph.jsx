@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
+import PropTypes from 'prop-types';
 import styles from './DynamicGraph.module.css';
 
 const DynamicGraph = ({
@@ -8,8 +9,7 @@ const DynamicGraph = ({
     data,
     className,
     lineColor = '#3f68b2',
-    yAxisLabel = 'Value',
-    refreshInterval = 15000,
+    yAxisLabel = 'MW',
     timeRange,
     onTimeRangeChange,
     showTimeRangeDropdown = true,
@@ -144,7 +144,7 @@ const DynamicGraph = ({
                     type: 'value',
                     boundaryGap: [0, '10%'],
                     axisLabel: {
-                        formatter: `{value} ${yAxisLabel}`,
+                        formatter: '{value} MW',
                         fontFamily: 'Roboto',
                         fontSize: '0.75rem',
                         color: '#424242',
@@ -223,7 +223,9 @@ const DynamicGraph = ({
                         <div className={styles.time_range_select_dropdown}>
                             <select
                                 value={timeRange}
-                                onChange={(e) => onTimeRangeChange(e.target.value)}
+                                onChange={(e) =>
+                                    onTimeRangeChange(e.target.value)
+                                }
                                 className={styles.time_range_select}>
                                 <option value="Daily">Daily</option>
                                 <option value="Monthly">Monthly</option>
@@ -234,7 +236,9 @@ const DynamicGraph = ({
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
                             />
                         </div>
                     )}
@@ -249,10 +253,37 @@ const DynamicGraph = ({
                 </div>
             </div>
             <div className={styles.echart_container}>
-                <div ref={chartRef} className={styles.chart} />
+                {data && data.series && data.series.length > 0 ? (
+                    <div ref={chartRef} className={styles.chart} />
+                ) : (
+                    <div className={styles.loading_container}>
+                        <div className={styles.loading_spinner}></div>
+                        <p>Loading data...</p>
+                    </div>
+                )}
             </div>
         </div>
     );
+};
+
+DynamicGraph.propTypes = {
+    title: PropTypes.string,
+    height: PropTypes.string,
+    data: PropTypes.shape({
+        xAxis: PropTypes.arrayOf(PropTypes.string),
+        series: PropTypes.arrayOf(
+            PropTypes.shape({
+                name: PropTypes.string,
+                data: PropTypes.arrayOf(PropTypes.number),
+            })
+        ),
+    }),
+    className: PropTypes.string,
+    lineColor: PropTypes.string,
+    yAxisLabel: PropTypes.string,
+    timeRange: PropTypes.string,
+    onTimeRangeChange: PropTypes.func,
+    showTimeRangeDropdown: PropTypes.bool,
 };
 
 export default DynamicGraph;

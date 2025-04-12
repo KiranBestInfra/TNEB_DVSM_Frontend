@@ -3,6 +3,8 @@
     justify-content: space-between;
     height: 100%;
     align-items: center;
+    font-weight: 700;
+    position: relative;
 }
 
 .header_container>div {
@@ -32,6 +34,8 @@
 
 .search_cont {
     position: relative;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
 }
 
 .icon_placement {
@@ -43,6 +47,8 @@
 .right_cont {
     display: flex;
     justify-content: right;
+    font-weight: 700;
+    transition: all 0.3s ease-in-out;
 }
 
 .right_cont_item {
@@ -64,7 +70,27 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
     border: 2px solid var(--white);
-
+}
+.company_icon{
+    background-color: var(--white);
+    border-radius: 50%;
+    padding: 0.5rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: 2px solid var(--white);
+}
+.company_icon img{
+    height: 2rem;
+    width: 2rem;
+    object-fit: contain;
+}
+.company_icon:hover {
+    border: 2px solid var(--brand-blue);
 }
 
 .white_icons>img {
@@ -79,6 +105,11 @@
 
 .white_icons:hover>img {
     filter: invert(19%) sepia(98%) saturate(1642%) hue-rotate(186deg) brightness(96%) contrast(101%);
+}
+
+/* Hide mobile exit icon by default */
+.mobile_exit_icon {
+    display: none;
 }
 
 /* Profile container and dropdown styles */
@@ -139,34 +170,6 @@
 .dropdown_item img {
     width: 1rem;
     height: 1rem;
-}
-
-@media screen and (max-width: 768px) {
-    .profile_name {
-        display: none;
-    }
-
-    .profile_container {
-        padding: 0;
-    }
-}
-
-@media screen and (max-width: 480px) {
-    input::placeholder {
-        font-size: 0.855rem;
-    }
-
-    .header_container>div {
-        width: fit-content;
-    }
-
-    .header_container {
-        gap: 0.5rem;
-    }
-
-    .header_container button {
-        font-size: 0.85rem;
-    }
 }
 
 .profile_picture {
@@ -257,7 +260,7 @@
 .welcome_message {
     margin-left: 1rem;
     font-size: 1.1rem;
-    font-weight: 500;
+    font-weight: 700;
     color: #333;
 }
 
@@ -295,6 +298,152 @@
 }
 
 .date {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     color: var(--grey);
+}
+
+.mobile_menu_toggle {
+    display: none;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.mobile_menu_toggle img {
+    width: 24px;
+    height: 24px;
+}
+
+.mobile_hidden {
+    display: none;
+}
+.mobile_menu_toggle img{
+filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%);
+}
+
+/* Media queries for mobile devices */
+@media screen and (max-width: 768px) {
+    .header_container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .logo_container {
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    
+    .mobile_menu_toggle {
+        display: flex;
+    }
+    
+    .search_cont:not(.mobile_hidden), 
+    .right_cont:not(.mobile_hidden) {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        animation: slideIn 0.3s ease-in-out;
+    }
+    
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .search_cont {
+        width: 100%;
+    }
+    
+    .right_cont {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    /* .welcome_message {
+        display: none;
+    } */
+    
+    .date_time_display {
+        margin-right: 0;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .time, .date {
+        font-size: 0.8rem;
+    }
+    
+    .search_results {
+        width: 100%;
+        max-height: 200px;
+        z-index: 200;
+    }
+    
+    .search_result_item {
+        padding: 8px 12px;
+    }
+    
+    /* Show mobile exit icon in mobile view */
+    .mobile_exit_icon {
+        display: flex;
+    }
+}
+
+/* For even smaller screens */
+@media screen and (max-width: 480px) {
+    .date_time_display {
+        flex-direction: row-reverse;
+        align-items: center;
+        display: flex;
+        height: 2rem;
+    }
+    
+    .logout_button {
+        display: none;
+    }
+    .white_icons {
+        height: 2rem;
+        width: 2rem;
+        padding: 0.25rem;
+    }
+    
+    .right_cont_item {
+        justify-content: space-between;
+        gap: 0.25rem;
+    }
+    
+    .logo_bestinfra {
+        height: 3.5rem;
+        width: 3.5rem;
+    }
+
+}
+
+/* For landscape mode on mobile */
+@media screen and (max-height: 480px) and (orientation: landscape) {
+    .header_container {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .logo_container {
+        width: auto;
+        margin-bottom: 0;
+    }
+    
+    .search_cont {
+        width: 40%;
+    }
+    
+    .right_cont {
+        width: auto;
+    }
 }

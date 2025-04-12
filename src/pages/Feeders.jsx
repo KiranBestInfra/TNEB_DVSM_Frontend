@@ -8,20 +8,19 @@ import { Link } from 'react-router-dom';
 
 const Feeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
-    const totalMeters = 1243;
-    const totalRegions = 13; 
-    const totalEDCs = 95; 
-    const totalSubstations = 260; 
-    const totalFeeders = 416; 
+    const totalMeters = 0;
+    const totalRegions = 0;
+    const totalEDCs = 0;
+    const totalSubstations = 0;
+    const totalFeeders = 0;
 
     const { region } = useParams();
-    console.log('Feeders - Region from params:', region);
 
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
 
     const feederNames = [
-        'Adyar Feeder 1',
+        'Adyar',
         'Velachery Feeder 2',
         'T Nagar Feeder 3',
         'Mylapore Feeder 4',
@@ -314,6 +313,7 @@ const Feeders = () => {
                             currentValue={feederStats[feeder].currentValue}
                             previousValue={feederStats[feeder].previousValue}
                             pageType="feeders"
+                            showInfoIcon={true}
                         />
                     </div>
                 ))}
