@@ -32,7 +32,7 @@ const Dashboard = () => {
         const fetchData = async () => {
             const response = await apiClient.get('/regions/widgets');
             const data = response.data;
-            
+
             setWidgetsData((prev) => ({
                 ...prev,
                 totalRegions: data.totalRegions || prev.totalRegions,
@@ -43,24 +43,38 @@ const Dashboard = () => {
                 commMeters: data.commMeters || prev.commMeters,
                 nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
                 totalDistricts: data.totalDistricts || prev.totalDistricts,
-                }));
+            }));
         };
 
         fetchData();
     }, []);
 
+    // useEffect(() => {
+    //     const fetchGraphTimeRange = async () => {
+    //         try {
+    //             const response = await apiClient.get('/main/graphs');
+    //             const data = response.data;
+    //         } catch (error) {
+    //             console.error('Error fetching graph time range:', error);
+    //             // Send error to backend
+    //             try {
+    //                 await apiClient.post('/log/error', {
+    //                     message: error.message,
+    //                     stack: error.stack || 'No stack trace',
+    //                     time: new Date().toISOString(),
+    //                 });
+    //             } catch (logError) {
+    //                 console.error('Error logging to backend:', logError);
+    //             }
 
-    useEffect(() => {
-        const fetchGraphTimeRange = async () => {   
-            try {
-                const response = await apiClient.get('/main/graphs');
-                const data = response.data;
-            } catch (error) {
-                console.error('Error fetching graph time range:', error);
-            }
-        };  
-        fetchGraphTimeRange();
-    }, []);
+    //             // Set error message for UI
+    //             // setErrorMessage(
+    //             //     'Failed to load graph data. Please try again later.'
+    //             // );
+    //         }
+    //     };
+    //     fetchGraphTimeRange();
+    // }, []);
 
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -73,6 +87,15 @@ const Dashboard = () => {
                 });
             } catch (error) {
                 console.error('Error fetching graph data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
         fetchGraphData();
@@ -83,8 +106,7 @@ const Dashboard = () => {
             <div className={styles.section_header}>
                 <h2 className="title">Dashboard</h2>
                 <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                    </div>
+                    <div className={styles.action_cont}></div>
                 </div>
             </div>
 
@@ -97,8 +119,8 @@ const Dashboard = () => {
                                 ? isBiUserRoute
                                     ? `/exedb/user/${region}/dashboard`
                                     : isUserRoute
-                                        ? `/user/${region}/dashboard`
-                                        : `/admin/${region}/dashboard`
+                                    ? `/user/${region}/dashboard`
+                                    : `/admin/${region}/dashboard`
                                 : isBiUserRoute
                                 ? `/exedb/user/dashboard`
                                 : isUserRoute
@@ -108,7 +130,7 @@ const Dashboard = () => {
                 ]}
             />
 
-            <SummarySection 
+            <SummarySection
                 widgetsData={widgetsData}
                 isUserRoute={isUserRoute}
                 isBiUserRoute={isBiUserRoute}

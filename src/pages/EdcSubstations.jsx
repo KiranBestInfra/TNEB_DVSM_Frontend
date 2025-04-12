@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
+import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -58,6 +59,8 @@ const EdcSubstations = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [substationsPerPage, setSubstationsPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [timeRange, setTimeRange] = useState('Daily');
 
     useEffect(() => {
         if (!edcs) return;
@@ -79,6 +82,15 @@ const EdcSubstations = () => {
                 }));
             } catch (error) {
                 console.error('Error fetching substation data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -102,6 +114,15 @@ const EdcSubstations = () => {
                 }));
             } catch (error) {
                 console.error('Error fetching EDC widgets:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -224,18 +245,33 @@ const EdcSubstations = () => {
         }
     };
 
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1); // Reset to first page when searching
+    };
+
+    const filteredSubstations = widgetsData.substationNames.filter(substation => 
+        substation.substation_names.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     try {
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
-                    <SectionHeader title="Substations" />
+                    <SectionHeader title="Substations">
+                        <div className={styles.action_cont}>
+                            <TimeRangeSelectDropdown
+                                value={timeRange}
+                                onChange={(e) => setTimeRange(e.target.value)}
+                            />
+                        </div>
+                    </SectionHeader>
 
                     <Breadcrumb />
 
                     <SummarySection
                         widgetsData={{
-                            totalSubstations:
-                                widgetsData.substationNames.length,
+                            totalSubstations: widgetsData.substationNames.length,
                             totalFeeders: widgetsData.edcFeederCount,
                             commMeters: widgetsData.commMeters,
                             nonCommMeters: widgetsData.nonCommMeters,
@@ -250,72 +286,53 @@ const EdcSubstations = () => {
                     />
 
                     <SectionHeader
-                        title={`Substations: [ ${widgetsData.substationNames.length} ]`}
+                        title={`Substations: [ ${filteredSubstations.length} ]`}
                         showSearch={true}
+                        searchQuery={searchQuery}
+                        onSearchChange={handleSearch}
                         showViewToggle={true}
                         viewMode={viewMode}
                         setViewMode={setViewMode}
                         showPagination={true}
                         currentPage={currentPage}
-                        totalPages={Math.ceil(widgetsData.substationNames?.length / substationsPerPage)}
+                        totalPages={Math.ceil(filteredSubstations.length / substationsPerPage)}
                         itemsPerPage={substationsPerPage}
                         onPageChange={handlePageChange}
-                        onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                        onItemsPerPageChange={(newPerPage) =>
+                            handlePageChange(1, newPerPage)
+                        }
                     />
 
                     <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
-                        {widgetsData.substationNames &&
-                        widgetsData.substationNames.length > 0
-                            ? widgetsData.substationNames
+                        {filteredSubstations && filteredSubstations.length > 0 ? (
+                            filteredSubstations
                                 .slice((currentPage - 1) * substationsPerPage, currentPage * substationsPerPage)
                                 .map((substation, index) => (
-                                    <div
-                                        key={index}
-                                        className={
-                                            styles.individual_region_stats
-                                        }>
+                                    <div key={index} className={styles.individual_region_stats}>
                                         <ShortDetailsWidget
                                             region={region}
                                             edc={edcs}
                                             name={substation.substation_names}
                                             subID={substation.hierarchy_id}
-                                            feederCount={
-                                                widgetsData
-                                                    .substationFeederCounts?.[
-                                                    substation
-                                                        .substation_names
-                                                ] || 0
-                                            }
+                                            feederCount={widgetsData.substationFeederCounts?.[substation.substation_names] || 0}
                                             currentValue={parseFloat(
-                                                widgetsData.substationDemandData?.[
-                                                    substation.hierarchy_id
-                                                ]?.series?.[0]?.data?.slice(
-                                                    -1
-                                                )[0] || 0
+                                                widgetsData.substationDemandData?.[substation.hierarchy_id]?.series?.[0]?.data?.slice(-1)[0] || 0
                                             ).toFixed(1)}
                                             previousValue={parseFloat(
-                                                widgetsData.substationDemandData?.[
-                                                    substation.hierarchy_id
-                                                ]?.series?.[0]?.data?.slice(
-                                                    -2,
-                                                    -1
-                                                )[0] || 0
+                                                widgetsData.substationDemandData?.[substation.hierarchy_id]?.series?.[0]?.data?.slice(-2, -1)[0] || 0
                                             ).toFixed(1)}
-                                            graphData={
-                                                widgetsData
-                                                    .substationDemandData?.[
-                                                    substation.hierarchy_id
-                                                ] ?? {
-                                                    xAxis: [],
-                                                    series: [],
-                                                }
-                                            }
+                                            graphData={widgetsData.substationDemandData?.[substation.hierarchy_id] ?? {
+                                                xAxis: [],
+                                                series: [],
+                                            }}
                                             pageType="substations"
                                             showInfoIcon={true}
                                         />
                                     </div>
                                 ))
-                            : null}
+                        ) : (
+                            <p>No substations available</p>
+                        )}
                     </div>
                 </div>
             </ErrorBoundary>

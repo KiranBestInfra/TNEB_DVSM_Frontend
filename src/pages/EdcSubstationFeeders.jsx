@@ -7,11 +7,17 @@ import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import { useAuth } from '../components/AuthProvider';
+import SectionHeader from '../components/SectionHeader/SectionHeader';
+import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
 
 const EdcSubstationFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [feedersPerPage, setFeedersPerPage] = useState(6);
+    const [viewMode, setViewMode] = useState('card');
+    const [searchQuery, setSearchQuery] = useState("");
 
     const { region: regionParam, edcs, substationId } = useParams();
     const { user, isRegion } = useAuth();
@@ -24,28 +30,28 @@ const EdcSubstationFeeders = () => {
             'edcSubstationFeederDataTimestamp'
         );
 
-    if (savedFeederData && savedTimestamp) {
-      const timestamp = parseInt(savedTimestamp);
-      const now = Date.now();
-      if (now - timestamp < 30000) {
-        const parsedData = JSON.parse(savedFeederData);
-        return {
-          totalRegions: 0,
-          totalEdcs: 0,
-          totalSubstations: 0,
-          totalFeeders: parsedData.feederNames?.length || 0,
-          commMeters: parsedData.commMeters || 0,
-          nonCommMeters: parsedData.nonCommMeters || 0,
-          feederNames: parsedData.name || [],
-          feeders: [],
-          feederCount: parsedData.feederNames?.length || 0,
-          meterCount: parsedData.meterCount || {},
-          feederStats: parsedData.feederStats || {},
-          feederDemandData: parsedData.feederDemandData,
-          feederIds: {},
-        };
-      }
-    }
+        if (savedFeederData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedData = JSON.parse(savedFeederData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: parsedData.feederNames?.length || 0,
+                    commMeters: parsedData.commMeters || 0,
+                    nonCommMeters: parsedData.nonCommMeters || 0,
+                    feederNames: parsedData.name || [],
+                    feeders: [],
+                    feederCount: parsedData.feederNames?.length || 0,
+                    meterCount: parsedData.meterCount || {},
+                    feederStats: parsedData.feederStats || {},
+                    feederDemandData: parsedData.feederDemandData,
+                    feederIds: {},
+                };
+            }
+        }
 
         return {
             totalRegions: 0,
@@ -109,8 +115,6 @@ const EdcSubstationFeeders = () => {
                 const data = feederResponse.data;
                 //console.log('dataaa:',data);
 
-
-
                 setWidgetsData((prev) => ({
                     ...prev,
                     feederNames: data.feeders.map((feeder) => feeder.name),
@@ -118,14 +122,20 @@ const EdcSubstationFeeders = () => {
                     feederCount: data.feeders?.length,
                     commMeters: data.commMeters,
                     nonCommMeters: data.nonCommMeters,
-                  
                 }));
-
-        
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
+            }
+        };
 
         fetchData();
     }, [edcs, substationId]);
@@ -147,35 +157,34 @@ const EdcSubstationFeeders = () => {
               .join(' ')
         : 'Unknown';
 
+    const handlePageChange = (newPage, newPerPage = feedersPerPage) => {
+        if (newPerPage !== feedersPerPage) {
+            setCurrentPage(1);
+            setFeedersPerPage(newPerPage);
+        } else {
+            setCurrentPage(newPage);
+        }
+    };
+
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1); // Reset to first page when searching
+    };
+
+    const filteredFeeders = widgetsData.feeders?.filter(feeder => 
+        feeder.name.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
+
     return (
         <div className={styles.main_content}>
-            <div className={styles.section_header}>
-                <h2 className="title">{substationName} Substation Feeders</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                                className={styles.time_range_select}>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">
-                                    Previous Month
-                                </option>
-                                <option value="Year">Year</option>
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
-                            />
-                        </div>
-                    </div>
+            <SectionHeader title={`${substationName} Substation Feeders`}>
+                <div className={styles.action_cont}>
+                    <TimeRangeSelectDropdown
+                        value={timeRange}
+                        onChange={(e) => setTimeRange(e.target.value)}
+                    />
                 </div>
-            </div>
+            </SectionHeader>
             <Breadcrumb />
             <SummarySection
                 widgetsData={{
@@ -195,53 +204,63 @@ const EdcSubstationFeeders = () => {
                 showRegions={false}
             />
 
-            <div className={styles.section_header}>
-                <h2 className="title">
-                    Feeders:{' '}
-                    <span className={styles.region_count}>
-                        [ {widgetsData.feederCount} ]
-                    </span>
-                </h2>
-            </div>
+            <SectionHeader
+                title={`Feeders: [ ${filteredFeeders.length} ]`}
+                showSearch={true}
+                searchQuery={searchQuery}
+                onSearchChange={handleSearch}
+                showViewToggle={true}
+                viewMode={viewMode}
+                setViewMode={setViewMode}
+                showPagination={true}
+                currentPage={currentPage}
+                totalPages={Math.ceil(filteredFeeders.length / feedersPerPage)}
+                itemsPerPage={feedersPerPage}
+                onPageChange={handlePageChange}
+                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+            />
 
-            <div className={styles.region_stats_container}>
-                {widgetsData.feeders &&
-                    widgetsData.feederDemandData &&
-                    widgetsData.feeders.length > 0 &&
-                    widgetsData.feeders.map((feeder, index) => (
-                        <div
-                            key={index}
-                            className={styles.individual_region_stats}>
-                            <ShortDetailsWidget
-                                region={region}
-                                edc={edcs}
-                                id={feeder.id}
-                                name={feeder.name}
-                                substationId={substationId}
-                                edcCount={0}
-                                substationCount={0}
-                                feederCount={widgetsData.feederCount}
-                                currentValue={parseFloat(
-                                    widgetsData.feederDemandData[
-                                        feeder.id
-                                    ]?.series?.[0]?.data?.slice(-1)[0] || 0
-                                )}
-                                previousValue={parseFloat(
-                                    widgetsData.feederDemandData[
-                                        feeder.id
-                                    ]?.series?.[1]?.data?.slice(-1)[0] || 0
-                                )}
-                                pageType="feeders"
-                                graphData={
-                                    widgetsData.feederDemandData[feeder.id] || {
-                                        xAxis: [],
-                                        series: [],
+            <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+                {filteredFeeders.length > 0 ? (
+                    filteredFeeders
+                        .slice((currentPage - 1) * feedersPerPage, currentPage * feedersPerPage)
+                        .map((feeder, index) => (
+                            <div
+                                key={index}
+                                className={styles.individual_region_stats}>
+                                <ShortDetailsWidget
+                                    region={region}
+                                    edc={edcs}
+                                    id={feeder.id}
+                                    name={feeder.name}
+                                    substationId={substationId}
+                                    edcCount={0}
+                                    substationCount={0}
+                                    feederCount={widgetsData.feederCount}
+                                    currentValue={parseFloat(
+                                        widgetsData.feederDemandData[
+                                            feeder.id
+                                        ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                                    )}
+                                    previousValue={parseFloat(
+                                        widgetsData.feederDemandData[
+                                            feeder.id
+                                        ]?.series?.[1]?.data?.slice(-1)[0] || 0
+                                    )}
+                                    pageType="feeders"
+                                    graphData={
+                                        widgetsData.feederDemandData[feeder.id] || {
+                                            xAxis: [],
+                                            series: [],
+                                        }
                                     }
-                                }
-                                showInfoIcon={true}
-                            />
-                        </div>
-                    ))}
+                                    showInfoIcon={true}
+                                />
+                            </div>
+                        ))
+                ) : (
+                    <p>No feeders available for this substation.</p>
+                )}
             </div>
         </div>
     );
