@@ -15,7 +15,7 @@
     align-items: center;
     gap: 2rem;
     padding: 2rem;
-    border: 1px solid #efefef;
+    border: 1px solid var(--border-color);
     border-radius: 1.5rem;
     width: 100%;
 }
@@ -26,7 +26,9 @@
     align-items: center;
     gap: 1rem;
 }
-
+.total_meters_main_info img {
+    filter: var(--summary-icons-theme);
+}
 .total_title_value,
 .total_meters {
     display: flex;
@@ -41,7 +43,9 @@
     align-items: center;
     gap: 1rem;
 }
-
+.total_main_info img {
+    filter: var(--summary-icons-theme);
+}
 .TNEB_icons {
     width: 4rem;
     height: 4rem;
@@ -51,7 +55,7 @@
 .summary_value {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--black);
+    color: var(--text-primary);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -80,9 +84,9 @@
 
 .communication_value {
     font-size: 1rem;
-    color: var(--black);
-    font-weight: 600;
-    background-color: var(--primary-bg);
+    color: var(--text-primary);
+    font-weight: 700;
+    background-color: var(--main-background-color);
     border-radius: 2rem;
     padding: 0.5rem 1rem;
     width: fit-content;
@@ -99,7 +103,7 @@
     flex-direction: row;
     align-items: center;
     gap: 0.2rem;
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .communication_positive_arrow {
@@ -121,7 +125,7 @@
     flex-direction: row;
     align-items: center;
     gap: 0.2rem;
-    font-weight: 500;
+    font-weight: 700;
 }
 
 .communication_negative_arrow {
@@ -140,5 +144,50 @@
 @media screen and (max-width: 1100px) {
     .summary_section {
         flex-direction: column;
+    }
+}
+@media screen and (max-width: 480px) {
+    .total_meters_container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .overall_communication_status {
+        flex-direction: column;
+    }
+    .communication_value {
+        align-items: center;
+    }
+    
+}
+@media screen and (max-width: 760px) {
+    .summary_section{
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .total_edcs_container,
+    .total_feeder_container,
+    .total_regions_container,
+    .total_substations_container,
+    .total_meters_container {
+        flex: unset;
+        min-width: unset;
+        max-width:unset;;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .summary_section{
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .total_edcs_container,
+    .total_feeder_container,
+    .total_regions_container,
+    .total_substations_container,
+    .total_meters_container {
+        flex: 1 1 calc(50% - 1rem);
+        min-width: 300px;
+        max-width: calc(50% - 1rem);
     }
 }

@@ -49,16 +49,11 @@ const Tickets = () => {
             setLoading(true);
             setError(null);
             try {
-                console.log('API Base URL:', apiClient.baseURL);
-                console.log('Cookies:', document.cookie);
-                
                 const res = await apiClient.get('/tickets');
-                console.log('API Response:', res);
-                
+
                 if (Array.isArray(res)) {
                     setAllTickets(res);
-                } 
-                else if (res && Array.isArray(res.data)) {
+                } else if (res && Array.isArray(res.data)) {
                     setAllTickets(res.data);
                 } else {
                     const errorMsg = 'Invalid response format from server';
@@ -67,12 +62,24 @@ const Tickets = () => {
                 }
             } catch (error) {
                 console.error('Failed to fetch tickets:', error);
-                const errorMessage = error.message || 
-                    (error.status === 401 ? 'Please log in again' : 
-                     error.status === 403 ? 'You do not have permission to view tickets' :
-                     'Failed to fetch tickets. Please try again later.');
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
+                const errorMessage =
+                    error.message ||
+                    (error.status === 401
+                        ? 'Please log in again'
+                        : error.status === 403
+                        ? 'You do not have permission to view tickets'
+                        : 'Failed to fetch tickets. Please try again later.');
                 setError(errorMessage);
-                
+
                 if (error.status === 401) {
                     navigate('/auth/login');
                 }
@@ -306,7 +313,7 @@ const Tickets = () => {
                         ))}
                     </select>
                 </div>
-                <div className={styles.filter_item}>
+                {/* <div className={styles.filter_item}>
                     <select
                         value={filterSubstation}
                         onChange={(e) => {
@@ -321,8 +328,8 @@ const Tickets = () => {
                             </option>
                         ))}
                     </select>
-                </div>
-                <div className={styles.filter_item}>
+                </div> */}
+                {/* <div className={styles.filter_item}>
                     <select
                         value={filterFeeder}
                         onChange={(e) => setFilterFeeder(e.target.value)}
@@ -330,7 +337,7 @@ const Tickets = () => {
                         disabled>
                         <option value="all">Select Feeder</option>
                     </select>
-                </div>
+                </div> */}
             </div>
 
             {loading ? (

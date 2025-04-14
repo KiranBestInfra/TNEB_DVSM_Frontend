@@ -1,0 +1,26 @@
+.time_range_select_dropdown {
+  position: relative;
+}
+
+.time_range_select {
+  border-radius: 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+  width: fit-content;
+  height: 2.5rem;
+  padding: 0 1rem;
+  min-width: 9rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--text-primary);
+}
+
+.time_range_select_dropdown_icon {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  width: 0.7rem;
+  height: 0.7rem;
+} 

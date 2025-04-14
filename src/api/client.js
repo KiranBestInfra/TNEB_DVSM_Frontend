@@ -28,7 +28,7 @@ class ApiClient {
         this.defaultCacheOptions = {
             enabled: true,
             ttl: 5 * 60 * 1000,
-            useLocalStorage: false,
+            useLocalStorage: true,
             storageKey: 'api_cache',
         };
     }
@@ -141,7 +141,7 @@ class ApiClient {
                         '{}'
                     );
                 }
-            } catch (error) {
+            } catch (_) {
                 console.warn(
                     'localStorage is not available, falling back to in-memory cache'
                 );
@@ -230,7 +230,7 @@ class ApiClient {
             ? this._generateCacheKey(endpoint, { method, body })
             : null;
 
-        if (cacheKey && !finalCacheOptions.forceRefresh) {
+        if (cacheKey) {
             const cachedData = this._getCacheItem(cacheKey);
             if (cachedData) {
                 return cachedData;

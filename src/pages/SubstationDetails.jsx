@@ -1,11 +1,11 @@
 import styles from '../styles/LongDetailsWidget.module.css';
 import { useParams } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
-import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
+import SummarySection from '../components/SummarySection';
 
 const SubstationDetails = () => {
     const { region, substationId } = useParams();
@@ -14,7 +14,45 @@ const SubstationDetails = () => {
         xAxis: [],
         series: [],
     });
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedDemandData = localStorage.getItem('edcDemandData');
+        const savedTimestamp = localStorage.getItem('edcDemandTimestamp');
 
+        if (savedDemandData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedDemandData = JSON.parse(savedDemandData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    edcNames: Object.keys(parsedDemandData),
+                    regionEdcCount: 0,
+                    substationCount: {},
+                    feederCount: {},
+                    edcDemandData: parsedDemandData,
+                };
+            }
+        }
+
+        return {
+            totalRegions: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            edcNames: [],
+            substationCount: {},
+            feederCount: {},
+            regionEdcCount: 0,
+            edcDemandData: {},
+        };
+    });
     const entityId = substationId;
 
     useEffect(() => {
@@ -27,6 +65,15 @@ const SubstationDetails = () => {
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -35,10 +82,99 @@ const SubstationDetails = () => {
 
     const entityName = entityId
         ? entityId
-            .split('-')
-            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ')
+              .split('-')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ')
         : 'Unknown';
+
+    useEffect(() => {
+        const fetchFeeders = async () => {
+            try {
+                try {
+                    const response = await apiClient.get(
+                        `/substations/${substationId}/feeders`
+                    );
+                    const feedersData = response.data.feeders || [];
+                    const commMeters = response.data.commMeters || 0;
+                    const nonCommMeters = response.data.nonCommMeters || 0;
+
+                    setWidgetsData((prev) => {
+                        const newData = {
+                            ...prev,
+                            commMeters: commMeters,
+                            nonCommMeters: nonCommMeters,
+                            feederNames: feedersData.map((f) => f.name) || [],
+                            feederCount: feedersData.length || 0,
+                            totalFeeders: feedersData.length || 0,
+                            meterCount: feedersData.reduce((acc, f) => {
+                                acc[f.name] = f.meter_count || 0;
+                                return acc;
+                            }, {}),
+                            feederStats: feedersData.reduce((acc, f) => {
+                                acc[f.name] = {
+                                    currentValue: f.current_value || 0,
+                                    previousValue: f.previous_value || 0,
+                                };
+                                return acc;
+                            }, {}),
+                            feederIds:
+                                feedersData.map((feeder) => ({
+                                    [feeder.name]: feeder.id,
+                                })) || [],
+                        };
+
+                        const cacheData = {
+                            feederNames: newData.feederNames,
+                            meterCount: newData.meterCount,
+                            feederStats: newData.feederStats,
+                            feederDemandData: newData.feederDemandData,
+                            feederIds: newData.feederIds,
+                        };
+
+                        localStorage.setItem(
+                            'substationFeederData',
+                            JSON.stringify(cacheData)
+                        );
+                        localStorage.setItem(
+                            'substationFeederDataTimestamp',
+                            Date.now().toString()
+                        );
+
+                        return newData;
+                    });
+                } catch (error) {
+                    console.error(
+                        'API error, using demo data for feeders:',
+                        error
+                    );
+                    try {
+                        await apiClient.post('/log/error', {
+                            message: error.message,
+                            stack: error.stack || 'No stack trace',
+                            time: new Date().toISOString(),
+                        });
+                    } catch (logError) {
+                        console.error('Error logging to backend:', logError);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching feeders for substation:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
+            }
+        };
+
+        if (substationId) {
+            fetchFeeders();
+        }
+    }, [substationId]);
 
     const stats = {
         feederCount: 20,
@@ -72,80 +208,28 @@ const SubstationDetails = () => {
                                 }
                             />
                         </div>
-                       
                     </div>
                 </div>
             </div>
             <Breadcrumb />
-
-            <div className={styles.performance_stats}>
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-meter.svg"
-                                alt="Feeder"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `/admin/${region}/feeders`
-                                            : `/admin/feeders`
-                                    }>
-                                    Feeders
-                                </Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.feederCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.total_units_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/location.svg"
-                                alt="Location"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">Region</span>
-                            <span className={styles.summary_value}>
-                                <Link to={`/admin/${region}/dashboard`}>
-                                    {region
-                                        ? region.charAt(0).toUpperCase() +
-                                        region.slice(1)
-                                        : 'N/A'}
-                                </Link>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.voltage_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-voltage.svg"
-                                alt="Voltage"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">Voltage Level</span>
-                            <span className={styles.summary_value}>110kV</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <SummarySection
+                widgetsData={{
+                    totalRegions: 0,
+                    totalEdcs: stats.edcCount,
+                    totalSubstations: stats.substationCount,
+                    totalFeeders: widgetsData.feederCount,
+                    commMeters: widgetsData.commMeters,
+                    nonCommMeters: widgetsData.nonCommMeters,
+                    totalDistricts: stats.edcCount || 0,
+                }}
+                isUserRoute={false}
+                isBiUserRoute={false}
+                showRegions={false}
+                showEdcs={false}
+                showSubstations={false}
+                showDistricts={false}
+                showMeters={true}
+            />
 
             <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />

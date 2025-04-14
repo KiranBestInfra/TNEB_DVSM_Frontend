@@ -6,12 +6,12 @@ import RollingNumber from '../RollingNumber';
 const SummarySection = ({
     widgetsData = {
         totalRegions: 0,
-        totalEdcs: 0,
+        totalEdcs: 5,
         totalSubstations: 0,
         totalFeeders: 0,
         commMeters: 0,
         nonCommMeters: 0,
-        totalDistricts: 0
+        totalDistricts: 0,
     },
     isUserRoute = false,
     isBiUserRoute = false,
@@ -21,7 +21,7 @@ const SummarySection = ({
     showDistricts = false,
     showEdcs = true,
     showSubstations = true,
-    showFeeders = true
+    showFeeders = true,
 }) => {
     return (
         <div className={styles.summary_section}>
@@ -40,8 +40,8 @@ const SummarySection = ({
                                         isBiUserRoute
                                             ? `/bi/user/regions`
                                             : isUserRoute
-                                                ? `/user/regions`
-                                                : `/admin/regions`
+                                            ? `/user/regions`
+                                            : `/admin/regions`
                                     }>
                                     Regions
                                 </Link>
@@ -58,8 +58,7 @@ const SummarySection = ({
                     className={styles.total_edcs_container}
                     onClick={onEdcClick}
                     style={onEdcClick ? { cursor: 'pointer' } : {}}
-                    title={onEdcClick ? 'Click to view EDCs' : ''}
-                >
+                    title={onEdcClick ? 'Click to view EDCs' : ''}>
                     <div className={styles.total_main_info}>
                         <img
                             src="icons/electric-edc.svg"
@@ -69,14 +68,20 @@ const SummarySection = ({
                         <div className={styles.total_title_value}>
                             <p className="title">
                                 {isUserRoute ? (
-                                    <span style={{ color: 'var(--brand-blue)' }}>
+                                    <Link
+                                        to="/user/edcs"
+                                        style={{
+                                            color: 'var(--brand-blue)',
+                                            textDecoration: 'none',
+                                        }}>
                                         EDCs{' '}
-                                        {isUserRoute && onEdcClick && (
-                                            <span style={{ fontSize: '0.8rem' }}>
+                                        {onEdcClick && (
+                                            <span
+                                                style={{ fontSize: '0.8rem' }}>
                                                 🔗
                                             </span>
                                         )}
-                                    </span>
+                                    </Link>
                                 ) : (
                                     'EDCs'
                                 )}
@@ -92,16 +97,16 @@ const SummarySection = ({
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/map-pin.svg"
+                            src="icons/map.svg"
                             alt="Total Districts"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">
-                                Districts
-                            </p>
+                            <p className="title">Districts</p>
                             <div className={styles.summary_value}>
-                                <RollingNumber n={widgetsData.totalDistricts || 0} />
+                                <RollingNumber
+                                    n={widgetsData.totalDistricts || 0}
+                                />
                             </div>
                         </div>
                     </div>
@@ -112,8 +117,9 @@ const SummarySection = ({
                     className={styles.total_substations_container}
                     onClick={onSubstationClick}
                     style={onSubstationClick ? { cursor: 'pointer' } : {}}
-                    title={onSubstationClick ? 'Click to view Substations' : ''}
-                >
+                    title={
+                        onSubstationClick ? 'Click to view Substations' : ''
+                    }>
                     <div className={styles.total_main_info}>
                         <img
                             src="icons/electric-factory.svg"
@@ -123,10 +129,12 @@ const SummarySection = ({
                         <div className={styles.total_title_value}>
                             <p className="title">
                                 {isUserRoute ? (
-                                    <span style={{ color: 'var(--brand-blue)' }}>
+                                    <span
+                                        style={{ color: 'var(--brand-blue)' }}>
                                         Substations{' '}
                                         {isUserRoute && onSubstationClick && (
-                                            <span style={{ fontSize: '0.8rem' }}>
+                                            <span
+                                                style={{ fontSize: '0.8rem' }}>
                                                 🔗
                                             </span>
                                         )}
@@ -136,7 +144,9 @@ const SummarySection = ({
                                 )}
                             </p>
                             <div className={styles.summary_value}>
-                                <RollingNumber n={widgetsData.totalSubstations} />
+                                <RollingNumber
+                                    n={widgetsData.totalSubstations}
+                                />
                             </div>
                         </div>
                     </div>
@@ -151,9 +161,7 @@ const SummarySection = ({
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_meters}>
-                            <div className="title">
-                                Feeders
-                            </div>
+                            <div className="title">Feeders</div>
                             <div className={styles.summary_value}>
                                 <RollingNumber n={widgetsData.totalFeeders} />
                             </div>
@@ -180,12 +188,17 @@ const SummarySection = ({
                                             styles.communication_positive_arrow
                                         }
                                     />
-                                    {(
-                                        (widgetsData.commMeters /
-                                            (widgetsData.commMeters +
-                                                widgetsData.nonCommMeters)) *
-                                        100
-                                    ).toFixed(1)}
+                                    {(() => {
+                                        const comm =
+                                            widgetsData?.commMeters ?? 0;
+                                        const nonComm =
+                                            widgetsData?.nonCommMeters ?? 0;
+                                        const total = comm + nonComm;
+                                        if (total === 0) return '0.0';
+                                        return ((comm / total) * 100).toFixed(
+                                            1
+                                        );
+                                    })()}
                                     %
                                 </div>
                             </div>
@@ -194,7 +207,7 @@ const SummarySection = ({
                                     styles.communication_status_container
                                 }>
                                 <div className={styles.communication_value}>
-                                    {widgetsData.nonCommMeters}
+                                    {widgetsData?.nonCommMeters ?? 0}
                                 </div>
                                 <div
                                     className={
@@ -207,12 +220,18 @@ const SummarySection = ({
                                             styles.communication_negative_arrow
                                         }
                                     />
-                                    {(
-                                        (widgetsData.nonCommMeters /
-                                            (widgetsData.commMeters +
-                                                widgetsData.nonCommMeters)) *
-                                        100
-                                    ).toFixed(1)}
+                                    {(() => {
+                                        const comm =
+                                            widgetsData?.commMeters ?? 0;
+                                        const nonComm =
+                                            widgetsData?.nonCommMeters ?? 0;
+                                        const total = comm + nonComm;
+                                        if (total === 0) return '0.0';
+                                        return (
+                                            (nonComm / total) *
+                                            100
+                                        ).toFixed(1);
+                                    })()}
                                     %
                                 </div>
                             </div>
@@ -224,4 +243,4 @@ const SummarySection = ({
     );
 };
 
-export default SummarySection; 
+export default SummarySection;

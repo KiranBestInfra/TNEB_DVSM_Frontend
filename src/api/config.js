@@ -4,11 +4,13 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const ADMIN_BASE_URL = import.meta.env.VITE_API_ADMIN_BASE_URL;
 const DEMO_BASE_URL = import.meta.env.VITE_API_DEMO_BASE_URL;
 const CONSUMER_BASE_URL = import.meta.env.VITE_API_CONSUMER_BASE_URL;
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 export const API_TIMEOUT = 60000;
 export const API_HEADERS = {
     'Content-Type': 'application/json',
     Accept: 'application/json',
+    'x-api-key': API_KEY,
 };
 
 export const HTTP_STATUS = {
@@ -26,21 +28,18 @@ export const baseURL = () => {
         .split('; ')
         .find((row) => row.startsWith('accessTokenDuplicate='))
         ?.split('=')[1];
-    
+
     if (accessToken) {
         try {
             const decoded = jwtDecode(accessToken);
             let userRole =
                 decoded.role || decoded.Role || decoded.user_role || 'User';
 
-            if (
-                userRole === 'Super Admin' ||
-                userRole === 'Admin'
-            ) {
+            if (userRole === 'Super Admin' || userRole === 'Admin') {
                 return `${API_BASE_URL}${ADMIN_BASE_URL}`;
             } else if (userRole === 'User') {
                 return `${API_BASE_URL}${CONSUMER_BASE_URL}`;
-            } 
+            }
         } catch (error) {
             console.error('Error decoding token:', error);
         }

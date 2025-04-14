@@ -1,5 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
+import PropTypes from 'prop-types';
 import styles from './DynamicGraph.module.css';
 
 const DynamicGraph = ({
@@ -8,8 +9,7 @@ const DynamicGraph = ({
     data,
     className,
     lineColor = '#3f68b2',
-    yAxisLabel = 'Value',
-    refreshInterval = 15000,
+    yAxisLabel = 'MW',
     timeRange,
     onTimeRangeChange,
     showTimeRangeDropdown = true,
@@ -40,8 +40,8 @@ const DynamicGraph = ({
             const option = {
                 tooltip: {
                     trigger: 'axis',
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                    borderColor: '#ddd',
+                    backgroundColor: 'var(--main-widget-color)',
+                    borderColor: 'var(--border-color)',
                     borderWidth: 1,
                     textStyle: {
                         color: '#333',
@@ -51,13 +51,13 @@ const DynamicGraph = ({
                     padding: [8, 12],
                     formatter: function (params) {
                         const timeLabel = params[0].axisValue;
-                        let tooltipText = `<div style="font-weight: bold; margin-bottom: 8px;">${timeLabel}</div>`;
+                        let tooltipText = `<div style="font-weight: bold; margin-bottom: 8px; color: var(--text-primary)">${timeLabel}</div>`;
 
                         params.forEach((param) => {
                             tooltipText += `<div style="display: flex; align-items: center; margin: 3px 0;">
                                 <span style="display: inline-block; width: 10px; height: 10px; background-color: ${param.color}; margin-right: 5px; border-radius: 50%;"></span>
-                                <span style="margin-right: 5px;">${param.seriesName}:</span>
-                                <span style="font-weight: bold;">${param.value} ${yAxisLabel}</span>
+                                <span style="margin-right: 5px; color: var(--text-secondary)">${param.seriesName}:</span>
+                                <span style="font-weight: bold; color: var(--text-primary)">${param.value} ${yAxisLabel}</span>
                             </div>`;
                         });
 
@@ -76,7 +76,7 @@ const DynamicGraph = ({
                                 percentChange >= 0 ? '#4CAF50' : '#F44336';
 
                             tooltipText += `<div style="display: flex; align-items: center; margin-top: 8px; padding-top: 5px; border-top: 1px dashed #ddd;">
-                                <span style="margin-right: 5px;">Comparison:</span>
+                                <span style="margin-right: 5px; color: var(--text-secondary);">Comparison:</span>
                                 <span style="font-weight: bold; color: ${changeColor};">${changeText}</span>
                             </div>`;
                         }
@@ -102,7 +102,7 @@ const DynamicGraph = ({
                     textStyle: {
                         fontFamily: 'Roboto',
                         fontSize: '0.8rem',
-                        color: '#424242',
+                        color: 'var(--text-primary)',
                     },
                 },
                 xAxis: {
@@ -113,13 +113,13 @@ const DynamicGraph = ({
                         show: true,
                         lineStyle: {
                             type: 'dashed',
-                            color: '#E0E0E0',
+                            color: 'var(--border-color)',
                         },
                     },
                     axisLabel: {
                         fontFamily: 'Roboto',
                         fontSize: '0.75rem',
-                        color: '#424242',
+                        color: '#000000',
                         letterSpacing: '-1',
                         margin: 16,
                         rotate: 45,
@@ -135,7 +135,7 @@ const DynamicGraph = ({
                     axisLine: {
                         show: true,
                         lineStyle: {
-                            color: '#424242',
+                            color: 'var(--text-primary)',
                             width: 1,
                         },
                     },
@@ -144,10 +144,10 @@ const DynamicGraph = ({
                     type: 'value',
                     boundaryGap: [0, '10%'],
                     axisLabel: {
-                        formatter: `{value} ${yAxisLabel}`,
+                        formatter: '{value} MW',
                         fontFamily: 'Roboto',
                         fontSize: '0.75rem',
-                        color: '#424242',
+                        color: 'var(--text-secondary)',
                         letterSpacing: '-1',
                         margin: 20,
                     },
@@ -157,7 +157,7 @@ const DynamicGraph = ({
                     axisLine: {
                         show: true,
                         lineStyle: {
-                            color: '#424242',
+                            color: 'var(--text-primary)',
                             width: 1,
                         },
                     },
@@ -175,6 +175,7 @@ const DynamicGraph = ({
                     bottom: '20%',
                     top: '13%',
                     containLabel: true,
+                    backgroundColor: 'var(--main-widget-color)',
                 },
                 series: data.series.map((series, index) => ({
                     name: series.name,
@@ -223,7 +224,9 @@ const DynamicGraph = ({
                         <div className={styles.time_range_select_dropdown}>
                             <select
                                 value={timeRange}
-                                onChange={(e) => onTimeRangeChange(e.target.value)}
+                                onChange={(e) =>
+                                    onTimeRangeChange(e.target.value)
+                                }
                                 className={styles.time_range_select}>
                                 <option value="Daily">Daily</option>
                                 <option value="Monthly">Monthly</option>
@@ -234,7 +237,9 @@ const DynamicGraph = ({
                             <img
                                 src="icons/arrow-down.svg"
                                 alt="Select Time"
-                                className={styles.time_range_select_dropdown_icon}
+                                className={
+                                    styles.time_range_select_dropdown_icon
+                                }
                             />
                         </div>
                     )}
@@ -244,15 +249,43 @@ const DynamicGraph = ({
                         <img
                             src="icons/download-icon.svg"
                             alt="Download chart"
+                            style={{ filter: 'var(--icons-color-filter)' }}
                         />
                     </span>
                 </div>
             </div>
             <div className={styles.echart_container}>
-                <div ref={chartRef} className={styles.chart} />
+                {data && data.series && data.series.length > 0 ? (
+                    <div ref={chartRef} className={styles.chart} />
+                ) : (
+                    <div className={styles.loading_container}>
+                        <div className={styles.loading_spinner}></div>
+                        <p>Loading data...</p>
+                    </div>
+                )}
             </div>
         </div>
     );
+};
+
+DynamicGraph.propTypes = {
+    title: PropTypes.string,
+    height: PropTypes.string,
+    data: PropTypes.shape({
+        xAxis: PropTypes.arrayOf(PropTypes.string),
+        series: PropTypes.arrayOf(
+            PropTypes.shape({
+                name: PropTypes.string,
+                data: PropTypes.arrayOf(PropTypes.number),
+            })
+        ),
+    }),
+    className: PropTypes.string,
+    lineColor: PropTypes.string,
+    yAxisLabel: PropTypes.string,
+    timeRange: PropTypes.string,
+    onTimeRangeChange: PropTypes.func,
+    showTimeRangeDropdown: PropTypes.bool,
 };
 
 export default DynamicGraph;

@@ -1,5 +1,5 @@
 .button {
-    font-family: 'Roboto';
+    font-family: 'Roboto', sans-serif;
     font-size: 1rem;
     font-weight: 700;
     padding: 0rem 2rem;
@@ -29,9 +29,9 @@
 }
 
 .button.secondary {
-    background-color: var(--white);
-    color: var(--black);
-    border: 2px solid var(--primary-bg);
+    background-color: var(--main-widget-color);
+    color: var(--text-primary);
+    border: 2px solid var(--main-widget-color);
 }
 
 .button.outline {

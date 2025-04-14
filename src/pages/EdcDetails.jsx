@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
+import SummarySection from '../components/SummarySection';
 
 const EdcDetails = () => {
     const { region, edcId } = useParams();
@@ -13,6 +14,51 @@ const EdcDetails = () => {
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
+    });
+    const [widgetsData, setWidgetsData] = useState(() => {
+        const savedDemandData = localStorage.getItem('edcDemandData');
+        const savedTimestamp = localStorage.getItem('edcDemandTimestamp');
+
+        if (savedDemandData && savedTimestamp) {
+            const timestamp = parseInt(savedTimestamp);
+            const now = Date.now();
+            if (now - timestamp < 30000) {
+                const parsedDemandData = JSON.parse(savedDemandData);
+                return {
+                    totalRegions: 0,
+                    totalEdcs: 0,
+                    totalSubstations: 0,
+                    totalFeeders: 0,
+                    commMeters: 0,
+                    nonCommMeters: 0,
+                    edcSubstationCount: 0,
+                    edcFeederCount: parsedData.feederCount || 0,
+                    edcNames: Object.keys(parsedDemandData),
+                    regionEdcCount: 0,
+                    substationCount: {},
+                    feederCount: {},
+                    edcDemandData: parsedDemandData,
+                    districtcounts: 0,
+                };
+            }
+        }
+
+        return {
+            totalRegions: 0,
+            districtcounts: 0,
+            totalEdcs: 0,
+            totalSubstations: 0,
+            totalFeeders: 0,
+            edcSubstationCount: 0,
+            commMeters: 0,
+            nonCommMeters: 0,
+            edcFeederCount: 0,
+            edcNames: [],
+            substationCount: {},
+            feederCount: {},
+            regionEdcCount: 0,
+            edcDemandData: {},
+        };
     });
 
     const entityId = edcId;
@@ -27,6 +73,15 @@ const EdcDetails = () => {
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching edc graph data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
 
@@ -40,11 +95,47 @@ const EdcDetails = () => {
               .join(' ')
         : 'Unknown';
 
+    useEffect(() => {
+        if (!edcId) return;
+
+        const fetchEdcWidgets = async () => {
+            try {
+                const response = await apiClient.get(`/edcs/${edcId}/widgets`);
+                const feederCount =
+                    response?.data?.regionFeederNames?.length || 0;
+                setWidgetsData((prev) => ({
+                    ...prev,
+                    commMeters: response?.data?.commMeters || 0,
+                    nonCommMeters: response?.data?.nonCommMeters || 0,
+                    edcSubstationCount: response?.data?.substationCounts || 0,
+                    edcFeederCount: feederCount,
+                    districtcounts: response.data?.districtCounts || 0,
+                }));
+            } catch (error) {
+                console.error('Error fetching EDC widgets:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
+            }
+        };
+
+        fetchEdcWidgets();
+    }, [edcId]);
+
     const stats = {
-        substationCount: 15,
-        feederCount: 35,
+        substationCount: widgetsData.edcSubstationCount,
+        feederCount: widgetsData.edcFeederCount,
         currentValue: 10.2,
         previousValue: 9.8,
+        districtcounts: widgetsData.districtcounts,
+        commMeters: widgetsData.commMeters || 0,
+        nonCommMeters: widgetsData.nonCommMeters || 0,
     };
 
     return (
@@ -73,91 +164,27 @@ const EdcDetails = () => {
                                 }
                             />
                         </div>
-                       
                     </div>
                 </div>
             </div>
             <Breadcrumb />
-
-            <div className={styles.performance_stats}>
-                <div className={styles.total_substations_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-factory.svg"
-                                alt="Substation"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `/admin/${region}/${edcId}/substations`
-                                            : `/admin/${edcId}/substations`
-                                    }>
-                                    Substations
-                                </Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.substationCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.total_meters_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/electric-meter.svg"
-                                alt="Feeder"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-
-                        <div className={styles.total_title_value}>
-                            <span className="title">
-                                <Link
-                                    to={
-                                        region
-                                            ? `/admin/${region}/${edcId}/feeder`
-                                            : `/admin/${edcId}/feeder`
-                                    }>
-                                    Feeders
-                                </Link>
-                            </span>
-                            <span className={styles.summary_value}>
-                                {stats.feederCount}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className={styles.total_units_container}>
-                    <div className={styles.total_main_info}>
-                        <div className={styles.TNEB_icons}>
-                            <img
-                                src="icons/location.svg"
-                                alt="Location"
-                                className={styles.TNEB_icons}
-                            />
-                        </div>
-                        <div className={styles.total_title_value}>
-                            <span className="title">Region</span>
-                            <span className={styles.summary_value}>
-                                <Link to={`/admin/${region}/dashboard`}>
-                                    {region
-                                        ? region.charAt(0).toUpperCase() +
-                                          region.slice(1)
-                                        : 'N/A'}
-                                </Link>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                      <SummarySection
+        widgetsData={{
+        totalDistricts:stats.districtcounts,
+        totalSubstations:stats.substationCount,
+          totalFeeders: stats.feederCount,
+          commMeters: stats.commMeters,
+          nonCommMeters: stats.nonCommMeters,
+        }}
+        // isUserRoute={location.includes("/user/")}
+        // isBiUserRoute={location.includes("/bi/user/")}
+        showDistricts={true}
+        showFeeders={true}
+        showEdcs={false}
+        showSubstations={true}
+        showRegions={false}
+      />           
+        
 
             <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />

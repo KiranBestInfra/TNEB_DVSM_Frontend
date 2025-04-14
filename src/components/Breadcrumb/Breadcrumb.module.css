@@ -29,12 +29,12 @@
 
 .breadcrumb_link:hover {
   color: var(--brand-blue);
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .breadcrumb_current {
-  color: var(--black);
-  font-weight: 500;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .breadcrumb_separator {

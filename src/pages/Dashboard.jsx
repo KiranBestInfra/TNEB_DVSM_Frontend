@@ -1,17 +1,13 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Buttons from '../components/ui/Buttons/Buttons';
 import styles from '../styles/Dashboard.module.css';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
-import { Link } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import SummarySection from '../components/SummarySection/SummarySection';
 import { apiClient } from '../api/client';
 
 const Dashboard = () => {
     const { region } = useParams();
-    console.log('Dashboard - Region from params:', region);
 
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
@@ -29,6 +25,7 @@ const Dashboard = () => {
         totalFeeders: 0,
         commMeters: 0,
         nonCommMeters: 0,
+        totalDistricts: 0,
     });
 
     useEffect(() => {
@@ -45,11 +42,39 @@ const Dashboard = () => {
                 totalFeeders: data.totalFeeders || prev.totalFeeders,
                 commMeters: data.commMeters || prev.commMeters,
                 nonCommMeters: data.nonCommMeters || prev.nonCommMeters,
+                totalDistricts: data.totalDistricts || prev.totalDistricts,
             }));
         };
 
         fetchData();
     }, []);
+
+    // useEffect(() => {
+    //     const fetchGraphTimeRange = async () => {
+    //         try {
+    //             const response = await apiClient.get('/main/graphs');
+    //             const data = response.data;
+    //         } catch (error) {
+    //             console.error('Error fetching graph time range:', error);
+    //             // Send error to backend
+    //             try {
+    //                 await apiClient.post('/log/error', {
+    //                     message: error.message,
+    //                     stack: error.stack || 'No stack trace',
+    //                     time: new Date().toISOString(),
+    //                 });
+    //             } catch (logError) {
+    //                 console.error('Error logging to backend:', logError);
+    //             }
+
+    //             // Set error message for UI
+    //             // setErrorMessage(
+    //             //     'Failed to load graph data. Please try again later.'
+    //             // );
+    //         }
+    //     };
+    //     fetchGraphTimeRange();
+    // }, []);
 
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -62,6 +87,15 @@ const Dashboard = () => {
                 });
             } catch (error) {
                 console.error('Error fetching graph data:', error);
+                try {
+                    await apiClient.post('/log/error', {
+                        message: error.message,
+                        stack: error.stack || 'No stack trace',
+                        time: new Date().toISOString(),
+                    });
+                } catch (logError) {
+                    console.error('Error logging to backend:', logError);
+                }
             }
         };
         fetchGraphData();
@@ -72,8 +106,7 @@ const Dashboard = () => {
             <div className={styles.section_header}>
                 <h2 className="title">Dashboard</h2>
                 <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                    </div>
+                    <div className={styles.action_cont}></div>
                 </div>
             </div>
 
@@ -86,8 +119,8 @@ const Dashboard = () => {
                                 ? isBiUserRoute
                                     ? `/exedb/user/${region}/dashboard`
                                     : isUserRoute
-                                        ? `/user/${region}/dashboard`
-                                        : `/admin/${region}/dashboard`
+                                    ? `/user/${region}/dashboard`
+                                    : `/admin/${region}/dashboard`
                                 : isBiUserRoute
                                 ? `/exedb/user/dashboard`
                                 : isUserRoute
@@ -97,10 +130,11 @@ const Dashboard = () => {
                 ]}
             />
 
-            <SummarySection 
+            <SummarySection
                 widgetsData={widgetsData}
                 isUserRoute={isUserRoute}
                 isBiUserRoute={isBiUserRoute}
+                showDistricts={true}
             />
 
             <div className={styles.detail_chart}>
@@ -111,7 +145,7 @@ const Dashboard = () => {
                     yAxisLabel="MW"
                     showLabel={false}
                     toolbox={true}
-                    height="500px"
+                    height="510px"
                     timeRange={timeRange}
                     onTimeRangeChange={setTimeRange}
                 />
