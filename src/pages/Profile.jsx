@@ -209,8 +209,8 @@ const Profile = () => {
 
     // Render
     const renderProfilePicture = () => {
-        const initials = user?.userId
-            ? user.userId.slice(0, 2).toUpperCase()
+        const initials = user?.name
+            ? user.name.substring(0, 2).toUpperCase()
             : '';
 
         return (
@@ -277,7 +277,15 @@ const Profile = () => {
                     </div>
                 )}
             </div>
-            <form onSubmit={handleChangePassword}>
+            <form onSubmit={handleChangePassword} >
+                <input
+                    type="text"
+                    name="username"
+                    autoComplete="username"
+                    style={{ display: 'none' }}
+                    defaultValue={user?.userId || ''}
+                    readOnly
+                />
                 <div className="form_row form_row_profile">
                     <div className="form_group">
                         <input
@@ -291,6 +299,7 @@ const Profile = () => {
                             }
                             placeholder="Enter your current password"
                             required
+                            autoComplete="current-password"
                         />
                     </div>
                 </div>
@@ -308,6 +317,7 @@ const Profile = () => {
                             }
                             placeholder="Enter your new password"
                             required
+                            autoComplete="new-password"
                         />
                     </div>
                 </div>
@@ -325,6 +335,7 @@ const Profile = () => {
                             }
                             placeholder="Confirm your new password"
                             required
+                            autoComplete="new-password"
                         />
                     </div>
                 </div>
@@ -347,7 +358,7 @@ const Profile = () => {
 
         return (
             <div className={styles.login_activities}>
-                <div>
+                <div className={styles.activities_container_header}>
                     <h3>User Activities</h3>
                 </div>
                 <div className={styles.activities_container}>

@@ -17,7 +17,7 @@
 .profile_section {
     border-radius: 1rem;
     padding: 1.25rem;
-    border: 1px solid var(--primary-bg);
+    border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
     gap: 2rem;
@@ -73,7 +73,9 @@
     flex-direction: column;
     gap: 1rem;
 }
-
+.activities_container_header{
+   color: var(--text-primary);
+}
 .activities_container {
     display: flex;
     flex-direction: column;
@@ -83,7 +85,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    border: 1px solid var(--primary-bg);
+    border: 1px solid var(--border-color);
     padding: 1rem;
     border-radius: 1rem;
 }
@@ -98,7 +100,9 @@
     gap: 1rem;
     align-items: center;
 }
-
+.profile_section_content_header h2{
+    color: var(--text-primary);
+}
 
 .profile_section_content{
     display: flex;
@@ -120,15 +124,16 @@
 .activity_details p {
     margin: 0;
     font-weight: bold;
+    color: var(--text-primary);
 }
 
 .activity_details span {
-    color: var(--grey);
+    color: var(--text-primary);
     font-size: 0.9em;
 }
 
 .activity_date {
-    color: var(--grey);
+    color: var(--text-primary);
     font-size: 0.9em;
 }
 
@@ -158,7 +163,7 @@
 
 .select_pagination {
     padding: 0.5rem 0.75rem;
-    border: 0.0625rem solid var(--primary-bg);
+    border: 0.0625rem solid var(--text-primary);
     border-radius: 1rem;
     background-color: var(--white);
     font-size: 0.875rem;
@@ -167,13 +172,13 @@
 }
 
 .select_pagination:hover {
-    border-color: var(--primary-bg);
+    border-color: var(--text-primary);
 }
 
 .total_pages {
     font-size: 0.875rem;
     white-space: nowrap;
-    color: var(--grey);
+    color: var(--text-primary);
 }
 
 .paginationControls {
@@ -212,7 +217,7 @@
 
 .pageInfo {
     font-size: 0.875rem;
-    color: var(--grey);
+    color: var(--text-primary);
 }
 .white_icons {
     background-color: var(--white);
@@ -235,4 +240,22 @@
     filter: invert(19%) sepia(98%) saturate(1642%) hue-rotate(186deg) brightness(96%) contrast(101%);
     
 }
-
+@media screen and (max-width: 1000px){
+    .profile_section_content form{
+        flex-direction: column;
+        flex-grow: 1;
+    }
+}
+@media screen and (max-width: 600px){
+    .profile_section_content form{
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    .pagination{
+    flex-direction: column;
+    gap: 1rem;
+    }
+    .pages_handler{
+    justify-content: space-between;
+}
+}

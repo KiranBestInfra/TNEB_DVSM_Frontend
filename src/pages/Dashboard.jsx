@@ -145,7 +145,7 @@ const Dashboard = () => {
                     yAxisLabel="MW"
                     showLabel={false}
                     toolbox={true}
-                    height="500px"
+                    height="510px"
                     timeRange={timeRange}
                     onTimeRangeChange={setTimeRange}
                 />

@@ -24,7 +24,7 @@
 }
 
 .logo_bestinfra {
-    background-color: var(--white);
+    background-color: var(--main-widget-color);
     border-radius: 4rem;
     padding: 0.5rem;
     height: 4.5rem;
@@ -59,7 +59,7 @@
 }
 
 .white_icons {
-    background-color: var(--white);
+    background-color: var(--main-widget-color);
     border-radius: 50%;
     padding: 0.5rem;
     height: 2.5rem;
@@ -69,10 +69,10 @@
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    border: 2px solid var(--white);
+    border: 2px solid var(--main-widget-color);
 }
 .company_icon{
-    background-color: var(--white);
+    background-color: var(--main-widget-color);
     border-radius: 50%;
     padding: 0.5rem;
     height: 2.5rem;
@@ -82,12 +82,13 @@
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    border: 2px solid var(--white);
+    border: 2px solid var(--main-widget-color);
 }
 .company_icon img{
     height: 2rem;
     width: 2rem;
     object-fit: contain;
+    filter: var(--icons-brand-color-filter);
 }
 .company_icon:hover {
     border: 2px solid var(--brand-blue);
@@ -96,7 +97,7 @@
 .white_icons>img {
     height: 1rem;
     width: 1rem;
-    filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%);
+    filter: var(--icons-color-filter);
 }
 
 .white_icons:hover {
@@ -104,7 +105,7 @@
 }
 
 .white_icons:hover>img {
-    filter: invert(19%) sepia(98%) saturate(1642%) hue-rotate(186deg) brightness(96%) contrast(101%);
+    filter: var(--icons-hover-color-filter);
 }
 
 /* Hide mobile exit icon by default */
@@ -180,11 +181,16 @@
 }
 
 .profile_picture_initials {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--brand-blue);
+    color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    color: var(--grey);
+    font-size: 14px;
 }
 
 .profile_picture_initials:hover {
@@ -261,7 +267,7 @@
     margin-left: 1rem;
     font-size: 1.1rem;
     font-weight: 700;
-    color: #333;
+    color:var(--text-primary);
 }
 
 /* Date and time display styles */
@@ -270,11 +276,11 @@
     flex-direction: row-reverse;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--white);
+    background-color: var(--main-widget-color);
     border-radius: 2rem;
     padding: 0.5rem 0.75rem;
     margin-right: 0.5rem;
-    border: 2px solid var(--white);
+    border: 2px solid var(--main-widget-color);
     transition: border-color 0.3s ease;
     gap: 0.5rem;
     text-transform: uppercase;
@@ -288,18 +294,18 @@
 .clock_icons img {
     height: 1rem;
     width: 1rem;
-    filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%);
+    filter: var(--icons-color-filter);
 }
 
 .time {
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--black);
+    color: var(--text-primary);
 }
 
 .date {
     font-size: 0.9rem;
-    color: var(--grey);
+    color: var(--text-secondary);
 }
 
 .mobile_menu_toggle {
@@ -311,6 +317,7 @@
 .mobile_menu_toggle img {
     width: 24px;
     height: 24px;
+    filter: var(--icons-color-filter);
 }
 
 .mobile_hidden {
@@ -320,8 +327,8 @@
 filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%);
 }
 
-/* Media queries for mobile devices */
-@media screen and (max-width: 768px) {
+/* Media queries for tablet devices */
+@media screen and (max-width: 1024px) and (min-width: 769px) {
     .header_container {
         flex-direction: column;
         gap: 0.5rem;
@@ -331,6 +338,9 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
         width: 100%;
         justify-content: space-between;
         margin-bottom: 0.5rem;
+    }
+    .logout_button {
+        display: none;
     }
     
     .mobile_menu_toggle {
@@ -367,10 +377,6 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
         gap: 0.5rem;
     }
     
-    /* .welcome_message {
-        display: none;
-    } */
-    
     .date_time_display {
         margin-right: 0;
         padding: 0.25rem 0.5rem;
@@ -391,24 +397,50 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
         padding: 8px 12px;
     }
     
-    /* Show mobile exit icon in mobile view */
     .mobile_exit_icon {
         display: flex;
     }
 }
 
-/* For even smaller screens */
-@media screen and (max-width: 480px) {
+/* Media queries for mobile devices */
+@media screen and (max-width: 768px) {
+    .header_container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .logo_container {
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    
+    .mobile_menu_toggle {
+        display: flex;
+    }
+    
+    .search_cont:not(.mobile_hidden), 
+    .right_cont:not(.mobile_hidden) {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        animation: slideIn 0.3s ease-in-out;
+    }
+    
     .date_time_display {
         flex-direction: row-reverse;
         align-items: center;
         display: flex;
         height: 2rem;
+        margin-right: 0;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
     }
     
     .logout_button {
         display: none;
     }
+    
     .white_icons {
         height: 2rem;
         width: 2rem;
@@ -424,10 +456,12 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
         height: 3.5rem;
         width: 3.5rem;
     }
-
+    .mobile_exit_icon {
+        display: flex;
+    }
 }
 
-/* For landscape mode on mobile */
+/* For landscape mode on mobile/tablet */
 @media screen and (max-height: 480px) and (orientation: landscape) {
     .header_container {
         flex-direction: row;
