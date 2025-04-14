@@ -155,3 +155,35 @@
     }
     
 }
+@media screen and (max-width: 760px) {
+    .summary_section{
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .total_edcs_container,
+    .total_feeder_container,
+    .total_regions_container,
+    .total_substations_container,
+    .total_meters_container {
+        flex: unset;
+        min-width: unset;
+        max-width:unset;;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .summary_section{
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .total_edcs_container,
+    .total_feeder_container,
+    .total_regions_container,
+    .total_substations_container,
+    .total_meters_container {
+        flex: 1 1 calc(50% - 1rem);
+        min-width: 300px;
+        max-width: calc(50% - 1rem);
+    }
+}

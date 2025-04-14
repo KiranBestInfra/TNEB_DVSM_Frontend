@@ -233,4 +233,14 @@
     .form_placeholder {
         padding: 0;
     }
+   
+}
+@media screen and (max-width: 1024px) {
+    .slider_container {
+        display: none;
+    }
+    .form_placeholder {
+        grid-row: 2 / 10;
+        grid-column: 3 / 13;
+    }
 }
