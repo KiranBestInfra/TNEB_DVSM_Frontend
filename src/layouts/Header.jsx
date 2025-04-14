@@ -50,7 +50,7 @@ const Header = () => {
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentDateTime(new Date());
-        }, 1000);   
+        }, 1000);
 
         return () => clearInterval(timer);
     }, []);
@@ -85,15 +85,19 @@ const Header = () => {
 
         switch (hierarchy_type_id) {
             case 10: // Region
-                redirectPath = `${basePath}/regions/${formatName(hierarchy_name)}/details`;
+                redirectPath = `${basePath}/regions/${formatName(
+                    hierarchy_name
+                )}/details`;
                 break;
-            case 11: 
+            case 11:
                 redirectPath = `${basePath}/${formatName(
                     region
                 )}/edcs/${id}/details`;
                 break;
             case 35: // Substation
-                redirectPath = `${basePath}/${formatName(region)}/substations/${id}/details`;
+                redirectPath = `${basePath}/${formatName(
+                    region
+                )}/substations/${id}/details`;
                 break;
             default:
                 redirectPath = `${basePath}/details/${id}`;
@@ -228,18 +232,24 @@ const Header = () => {
                     Welcome {profileData.firstName}!
                 </span>
                 {isMobile && (
-                    <div 
+                    <div
                         className={styles.mobile_menu_toggle}
-                        onClick={toggleMobileMenu}
-                    >
-                        <img 
-                            src={isMobileMenuOpen ? "icons/close-button.svg" : "icons/hamburger-menu.svg"} 
+                        onClick={toggleMobileMenu}>
+                        <img
+                            src={
+                                isMobileMenuOpen
+                                    ? 'icons/close-button.svg'
+                                    : 'icons/hamburger-menu.svg'
+                            }
                             alt="Menu"
                         />
                     </div>
                 )}
             </div>
-            <div className={`${styles.search_cont} ${isMobile && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
+            <div
+                className={`${styles.search_cont} ${
+                    isMobile && !isMobileMenuOpen ? styles.mobile_hidden : ''
+                }`}>
                 <input
                     type="text"
                     name="query"
@@ -270,16 +280,18 @@ const Header = () => {
                     </div>
                 )}
             </div>
-            <div className={`${styles.right_cont} ${isMobile && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
+            <div
+                className={`${styles.right_cont} ${
+                    isMobile && !isMobileMenuOpen ? styles.mobile_hidden : ''
+                }`}>
                 <div className={styles.right_cont_item}>
-                 <div className={styles.theme_toggle}>
+                    <div className={styles.theme_toggle}>
                         <ThemeToggle />
                     </div>
-                    <div className={styles.date_time_display}>  
-                    
+                    <div className={styles.date_time_display}>
                         <div className={styles.time}>{formattedTime}</div>
                         <div className={styles.date}>{formattedDate}</div>
-                        
+
                         <div
                             className={styles.clock_icons}
                             onClick={handleProfileClick}>
@@ -299,12 +311,22 @@ const Header = () => {
                         <img src="icons/support-tickets.svg" alt="Tickets" />
                     </span>
 
-                   
-
                     <span
                         className={styles.white_icons}
                         onClick={handleNotificationsClick}>
                         <img src="icons/bell.svg" alt="notifications" />
+                    </span>
+
+                    <span
+                        className={styles.white_icons}
+                        onClick={() => navigate(`${basePath}/error-logs`)}>
+                        <p
+                            style={{
+                                filter: 'invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%)',
+                                fontSize: '18px',
+                            }}>
+                            D
+                        </p>
                     </span>
 
                     <span

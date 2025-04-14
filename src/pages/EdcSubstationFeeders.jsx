@@ -17,13 +17,11 @@ const EdcSubstationFeeders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [feedersPerPage, setFeedersPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
-    const [searchQuery, setSearchQuery] = useState("");
-
+    const [searchQuery, setSearchQuery] = useState('');
     const { region: regionParam, edcs, substationId } = useParams();
     const { user, isRegion } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const location = window.location.pathname;
-
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedFeederData = localStorage.getItem('edcSubstationFeederData');
         const savedTimestamp = localStorage.getItem(
@@ -171,9 +169,10 @@ const EdcSubstationFeeders = () => {
         setCurrentPage(1); // Reset to first page when searching
     };
 
-    const filteredFeeders = widgetsData.feeders?.filter(feeder => 
-        feeder.name.toLowerCase().includes(searchQuery.toLowerCase())
-    ) || [];
+    const filteredFeeders =
+        widgetsData.feeders?.filter((feeder) =>
+            feeder.name.toLowerCase().includes(searchQuery.toLowerCase())
+        ) || [];
 
     return (
         <div className={styles.main_content}>
@@ -217,13 +216,21 @@ const EdcSubstationFeeders = () => {
                 totalPages={Math.ceil(filteredFeeders.length / feedersPerPage)}
                 itemsPerPage={feedersPerPage}
                 onPageChange={handlePageChange}
-                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                onItemsPerPageChange={(newPerPage) =>
+                    handlePageChange(1, newPerPage)
+                }
             />
 
-            <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+            <div
+                className={`${styles.region_stats_container} ${
+                    viewMode === 'list' ? styles.list_view : ''
+                }`}>
                 {filteredFeeders.length > 0 ? (
                     filteredFeeders
-                        .slice((currentPage - 1) * feedersPerPage, currentPage * feedersPerPage)
+                        .slice(
+                            (currentPage - 1) * feedersPerPage,
+                            currentPage * feedersPerPage
+                        )
                         .map((feeder, index) => (
                             <div
                                 key={index}
@@ -249,7 +256,9 @@ const EdcSubstationFeeders = () => {
                                     )}
                                     pageType="feeders"
                                     graphData={
-                                        widgetsData.feederDemandData[feeder.id] || {
+                                        widgetsData.feederDemandData[
+                                            feeder.id
+                                        ] || {
                                             xAxis: [],
                                             series: [],
                                         }

@@ -225,7 +225,7 @@ const SubstationFeeders = () => {
         }
     };
 
-    const filteredFeeders = widgetsData.feederIds.filter(feeder => 
+    const filteredFeeders = widgetsData.feederIds.filter((feeder) =>
         Object.keys(feeder)[0].toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -278,10 +278,15 @@ const SubstationFeeders = () => {
                 totalPages={Math.ceil(filteredFeeders.length / feedersPerPage)}
                 itemsPerPage={feedersPerPage}
                 onPageChange={handlePageChange}
-                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                onItemsPerPageChange={(newPerPage) =>
+                    handlePageChange(1, newPerPage)
+                }
             />
 
-            <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+            <div
+                className={`${styles.region_stats_container} ${
+                    viewMode === 'list' ? styles.list_view : ''
+                }`}>
                 {filteredFeeders && filteredFeeders.length > 0 ? (
                     filteredFeeders
                         .slice(
@@ -298,30 +303,39 @@ const SubstationFeeders = () => {
                                         name={key}
                                         substationId={substationId}
                                         id={value}
+                                        substationCount={0}
                                         feederCount={
                                             widgetsData.meterCount[key] || 0
                                         }
-                                        currentValue={parseFloat(
-                                            widgetsData.feederDemandData?.[
-                                                value
-                                            ]?.series?.[0]?.data?.slice(-1)[0] ||
-                                                widgetsData.feederStats[key]
-                                                    ?.currentValue ||
-                                                0
-                                        ).toFixed(1)}
-                                        previousValue={parseFloat(
-                                            widgetsData.feederDemandData?.[
-                                                value
-                                            ]?.series?.[0]?.data?.slice(
-                                                -2,
-                                                -1
-                                            )[0] ||
-                                                widgetsData.feederStats[key]
-                                                    ?.previousValue ||
-                                                0
-                                        ).toFixed(1)}
+                                        currentValue={Number(
+                                            parseFloat(
+                                                widgetsData.feederDemandData?.[
+                                                    value
+                                                ]?.series?.[0]?.data?.slice(
+                                                    -1
+                                                )[0] ||
+                                                    widgetsData.feederStats[key]
+                                                        ?.currentValue ||
+                                                    0
+                                            ).toFixed(1)
+                                        )}
+                                        previousValue={Number(
+                                            parseFloat(
+                                                widgetsData.feederDemandData?.[
+                                                    value
+                                                ]?.series?.[0]?.data?.slice(
+                                                    -2,
+                                                    -1
+                                                )[0] ||
+                                                    widgetsData.feederStats[key]
+                                                        ?.previousValue ||
+                                                    0
+                                            ).toFixed(1)
+                                        )}
                                         graphData={
-                                            widgetsData.feederDemandData[value] || {
+                                            widgetsData.feederDemandData[
+                                                value
+                                            ] || {
                                                 xAxis: [],
                                                 series: [],
                                             }

@@ -30,10 +30,11 @@ const ShortDetailsWidget = ({
     const navigate = useNavigate();
     const { isRegion, isCircle, isSubstation } = useAuth();
 
-    const percentageChange = (
-        ((currentValue - previousValue) / previousValue) *
-        100
-    ).toFixed(1);
+    const percentageChange = isNaN(
+        ((currentValue - previousValue) / previousValue) * 100
+    )
+        ? 0
+        : ((currentValue - previousValue) / previousValue) * 100;
     const isPositiveChange = currentValue >= previousValue;
 
     const handleClick = () => {
@@ -375,7 +376,9 @@ const ShortDetailsWidget = ({
                                 onClick={handleClick}
                                 style={{ cursor: 'pointer' }}
                             />
-                            <div className={styles.tooltip}>View Information</div>
+                            <div className={styles.tooltip}>
+                                View Information
+                            </div>
                         </div>
                     )}
                 </div>
@@ -386,10 +389,17 @@ const ShortDetailsWidget = ({
                         <p className="titles">Demand Usage (MW)</p>
                         <div className={styles.region_stats_values}>
                             <div className={styles.region_current_value}>
-                                {currentValue}
+                                <RollingNumber
+                                    n={parseFloat(currentValue)}
+                                    decimals={1}
+                                />
                             </div>
                             <div className={styles.region_previous_value}>
-                                {previousValue} MW
+                                <RollingNumber
+                                    n={parseFloat(previousValue)}
+                                    decimals={1}
+                                />{' '}
+                                MW
                             </div>
                             <div
                                 className={`${
@@ -417,10 +427,9 @@ const ShortDetailsWidget = ({
                                     }`}
                                 />{' '}
                                 {''}
-                                <RollingNumber
-                                    n={Math.abs(parseFloat(percentageChange))}
-                                    decimals={1}
-                                />
+                                {Math.abs(parseFloat(percentageChange)).toFixed(
+                                    1
+                                )}
                                 %
                             </div>
                         </div>
@@ -444,11 +453,11 @@ const ShortDetailsWidget = ({
 
 ShortDetailsWidget.propTypes = {
     region: PropTypes.string.isRequired,
-    edc: PropTypes.string,
+    edc: PropTypes.number,
     name: PropTypes.string,
-    id: PropTypes.string,
+    id: PropTypes.number,
     substationId: PropTypes.string,
-    edcCount: PropTypes.number.isRequired,
+    edcCount: PropTypes.number,
     substationCount: PropTypes.number.isRequired,
     feederCount: PropTypes.number.isRequired,
     currentValue: PropTypes.number.isRequired,

@@ -97,12 +97,6 @@ const SubstationDetails = () => {
                     const feedersData = response.data.feeders || [];
                     const commMeters = response.data.commMeters || 0;
                     const nonCommMeters = response.data.nonCommMeters || 0;
-                    console.log(
-                        'feedersData:',
-                        feedersData,
-                        commMeters,
-                        nonCommMeters
-                    );
 
                     setWidgetsData((prev) => {
                         const newData = {
