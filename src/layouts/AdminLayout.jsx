@@ -3,6 +3,7 @@ import '../global.css';
 import styles from '../styles/AdminLayout.module.css';
 import Header from './Header';
 import { useState } from 'react';
+import Chatbot from '../components/Chatbot/Chatbot';
 
 const AdminLayout = ({ children }) => {
     const [mainTitle, setMainTitle] = useState('Dashboard');
@@ -18,6 +19,7 @@ const AdminLayout = ({ children }) => {
                 <div className={styles.content_placeholder}>
                     <Outlet />
                 </div>
+                <Chatbot />
             </div>
         </div>
     );

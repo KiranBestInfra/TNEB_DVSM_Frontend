@@ -33,7 +33,7 @@
 }
 
 .breadcrumb_current {
-  color: var(--black);
+  color: var(--text-primary);
   font-weight: 700;
 }
 
