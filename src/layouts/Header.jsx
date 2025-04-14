@@ -7,6 +7,7 @@ import useDebounce from '../utils/debounce';
 import Cookies from 'js-cookie';
 import NotificationsPanel from '../components/NotificationsPanel/NotificationsPanel';
 import { useAuth } from '../components/AuthProvider';
+import ThemeToggle from '../components/ui/ThemeToggle/ThemeToggle';
 
 const Header = () => {
     const navigate = useNavigate();
@@ -69,7 +70,6 @@ const Header = () => {
     const formattedTime = currentDateTime.toLocaleTimeString('en-IN', {
         hour: '2-digit',
         minute: '2-digit',
-        second: '2-digit',
         hour12: true,
     });
 
@@ -91,15 +91,19 @@ const Header = () => {
 
         switch (hierarchy_type_id) {
             case 10: // Region
-                redirectPath = `${basePath}/regions/${formatName(hierarchy_name)}/details`;
+                redirectPath = `${basePath}/regions/${formatName(
+                    hierarchy_name
+                )}/details`;
                 break;
-            case 11: 
+            case 11:
                 redirectPath = `${basePath}/${formatName(
                     region
                 )}/edcs/${id}/details`;
                 break;
             case 35: // Substation
-                redirectPath = `${basePath}/${formatName(region)}/substations/${id}/details`;
+                redirectPath = `${basePath}/${formatName(
+                    region
+                )}/substations/${id}/details`;
                 break;
             default:
                 redirectPath = `${basePath}/details/${id}`;
@@ -238,10 +242,13 @@ const Header = () => {
                 {(isMobile || isTablet) && (
                     <div 
                         className={styles.mobile_menu_toggle}
-                        onClick={toggleMobileMenu}
-                    >
-                        <img 
-                            src={isMobileMenuOpen ? "icons/close-button.svg" : "icons/hamburger-menu.svg"} 
+                        onClick={toggleMobileMenu}>
+                        <img
+                            src={
+                                isMobileMenuOpen
+                                    ? 'icons/close-button.svg'
+                                    : 'icons/hamburger-menu.svg'
+                            }
                             alt="Menu"
                         />
                     </div>
@@ -280,9 +287,13 @@ const Header = () => {
             </div>
             <div className={`${styles.right_cont} ${(isMobile || isTablet) && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
                 <div className={styles.right_cont_item}>
+                    <div className={styles.theme_toggle}>
+                        <ThemeToggle />
+                    </div>
                     <div className={styles.date_time_display}>
                         <div className={styles.time}>{formattedTime}</div>
                         <div className={styles.date}>{formattedDate}</div>
+
                         <div
                             className={styles.clock_icons}
                             onClick={handleProfileClick}>
@@ -293,7 +304,7 @@ const Header = () => {
                     <span
                         className={styles.company_icon}
                         onClick={handleProfileClick}>
-                        <img src="images/tangedco.png" alt="Settings" />
+                        <img src="images/tange.svg" alt="Settings" />
                     </span>
 
                     <span
@@ -306,6 +317,18 @@ const Header = () => {
                         className={styles.white_icons}
                         onClick={handleNotificationsClick}>
                         <img src="icons/bell.svg" alt="notifications" />
+                    </span>
+
+                    <span
+                        className={styles.white_icons}
+                        onClick={() => navigate(`${basePath}/error-logs`)}>
+                        <p
+                            style={{
+                                filter: 'invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%)',
+                                fontSize: '18px',
+                            }}>
+                            D
+                        </p>
                     </span>
 
                     <span

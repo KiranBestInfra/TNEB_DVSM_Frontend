@@ -313,7 +313,7 @@ const Tickets = () => {
                         ))}
                     </select>
                 </div>
-                <div className={styles.filter_item}>
+                {/* <div className={styles.filter_item}>
                     <select
                         value={filterSubstation}
                         onChange={(e) => {
@@ -328,8 +328,8 @@ const Tickets = () => {
                             </option>
                         ))}
                     </select>
-                </div>
-                <div className={styles.filter_item}>
+                </div> */}
+                {/* <div className={styles.filter_item}>
                     <select
                         value={filterFeeder}
                         onChange={(e) => setFilterFeeder(e.target.value)}
@@ -337,7 +337,7 @@ const Tickets = () => {
                         disabled>
                         <option value="all">Select Feeder</option>
                     </select>
-                </div>
+                </div> */}
             </div>
 
             {loading ? (

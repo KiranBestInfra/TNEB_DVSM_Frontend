@@ -239,7 +239,7 @@ const RegionFeeders = () => {
                                     <ShortDetailsWidget
                                         region={region}
                                         name={key}
-                                        id={String(value)}
+                                        id={Number(value)}
                                         edcCount={0}
                                         substationCount={0}
                                         commMeters={widgetsData.commMeters}

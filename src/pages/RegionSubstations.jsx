@@ -10,8 +10,7 @@ import { apiClient } from '../api/client';
 import PropTypes from 'prop-types';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
-import TimeRangeSelectDropdown from "../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown";
-
+import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -57,7 +56,7 @@ const RegionSubstations = () => {
     const cacheTimeoutRef = useRef(null);
     const { region: regionParam } = useParams();
     const { user, isRegion } = useAuth();
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState('');
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [selectedSubstation, setSelectedSubstation] = useState(null);
 
@@ -328,10 +327,14 @@ const RegionSubstations = () => {
                                                   ]?.series?.[0]?.data;
                                               return seriesData &&
                                                   seriesData.length
-                                                  ? parseFloat(
-                                                        seriesData.slice(-1)[0]
-                                                    ).toFixed(1)
-                                                  : '0.0';
+                                                  ? Number(
+                                                        parseFloat(
+                                                            seriesData.slice(
+                                                                -1
+                                                            )[0]
+                                                        ).toFixed(1)
+                                                    )
+                                                  : 0.0;
                                           })()}
                                           previousValue={(() => {
                                               const seriesData =
@@ -341,13 +344,15 @@ const RegionSubstations = () => {
                                                   ]?.series?.[0]?.data;
                                               return seriesData &&
                                                   seriesData.length > 1
-                                                  ? parseFloat(
-                                                        seriesData.slice(
-                                                            -2,
-                                                            -1
-                                                        )[0]
-                                                    ).toFixed(1)
-                                                  : '0.0';
+                                                  ? Number(
+                                                        parseFloat(
+                                                            seriesData.slice(
+                                                                -2,
+                                                                -1
+                                                            )[0]
+                                                        ).toFixed(1)
+                                                    )
+                                                  : 0.0;
                                           })()}
                                           pageType="substations"
                                           handleRegionClick={() =>

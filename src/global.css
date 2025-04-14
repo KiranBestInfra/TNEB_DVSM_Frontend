@@ -40,7 +40,67 @@
   --primary-bg: #efefef;
   --brand-blue: #008cd7;
   --blue-dark: #004265;
+  --dark-light: #333333;
+  --graph-grid-color:#E0E0E0;
+}
 
+/* Light Theme */
+.light-theme {
+  --input-focus-color: var(--white);
+  --main-widget-color:var(--white);
+  --links-color:var(--brand-blue);
+  --background-secondary: var(--blue-bright);
+  --background-primary: var(--white);
+  --background-dark-green: var(--positive);
+  --spinner-theme-color:var(--grey-light);
+  --graph-grid-color:var(--primary-bg);
+  --icons-color:var(--grey);
+  --text-primary: var(--black);
+  --text-secondary: var(--black);
+  --text-third: var(--white);
+  --text-tertiary: var(--black);
+  --accent-primary: var(--goodtogo);
+  --outline-button-color: var(--black);
+  --input-background-color: var(--gey);
+  --header-background-color: var(--primary-bg);
+  --main-background-color: var(--primary-bg);
+  --border-color: var(--grey-light);
+  --graph-theme-color: var(--white);
+  --button-theme-color:var(--brand-blue);
+  --button-primary-color:var(--blue-bright);   /*Primary Button*/
+  --icons-color-filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%);
+  --icons-brand-color-filter: invert(40%) sepia(57%) saturate(1529%) hue-rotate(176deg) brightness(96%) contrast(101%);
+  --icons-hover-color-filter: invert(19%) sepia(98%) saturate(1642%) hue-rotate(186deg) brightness(96%) contrast(101%);
+  --summary-icons-theme: invert(40%) sepia(57%) saturate(1529%) hue-rotate(176deg) brightness(96%) contrast(101%);/*Blue theme icons*/
+}
+
+/* Dark Theme */
+.dark-theme {
+  --input-focus-color: var(--positive);
+  --main-widget-color:var(--dark-light);
+  --links-color:var(--brand-blue);
+  --background-secondary: var(--blue-bright);
+  --background-dark-green: var(--positive);
+  --icons-color:var(--white);
+  --background-primary: var(--black);
+  --graph-grid-color:var(--dark-light);  /* graph-grid*/
+  --text-primary: var(--white);
+  --text-secondary: var(--white);
+  --text-third: var(--black);
+  --text-tertiary: var(--white);
+  --accent-primary: var(--goodtogo);
+  --outline-button-color: var(--white);
+  --input-background-color: var(--white);
+  --header-background-color: var(--dark-light);
+  --main-background-color: var(--black);
+  --border-color: var(--black);
+  --graph-theme-color: var(--dark-light);
+  --spinner-theme-color:var(--dark-light);
+  --button-primary-color:var(--grey-light); 
+  --icons-color-filter: brightness(0) invert(1);
+  --icons-hover-color-filter: invert(19%) sepia(98%) saturate(1642%) hue-rotate(186deg) brightness(96%) contrast(101%);
+  --icons-brand-color-filter: invert(40%) sepia(57%) saturate(1529%) hue-rotate(176deg) brightness(96%) contrast(101%);
+  --summary-icons-theme: invert(53%) sepia(75%) saturate(1552%) hue-rotate(1deg) brightness(96%) contrast(95%); /*Orenge theme icons*/
 }
 
 /* Base Styles */
@@ -53,7 +113,7 @@ body {
 
 /* Layout */
 .main_container {
-  background-color: var(--primary-bg);
+  background-color: var(--main-background-color);
   width: 100vw;
   height: 100vh;
   padding: 1.25rem;
@@ -70,12 +130,14 @@ body {
   font-weight: 700;
   font-family: "Roboto";
   white-space: nowrap;
+  color: var(--text-primary);
 }
 
 .titles {
   font-family: "Roboto";
   font-size: 0.85rem;
   font-weight: 400;
+  color: var(--text-primary);
 }
 
 .sub_title {
@@ -136,21 +198,21 @@ input {
   width: 100%;
   height: 2.917rem;
   padding: 1rem;
-  background-color: var(--white);
-  border: 1px solid var(--primary-bg);
+  background-color: var(--main-widget-color);
+  border: 1px solid var(--border-color);
   border-radius: 2.5rem;
   font-family: "Roboto";
   font-size: 1rem;
   outline: none;
-  color: var(--grey);
+  color: var(--input-background-color);
 }
 
 input:focus {
-  border: 1px solid var(--primary-bg);
+  border: 1px solid var(--brand-blue);
 }
 
 input::placeholder {
-  color: var(--grey);
+  color: var(--text-primary);
 }
 
 input:disabled {
@@ -158,13 +220,16 @@ input:disabled {
   background-color: var(--white);
   color: var(--grey);
 }
+input:active{
+  border: 1px solid var(--border-color);
+}
 
 select {
   width: 100%;
   height: 2.917rem;
   padding: 0rem 1rem;
   background-color: var(--white);
-  border: 1px solid var(--primary-bg);
+  border: 1px solid var(--border-color);
   border-radius: 2.5rem;
   font-family: "Roboto";
   font-size: 1rem;
@@ -183,11 +248,11 @@ select {
 
 select:hover {
   color: var(--black);
-  border: 1px solid var(--primary-bg);
+  border: 1px solid var(--border-color);
 }
 
 select:focus {
-  border: 1px solid var(--primary-bg);
+  border: 1px solid var(--border-color);
   color: var(--black);
 }
 
@@ -201,15 +266,15 @@ select:disabled {
 select option {
   padding: 1rem;
   font-size: 1rem;
-  color: var(--black);
-  background-color: var(--white);
+  color: var(--text-primary);
+  background-color: var(--main-widget-color);
   cursor: pointer;
   font-weight: 400;
 }
 
 /* Styling the dropdown menu - works in modern browsers */
 select:not([multiple]) {
-  background-color: var(--white);
+  background-color: var(--main-widget-color);
 }
 
 /* Webkit browsers (Chrome, Safari) */

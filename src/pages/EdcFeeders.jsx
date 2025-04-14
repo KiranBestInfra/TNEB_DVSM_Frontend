@@ -21,7 +21,7 @@ const EdcFeeders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [feedersPerPage, setFeedersPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState('');
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedFeederData = localStorage.getItem('edcFeederData');
@@ -185,9 +185,10 @@ const EdcFeeders = () => {
         setCurrentPage(1); // Reset to first page when searching
     };
 
-    const filteredFeeders = widgetsData.feederNames?.filter(feeder => 
-        feeder.name.toLowerCase().includes(searchQuery.toLowerCase())
-    ) || [];
+    const filteredFeeders =
+        widgetsData.feederNames?.filter((feeder) =>
+            feeder.name.toLowerCase().includes(searchQuery.toLowerCase())
+        ) || [];
 
     return (
         <div className={styles.main_content}>
@@ -235,17 +236,23 @@ const EdcFeeders = () => {
                 }
             />
 
-            <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+            <div
+                className={`${styles.region_stats_container} ${
+                    viewMode === 'list' ? styles.list_view : ''
+                }`}>
                 {filteredFeeders.length > 0 ? (
                     filteredFeeders
-                        .slice((currentPage - 1) * feedersPerPage, currentPage * feedersPerPage)
+                        .slice(
+                            (currentPage - 1) * feedersPerPage,
+                            currentPage * feedersPerPage
+                        )
                         .map((value) => (
                             <div
                                 key={value.id}
                                 className={styles.individual_region_stats}>
                                 <ShortDetailsWidget
                                     region={region}
-                                    edc={edcs}
+                                    edc={parseInt({ edcs }, 10) || 0}
                                     name={value.name}
                                     id={value.id}
                                     feederCount={

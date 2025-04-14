@@ -15,7 +15,7 @@
     align-items: center;
     gap: 2rem;
     padding: 2rem;
-    border: 1px solid #efefef;
+    border: 1px solid var(--border-color);
     border-radius: 1.5rem;
     width: 100%;
 }
@@ -26,7 +26,9 @@
     align-items: center;
     gap: 1rem;
 }
-
+.total_meters_main_info img {
+    filter: var(--summary-icons-theme);
+}
 .total_title_value,
 .total_meters {
     display: flex;
@@ -41,7 +43,9 @@
     align-items: center;
     gap: 1rem;
 }
-
+.total_main_info img {
+    filter: var(--summary-icons-theme);
+}
 .TNEB_icons {
     width: 4rem;
     height: 4rem;
@@ -51,7 +55,7 @@
 .summary_value {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--black);
+    color: var(--text-primary);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -80,9 +84,9 @@
 
 .communication_value {
     font-size: 1rem;
-    color: var(--black);
+    color: var(--text-primary);
     font-weight: 700;
-    background-color: var(--primary-bg);
+    background-color: var(--main-background-color);
     border-radius: 2rem;
     padding: 0.5rem 1rem;
     width: fit-content;

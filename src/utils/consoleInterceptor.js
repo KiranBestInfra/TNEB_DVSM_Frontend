@@ -2,11 +2,13 @@ import { apiClient } from '../api/client';
 
 const sendLogToBackend = async (level, message, stack = '') => {
     try {
+        const coreMessage = message.split(',')[0]; // get message before first comma
         await apiClient.post('/log/error', {
             level,
-            message,
+            message: coreMessage,
             stack,
             time: new Date().toISOString(),
+            url: window.location.pathname,
         });
     } catch (err) {
         window.originalConsole?.log('Failed to send log:', err);

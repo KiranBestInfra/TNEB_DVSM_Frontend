@@ -93,7 +93,7 @@ const SummarySection = ({
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/map-pin.svg"
+                            src="icons/map.svg"
                             alt="Total Districts"
                             className={styles.TNEB_icons}
                         />
@@ -184,12 +184,17 @@ const SummarySection = ({
                                             styles.communication_positive_arrow
                                         }
                                     />
-                                    {(
-                                        (widgetsData.commMeters /
-                                            (widgetsData.commMeters +
-                                                widgetsData.nonCommMeters)) *
-                                        100
-                                    ).toFixed(1)}
+                                    {(() => {
+                                        const comm =
+                                            widgetsData?.commMeters ?? 0;
+                                        const nonComm =
+                                            widgetsData?.nonCommMeters ?? 0;
+                                        const total = comm + nonComm;
+                                        if (total === 0) return '0.0';
+                                        return ((comm / total) * 100).toFixed(
+                                            1
+                                        );
+                                    })()}
                                     %
                                 </div>
                             </div>
@@ -198,7 +203,7 @@ const SummarySection = ({
                                     styles.communication_status_container
                                 }>
                                 <div className={styles.communication_value}>
-                                    {widgetsData.nonCommMeters}
+                                    {widgetsData?.nonCommMeters ?? 0}
                                 </div>
                                 <div
                                     className={
@@ -211,12 +216,18 @@ const SummarySection = ({
                                             styles.communication_negative_arrow
                                         }
                                     />
-                                    {(
-                                        (widgetsData.nonCommMeters /
-                                            (widgetsData.commMeters +
-                                                widgetsData.nonCommMeters)) *
-                                        100
-                                    ).toFixed(1)}
+                                    {(() => {
+                                        const comm =
+                                            widgetsData?.commMeters ?? 0;
+                                        const nonComm =
+                                            widgetsData?.nonCommMeters ?? 0;
+                                        const total = comm + nonComm;
+                                        if (total === 0) return '0.0';
+                                        return (
+                                            (nonComm / total) *
+                                            100
+                                        ).toFixed(1);
+                                    })()}
                                     %
                                 </div>
                             </div>
