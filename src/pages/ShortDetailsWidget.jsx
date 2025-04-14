@@ -477,11 +477,11 @@ const ShortDetailsWidget = ({
 
 ShortDetailsWidget.propTypes = {
     region: PropTypes.string.isRequired,
-    edc: PropTypes.string,
+    edc: PropTypes.number,
     name: PropTypes.string,
     id: PropTypes.number,
     substationId: PropTypes.string,
-    edcCount: PropTypes.number.isRequired,
+    edcCount: PropTypes.number,
     substationCount: PropTypes.number.isRequired,
     feederCount: PropTypes.number.isRequired,
     currentValue: PropTypes.number.isRequired,

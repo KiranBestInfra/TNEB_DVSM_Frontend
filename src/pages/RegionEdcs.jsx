@@ -8,8 +8,7 @@ import { apiClient } from '../api/client';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
-import TimeRangeSelectDropdown from "../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown";
-
+import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
 
 const RegionEdcs = () => {
     const { region: regionParam } = useParams();
@@ -61,7 +60,7 @@ const RegionEdcs = () => {
         };
     });
 
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
@@ -214,7 +213,7 @@ const RegionEdcs = () => {
         setCurrentPage(1); // Reset to first page when searching
     };
 
-    const filteredEdcs = widgetsData.edcNames.filter(edc => 
+    const filteredEdcs = widgetsData.edcNames.filter((edc) =>
         edc.hierarchy_name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
@@ -259,9 +258,15 @@ const RegionEdcs = () => {
             {loading ? (
                 <div className={styles.loading}>Loading EDCs...</div>
             ) : (
-                <div className={`${styles.region_stats_container} ${viewMode === 'list' ? styles.list_view : ''}`}>
+                <div
+                    className={`${styles.region_stats_container} ${
+                        viewMode === 'list' ? styles.list_view : ''
+                    }`}>
                     {filteredEdcs
-                        .slice((currentPage - 1) * edcsPerPage, currentPage * edcsPerPage)
+                        .slice(
+                            (currentPage - 1) * edcsPerPage,
+                            currentPage * edcsPerPage
+                        )
                         .map((edc, index) => (
                             <div
                                 key={index}
@@ -290,19 +295,25 @@ const RegionEdcs = () => {
                                             series: [],
                                         }
                                     }
-                                    currentValue={parseFloat(
-                                        widgetsData.edcDemandData?.[
-                                            edc.hierarchy_name
-                                        ]?.series?.[0]?.data?.slice(-1)[0] || 0
-                                    ).toFixed(1)}
-                                    previousValue={parseFloat(
-                                        widgetsData.edcDemandData?.[
-                                            edc.hierarchy_name
-                                        ]?.series?.[0]?.data?.slice(
-                                            -2,
-                                            -1
-                                        )[0] || 0
-                                    ).toFixed(1)}
+                                    currentValue={Number(
+                                        parseFloat(
+                                            widgetsData.edcDemandData?.[
+                                                edc.hierarchy_name
+                                            ]?.series?.[0]?.data?.slice(
+                                                -1
+                                            )[0] || 0
+                                        ).toFixed(1)
+                                    )}
+                                    previousValue={Number(
+                                        parseFloat(
+                                            widgetsData.edcDemandData?.[
+                                                edc.hierarchy_name
+                                            ]?.series?.[0]?.data?.slice(
+                                                -2,
+                                                -1
+                                            )[0] || 0
+                                        ).toFixed(1)
+                                    )}
                                     pageType="edcs"
                                     handleRegionClick={() =>
                                         handleEdcClick(edc)
