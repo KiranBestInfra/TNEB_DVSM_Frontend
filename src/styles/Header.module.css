@@ -181,11 +181,16 @@
 }
 
 .profile_picture_initials {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--brand-blue);
+    color: var(--white);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    color: var(--grey);
+    font-size: 14px;
 }
 
 .profile_picture_initials:hover {
@@ -322,8 +327,8 @@
 filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%);
 }
 
-/* Media queries for mobile devices */
-@media screen and (max-width: 768px) {
+/* Media queries for tablet devices */
+@media screen and (max-width: 1024px) and (min-width: 769px) {
     .header_container {
         flex-direction: column;
         gap: 0.5rem;
@@ -333,6 +338,9 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
         width: 100%;
         justify-content: space-between;
         margin-bottom: 0.5rem;
+    }
+    .logout_button {
+        display: none;
     }
     
     .mobile_menu_toggle {
@@ -369,10 +377,6 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
         gap: 0.5rem;
     }
     
-    /* .welcome_message {
-        display: none;
-    } */
-    
     .date_time_display {
         margin-right: 0;
         padding: 0.25rem 0.5rem;
@@ -393,24 +397,50 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
         padding: 8px 12px;
     }
     
-    /* Show mobile exit icon in mobile view */
     .mobile_exit_icon {
         display: flex;
     }
 }
 
-/* For even smaller screens */
-@media screen and (max-width: 480px) {
+/* Media queries for mobile devices */
+@media screen and (max-width: 768px) {
+    .header_container {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .logo_container {
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    
+    .mobile_menu_toggle {
+        display: flex;
+    }
+    
+    .search_cont:not(.mobile_hidden), 
+    .right_cont:not(.mobile_hidden) {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        animation: slideIn 0.3s ease-in-out;
+    }
+    
     .date_time_display {
         flex-direction: row-reverse;
         align-items: center;
         display: flex;
         height: 2rem;
+        margin-right: 0;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
     }
     
     .logout_button {
         display: none;
     }
+    
     .white_icons {
         height: 2rem;
         width: 2rem;
@@ -426,10 +456,12 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
         height: 3.5rem;
         width: 3.5rem;
     }
-
+    .mobile_exit_icon {
+        display: flex;
+    }
 }
 
-/* For landscape mode on mobile */
+/* For landscape mode on mobile/tablet */
 @media screen and (max-height: 480px) and (orientation: landscape) {
     .header_container {
         flex-direction: row;

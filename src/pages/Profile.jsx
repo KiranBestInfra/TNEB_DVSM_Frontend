@@ -209,8 +209,8 @@ const Profile = () => {
 
     // Render
     const renderProfilePicture = () => {
-        const initials = user?.userId
-            ? user.userId.slice(0, 2).toUpperCase()
+        const initials = user?.name
+            ? user.name.substring(0, 2).toUpperCase()
             : '';
 
         return (
