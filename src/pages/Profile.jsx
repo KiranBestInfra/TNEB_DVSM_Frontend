@@ -347,7 +347,7 @@ const Profile = () => {
 
         return (
             <div className={styles.login_activities}>
-                <div>
+                <div className={styles.activities_container_header}>
                     <h3>User Activities</h3>
                 </div>
                 <div className={styles.activities_container}>
