@@ -6,7 +6,7 @@ import RollingNumber from '../RollingNumber';
 const SummarySection = ({
     widgetsData = {
         totalRegions: 0,
-        totalEdcs: 0,
+        totalEdcs: 5,
         totalSubstations: 0,
         totalFeeders: 0,
         commMeters: 0,
@@ -68,16 +68,20 @@ const SummarySection = ({
                         <div className={styles.total_title_value}>
                             <p className="title">
                                 {isUserRoute ? (
-                                    <span
-                                        style={{ color: 'var(--brand-blue)' }}>
+                                    <Link
+                                        to="/user/edcs"
+                                        style={{
+                                            color: 'var(--brand-blue)',
+                                            textDecoration: 'none',
+                                        }}>
                                         EDCs{' '}
-                                        {isUserRoute && onEdcClick && (
+                                        {onEdcClick && (
                                             <span
                                                 style={{ fontSize: '0.8rem' }}>
                                                 🔗
                                             </span>
                                         )}
-                                    </span>
+                                    </Link>
                                 ) : (
                                     'EDCs'
                                 )}
