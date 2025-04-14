@@ -51,9 +51,10 @@ const ShortDetailsWidget = ({
     const { isRegion, isCircle, isSubstation } = useAuth();
 
     const percentageChange = isNaN(
-        ((currentValue - previousValue) / previousValue) *
-        100
-    ) ? 0 : ((currentValue - previousValue) / previousValue) * 100;
+        ((currentValue - previousValue) / previousValue) * 100
+    )
+        ? 0
+        : ((currentValue - previousValue) / previousValue) * 100;
     const isPositiveChange = currentValue >= previousValue;
 
     const formatPercentage = (value) => {
@@ -399,7 +400,9 @@ const ShortDetailsWidget = ({
                                 onClick={handleClick}
                                 style={{ cursor: 'pointer' }}
                             />
-                            <div className={styles.tooltip}>View Information</div>
+                            <div className={styles.tooltip}>
+                                View Information
+                            </div>
                         </div>
                     )}
                 </div>
@@ -410,10 +413,17 @@ const ShortDetailsWidget = ({
                         <p className="titles">Demand Usage</p>
                         <div className={styles.region_stats_values}>
                             <div className={styles.region_current_value}>
-                                <RollingNumber n={parseFloat(currentValue)} decimals={1} />
+                                <RollingNumber
+                                    n={parseFloat(currentValue)}
+                                    decimals={1}
+                                />
                             </div>
                             <div className={styles.region_previous_value}>
-                                <RollingNumber n={parseFloat(previousValue)} decimals={1} /> MW
+                                <RollingNumber
+                                    n={parseFloat(previousValue)}
+                                    decimals={1}
+                                />{' '}
+                                MW
                             </div>
                             <div
                                 className={`${
@@ -441,7 +451,10 @@ const ShortDetailsWidget = ({
                                     }`}
                                 />{' '}
                                 {''}
-                                {Math.abs(parseFloat(percentageChange)).toFixed(1)}%
+                                {Math.abs(parseFloat(percentageChange)).toFixed(
+                                    1
+                                )}
+                                %
                             </div>
                         </div>
                     </div>
@@ -464,11 +477,11 @@ const ShortDetailsWidget = ({
 
 ShortDetailsWidget.propTypes = {
     region: PropTypes.string.isRequired,
-    edc: PropTypes.string,
+    edc: PropTypes.number,
     name: PropTypes.string,
-    id: PropTypes.string,
+    id: PropTypes.number,
     substationId: PropTypes.string,
-    edcCount: PropTypes.number.isRequired,
+    edcCount: PropTypes.number,
     substationCount: PropTypes.number.isRequired,
     feederCount: PropTypes.number.isRequired,
     currentValue: PropTypes.number.isRequired,
