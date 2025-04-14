@@ -119,6 +119,7 @@ const RegionEdcs = () => {
                 setLoading(true);
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response.data || {};
+                console.log('response', response);
                 const transformedData = {
                     totalEdcs: data.edcNames?.length || 0,
                     totalSubstations:
@@ -190,7 +191,7 @@ const RegionEdcs = () => {
         }
 
         return {
-            totalEdcs: 1,
+            totalEdcs: widgetsData.totalEdcs,
             totalSubstations: widgetsData.substationCount[selectedEdc] || 0,
             totalFeeders: widgetsData.feederCount[selectedEdc] || 0,
             commMeters: widgetsData.commMeters || 0,

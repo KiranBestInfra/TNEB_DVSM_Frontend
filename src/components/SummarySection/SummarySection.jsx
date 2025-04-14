@@ -6,7 +6,7 @@ import RollingNumber from '../RollingNumber';
 const SummarySection = ({
     widgetsData = {
         totalRegions: 0,
-        totalEdcs: 0,
+        totalEdcs: 5,
         totalSubstations: 0,
         totalFeeders: 0,
         commMeters: 0,
@@ -67,20 +67,16 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute ? (
-                                    <span
-                                        style={{ color: 'var(--brand-blue)' }}>
-                                        EDCs{' '}
-                                        {isUserRoute && onEdcClick && (
-                                            <span
-                                                style={{ fontSize: '0.8rem' }}>
-                                                🔗
-                                            </span>
-                                        )}
-                                    </span>
-                                ) : (
-                                    'EDCs'
-                                )}
+                                <Link
+                                    to={
+                                        isBiUserRoute
+                                            ? `/bi/user/edcs`
+                                            : isUserRoute
+                                            ? `/user/edcs`
+                                            : `/admin/edcs`
+                                    }>
+                                    EDCs
+                                </Link>
                             </p>
                             <div className={styles.summary_value}>
                                 <RollingNumber n={widgetsData.totalEdcs} />
@@ -124,20 +120,16 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute ? (
-                                    <span
-                                        style={{ color: 'var(--brand-blue)' }}>
-                                        Substations{' '}
-                                        {isUserRoute && onSubstationClick && (
-                                            <span
-                                                style={{ fontSize: '0.8rem' }}>
-                                                🔗
-                                            </span>
-                                        )}
-                                    </span>
-                                ) : (
-                                    'Substations'
-                                )}
+                                <Link
+                                    to={
+                                        isBiUserRoute
+                                            ? `/bi/user/substations`
+                                            : isUserRoute
+                                            ? `/user/region/substations`
+                                            : `/admin/substations`
+                                    }>
+                                    Substations
+                                </Link>
                             </p>
                             <div className={styles.summary_value}>
                                 <RollingNumber
@@ -148,6 +140,7 @@ const SummarySection = ({
                     </div>
                 </div>
             )}
+
             {showFeeders && (
                 <div className={styles.total_meters_container}>
                     <div className={styles.total_meters_main_info}>
@@ -157,12 +150,24 @@ const SummarySection = ({
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_meters}>
-                            <div className="title">Feeders</div>
+                            <p className="title">
+                                <Link
+                                    to={
+                                        isBiUserRoute
+                                            ? `/bi/user/feeders`
+                                            : isUserRoute
+                                            ? `/user/region/feeders`
+                                            : `/admin/feeders`
+                                    }>
+                                    Feeders
+                                </Link>
+                            </p>
                             <div className={styles.summary_value}>
                                 <RollingNumber n={widgetsData.totalFeeders} />
                             </div>
                         </div>
                     </div>
+
                     <div className={styles.metrics_communication_info}>
                         <div className="titles">Communication Status</div>
                         <div className={styles.overall_communication_status}>
