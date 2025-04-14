@@ -240,4 +240,22 @@
     filter: invert(19%) sepia(98%) saturate(1642%) hue-rotate(186deg) brightness(96%) contrast(101%);
     
 }
-
+@media screen and (max-width: 1000px){
+    .profile_section_content form{
+        flex-direction: column;
+        flex-grow: 1;
+    }
+}
+@media screen and (max-width: 600px){
+    .profile_section_content form{
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    .pagination{
+    flex-direction: column;
+    gap: 1rem;
+    }
+    .pages_handler{
+    justify-content: space-between;
+}
+}
