@@ -11,8 +11,8 @@
   height: 2.5rem;
   padding: 0 1rem;
   min-width: 9rem;
-  border: 1px solid var(--primary-bg);
-  background-color: var(--white);
+  border: 1px solid var(--border-color);
+  background-color: var(--text-primary);
 }
 
 .time_range_select_dropdown_icon {

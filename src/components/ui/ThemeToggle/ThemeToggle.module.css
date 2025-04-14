@@ -47,10 +47,12 @@
   
   .themeToggle:checked + .toggleLabel {
     background-color: var(--white);
+    background-color: var(--dark-light);
   }
   
   .themeToggle:checked + .toggleLabel:before {
     transform: translateX(calc(4.5rem - 34px));
+    background-color: var(--brand-blue);
   }
   
   .toggleIcon {
@@ -81,13 +83,10 @@
     display: block;
     margin: auto;
     position: absolute;
-    filter: none;
-  }
-  
-  .themeToggle:checked + .toggleLabel .toggleIcon img {
-   
     filter: brightness(0) invert(1);
   }
+  
+ 
   
   .toggleSwitch {
     top: 0rem;

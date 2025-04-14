@@ -25,9 +25,9 @@
 }
 
 .widget {
-    background-color: #fff;
+    background-color: var(--main-widget-color);
     border-radius: 0.5rem;
-    border: 1px solid var(--primary-bg);
+    border: 1px solid var(--border-color);
     padding: 1rem;
     flex: 1;
     min-width: 150px;
@@ -46,7 +46,7 @@
     font-size: 2rem;
     font-weight: bold;
     padding: 1rem 0;
-    color: var(--blue-bright);
+    color: var(--brand-blue);
 }
 
 .widget_label {
@@ -176,12 +176,12 @@
 }
 
 .status_closed {
-    background-color: #e6fffa;
+    background-color: var(--main-background-color);
     color: var(--positive);
 }
 
 .status_pending {
-    background-color: #fffaf0;
+    background-color: var(--main-background-color);
     color: var(--warning);
 }
 
@@ -191,7 +191,7 @@
     align-items: center;
     margin-top: 20px;
     padding: 15px;
-    background-color: #fff;
+    background-color:var(--main-background-color);
     border-radius: 0.5rem;
 }
 

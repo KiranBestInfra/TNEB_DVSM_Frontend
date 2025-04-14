@@ -290,7 +290,7 @@ const Header = () => {
                     <span
                         className={styles.company_icon}
                         onClick={handleProfileClick}>
-                        <img src="images/tangedco.png" alt="Settings" />
+                        <img src="images/tange.svg" alt="Settings" />
                     </span>
 
                     <span
