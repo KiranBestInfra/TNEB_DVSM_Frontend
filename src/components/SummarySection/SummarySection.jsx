@@ -78,7 +78,7 @@ const SummarySection = ({
                                         {onEdcClick && (
                                             <span
                                                 style={{ fontSize: '0.8rem' }}>
-                                                🔗
+                                              
                                             </span>
                                         )}
                                     </Link>

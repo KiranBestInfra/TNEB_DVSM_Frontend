@@ -214,9 +214,10 @@ const RegionEdcs = () => {
         setCurrentPage(1); // Reset to first page when searching
     };
 
-    const filteredEdcs = widgetsData.edcNames.filter((edc) =>
-        edc.hierarchy_name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredEdcs = widgetsData.edcNames?.filter((edc) => {
+        const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
+        return name?.toLowerCase().includes(searchQuery.toLowerCase());
+    }) || [];
 
     return (
         <div className={styles.main_content}>
@@ -268,67 +269,55 @@ const RegionEdcs = () => {
                             (currentPage - 1) * edcsPerPage,
                             currentPage * edcsPerPage
                         )
-                        .map((edc, index) => (
-                            <div
-                                key={index}
-                                className={styles.individual_region_stats}>
-                                <ShortDetailsWidget
-                                    region={region}
-                                    edc={edc.hierarchy_id}
-                                    name={edc.hierarchy_name}
-                                    edcId={edc.hierarchy_id}
-                                    substationCount={
-                                        widgetsData.substationCount[
-                                            edc.hierarchy_name
-                                        ] || 0
-                                    }
-                                    feederCount={
-                                        widgetsData.feederCount[
-                                            edc.hierarchy_name
-                                        ] || 0
-                                    }
-                                    edcCount={widgetsData.totalEdcs}
-                                    graphData={
-                                        widgetsData.edcDemandData?.[
-                                            edc.hierarchy_name
-                                        ] ?? {
-                                            xAxis: [],
-                                            series: [],
+                        .map((edc, index) => {
+                            const edcName = typeof edc === 'string' ? edc : edc.hierarchy_name;
+                            const edcId = typeof edc === 'string' ? edc : edc.hierarchy_id;
+                            return (
+                                <div
+                                    key={index}
+                                    className={styles.individual_region_stats}>
+                                    <ShortDetailsWidget
+                                        region={region}
+                                        edc={edcId}
+                                        name={edcName}
+                                        edcId={edcId}
+                                        substationCount={
+                                            widgetsData.substationCount[edcName] || 0
                                         }
-                                    }
-                                    currentValue={Number(
-                                        parseFloat(
-                                            widgetsData.edcDemandData?.[
-                                                edc.hierarchy_name
-                                            ]?.series?.[0]?.data?.slice(
-                                                -1
-                                            )[0] || 0
-                                        ).toFixed(1)
-                                    )}
-                                    previousValue={Number(
-                                        parseFloat(
-                                            widgetsData.edcDemandData?.[
-                                                edc.hierarchy_name
-                                            ]?.series?.[0]?.data?.slice(
-                                                -2,
-                                                -1
-                                            )[0] || 0
-                                        ).toFixed(1)
-                                    )}
-                                    pageType="edcs"
-                                    handleRegionClick={() =>
-                                        handleEdcClick(edc)
-                                    }
-                                    showInfoIcon={true}
-                                />
-
-                                <div>
-                                    {/* <h3>{edc.hierarchy_name}</h3> */}
-                                    {/* <p>Substation Count: {widgetsData.substationCount[edc.hierarchy_name] || 0}</p> */}
-                                    {/* <p>Feeder Count: {widgetsData.feederCount[edc.hierarchy_name] || 0}</p> */}
+                                        feederCount={
+                                            widgetsData.feederCount[edcName] || 0
+                                        }
+                                        edcCount={widgetsData.totalEdcs}
+                                        graphData={
+                                            widgetsData.edcDemandData?.[edcName] ?? {
+                                                xAxis: [],
+                                                series: [],
+                                            }
+                                        }
+                                        currentValue={Number(
+                                            parseFloat(
+                                                widgetsData.edcDemandData?.[edcName]?.series?.[0]?.data?.slice(
+                                                    -1
+                                                )[0] || 0
+                                            ).toFixed(1)
+                                        )}
+                                        previousValue={Number(
+                                            parseFloat(
+                                                widgetsData.edcDemandData?.[edcName]?.series?.[0]?.data?.slice(
+                                                    -2,
+                                                    -1
+                                                )[0] || 0
+                                            ).toFixed(1)
+                                        )}
+                                        pageType="edcs"
+                                        handleRegionClick={() =>
+                                            handleEdcClick(edcName)
+                                        }
+                                        showInfoIcon={true}
+                                    />
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                 </div>
             )}
         </div>
