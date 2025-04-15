@@ -170,10 +170,11 @@
     .total_regions_container,
     .total_substations_container,
     .total_meters_container {
-        flex: unset;
-        min-width: unset;
-        max-width:unset;;
+        flex: unset !important;
+        min-width: unset !important;
+        max-width:unset !important;
     }
+    
 }
 
 @media screen and (max-width: 1024px) {
@@ -189,5 +190,17 @@
         flex: 1 1 calc(50% - 1rem);
         min-width: 300px;
         max-width: calc(50% - 1rem);
+    }
+    .total_meters_container{
+        flex-direction: column;
+    }
+    .overall_communication_status{
+        flex-direction: row;
+    }
+    .total_meters_main_info {
+        width: 100%;
+    }
+    .metrics_communication_info {
+        width: 100%;
     }
 }
