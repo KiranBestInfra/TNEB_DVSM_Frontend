@@ -1,14 +1,18 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import SummarySection from '../components/SummarySection';
+import { useAuth } from '../components/AuthProvider';
 
 const EdcSubstationDetails = () => {
     const { region, edc, edcId, edcs, substationId } = useParams();
     const location = useLocation();
+    const { isRegion } = useAuth();
+    const regionUser = isRegion();
+    const navigate = useNavigate();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -114,6 +118,12 @@ const EdcSubstationDetails = () => {
         fetchData();
     }, [edcs, substationId]);
 
+    const handleFeederClick = () => {
+        if (regionUser && substationId) {
+            navigate(`/user/region/substations/${substationId}/feeders`);
+        }
+    };
+
     const substationName = entityId
         ? entityId
               .split('-')
@@ -189,6 +199,8 @@ const EdcSubstationDetails = () => {
                 showMeters={false}
                 showSubstations={false}
                 showDistricts={false}
+                showFeeders={true}
+                onFeederClick={regionUser ? handleFeederClick : null}
             />
 
             <div className={styles.detail_chart}>
