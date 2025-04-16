@@ -69,7 +69,9 @@ const SubstationFeeders = () => {
     });
 
     useEffect(() => {
-        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
+            path: '/dsocket/socket.io',
+        });
         setSocket(newSocket);
         newSocket.on('feederUpdate', (data) => {
             setWidgetsData((prevData) => {
@@ -341,7 +343,7 @@ const SubstationFeeders = () => {
                                             }
                                         }
                                         pageType="feeders"
-                                        showInfoIcon={true}
+                                        showInfoIcon={false}
                                     />
                                 </div>
                             ))

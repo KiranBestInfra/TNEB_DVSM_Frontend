@@ -1,5 +1,5 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams,useNavigate} from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
@@ -16,6 +16,8 @@ const EdcDetails = () => {
     const edcName = isCircle() && user?.name ? user.name : edcParam;
     const { region, edcId: paramEdcId } = useParams();
     const edcId = isCircle() ? user?.hierarchy_id : paramEdcId;
+    const { isRegion } = useAuth();
+    const regionUser = isRegion();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -67,7 +69,9 @@ const EdcDetails = () => {
         };
     });
 
-    const entityId =  user?.id;
+    const entityId = isCircle() ? user?.id : (regionUser ? edcId : edcId);
+    console.log('entityId:', entityId, 'isCircle:', isCircle(), 'regionUser:', regionUser);
+
     const entityName = edcName?.replace('_EDC', '').toLowerCase();
     const navigate = useNavigate();
 

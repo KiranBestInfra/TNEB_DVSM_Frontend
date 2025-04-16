@@ -70,7 +70,9 @@ const EdcSubstationFeeders = () => {
     });
 
     useEffect(() => {
-        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
+            path: '/dsocket/socket.io',
+        });
         setSocket(newSocket);
 
         newSocket.on('connect', () => {});
@@ -112,7 +114,7 @@ const EdcSubstationFeeders = () => {
                     `/substations/${substationId}/feeders`
                 );
                 const data = feederResponse.data;
-                //console.log('dataaa:',data);
+                console.log('dataaa:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -265,7 +267,7 @@ const EdcSubstationFeeders = () => {
                                             series: [],
                                         }
                                     }
-                                    showInfoIcon={true}
+                                    showInfoIcon={false}
                                 />
                             </div>
                         ))

@@ -1,5 +1,5 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
@@ -58,6 +58,7 @@ const RegionDetails = () => {
 
     const entityId = user?.id;
     const entityName = regionName?.replace('_REG', '').toLowerCase();
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
@@ -178,13 +179,23 @@ const RegionDetails = () => {
                     nonCommMeters: stats.nonCommMeters,
                     totalDistricts: stats.edcCount || 0,
                 }}
-                isUserRoute={false}
+                isUserRoute={isRegion()}
                 isBiUserRoute={false}
                 showRegions={false}
                 showEdcs={true}
                 showSubstations={true}
                 showDistricts={true}
                 showMeters={true}
+                onEdcClick={() => {
+                    if (isRegion()) {
+                        navigate('/user/region/edcs');
+                    }
+                }}
+                onSubstationClick={() => {
+                    if (isRegion()) {
+                        navigate('/user/region/substations');
+                    }
+                }}
             />
 
             <div className={styles.chart_container}>

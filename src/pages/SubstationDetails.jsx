@@ -1,14 +1,17 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 import SummarySection from '../components/SummarySection';
-
+import { useAuth } from '../components/AuthProvider';
 const SubstationDetails = () => {
     const { region, substationId } = useParams();
+    const navigate = useNavigate();
+    const { isRegion } = useAuth();
+    const regionUser = isRegion();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -53,6 +56,7 @@ const SubstationDetails = () => {
             edcDemandData: {},
         };
     });
+    console.log('widgetsData', widgetsData);
     const entityId = substationId;
 
     useEffect(() => {
@@ -63,6 +67,7 @@ const SubstationDetails = () => {
                 );
                 const data = response.data;
                 setGraphData(data);
+                console.log(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
                 try {
@@ -182,6 +187,12 @@ const SubstationDetails = () => {
         previousValue: 7.9,
     };
 
+    const handleFeederClick = () => {
+        if (regionUser && substationId) {
+            navigate(`/user/region/substations/${substationId}/feeders`);
+        }
+    };
+
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
@@ -229,6 +240,8 @@ const SubstationDetails = () => {
                 showSubstations={false}
                 showDistricts={false}
                 showMeters={true}
+                showFeeders={true}
+                onFeederClick={regionUser ? handleFeederClick : null}
             />
 
             <div className={styles.chart_container}>

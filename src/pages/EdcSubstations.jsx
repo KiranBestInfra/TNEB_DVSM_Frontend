@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
@@ -54,6 +54,7 @@ const EdcSubstations = () => {
     const edcId = edcs || edc; 
     const { user, isRegion,isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
+    const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const location = window.location.pathname;
@@ -62,6 +63,7 @@ const EdcSubstations = () => {
     const [viewMode, setViewMode] = useState('card');
     const [searchQuery, setSearchQuery] = useState('');
     const [timeRange, setTimeRange] = useState('Daily');
+    const regionUser = isRegion();
 
     useEffect(() => {
         if (!edcId) return;
@@ -178,7 +180,9 @@ const EdcSubstations = () => {
     });
 
     useEffect(() => {
-        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
+            path: '/dsocket/socket.io',
+        });
         setSocket(newSocket);
 
         newSocket.on('connect', () => {});
@@ -237,7 +241,11 @@ const EdcSubstations = () => {
             });
         }
     }, [widgetsData.substationNames, socket]);
-
+    const handleFeederClick = () => {
+        if (regionUser && edcs) {
+            navigate(`/user/region/${edcs}/feeders`);
+        }
+    };
     const handlePageChange = (newPage, newPerPage = substationsPerPage) => {
         if (newPerPage !== substationsPerPage) {
             setCurrentPage(1);
@@ -289,6 +297,8 @@ const EdcSubstations = () => {
                         showDistricts={false}
                         showEdcs={false}
                         showSubstations={true}
+                        showFeeders={true}
+                        onFeederClick={regionUser ? handleFeederClick : null}
                     />
 
                     <SectionHeader

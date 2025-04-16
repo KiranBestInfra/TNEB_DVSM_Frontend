@@ -103,7 +103,9 @@ const RegionSubstations = () => {
     });
 
     useEffect(() => {
-        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
+            path: '/dsocket/socket.io',
+        });
         setSocket(newSocket);
 
         newSocket.on('connect', () => {});
@@ -196,7 +198,10 @@ const RegionSubstations = () => {
 
         substationNames();
     }, [region]);
-
+    console.log(
+        'Substation IDs:',
+        widgetsData.substationIds
+    ); /*Substaion id's*/
     const handleTimeframeChange = (e) => {
         setTimeframe(e.target.value);
     };
