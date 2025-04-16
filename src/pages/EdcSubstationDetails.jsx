@@ -1,13 +1,17 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation,useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import SummarySection from '../components/SummarySection';
+import { useAuth } from '../components/AuthProvider';
 
 const EdcSubstationDetails = () => {
     const { region, edc, edcId, edcs, substationId } = useParams();
+    const { isRegion, isCircle, isSubstation } = useAuth();
+    const circleUser = isCircle();
+    const navigate = useNavigate();
     const location = useLocation();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
@@ -86,7 +90,6 @@ const EdcSubstationDetails = () => {
                     `/substations/${substationId}/feeders`
                 );
                 const data = feederResponse.data;
-                console.log('dataaa:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -112,6 +115,13 @@ const EdcSubstationDetails = () => {
 
         fetchData();
     }, [edcs, substationId]);
+
+    const handleSubstationFeederClick = () => {
+        if (circleUser && edcIdentifier && substationId) {
+            navigate(`/user/edc/${edcIdentifier}/substations/${substationId}/feeders`);
+        }
+    };
+
 
     const substationName = entityId
         ? entityId
@@ -181,13 +191,23 @@ const EdcSubstationDetails = () => {
                     commMeters: stats.commMeters,
                     nonCommMeters: stats.nonCommMeters,
                 }}
-                isUserRoute={location.pathname.includes('/user/')}
-                isBiUserRoute={location.pathname.includes('/bi/user/')}
+                // isUserRoute={location.pathname.includes('/user/')}
+                // isBiUserRoute={location.pathname.includes('/bi/user/')}
+                isUserRoute={isCircle()}
                 showRegions={false}
                 showEdcs={false}
                 showMeters={false}
                 showSubstations={false}
                 showDistricts={false}
+                showFeeders={true}
+                onFeederClick={circleUser ? handleSubstationFeederClick : null}
+
+
+                // onFeederClick={() => {
+                //     if (isCircle()) {
+                //         navigate(`/user/edc/${edcId}/substations/${substationId}/feeders`);
+                //     } 
+                // }}
             />
 
             <div className={styles.detail_chart}>

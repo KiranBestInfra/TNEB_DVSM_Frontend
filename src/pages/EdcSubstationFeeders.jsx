@@ -18,8 +18,9 @@ const EdcSubstationFeeders = () => {
     const [feedersPerPage, setFeedersPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
     const [searchQuery, setSearchQuery] = useState('');
-    const { region: regionParam, edcs, substationId } = useParams();
-    const { user, isRegion } = useAuth();
+    const { region: regionParam, edcs,edc, substationId } = useParams();
+    const edcId = edcs || edc;
+    const { user, isRegion,isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const location = window.location.pathname;
     const [widgetsData, setWidgetsData] = useState(() => {
@@ -136,7 +137,8 @@ const EdcSubstationFeeders = () => {
         };
 
         fetchData();
-    }, [edcs, substationId]);
+    }, [edcId, substationId]);
+    
 
     useEffect(() => {
         let ids = [];
@@ -236,8 +238,8 @@ const EdcSubstationFeeders = () => {
                                 key={index}
                                 className={styles.individual_region_stats}>
                                 <ShortDetailsWidget
-                                    region={region}
-                                    edc={edcs}
+                                    region={isCircle() ? '' : region}
+                                    edc={edcId}
                                     id={feeder.id}
                                     name={feeder.name}
                                     substationId={substationId}

@@ -12,8 +12,9 @@ import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeR
 
 const EdcFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
-    const { region: regionParam, edcs } = useParams();
-    const { user, isRegion } = useAuth();
+    const { region: regionParam, edcs,edc } = useParams();
+    const edcId = edcs || edc;
+    const { user, isRegion,isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const location = window.location.pathname;
     const [socket, setSocket] = useState(null);
@@ -111,11 +112,13 @@ const EdcFeeders = () => {
     }, [widgetsData.feederNames, socket]);
 
     useEffect(() => {
+        if (!edcId) return;
         const fetchData = async () => {
             try {
                 try {
-                    const data = await apiClient.get(`/edcs/${edcs}/widgets`);
+                    const data = await apiClient.get(`/edcs/${edcId}/widgets`);
                     const edcWidgets = data.data;
+                    console.log(edcWidgets);
 
                     setWidgetsData((prev) => {
                         const newData = {
@@ -169,7 +172,8 @@ const EdcFeeders = () => {
         };
 
         fetchData();
-    }, [edcs]);
+    }, [edcId]);
+    console.log('edcId',edcId);
 
     const handlePageChange = (newPage, newPerPage = feedersPerPage) => {
         if (newPerPage !== feedersPerPage) {
@@ -251,8 +255,8 @@ const EdcFeeders = () => {
                                 key={value.id}
                                 className={styles.individual_region_stats}>
                                 <ShortDetailsWidget
-                                    region={region}
-                                    edc={parseInt({ edcs }, 10) || 0}
+                                    region={isCircle() ? '' : region}
+                                    edc={edcId}
                                     name={value.name}
                                     id={value.id}
                                     feederCount={

@@ -81,6 +81,7 @@ const Login = () => {
                     updateUserFromToken();
 
                     const decoded = jwtDecode(accessToken);
+                    //console.log("decoded",decoded);
                     const role = decoded.role;
 
                     if (role.toLowerCase().includes('admin')) {

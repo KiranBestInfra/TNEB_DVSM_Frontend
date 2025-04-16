@@ -50,8 +50,9 @@ ErrorBoundary.propTypes = {
 };
 
 const EdcSubstations = () => {
-    const { edcs, region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { edcs, edc, region: regionParam } = useParams();
+    const edcId = edcs || edc; 
+    const { user, isRegion,isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
@@ -63,12 +64,12 @@ const EdcSubstations = () => {
     const [timeRange, setTimeRange] = useState('Daily');
 
     useEffect(() => {
-        if (!edcs) return;
+        if (!edcId) return;
 
         const substationNames = async () => {
             try {
                 const response = await apiClient.get(
-                    `/substations/widgets/${edcs}/substations`
+                    `/substations/widgets/${edcId}/substations`
                 );
                 const data = response;
                 setWidgetsData((prev) => ({
@@ -95,14 +96,15 @@ const EdcSubstations = () => {
         };
 
         substationNames();
-    }, [edcs]);
+    }, [edcId]);
 
     useEffect(() => {
-        if (!edcs) return;
+        if (!edcId) return;
+        
 
         const fetchEdcWidgets = async () => {
             try {
-                const response = await apiClient.get(`/edcs/${edcs}/widgets`);
+                const response = await apiClient.get(`/edcs/${edcId}/widgets`);
                 const feederCount =
                     response?.data?.regionFeederNames?.length || 0;
                 setWidgetsData((prev) => ({
@@ -127,7 +129,7 @@ const EdcSubstations = () => {
         };
 
         fetchEdcWidgets();
-    }, [edcs]);
+    }, [edcId]);
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedSubstationData = localStorage.getItem('substationData');
@@ -327,11 +329,11 @@ const EdcSubstations = () => {
                                             styles.individual_region_stats
                                         }>
                                         <ShortDetailsWidget
-                                            region={region}
+                                            region={isCircle() ? '' : region}
                                             //edc={edcs}
-                                            edc={parseInt({ edcs }, 10) || 0}
+                                            edc={edcId}
                                             name={substation.substation_names}
-                                            subID={substation.hierarchy_id}
+                                            substationId={substation.hierarchy_id}
                                             substationCount={
                                                 substation.substation_names
                                                     .length || 0

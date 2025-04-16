@@ -8,6 +8,7 @@ import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
 const RegionDetails = () => {
     const { region: regionParam } = useParams();
+    console.log("regionParam",regionParam);
     const { user, isRegion } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
     const [timeRange, setTimeRange] = useState('Daily');
