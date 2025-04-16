@@ -7,9 +7,12 @@ import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 import SummarySection from '../components/SummarySection';
+import { useAuth } from '../components/AuthProvider';
 
 const EdcDetails = () => {
     const { region, edcId } = useParams();
+    const { isRegion } = useAuth();
+    const regionUser = isRegion();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -61,8 +64,7 @@ const EdcDetails = () => {
         };
     });
 
-    const entityId = edcId;
-
+    const entityId = regionUser ? edcId : edcId;
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
@@ -168,23 +170,22 @@ const EdcDetails = () => {
                 </div>
             </div>
             <Breadcrumb />
-                      <SummarySection
-        widgetsData={{
-        totalDistricts:stats.districtcounts,
-        totalSubstations:stats.substationCount,
-          totalFeeders: stats.feederCount,
-          commMeters: stats.commMeters,
-          nonCommMeters: stats.nonCommMeters,
-        }}
-        // isUserRoute={location.includes("/user/")}
-        // isBiUserRoute={location.includes("/bi/user/")}
-        showDistricts={true}
-        showFeeders={true}
-        showEdcs={false}
-        showSubstations={true}
-        showRegions={false}
-      />           
-        
+            <SummarySection
+                widgetsData={{
+                    totalDistricts: stats.districtcounts,
+                    totalSubstations: stats.substationCount,
+                    totalFeeders: stats.feederCount,
+                    commMeters: stats.commMeters,
+                    nonCommMeters: stats.nonCommMeters,
+                }}
+                // isUserRoute={location.includes("/user/")}
+                // isBiUserRoute={location.includes("/bi/user/")}
+                showDistricts={true}
+                showFeeders={true}
+                showEdcs={false}
+                showSubstations={true}
+                showRegions={false}
+            />
 
             <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />

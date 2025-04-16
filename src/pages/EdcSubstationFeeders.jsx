@@ -113,7 +113,7 @@ const EdcSubstationFeeders = () => {
                     `/substations/${substationId}/feeders`
                 );
                 const data = feederResponse.data;
-                //console.log('dataaa:',data);
+                console.log('dataaa:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -265,7 +265,7 @@ const EdcSubstationFeeders = () => {
                                             series: [],
                                         }
                                     }
-                                    showInfoIcon={true}
+                                    showInfoIcon={false}
                                 />
                             </div>
                         ))

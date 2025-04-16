@@ -61,6 +61,7 @@ const EdcSubstationDetails = () => {
                 const response = await apiClient.get(
                     `/substations/graph/${entityId}/demand`
                 );
+                console.log('response', response);
                 const data = response.data;
                 setGraphData(data);
             } catch (error) {
