@@ -1,5 +1,5 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
@@ -12,6 +12,7 @@ import { useAuth } from '../components/AuthProvider';
 const EdcDetails = () => {
     const { region, edcId } = useParams();
     const { isRegion } = useAuth();
+    const navigate = useNavigate();
     const regionUser = isRegion();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
@@ -89,6 +90,18 @@ const EdcDetails = () => {
 
         fetchGraphData();
     }, [entityId, timeRange]);
+
+    const handleSubstationClick = () => {
+        if (regionUser && edcId) {
+            navigate(`/user/region/${edcId}/substations`);
+        }
+    };
+
+    const handleFeederClick = () => {
+        if (regionUser && edcId) {
+            navigate(`/user/region/${edcId}/feeders`);
+        }
+    };
 
     const entityName = entityId
         ? entityId
@@ -178,12 +191,12 @@ const EdcDetails = () => {
                     commMeters: stats.commMeters,
                     nonCommMeters: stats.nonCommMeters,
                 }}
-                // isUserRoute={location.includes("/user/")}
-                // isBiUserRoute={location.includes("/bi/user/")}
                 showDistricts={true}
                 showFeeders={true}
                 showEdcs={false}
                 showSubstations={true}
+                onSubstationClick={regionUser ? handleSubstationClick : null}
+                onFeederClick={regionUser ? handleFeederClick : null}
                 showRegions={false}
             />
 
