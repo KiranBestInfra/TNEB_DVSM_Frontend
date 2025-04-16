@@ -218,15 +218,15 @@ const RegionEdcs = () => {
         setCurrentPage(1);
     };
 
+    const filteredEdcs = widgetsData.edcNames?.filter((edc) => {
+        const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
+        return name?.toLowerCase().includes(searchQuery.toLowerCase());
+    }) || [];
+
     return (
         <div className={styles.main_content}>
             <SectionHeader title={`${regionName} - EDCs`}>
-                <div className={styles.action_cont}>
-                    <TimeRangeSelectDropdown
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    />
-                </div>
+             
             </SectionHeader>
             <Breadcrumb />
 

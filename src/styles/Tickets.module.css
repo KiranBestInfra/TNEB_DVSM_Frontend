@@ -25,7 +25,7 @@
 }
 
 .widget {
-    background-color: var(--main-widget-color);
+    background-color: var(--main-background-color);
     border-radius: 0.5rem;
     border: 1px solid var(--border-color);
     padding: 1rem;
@@ -46,7 +46,7 @@
     font-size: 2rem;
     font-weight: bold;
     padding: 1rem 0;
-    color: var(--brand-blue);
+    color: var(--text-primary);
 }
 
 .widget_label {

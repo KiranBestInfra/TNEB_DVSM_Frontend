@@ -187,12 +187,7 @@ const Regions = () => {
     return (
         <div className={styles.main_content}>
             <SectionHeader title="Regions">
-                <div className={styles.action_cont}>
-                    <TimeRangeSelectDropdown
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    />
-                </div>
+               
             </SectionHeader>
 
             <Breadcrumb />

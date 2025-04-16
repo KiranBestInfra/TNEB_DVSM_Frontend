@@ -12,6 +12,21 @@
     gap: 1rem;
     flex-direction: column;
 }
+.form_container{
+    border: 1px solid var(--grey-light);
+    border-radius: 2.5rem;
+}
+.form_container:focus{
+    border: 1px solid var(--grey-light);
+    border-radius: 2.5rem;
+}
+.form_container:hover{
+    border:1px solid var(--grey-light);
+}
+.form_container:active{
+    border: none;
+}
+
 .verify_btn {
     display: flex;
     justify-content: center;

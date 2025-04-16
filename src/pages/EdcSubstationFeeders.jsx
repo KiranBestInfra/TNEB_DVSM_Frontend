@@ -179,12 +179,7 @@ const EdcSubstationFeeders = () => {
     return (
         <div className={styles.main_content}>
             <SectionHeader title={`${substationName} Substation Feeders`}>
-                <div className={styles.action_cont}>
-                    <TimeRangeSelectDropdown
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    />
-                </div>
+                
             </SectionHeader>
             <Breadcrumb />
             <SummarySection
