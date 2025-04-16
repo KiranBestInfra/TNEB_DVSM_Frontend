@@ -224,12 +224,7 @@ const RegionEdcs = () => {
     return (
         <div className={styles.main_content}>
             <SectionHeader title={`${regionName} - EDCs`}>
-                <div className={styles.action_cont}>
-                    <TimeRangeSelectDropdown
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    />
-                </div>
+             
             </SectionHeader>
             <Breadcrumb />
 

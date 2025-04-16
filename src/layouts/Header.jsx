@@ -311,13 +311,13 @@ const Header = () => {
                         <img src="icons/support-tickets.svg" alt="Tickets" />
                     </span>
 
-                    <span
+                    {/* <span
                         className={styles.white_icons}
                         onClick={handleNotificationsClick}>
                         <img src="icons/bell.svg" alt="notifications" />
-                    </span>
+                    </span> */}
 
-                    <span
+                    {/* <span
                         className={styles.white_icons}
                         onClick={() => navigate(`${basePath}/error-logs`)}>
                         <p
@@ -327,7 +327,7 @@ const Header = () => {
                             }}>
                             D
                         </p>
-                    </span>
+                    </span> */}
 
                     <span
                         className={`${styles.white_icons} ${styles.mobile_exit_icon}`}

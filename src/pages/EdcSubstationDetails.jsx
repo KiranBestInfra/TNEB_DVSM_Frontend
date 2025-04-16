@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import SummarySection from '../components/SummarySection';
+import SectionHeader from '../components/SectionHeader/SectionHeader';
 
 const EdcSubstationDetails = () => {
     const { region, edc, edcId, edcs, substationId } = useParams();
@@ -145,37 +146,10 @@ const EdcSubstationDetails = () => {
 
     return (
         <div className={styles.main_content}>
-            <div className={styles.section_header}>
-                <h2 className="title">{substationName} Substation</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                                className={styles.time_range_select}>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">
-                                    Previous Month
-                                </option>
-                                <option value="Year">Year</option>
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <SectionHeader title={`${substationName} Substation`} />
             <Breadcrumb />
 
             <SummarySection
-                //widgetsData={widgetsData}
                 widgetsData={{
                     totalFeeders: stats.feederCount,
                     commMeters: stats.commMeters,

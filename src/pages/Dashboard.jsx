@@ -77,9 +77,7 @@ const Dashboard = () => {
         <div className={styles.main_content}>
             <div className={styles.section_header}>
                 <h2 className="title">Dashboard</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}></div>
-                </div>
+                
             </div>
 
             <Breadcrumb
@@ -117,7 +115,7 @@ const Dashboard = () => {
                     yAxisLabel="MW"
                     showLabel={false}
                     toolbox={true}
-                    height="510px"
+                    height="410px"
                     timeRange={timeRange}
                     onTimeRangeChange={setTimeRange}
                 />

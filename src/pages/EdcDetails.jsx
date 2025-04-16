@@ -7,6 +7,7 @@ import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 import SummarySection from '../components/SummarySection';
+import SectionHeader from '../components/SectionHeader/SectionHeader';
 
 const EdcDetails = () => {
     const { region, edcId } = useParams();
@@ -140,51 +141,22 @@ const EdcDetails = () => {
 
     return (
         <div className={styles.main_content}>
-            <div className={styles.section_header}>
-                <h2 className="title">{entityName} EDC</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                                className={styles.time_range_select}>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">
-                                    Previous Month
-                                </option>
-                                <option value="Year">Year</option>
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <SectionHeader title={`${entityName} EDC`} />
             <Breadcrumb />
-                      <SummarySection
-        widgetsData={{
-        totalDistricts:stats.districtcounts,
-        totalSubstations:stats.substationCount,
-          totalFeeders: stats.feederCount,
-          commMeters: stats.commMeters,
-          nonCommMeters: stats.nonCommMeters,
-        }}
-        // isUserRoute={location.includes("/user/")}
-        // isBiUserRoute={location.includes("/bi/user/")}
-        showDistricts={true}
-        showFeeders={true}
-        showEdcs={false}
-        showSubstations={true}
-        showRegions={false}
-      />           
-        
+            <SummarySection
+                widgetsData={{
+                    totalDistricts: stats.districtcounts,
+                    totalSubstations: stats.substationCount,
+                    totalFeeders: stats.feederCount,
+                    commMeters: stats.commMeters,
+                    nonCommMeters: stats.nonCommMeters,
+                }}
+                showDistricts={true}
+                showFeeders={true}
+                showEdcs={false}
+                showSubstations={true}
+                showRegions={false}
+            />           
 
             <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />

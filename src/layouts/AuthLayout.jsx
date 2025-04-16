@@ -73,7 +73,7 @@ const AuthLayout = ({ children }) => {
     );
 
     return (
-        <div className="main_container">
+        <div className={`main_container ${styles.auth_container}`}>
             <div className={styles.main_auth_layout}>
                 <div className={styles.slider_container}>
                     <LoginSlider />

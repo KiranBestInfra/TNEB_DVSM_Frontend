@@ -64,61 +64,42 @@ const TicketDetails = () => {
         if (!statusChange || !ticket || statusChange === ticket.status) return;
 
         try {
-            // Format the status to match backend expectations (capitalized)
-            const formattedStatus = statusChange.charAt(0).toUpperCase() + statusChange.slice(1);
-            
-            // Make the API call to update the status
-            const response = await apiClient.patch(`/tickets/${ticket.id}`, {
-                Status: formattedStatus,
-                LastUpdated: new Date().toISOString() // Make sure the backend handles LastUpdated
+            const res = await apiClient.patch(`/tickets/${ticket.id}`, {
+                Status:
+                    statusChange.charAt(0).toUpperCase() +
+                    statusChange.slice(1),
             });
 
-            if (!response || !response.data) {
-                throw new Error('Invalid response from server');
-            }
+            const updatedStatus = res.data.Status.toLowerCase();
 
-            // Update the local state with the new status
-            setTicket(prev => ({
+            // Update UI state
+            setTicket((prev) => ({
                 ...prev,
-                status: statusChange,
-                updatedAt: new Date().toISOString()
+                status: updatedStatus,
+                updatedAt: new Date().toISOString(),
             }));
 
-            // Add a new activity entry
             const newActivity = {
                 id: activities.length + 1,
                 type: 'status',
-                author: 'Admin User',  // This can be dynamic if you have user info
-                text: `Ticket status changed to "${formattedStatus}"`,
-                timestamp: new Date().toISOString()
+                author: 'Admin User',
+                text: `Ticket status changed to "${updatedStatus}"`,
+                timestamp: new Date().toISOString(),
             };
 
-            setActivities(prev => [...prev, newActivity]);
-            setStatusChange('');  // Reset status change field
-            
-            // Optionally display a success message (Toast, etc.)
-            console.log('Status updated successfully');
+            setActivities((prev) => [...prev, newActivity]);
+            setStatusChange('');
         } catch (error) {
             console.error('Failed to update status:', error);
-            // Log the error to the backend
             try {
                 await apiClient.post('/log/error', {
                     message: error.message,
                     stack: error.stack || 'No stack trace',
                     time: new Date().toISOString(),
-                    action: 'status_update',
-                    ticketId: ticket.id,
-                    attemptedStatus: statusChange
                 });
             } catch (logError) {
                 console.error('Error logging to backend:', logError);
             }
-            
-            // Reset the status change to the current ticket status
-            setStatusChange(ticket.status);
-
-            // Show error message to user (Toast, etc.)
-            console.error('Failed to update ticket status. Please try again.');
         }
     };
 
