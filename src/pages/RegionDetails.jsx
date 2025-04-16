@@ -190,6 +190,11 @@ const RegionDetails = () => {
                         navigate('/user/region/edcs');
                     }
                 }}
+                onSubstationClick={() => {
+                    if (isRegion()) {
+                        navigate('/user/region/substations');
+                    }
+                }}
             />
 
             <div className={styles.chart_container}>

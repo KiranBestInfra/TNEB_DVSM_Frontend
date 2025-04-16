@@ -53,6 +53,7 @@ const SubstationDetails = () => {
             edcDemandData: {},
         };
     });
+    console.log('widgetsData', widgetsData);
     const entityId = substationId;
 
     useEffect(() => {
@@ -63,6 +64,7 @@ const SubstationDetails = () => {
                 );
                 const data = response.data;
                 setGraphData(data);
+                console.log(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
                 try {

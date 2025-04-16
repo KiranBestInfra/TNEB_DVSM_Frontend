@@ -163,14 +163,21 @@ const App = () => {
                             />
                             <Route path="edcs" element={<RegionEdcs />} />
                             <Route
+                                path="edcs/:edcId/details"
+                                element={<EdcDetails />}
+                            />
+                            <Route
                                 path="substations"
                                 element={<RegionSubstations />}
                             />
-                            <Route path="feeders" element={<RegionFeeders />} />
-
                             <Route
-                                path="substations/:substationId/feeders"
-                                element={<SubstationFeeders />}
+                                path="substations/:substationId/details"
+                                element={<SubstationDetails />}
+                            />
+                            <Route path="feeders" element={<RegionFeeders />} />
+                            <Route
+                                path=":edcId/substations/:substationId/details"
+                                element={<EdcSubstationDetails />}
                             />
                             <Route
                                 path=":edcs/feeders"

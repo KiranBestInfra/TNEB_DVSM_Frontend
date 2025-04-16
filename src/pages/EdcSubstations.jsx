@@ -328,8 +328,8 @@ const EdcSubstations = () => {
                                         }>
                                         <ShortDetailsWidget
                                             region={region}
-                                            //edc={edcs}
-                                            edc={parseInt({ edcs }, 10) || 0}
+                                            edc={edcs}
+                                            //edc={parseInt({ edcs }, 10) || 0}
                                             name={substation.substation_names}
                                             subID={substation.hierarchy_id}
                                             substationCount={

@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import RollingNumber from '../components/RollingNumber';
 import { useAuth } from '../components/AuthProvider';
 
-
 const ShortDetailsWidget = ({
     region,
     edc,
@@ -96,12 +95,12 @@ const ShortDetailsWidget = ({
                 break;
             case 'substations':
                 if (isRegion()) {
-                    if (substationId && edc) {
-                        detailsUrl = `${routePrefix}/${formattedEdc}/${formattedSubstationId}/feeders`;
+                    if (subID || (substationId && edc)) {
+                        detailsUrl = `${routePrefix}/${edc}/substations/${subID}/details`;
                     } else if (substationId) {
                         detailsUrl = `${routePrefix}/substations/${formattedSubstationId}/feeders`;
                     } else {
-                        detailsUrl = `${routePrefix}/substations`;
+                        detailsUrl = `${routePrefix}/substations/${id}/details`;
                     }
                 } else if (isCircle()) {
                     if (substationId) {
