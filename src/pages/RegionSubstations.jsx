@@ -103,7 +103,9 @@ const RegionSubstations = () => {
     });
 
     useEffect(() => {
-        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
+            path: '/dsocket/socket.io',
+        });
         setSocket(newSocket);
 
         newSocket.on('connect', () => {});
