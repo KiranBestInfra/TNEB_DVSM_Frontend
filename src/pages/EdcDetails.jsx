@@ -1,5 +1,5 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
@@ -8,9 +8,13 @@ import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 import SummarySection from '../components/SummarySection';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
+import { useAuth } from '../components/AuthProvider';
 
 const EdcDetails = () => {
     const { region, edcId } = useParams();
+    const { isRegion } = useAuth();
+    const navigate = useNavigate();
+    const regionUser = isRegion();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -62,8 +66,7 @@ const EdcDetails = () => {
         };
     });
 
-    const entityId = edcId;
-
+    const entityId = regionUser ? edcId : edcId;
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
@@ -88,6 +91,18 @@ const EdcDetails = () => {
 
         fetchGraphData();
     }, [entityId, timeRange]);
+
+    const handleSubstationClick = () => {
+        if (regionUser && edcId) {
+            navigate(`/user/region/${edcId}/substations`);
+        }
+    };
+
+    const handleFeederClick = () => {
+        if (regionUser && edcId) {
+            navigate(`/user/region/${edcId}/feeders`);
+        }
+    };
 
     const entityName = entityId
         ? entityId
@@ -155,8 +170,10 @@ const EdcDetails = () => {
                 showFeeders={true}
                 showEdcs={false}
                 showSubstations={true}
+                onSubstationClick={regionUser ? handleSubstationClick : null}
+                onFeederClick={regionUser ? handleFeederClick : null}
                 showRegions={false}
-            />           
+            />
 
             <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />

@@ -41,6 +41,7 @@ const RegionEdcs = () => {
                     edcNames: Object.keys(parsedDemandData),
                     substationCount: {},
                     feederCount: {},
+                    filteredEdcs: [],
                     edcDemandData: parsedDemandData,
                 };
             }
@@ -55,6 +56,7 @@ const RegionEdcs = () => {
             totalDistricts: 0,
             edcNames: [],
             substationCount: {},
+            filteredEdcs: [],
             feederCount: {},
             edcDemandData: {},
         };
@@ -121,7 +123,6 @@ const RegionEdcs = () => {
                 setLoading(true);
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response.data || {};
-                console.log('response', response);
                 const transformedData = {
                     totalEdcs: data.edcNames?.length || 0,
                     totalSubstations:
@@ -144,6 +145,7 @@ const RegionEdcs = () => {
                         }, {}) || {},
                     feederCount: data.feederCounts || {},
                     edcDemandData: widgetsData.edcDemandData || {},
+                    filteredEdcs: data.edcNames,
                 };
 
                 setWidgetsData(transformedData);
@@ -237,7 +239,7 @@ const RegionEdcs = () => {
             />
 
             <SectionHeader
-                title={`EDCs: [ ${filteredEdcs.length} ]`}
+                title={`EDCs: [ ${widgetsData.filteredEdcs.length} ]`}
                 showSearch={true}
                 searchQuery={searchQuery}
                 onSearchChange={handleSearch}
@@ -246,7 +248,9 @@ const RegionEdcs = () => {
                 setViewMode={setViewMode}
                 showPagination={true}
                 currentPage={currentPage}
-                totalPages={Math.ceil(filteredEdcs.length / edcsPerPage)}
+                totalPages={Math.ceil(
+                    widgetsData.filteredEdcs.length / edcsPerPage
+                )}
                 itemsPerPage={edcsPerPage}
                 onPageChange={handlePageChange}
                 onItemsPerPageChange={(newPerPage) =>
@@ -261,14 +265,33 @@ const RegionEdcs = () => {
                     className={`${styles.region_stats_container} ${
                         viewMode === 'list' ? styles.list_view : ''
                     }`}>
-                    {filteredEdcs
+                    {widgetsData.filteredEdcs
                         .slice(
                             (currentPage - 1) * edcsPerPage,
                             currentPage * edcsPerPage
                         )
                         .map((edc, index) => {
-                            const edcName = typeof edc === 'string' ? edc : edc.hierarchy_name;
-                            const edcId = typeof edc === 'string' ? edc : edc.hierarchy_id;
+                            const name = edc.hierarchy_name;
+                            const edcId = edc.hierarchy_id;
+                            const demandData =
+                                widgetsData.edcDemandData?.[name];
+
+                            const currentValue = Number(
+                                parseFloat(
+                                    demandData?.series?.[0]?.data?.slice(
+                                        -1
+                                    )[0] || 0
+                                ).toFixed(1)
+                            );
+                            const previousValue = Number(
+                                parseFloat(
+                                    demandData?.series?.[0]?.data?.slice(
+                                        -2,
+                                        -1
+                                    )[0] || 0
+                                ).toFixed(1)
+                            );
+
                             return (
                                 <div
                                     key={index}
@@ -276,39 +299,27 @@ const RegionEdcs = () => {
                                     <ShortDetailsWidget
                                         region={region}
                                         edc={edcId}
-                                        name={edcName}
+                                        name={name}
                                         edcId={edcId}
                                         substationCount={
-                                            widgetsData.substationCount[edcName] || 0
+                                            widgetsData.substationCount[name] ||
+                                            0
                                         }
                                         feederCount={
-                                            widgetsData.feederCount[edcName] || 0
+                                            widgetsData.feederCount[name] || 0
                                         }
                                         edcCount={widgetsData.totalEdcs}
                                         graphData={
-                                            widgetsData.edcDemandData?.[edcName] ?? {
+                                            demandData ?? {
                                                 xAxis: [],
                                                 series: [],
                                             }
                                         }
-                                        currentValue={Number(
-                                            parseFloat(
-                                                widgetsData.edcDemandData?.[edcName]?.series?.[0]?.data?.slice(
-                                                    -1
-                                                )[0] || 0
-                                            ).toFixed(1)
-                                        )}
-                                        previousValue={Number(
-                                            parseFloat(
-                                                widgetsData.edcDemandData?.[edcName]?.series?.[0]?.data?.slice(
-                                                    -2,
-                                                    -1
-                                                )[0] || 0
-                                            ).toFixed(1)
-                                        )}
+                                        currentValue={currentValue}
+                                        previousValue={previousValue}
                                         pageType="edcs"
                                         handleRegionClick={() =>
-                                            handleEdcClick(edcName)
+                                            handleEdcClick(edc)
                                         }
                                         showInfoIcon={true}
                                     />

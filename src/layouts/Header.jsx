@@ -34,7 +34,9 @@ const Header = () => {
 
     // Check if the screen is mobile or tablet-sized
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-    const [isTablet, setIsTablet] = useState(window.innerWidth > 768 && window.innerWidth <= 1024);
+    const [isTablet, setIsTablet] = useState(
+        window.innerWidth > 768 && window.innerWidth <= 1024
+    );
 
     // Add event listener for window resize
     useEffect(() => {
@@ -42,7 +44,7 @@ const Header = () => {
             const width = window.innerWidth;
             setIsMobile(width <= 768);
             setIsTablet(width > 768 && width <= 1024);
-            
+
             if (width > 1024) {
                 setIsMobileMenuOpen(false);
             }
@@ -238,7 +240,7 @@ const Header = () => {
                     Welcome {profileData.firstName}!
                 </span>
                 {(isMobile || isTablet) && (
-                    <div 
+                    <div
                         className={styles.mobile_menu_toggle}
                         onClick={toggleMobileMenu}>
                         <img
@@ -252,7 +254,12 @@ const Header = () => {
                     </div>
                 )}
             </div>
-            <div className={`${styles.search_cont} ${(isMobile || isTablet) && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
+            <div
+                className={`${styles.search_cont} ${
+                    (isMobile || isTablet) && !isMobileMenuOpen
+                        ? styles.mobile_hidden
+                        : ''
+                }`}>
                 <input
                     type="text"
                     name="query"
@@ -283,7 +290,12 @@ const Header = () => {
                     </div>
                 )}
             </div>
-            <div className={`${styles.right_cont} ${(isMobile || isTablet) && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
+            <div
+                className={`${styles.right_cont} ${
+                    (isMobile || isTablet) && !isMobileMenuOpen
+                        ? styles.mobile_hidden
+                        : ''
+                }`}>
                 <div className={styles.right_cont_item}>
                     <div className={styles.theme_toggle}>
                         <ThemeToggle />

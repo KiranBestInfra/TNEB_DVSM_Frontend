@@ -196,7 +196,10 @@ const RegionSubstations = () => {
 
         substationNames();
     }, [region]);
-
+    console.log(
+        'Substation IDs:',
+        widgetsData.substationIds
+    ); /*Substaion id's*/
     const handleTimeframeChange = (e) => {
         setTimeframe(e.target.value);
     };

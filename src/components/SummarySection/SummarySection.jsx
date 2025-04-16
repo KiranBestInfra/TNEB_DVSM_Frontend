@@ -17,6 +17,8 @@ const SummarySection = ({
     isBiUserRoute = false,
     onEdcClick = null,
     onSubstationClick = null,
+    onFeederClick = null,
+    onDistrictClick = null,
     showRegions = true,
     showDistricts = false,
     showEdcs = true,
@@ -102,7 +104,25 @@ const SummarySection = ({
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">Districts</p>
+                            <p className="title">
+                                {isUserRoute ? (
+                                    <Link
+                                        style={{
+                                            color: 'var(--brand-blue)',
+                                            textDecoration: 'none',
+                                        }}>
+                                        Districts{' '}
+                                        {onDistrictClick && (
+                                            <span
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
+                                        )}
+                                    </Link>
+                                ) : (
+                                    'Districts'
+                                )}
+                            </p>
                             <div className={styles.summary_value}>
                                 <RollingNumber
                                     n={widgetsData.totalDistricts || 0}
@@ -112,6 +132,7 @@ const SummarySection = ({
                     </div>
                 </div>
             )}
+
             {showSubstations && (
                 <div
                     className={styles.total_substations_container}
@@ -154,19 +175,43 @@ const SummarySection = ({
             )}
             {showFeeders && (
                 <div className={styles.total_meters_container}>
-                    <div className={styles.total_meters_main_info}>
+                    <div
+                        className={styles.total_meters_main_info}
+                        onClick={onFeederClick}
+                        style={onFeederClick ? { cursor: 'pointer' } : {}}
+                        title={onFeederClick ? 'Click to view Feeders' : ''}>
                         <img
                             src="icons/electric-meter.svg"
                             alt="Total Meters"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_meters}>
-                            <div className="title">Feeders</div>
+                            <p className="title">
+                                {isUserRoute ? (
+                                    <Link
+                                        to="/user/region/feeders"
+                                        style={{
+                                            color: 'var(--brand-blue)',
+                                            textDecoration: 'none',
+                                        }}>
+                                        Feeders{' '}
+                                        {onFeederClick && (
+                                            <span
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
+                                        )}
+                                    </Link>
+                                ) : (
+                                    'Feeders'
+                                )}
+                            </p>
                             <div className={styles.summary_value}>
                                 <RollingNumber n={widgetsData.totalFeeders} />
                             </div>
                         </div>
                     </div>
+
                     <div className={styles.metrics_communication_info}>
                         <div className="titles">Communication Status</div>
                         <div className={styles.overall_communication_status}>

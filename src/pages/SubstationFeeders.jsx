@@ -335,7 +335,7 @@ const SubstationFeeders = () => {
                                             }
                                         }
                                         pageType="feeders"
-                                        showInfoIcon={true}
+                                        showInfoIcon={false}
                                     />
                                 </div>
                             ))
