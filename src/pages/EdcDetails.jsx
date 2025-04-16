@@ -69,9 +69,9 @@ const EdcDetails = () => {
         };
     });
 
+    //const entityId =  user?.id;
+   // console.log('entityIdYYYYY', entityId);
     const entityId = isCircle() ? user?.id : (regionUser ? edcId : edcId);
-    console.log('entityId:', entityId, 'isCircle:', isCircle(), 'regionUser:', regionUser);
-
     const entityName = edcName?.replace('_EDC', '').toLowerCase();
     const navigate = useNavigate();
 
