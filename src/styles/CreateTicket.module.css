@@ -10,10 +10,10 @@
 }
 
 .form_container {
-    background-color: var(--white);
+    background-color: var(--background-widget-color);
     padding: 2rem;
     border-radius: 1.5rem;
-    border: 1px solid var(--primary-bg);
+    border: 1px solid var(--border-color);
 }
 
 .form_row {
@@ -62,6 +62,9 @@
     justify-content: flex-end;
     gap: 1rem;
     margin-top: 1rem;
+}
+.form_group input{
+    border: 1px solid var(--border-color);
 }
 
 /* Responsive Design */

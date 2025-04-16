@@ -14,17 +14,24 @@ const TicketDetails = () => {
     const [activities, setActivities] = useState([]);
     const [replyText, setReplyText] = useState('');
     const [statusChange, setStatusChange] = useState('');
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!isNewTicket) {
             const fetchTicket = async () => {
                 try {
                     setLoading(true);
+                    console.log('Fetching ticket with ID:', id);
                     const res = await apiClient.get(`/tickets/${id}`);
-                    console.log(res.TicketId);
                     
+                    if (!res) {
+                        throw new Error('No response from server');
+                    }
 
-                    const data = res.data;
+                    console.log('Received ticket data:', res);
+                    
+                    // The response is the ticket data directly
+                    const data = res;
                     const formattedTicket = {
                         id: data.TicketId,
                         subject: data.Subject,
@@ -38,14 +45,11 @@ const TicketDetails = () => {
                         createdBy: data.ConsumerName || 'User',
                     };
 
-
-
-                    console.log(formattedTicket.id);
-
-
+                    console.log('Formatted ticket:', formattedTicket);
                     setTicket(formattedTicket);
                 } catch (err) {
                     console.error('Failed to fetch ticket:', err);
+                    setError(err.message || 'Failed to fetch ticket details');
                 } finally {
                     setLoading(false);
                 }
@@ -60,42 +64,61 @@ const TicketDetails = () => {
         if (!statusChange || !ticket || statusChange === ticket.status) return;
 
         try {
-            const res = await apiClient.patch(`/tickets/${ticket.id}`, {
-                Status:
-                    statusChange.charAt(0).toUpperCase() +
-                    statusChange.slice(1),
+            // Format the status to match backend expectations (capitalized)
+            const formattedStatus = statusChange.charAt(0).toUpperCase() + statusChange.slice(1);
+            
+            // Make the API call to update the status
+            const response = await apiClient.patch(`/tickets/${ticket.id}`, {
+                Status: formattedStatus,
+                LastUpdated: new Date().toISOString() // Make sure the backend handles LastUpdated
             });
 
-            const updatedStatus = res.data.Status.toLowerCase();
+            if (!response || !response.data) {
+                throw new Error('Invalid response from server');
+            }
 
-            // Update UI state
-            setTicket((prev) => ({
+            // Update the local state with the new status
+            setTicket(prev => ({
                 ...prev,
-                status: updatedStatus,
-                updatedAt: new Date().toISOString(),
+                status: statusChange,
+                updatedAt: new Date().toISOString()
             }));
 
+            // Add a new activity entry
             const newActivity = {
                 id: activities.length + 1,
                 type: 'status',
-                author: 'Admin User',
-                text: `Ticket status changed to "${updatedStatus}"`,
-                timestamp: new Date().toISOString(),
+                author: 'Admin User',  // This can be dynamic if you have user info
+                text: `Ticket status changed to "${formattedStatus}"`,
+                timestamp: new Date().toISOString()
             };
 
-            setActivities((prev) => [...prev, newActivity]);
-            setStatusChange('');
+            setActivities(prev => [...prev, newActivity]);
+            setStatusChange('');  // Reset status change field
+            
+            // Optionally display a success message (Toast, etc.)
+            console.log('Status updated successfully');
         } catch (error) {
             console.error('Failed to update status:', error);
+            // Log the error to the backend
             try {
                 await apiClient.post('/log/error', {
                     message: error.message,
                     stack: error.stack || 'No stack trace',
                     time: new Date().toISOString(),
+                    action: 'status_update',
+                    ticketId: ticket.id,
+                    attemptedStatus: statusChange
                 });
             } catch (logError) {
                 console.error('Error logging to backend:', logError);
             }
+            
+            // Reset the status change to the current ticket status
+            setStatusChange(ticket.status);
+
+            // Show error message to user (Toast, etc.)
+            console.error('Failed to update ticket status. Please try again.');
         }
     };
 
@@ -258,31 +281,31 @@ const TicketDetails = () => {
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>Priority:</span>
-                            <span>{ticket.priority}</span>
+                            <span className={styles.ticket_details}>{ticket.priority}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>Category:</span>
-                            <span>{ticket.category}</span>
+                            <span className={styles.ticket_details}>{ticket.category}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>Region:</span>
-                            <span>{ticket.region}</span>
+                            <span className={styles.ticket_details}>{ticket.region}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>Created:</span>
-                            <span>{formatDate(ticket.createdAt)}</span>
+                            <span className={styles.ticket_details}>{formatDate(ticket.createdAt)}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>
                                 Last Updated:
                             </span>
-                            <span>{formatDate(ticket.updatedAt)}</span>
+                            <span className={styles.ticket_details}>{formatDate(ticket.updatedAt)}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>
                                 Created By:
                             </span>
-                            <span>{ticket.createdBy}</span>
+                            <span className={styles.ticket_details}>{ticket.createdBy}</span>
                         </div>
                     </div>
                 </div>

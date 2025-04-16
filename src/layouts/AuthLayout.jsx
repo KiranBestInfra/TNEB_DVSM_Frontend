@@ -3,7 +3,9 @@ import LoginSlider from '../components/ui/LoginSlider/LoginSlider';
 import Login from '../pages/Login';
 import styles from '../styles/AuthLayout.module.css';
 import { useState } from 'react';
+import Terms from '../pages/Terms';
 import Buttons from '../components/ui/Buttons/Buttons';
+import Privacy from '../pages/Privacy';
 
 // Simple placeholder components for Terms and Privacy
 const TermsPlaceholder = () => (
@@ -58,7 +60,7 @@ const AuthLayout = ({ children }) => {
                 <Buttons
                     label="Accept"
                     onClick={() => {
-                        window.location.href = '/auth/login';
+                        window.location.href = '/exedb/auth/login';
                     }}
                     variant="primarysmall"
                     alt="Accept"
@@ -85,9 +87,7 @@ const AuthLayout = ({ children }) => {
                                 </span>
                             </div>
                             <div>
-                                <a href="/">
-                                    Back to Website
-                                </a>
+                                <a href="/">Back to Website</a>
                             </div>
                         </div>
                         <div className={styles.form_closeicon}>
@@ -101,10 +101,7 @@ const AuthLayout = ({ children }) => {
                     </div>
                     <div className={styles.form_footer}>
                         <div className={styles.form_support}>
-                            Need Help?{' '}
-                            <a href="https://biems.co.in/contact">
-                                Contact Support
-                            </a>
+                            Need Help? <a href="/">Contact Support</a>
                         </div>
                         <div className={styles.form_footlink}>
                             <a href="#" onClick={handleTermsClick}>
@@ -127,7 +124,7 @@ const AuthLayout = ({ children }) => {
                             title="Terms and Conditions"
                             date="January 1, 2024"
                         />
-                        <TermsPlaceholder />
+                        <Terms />
                     </div>
                 </div>
             )}
@@ -141,7 +138,7 @@ const AuthLayout = ({ children }) => {
                             title="Privacy Policy"
                             date="January 1, 2024"
                         />
-                        <PrivacyPlaceholder />
+                        <Privacy />
                     </div>
                 </div>
             )}

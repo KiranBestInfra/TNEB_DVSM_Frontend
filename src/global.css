@@ -68,6 +68,7 @@
   --graph-theme-color: var(--white);
   --button-theme-color:var(--brand-blue);
   --button-primary-color:var(--blue-bright);   /*Primary Button*/
+   --search-border-theme:var(--white); /*Search Input color*/
   --icons-color-filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%);
   --icons-brand-color-filter: invert(40%) sepia(57%) saturate(1529%) hue-rotate(176deg) brightness(96%) contrast(101%);
   --icons-hover-color-filter: invert(19%) sepia(98%) saturate(1642%) hue-rotate(186deg) brightness(96%) contrast(101%);
@@ -97,6 +98,7 @@
   --graph-theme-color: var(--dark-light);
   --spinner-theme-color:var(--dark-light);
   --button-primary-color:var(--grey-light); 
+  --search-border-theme:var(--black);
   --icons-color-filter: brightness(0) invert(1);
   --icons-hover-color-filter: invert(19%) sepia(98%) saturate(1642%) hue-rotate(186deg) brightness(96%) contrast(101%);
   --icons-brand-color-filter: invert(40%) sepia(57%) saturate(1529%) hue-rotate(176deg) brightness(96%) contrast(101%);
@@ -199,7 +201,7 @@ input {
   height: 2.917rem;
   padding: 1rem;
   background-color: var(--main-widget-color);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--search-border-theme);
   border-radius: 2.5rem;
   font-family: "Roboto";
   font-size: 1rem;
@@ -322,17 +324,17 @@ textarea {
   width: 100%;
   height: 6rem;
   padding: 1rem;
-  background-color: var(--white);
-  border: 1px solid var(--primary-bg);
+  background-color: var(--main-widget-color);
+  border: 1px solid var(--search-border-theme);
   border-radius: 1rem;
   font-family: "Roboto";
   font-size: 1rem;
   outline: none;
-  color: var(--grey);
+  color: var(--text-primary);
 }
 
 textarea:focus {
-  border: 1px solid var(--green-light-3);
+  border: 1px solid var(--search-border-theme);
   box-shadow: 0px 8px 8px var(--green-light-3);
 }
 
@@ -522,8 +524,12 @@ form {
 
 .form_row_profile {
   width: 100%;
-}
 
+}
+.form_container{
+  border: 1px solid var(--border-color);
+  border-radius: 2.5rem;
+}
 .form_group {
   display: flex;
   flex-direction: column;

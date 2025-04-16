@@ -124,8 +124,10 @@ const Tickets = () => {
     ]);
 
     const handleCreateTicket = () => navigate('/admin/tickets/new');
-    const handleViewTicket = (ticketId) =>
+    const handleViewTicket = (ticketId) => {
+        console.log('Viewing ticket:', ticketId);
         navigate(`/admin/tickets/${ticketId}`);
+    };
 
     const handleDeleteTicket = async (ticket) => {
         try {

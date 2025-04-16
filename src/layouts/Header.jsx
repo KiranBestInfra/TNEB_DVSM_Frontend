@@ -322,7 +322,7 @@ const Header = () => {
                         onClick={() => navigate(`${basePath}/error-logs`)}>
                         <p
                             style={{
-                                filter: 'invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%)',
+                                filter: 'var(--icons-color-filter)',
                                 fontSize: '18px',
                             }}>
                             D
