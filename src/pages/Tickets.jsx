@@ -49,7 +49,7 @@ const Tickets = () => {
             setLoading(true);
             setError(null);
             try {
-                const res = await apiClient.get('/tickets');
+                const res = await apiClient.get('/tickets');    
 
                 if (Array.isArray(res)) {
                     setAllTickets(res);

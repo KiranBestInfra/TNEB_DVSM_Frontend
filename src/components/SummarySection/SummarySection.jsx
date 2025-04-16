@@ -77,9 +77,9 @@ const SummarySection = ({
                                         EDCs{' '}
                                         {onEdcClick && (
                                             <span
-                                                style={{ fontSize: '0.8rem' }}>
-                                              
-                                            </span>
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
                                         )}
                                     </Link>
                                 ) : (
@@ -134,9 +134,9 @@ const SummarySection = ({
                                         Substations{' '}
                                         {isUserRoute && onSubstationClick && (
                                             <span
-                                                style={{ fontSize: '0.8rem' }}>
-                                                🔗
-                                            </span>
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
                                         )}
                                     </span>
                                 ) : (

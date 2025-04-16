@@ -24,14 +24,13 @@ const Header = () => {
     const debouncedSearchTerm = useDebounce(searchQuery, 500);
 
     const { user } = useAuth();
-    console.log(user);
+
 
     const profileData = {
         profilePicture: user?.profilePicture || null,
         firstName: user?.name || 'User',
         lastName: '',
     };
-    console.log(profileData);
 
     // Check if the screen is mobile or tablet-sized
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -150,7 +149,6 @@ const Header = () => {
 
     const renderProfilePicture = () => {
         const initials = profileData.firstName.substring(0, 2).toUpperCase();
-        console.log(initials);
 
 
         return profileData.profilePicture ? (

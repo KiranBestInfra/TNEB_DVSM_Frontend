@@ -21,6 +21,9 @@ const TicketDetails = () => {
                 try {
                     setLoading(true);
                     const res = await apiClient.get(`/tickets/${id}`);
+                    console.log(res.TicketId);
+                    
+
                     const data = res.data;
                     const formattedTicket = {
                         id: data.TicketId,
@@ -34,6 +37,11 @@ const TicketDetails = () => {
                         updatedAt: data.LastUpdated || new Date().toISOString(),
                         createdBy: data.ConsumerName || 'User',
                     };
+
+
+
+                    console.log(formattedTicket.id);
+
 
                     setTicket(formattedTicket);
                 } catch (err) {

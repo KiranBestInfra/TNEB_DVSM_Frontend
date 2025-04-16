@@ -399,7 +399,6 @@ const ShortDetailsWidget = ({
                                     n={parseFloat(previousValue)}
                                     decimals={1}
                                 />{' '}
-                                MW
                             </div>
                             <div
                                 className={`${
