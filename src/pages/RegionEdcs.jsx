@@ -65,7 +65,9 @@ const RegionEdcs = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL);
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
+            path: '/dsocket/socket.io',
+        });
         setSocket(newSocket);
         newSocket.on('edcUpdate', (data) => {
             setWidgetsData((prevData) => {
@@ -213,7 +215,7 @@ const RegionEdcs = () => {
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
-        setCurrentPage(1); // Reset to first page when searching
+        setCurrentPage(1);
     };
 
     return (
