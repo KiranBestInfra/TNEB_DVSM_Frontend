@@ -211,7 +211,7 @@ const RegionEdcs = () => {
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
-        setCurrentPage(1); // Reset to first page when searching
+        setCurrentPage(1); 
     };
 
     const filteredEdcs = widgetsData.edcNames.filter((edc) =>

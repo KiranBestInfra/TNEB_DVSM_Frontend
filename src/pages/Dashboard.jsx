@@ -5,6 +5,7 @@ import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import SummarySection from '../components/SummarySection/SummarySection';
 import { apiClient } from '../api/client';
+import useWebSocket from '../hooks/useWebSocket';
 
 const Dashboard = () => {
     const { region } = useParams();
@@ -32,7 +33,6 @@ const Dashboard = () => {
         const fetchData = async () => {
             const response = await apiClient.get('/regions/widgets');
             const data = response.data;
-
             setWidgetsData((prev) => ({
                 ...prev,
                 totalRegions: data.totalRegions || prev.totalRegions,
@@ -45,36 +45,8 @@ const Dashboard = () => {
                 totalDistricts: data.totalDistricts || prev.totalDistricts,
             }));
         };
-
         fetchData();
     }, []);
-
-    // useEffect(() => {
-    //     const fetchGraphTimeRange = async () => {
-    //         try {
-    //             const response = await apiClient.get('/main/graphs');
-    //             const data = response.data;
-    //         } catch (error) {
-    //             console.error('Error fetching graph time range:', error);
-    //             // Send error to backend
-    //             try {
-    //                 await apiClient.post('/log/error', {
-    //                     message: error.message,
-    //                     stack: error.stack || 'No stack trace',
-    //                     time: new Date().toISOString(),
-    //                 });
-    //             } catch (logError) {
-    //                 console.error('Error logging to backend:', logError);
-    //             }
-
-    //             // Set error message for UI
-    //             // setErrorMessage(
-    //             //     'Failed to load graph data. Please try again later.'
-    //             // );
-    //         }
-    //     };
-    //     fetchGraphTimeRange();
-    // }, []);
 
     useEffect(() => {
         const fetchGraphData = async () => {

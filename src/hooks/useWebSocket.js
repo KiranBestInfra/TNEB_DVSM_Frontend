@@ -1,47 +1,51 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { io } from 'socket.io-client';
+const VITE_SOCKET_BASE_URL = import.meta.env.VITE_SOCKET_BASE_URL;
 
-const useWebSocket = (url, onMessage) => {
-    const ws = useRef(null);
+const useWebSocket = (onMessage) => {
+    const socket = useRef(null);
 
     const connect = useCallback(() => {
-        ws.current = new WebSocket(url);
+        socket.current = io(VITE_SOCKET_BASE_URL, {
+            reconnectionAttempts: 5,
+            reconnectionDelay: 5000,
+            autoConnect: true,
+        });
 
-        ws.current.onopen = () => {
-            console.log('WebSocket Connected');
-        };
+        socket.current.on('connect', () => {
+            console.log('Socket.IO Connected');
+        });
 
-        ws.current.onmessage = (event) => {
+        socket.current.on('message', (data) => {
             try {
-                const data = JSON.parse(event.data);
                 onMessage(data);
             } catch (error) {
-                console.error('Error parsing WebSocket message:', error);
+                console.error('Error handling Socket.IO message:', error);
             }
-        };
+        });
 
-        ws.current.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
+        socket.current.on('error', (error) => {
+            console.error('Socket.IO error:', error);
+        });
 
-        ws.current.onclose = () => {
-            console.log('WebSocket Disconnected');
-            setTimeout(connect, 5000);
-        };
-    }, [url, onMessage]);
+        socket.current.on('disconnect', () => {
+            console.log('Socket.IO Disconnected');
+        });
+    }, [onMessage]);
 
     useEffect(() => {
         connect();
 
         return () => {
-            if (ws.current) {
-                ws.current.close();
+            if (socket.current) {
+                socket.current.disconnect();
             }
         };
     }, [connect]);
 
     const sendMessage = useCallback((message) => {
-        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-            ws.current.send(JSON.stringify(message));
+        if (socket.current && socket.current.connected) {
+            socket.current.emit('subscribe', message);
         }
     }, []);
 
