@@ -74,8 +74,8 @@ const App = () => {
                             />
                             <Route path="edcs" element={<EDCs />} />
                             <Route
-                                path="substations"
-                                element={<Substations />}
+                                path="edcs/:edc/details"
+                                element={<EdcDetails />}
                             />
                             <Route path="feeders" element={<Feeders />} />
                             <Route path="tickets">
@@ -201,12 +201,12 @@ const App = () => {
                             <Route
                                 index
                                 element={
-                                    <Navigate to=":edc/dashboard" replace />
+                                    <Navigate to="dashboard" replace />
                                 }
                             />
                             <Route
-                                path=":edc/dashboard"
-                                element={<UserEdcDashboard />}
+                                path="dashboard"
+                                element={<EdcDetails />}
                             />
                             <Route
                                 path=":edc/substations"

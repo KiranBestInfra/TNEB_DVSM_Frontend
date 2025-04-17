@@ -10,10 +10,11 @@ import { useAuth } from '../components/AuthProvider';
 
 const EdcSubstationDetails = () => {
     const { region, edc, edcId, edcs, substationId } = useParams();
-    const location = useLocation();
-    const { isRegion } = useAuth();
-    const regionUser = isRegion();
+    const { isRegion, isCircle, isSubstation } = useAuth();
+    const circleUser = isCircle();
     const navigate = useNavigate();
+    const location = useLocation();
+    const regionUser = isRegion();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -59,18 +60,22 @@ const EdcSubstationDetails = () => {
     const entityId = substationId;
     const edcIdentifier = edcId || edcs || edc;
     const isUserRoute = location.pathname.includes('/user/');
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
+                setLoading(true);
                 const response = await apiClient.get(
                     `/substations/graph/${entityId}/demand`
                 );
-                console.log('response', response);
+                console.log('Graph response:', response);
                 const data = response.data;
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
+                setError('Failed to load graph data');
                 try {
                     await apiClient.post('/log/error', {
                         message: error.message,
@@ -80,19 +85,23 @@ const EdcSubstationDetails = () => {
                 } catch (logError) {
                     console.error('Error logging to backend:', logError);
                 }
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchGraphData();
     }, [entityId, timeRange]);
+
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
                 const feederResponse = await apiClient.get(
                     `/substations/${substationId}/feeders`
                 );
                 const data = feederResponse.data;
-                console.log('dataaa:', data);
+                console.log('Feeder response:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -104,6 +113,7 @@ const EdcSubstationDetails = () => {
                 }));
             } catch (error) {
                 console.error('Error fetching data:', error);
+                setError('Failed to load feeder data');
                 try {
                     await apiClient.post('/log/error', {
                         message: error.message,
@@ -113,11 +123,20 @@ const EdcSubstationDetails = () => {
                 } catch (logError) {
                     console.error('Error logging to backend:', logError);
                 }
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchData();
     }, [edcs, substationId]);
+
+    const handleSubstationFeederClick = () => {
+        if (circleUser && edcIdentifier && substationId) {
+            navigate(`/user/edc/${edcIdentifier}/substations/${substationId}/feeders`);
+        }
+    };
+
 
     const handleFeederClick = () => {
         if (regionUser && substationId) {
@@ -160,26 +179,34 @@ const EdcSubstationDetails = () => {
             <SectionHeader title={`${substationName} Substation`} />
             <Breadcrumb />
 
-            <SummarySection
-                widgetsData={{
-                    totalFeeders: stats.feederCount,
-                    commMeters: stats.commMeters,
-                    nonCommMeters: stats.nonCommMeters,
-                }}
-                isUserRoute={location.pathname.includes('/user/')}
-                isBiUserRoute={location.pathname.includes('/bi/user/')}
-                showRegions={false}
-                showEdcs={false}
-                showMeters={false}
-                showSubstations={false}
-                showDistricts={false}
-                showFeeders={true}
-                onFeederClick={regionUser ? handleFeederClick : null}
-            />
+                    <SummarySection
+                                widgetsData={{
+                            totalFeeders: stats.feederCount,
+                            commMeters: stats.commMeters,
+                            nonCommMeters: stats.nonCommMeters,
+                        }}
+                        // isUserRoute={location.pathname.includes('/user/')}
+                        // isBiUserRoute={location.pathname.includes('/bi/user/')}
+                        isUserRoute={isCircle()}
+                        showRegions={false}
+                        showEdcs={false}
+                        showMeters={false}
+                        showSubstations={false}
+                        showDistricts={false}
+                        showFeeders={true}
+                        onFeederClick={circleUser ? handleSubstationFeederClick : null}
 
-            <div className={styles.detail_chart}>
-                <DynamicGraph data={graphData} timeRange={timeRange} />
-            </div>
+
+                        // onFeederClick={() => {
+                        //     if (isCircle()) {
+                        //         navigate(`/user/edc/${edcId}/substations/${substationId}/feeders`);
+                        //     } 
+                        // }}
+                    />
+
+                    <div className={styles.detail_chart}>
+                        <DynamicGraph data={graphData} timeRange={timeRange} />
+                    </div>
         </div>
     );
 };
