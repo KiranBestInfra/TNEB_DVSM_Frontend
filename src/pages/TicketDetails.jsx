@@ -21,14 +21,12 @@ const TicketDetails = () => {
             const fetchTicket = async () => {
                 try {
                     setLoading(true);
-                    console.log('Fetching ticket with ID:', id);
                     const res = await apiClient.get(`/tickets/${id}`);
                     
                     if (!res) {
                         throw new Error('No response from server');
                     }
 
-                    console.log('Received ticket data:', res);
                     
                     // The response is the ticket data directly
                     const data = res;
@@ -45,7 +43,6 @@ const TicketDetails = () => {
                         createdBy: data.ConsumerName || 'User',
                     };
 
-                    console.log('Formatted ticket:', formattedTicket);
                     setTicket(formattedTicket);
                 } catch (err) {
                     console.error('Failed to fetch ticket:', err);

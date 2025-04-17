@@ -8,6 +8,9 @@ import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
+const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
 const EDCs = () => {
     const [timeframe, setTimeframe] = useState('Last 7 Days');
@@ -69,9 +72,7 @@ const EDCs = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: import.meta.env.VITE_NODE_ENV === 'production'
-                ? import.meta.env.VITE_SOCKET_PATH
-                : '',
+            path: nodeEnv === 'development' ? devSocketPath : socketPath,
         });
         setSocket(newSocket);
         newSocket.on('edcUpdate', (data) => {
