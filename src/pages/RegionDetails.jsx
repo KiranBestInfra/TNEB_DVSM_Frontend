@@ -55,11 +55,11 @@ const RegionDetails = () => {
         };
     });
 
-    const entityId = user?.id;
+    const entityId = regionName;
     const entityName = regionName?.replace('_REG', '').toLowerCase();
-    const capitalizedEntityName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
+    const capitalizedEntityName =
+        entityName.charAt(0).toUpperCase() + entityName.slice(1);
 
-    
     const navigate = useNavigate();
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -144,11 +144,17 @@ const RegionDetails = () => {
         <div className={styles.main_content}>
             <div className={styles.section_header}>
                 <h2 className="title">{capitalizedEntityName} Region</h2>
-              
             </div>
-            <Breadcrumb items={[
-                { label: 'Dashboard', path: isRegion() ? '/user/region/dashboard' : `/admin/${regionParam}/dashboard` }
-            ]} />
+            <Breadcrumb
+                items={[
+                    {
+                        label: 'Dashboard',
+                        path: isRegion()
+                            ? '/user/region/dashboard'
+                            : `/admin/${regionParam}/dashboard`,
+                    },
+                ]}
+            />
 
             <SummarySection
                 widgetsData={{
@@ -182,12 +188,12 @@ const RegionDetails = () => {
                     if (isRegion()) {
                         navigate('/user/region/feeders');
                     }
-                 } }
-                 />
-                          <div className={styles.chart_container}>
+                }}
+            />
+            <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />
             </div>
-            </div>
+        </div>
     );
 };
 
