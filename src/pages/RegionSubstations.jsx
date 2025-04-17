@@ -245,7 +245,6 @@ const RegionSubstations = () => {
                 <div className={styles.main_content}>
                     <div className={styles.section_header}>
                         <h2 className="title">{regionName} - Substations</h2>
-                       
                     </div>
                     <Breadcrumb />
 
