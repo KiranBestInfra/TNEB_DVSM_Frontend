@@ -14,7 +14,6 @@ const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const Regions = () => {
     const navigate = useNavigate();
-    const [timeRange, setTimeRange] = useState('Daily');
     const [socket, setSocket] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const cacheTimeoutRef = useRef(null);
@@ -189,12 +188,7 @@ const Regions = () => {
     return (
         <div className={styles.main_content}>
             <SectionHeader title="Regions">
-                <div className={styles.action_cont}>
-                    <TimeRangeSelectDropdown
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    />
-                </div>
+               
             </SectionHeader>
 
             <Breadcrumb />

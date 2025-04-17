@@ -8,10 +8,7 @@ import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
-import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
-
 const SubstationFeeders = () => {
-    const [timeRange, setTimeRange] = useState('Daily');
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -239,12 +236,7 @@ const SubstationFeeders = () => {
     return (
         <div className={styles.main_content}>
             <SectionHeader title="Feeders for Substation">
-                <div className={styles.action_cont}>
-                    <TimeRangeSelectDropdown
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    />
-                </div>
+               
             </SectionHeader>
 
             <Breadcrumb />

@@ -60,14 +60,14 @@
 .time_range_select {
     border-radius: 2rem;
     font-size: 1rem;
-    color: #333;
+    color: var(--text-primary);
     cursor: pointer;
     outline: none;
     width: fit-content;
     height: 2.1rem;
     padding: 0 1rem;
     min-width: 9rem;
-    border: 1px solid var(--primary-bg);
+    border: 1px solid var(--border-color);
     background-color: var(--white);
 }
 .time_range_select_dropdown_icon {

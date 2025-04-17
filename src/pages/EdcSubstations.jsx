@@ -50,8 +50,9 @@ ErrorBoundary.propTypes = {
 };
 
 const EdcSubstations = () => {
-    const { edcs, region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { edcs, edc, region: regionParam } = useParams();
+    const edcId = edcs || edc; 
+    const { user, isRegion,isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
@@ -65,12 +66,12 @@ const EdcSubstations = () => {
     const regionUser = isRegion();
 
     useEffect(() => {
-        if (!edcs) return;
+        if (!edcId) return;
 
         const substationNames = async () => {
             try {
                 const response = await apiClient.get(
-                    `/substations/widgets/${edcs}/substations`
+                    `/substations/widgets/${edcId}/substations`
                 );
                 const data = response;
                 setWidgetsData((prev) => ({
@@ -97,14 +98,15 @@ const EdcSubstations = () => {
         };
 
         substationNames();
-    }, [edcs]);
+    }, [edcId]);
 
     useEffect(() => {
-        if (!edcs) return;
+        if (!edcId) return;
+        
 
         const fetchEdcWidgets = async () => {
             try {
-                const response = await apiClient.get(`/edcs/${edcs}/widgets`);
+                const response = await apiClient.get(`/edcs/${edcId}/widgets`);
                 const feederCount =
                     response?.data?.regionFeederNames?.length || 0;
                 setWidgetsData((prev) => ({
@@ -129,7 +131,7 @@ const EdcSubstations = () => {
         };
 
         fetchEdcWidgets();
-    }, [edcs]);
+    }, [edcId]);
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedSubstationData = localStorage.getItem('substationData');
@@ -269,14 +271,7 @@ const EdcSubstations = () => {
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
-                    <SectionHeader title="Substations">
-                        <div className={styles.action_cont}>
-                            <TimeRangeSelectDropdown
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                            />
-                        </div>
-                    </SectionHeader>
+                    <SectionHeader title="Substations"></SectionHeader>                    
 
                     <Breadcrumb />
 
@@ -337,11 +332,11 @@ const EdcSubstations = () => {
                                             styles.individual_region_stats
                                         }>
                                         <ShortDetailsWidget
-                                            region={region}
-                                            edc={edcs}
-                                            //edc={parseInt({ edcs }, 10) || 0}
+                                            region={isCircle() ? '' : region}
+                                            //edc={edcs}
+                                            edc={edcId}
                                             name={substation.substation_names}
-                                            subID={substation.hierarchy_id}
+                                            substationId={substation.hierarchy_id}
                                             substationCount={
                                                 substation.substation_names
                                                     .length || 0

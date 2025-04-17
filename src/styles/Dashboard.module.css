@@ -1112,7 +1112,6 @@ padding: 0.8rem 1rem;
     height: auto;
     /* background-color: var(--white); */
     border-radius: 1.5rem;
-    border: 1px solid var(--border-color);
     flex: 1;
 }
 

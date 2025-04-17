@@ -48,7 +48,7 @@ const ForgotPassword = () => {
             <form className={styles.form_login_cont} onSubmit={handleSubmit}>
                 {error && <p className={styles.message}>{error}</p>}
                 {success && <p className={styles.message}>{success}</p>}
-                <div>
+                <div className={styles.form_container}>
                     <input
                         type="email"
                         id="email"
