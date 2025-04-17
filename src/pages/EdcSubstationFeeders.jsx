@@ -8,7 +8,8 @@ import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
-import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const EdcSubstationFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
@@ -18,9 +19,9 @@ const EdcSubstationFeeders = () => {
     const [feedersPerPage, setFeedersPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
     const [searchQuery, setSearchQuery] = useState('');
-    const { region: regionParam, edcs,edc, substationId } = useParams();
+    const { region: regionParam, edcs, edc, substationId } = useParams();
     const edcId = edcs || edc;
-    const { user, isRegion,isCircle } = useAuth();
+    const { user, isRegion, isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const location = window.location.pathname;
     const [widgetsData, setWidgetsData] = useState(() => {
@@ -71,7 +72,7 @@ const EdcSubstationFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
 
@@ -140,7 +141,6 @@ const EdcSubstationFeeders = () => {
 
         fetchData();
     }, [edcId, substationId]);
-    
 
     useEffect(() => {
         let ids = [];
@@ -180,9 +180,8 @@ const EdcSubstationFeeders = () => {
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title={`${substationName} Substation Feeders`}>
-                
-            </SectionHeader>
+            <SectionHeader
+                title={`${substationName} Substation Feeders`}></SectionHeader>
             <Breadcrumb />
             <SummarySection
                 widgetsData={{

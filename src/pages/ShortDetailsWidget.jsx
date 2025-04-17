@@ -52,7 +52,7 @@ const ShortDetailsWidget = ({
             : typeof edc === 'number'
             ? edc
             : edc?.toLowerCase().replace(/\s+/g, '-') || '';
-            
+
         const formattedSubstationId = substationId
             ? substationId
             : typeof substationId === 'number'
@@ -98,8 +98,8 @@ const ShortDetailsWidget = ({
                 break;
             case 'substations':
                 if (isRegion()) {
-                    if (subID || (substationId && edc)) {
-                        detailsUrl = `${routePrefix}/${edc}/substations/${subID}/details`;
+                    if (substationId && edc) {
+                        detailsUrl = `${routePrefix}/${edc}/substations/${substationId}/details`;
                     } else if (substationId) {
                         detailsUrl = `${routePrefix}/substations/${formattedSubstationId}/feeders`;
                     } else {

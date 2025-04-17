@@ -70,7 +70,6 @@ const EdcSubstationDetails = () => {
                 const response = await apiClient.get(
                     `/substations/graph/${entityId}/demand`
                 );
-                console.log('Graph response:', response);
                 const data = response.data;
                 setGraphData(data);
             } catch (error) {
@@ -101,7 +100,6 @@ const EdcSubstationDetails = () => {
                     `/substations/${substationId}/feeders`
                 );
                 const data = feederResponse.data;
-                console.log('Feeder response:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -133,10 +131,11 @@ const EdcSubstationDetails = () => {
 
     const handleSubstationFeederClick = () => {
         if (circleUser && edcIdentifier && substationId) {
-            navigate(`/user/edc/${edcIdentifier}/substations/${substationId}/feeders`);
+            navigate(
+                `/user/edc/${edcIdentifier}/substations/${substationId}/feeders`
+            );
         }
     };
-
 
     const handleFeederClick = () => {
         if (regionUser && substationId) {
@@ -179,34 +178,39 @@ const EdcSubstationDetails = () => {
             <SectionHeader title={`${substationName} Substation`} />
             <Breadcrumb />
 
-                    <SummarySection
-                                widgetsData={{
-                            totalFeeders: stats.feederCount,
-                            commMeters: stats.commMeters,
-                            nonCommMeters: stats.nonCommMeters,
-                        }}
-                        // isUserRoute={location.pathname.includes('/user/')}
-                        // isBiUserRoute={location.pathname.includes('/bi/user/')}
-                        isUserRoute={isCircle()}
-                        showRegions={false}
-                        showEdcs={false}
-                        showMeters={false}
-                        showSubstations={false}
-                        showDistricts={false}
-                        showFeeders={true}
-                        onFeederClick={circleUser ? handleSubstationFeederClick : null}
+            <SummarySection
+                widgetsData={{
+                    totalFeeders: stats.feederCount,
+                    commMeters: stats.commMeters,
+                    nonCommMeters: stats.nonCommMeters,
+                }}
+                // isUserRoute={location.pathname.includes('/user/')}
+                // isBiUserRoute={location.pathname.includes('/bi/user/')}
+                isUserRoute={isCircle()}
+                showRegions={false}
+                showEdcs={false}
+                showMeters={false}
+                showSubstations={false}
+                showDistricts={false}
+                showFeeders={true}
+                onFeederClick={
+                    regionUser
+                        ? handleFeederClick
+                        : circleUser
+                        ? handleSubstationFeederClick
+                        : null
+                }
 
+                // onFeederClick={() => {
+                //     if (isCircle()) {
+                //         navigate(`/user/edc/${edcId}/substations/${substationId}/feeders`);
+                //     }
+                // }}
+            />
 
-                        // onFeederClick={() => {
-                        //     if (isCircle()) {
-                        //         navigate(`/user/edc/${edcId}/substations/${substationId}/feeders`);
-                        //     } 
-                        // }}
-                    />
-
-                    <div className={styles.detail_chart}>
-                        <DynamicGraph data={graphData} timeRange={timeRange} />
-                    </div>
+            <div className={styles.detail_chart}>
+                <DynamicGraph data={graphData} timeRange={timeRange} />
+            </div>
         </div>
     );
 };

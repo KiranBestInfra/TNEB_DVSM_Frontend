@@ -8,6 +8,9 @@ import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
+
 const SubstationFeeders = () => {
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
@@ -67,7 +70,7 @@ const SubstationFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
         newSocket.on('feederUpdate', (data) => {
@@ -235,9 +238,7 @@ const SubstationFeeders = () => {
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title="Feeders for Substation">
-               
-            </SectionHeader>
+            <SectionHeader title="Feeders for Substation"></SectionHeader>
 
             <Breadcrumb />
 
