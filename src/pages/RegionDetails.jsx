@@ -6,9 +6,10 @@ import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
+
 const RegionDetails = () => {
     const { region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { user, isRegion, isCircle, isAdmin } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
@@ -146,9 +147,12 @@ const RegionDetails = () => {
                 <h2 className="title">{capitalizedEntityName} Region</h2>
               
             </div>
-            <Breadcrumb items={[
-                { label: 'Dashboard', path: isRegion() ? '/user/region/dashboard' : `/admin/${regionParam}/dashboard` }
-            ]} />
+            <Breadcrumb items={isRegion() ? [
+                { 
+                    label: 'Dashboard', 
+                    path: '/user/region/dashboard'
+                }
+            ] : undefined} />
 
             <SummarySection
                 widgetsData={{
