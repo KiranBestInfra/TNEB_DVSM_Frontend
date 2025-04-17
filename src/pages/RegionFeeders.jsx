@@ -8,6 +8,8 @@ import { io } from 'socket.io-client';
 import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const RegionFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
@@ -61,7 +63,7 @@ const RegionFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
         newSocket.on('feederUpdate', (data) => {
@@ -163,28 +165,7 @@ const RegionFeeders = () => {
                     passive: true,
                 })
             }>
-            <SectionHeader title={`${regionName} - Feeders`}>
-                <div className={styles.action_cont}>
-                    <div className={styles.time_range_select_dropdown}>
-                        <select
-                            value={timeRange}
-                            onChange={(e) => setTimeRange(e.target.value)}
-                            className={styles.time_range_select}>
-                            <option value="Daily">Daily</option>
-                            <option value="Monthly">Monthly</option>
-                            <option value="PreviousMonth">
-                                Previous Month
-                            </option>
-                            <option value="Year">Year</option>
-                        </select>
-                        <img
-                            src="icons/arrow-down.svg"
-                            alt="Select Time"
-                            className={styles.time_range_select_dropdown_icon}
-                        />
-                    </div>
-                </div>
-            </SectionHeader>
+            <SectionHeader title={`${regionName} - Feeders`}></SectionHeader>
             <Breadcrumb />
 
             <SummarySection

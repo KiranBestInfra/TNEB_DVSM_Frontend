@@ -27,7 +27,7 @@
     gap: 1rem;
 }
 .total_meters_main_info img {
-    filter: var(--summary-icons-theme);
+    filter: var(--icons-brand-color-filter);
 }
 .total_title_value,
 .total_meters {
@@ -44,7 +44,7 @@
     gap: 1rem;
 }
 .total_main_info img {
-    filter: var(--summary-icons-theme);
+    filter: var(--icons-brand-color-filter);
 }
 .TNEB_icons {
     width: 4rem;

@@ -1,5 +1,5 @@
 import styles from '../styles/LongDetailsWidget.module.css';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import Buttons from '../components/ui/Buttons/Buttons';
 import { useState, useEffect } from 'react';
@@ -7,9 +7,18 @@ import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 import SummarySection from '../components/SummarySection';
+import SectionHeader from '../components/SectionHeader/SectionHeader';
+import { useAuth } from '../components/AuthProvider';
+
 
 const EdcDetails = () => {
-    const { region, edcId } = useParams();
+    const { edc: edcParam } = useParams();
+    const { user, isCircle } = useAuth();
+    const edcName = isCircle() && user?.name ? user.name : edcParam;
+    const { region, edcId: paramEdcId } = useParams();
+    const edcId = isCircle() ? user?.hierarchy_id : paramEdcId;
+    const { isRegion } = useAuth();
+    const regionUser = isRegion();
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -61,7 +70,15 @@ const EdcDetails = () => {
         };
     });
 
-    const entityId = edcId;
+    //const entityId =  user?.id;
+   // console.log('entityIdYYYYY', entityId);
+    const entityId = isCircle() ? user?.id : (regionUser ? edcId : edcId);
+    const entityName = regionUser ? entityId : edcName?.replace('_EDC', '').toLowerCase();
+    console.log('entityName', entityName);
+    const navigate = useNavigate();
+
+  
+
 
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -88,16 +105,15 @@ const EdcDetails = () => {
         fetchGraphData();
     }, [entityId, timeRange]);
 
-    const entityName = entityId
-        ? entityId
-              .split('-')
-              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-              .join(' ')
-        : 'Unknown';
+    // const entityName = entityId
+    //     ? entityId
+    //           .split('-')
+    //           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    //           .join(' ')
+    //     : 'Unknown';
 
     useEffect(() => {
-        if (!edcId) return;
-
+       
         const fetchEdcWidgets = async () => {
             try {
                 const response = await apiClient.get(`/edcs/${edcId}/widgets`);
@@ -140,33 +156,7 @@ const EdcDetails = () => {
 
     return (
         <div className={styles.main_content}>
-            <div className={styles.section_header}>
-                <h2 className="title">{entityName} EDC</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                                className={styles.time_range_select}>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">
-                                    Previous Month
-                                </option>
-                                <option value="Year">Year</option>
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <SectionHeader title={`${entityName} EDC`} />
             <Breadcrumb />
                       <SummarySection
         widgetsData={{
@@ -178,11 +168,31 @@ const EdcDetails = () => {
         }}
         // isUserRoute={location.includes("/user/")}
         // isBiUserRoute={location.includes("/bi/user/")}
+        isUserRoute={isCircle()}
         showDistricts={true}
         showFeeders={true}
         showEdcs={false}
         showSubstations={true}
         showRegions={false}
+
+        onSubstationClick={() => {
+            if (isCircle()) {
+                navigate(`/user/edc/${edcId}/substations`);
+            } else if (isRegion()) {
+                navigate(`/user/region/${edcId}/substations`);
+            } else {
+                navigate(`/admin/${region}/edcs/${edcId}/substations`);
+            }
+        }}
+        onFeederClick={() => {
+            if (isCircle()) {
+                navigate(`/user/edc/${edcId}/feeders`);
+            } else if (isRegion()) {
+                navigate(`/user/region/${edcId}/feeders`);
+            } else {
+                navigate(`/admin/${region}/edcs/${edcId}/feeders`);
+            }
+        }}
       />           
         
 

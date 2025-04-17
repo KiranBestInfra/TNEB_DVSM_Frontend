@@ -17,12 +17,13 @@ export const AuthProvider = ({ children }) => {
         if (accessToken) {
             try {
                 const decoded = jwtDecode(accessToken);
-                
+                //console.log("decoded",decoded);
                 const userObject = {
                     id: decoded.userId,
                     email: decoded.email,
                     name: decoded.user_name,
                     role: decoded.role,
+                    hierarchy_id: decoded.user_hierarchy_id,
                 };
 
                 setUser(userObject);

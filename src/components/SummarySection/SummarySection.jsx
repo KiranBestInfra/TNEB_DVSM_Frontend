@@ -12,16 +12,20 @@ const SummarySection = ({
         commMeters: 0,
         nonCommMeters: 0,
         totalDistricts: 0,
+        maxDemand: 0,
+        maxDemandUnit: 'MW',
     },
     isUserRoute = false,
     isBiUserRoute = false,
     onEdcClick = null,
     onSubstationClick = null,
+    onFeederClick = null,
     showRegions = true,
     showDistricts = false,
     showEdcs = true,
     showSubstations = true,
     showFeeders = true,
+    showMaxDemand = true,
 }) => {
     return (
         <div className={styles.summary_section}>
@@ -77,9 +81,9 @@ const SummarySection = ({
                                         EDCs{' '}
                                         {onEdcClick && (
                                             <span
-                                                style={{
-                                                    fontSize: '0.8rem',
-                                                }}></span>
+                                                style={{ fontSize: '0.8rem' }}>
+                                                
+                                            </span>
                                         )}
                                     </Link>
                                 ) : (
@@ -135,7 +139,7 @@ const SummarySection = ({
                                         {isUserRoute && onSubstationClick && (
                                             <span
                                                 style={{ fontSize: '0.8rem' }}>
-                                                🔗
+                                              
                                             </span>
                                         )}
                                     </span>
@@ -153,7 +157,11 @@ const SummarySection = ({
                 </div>
             )}
             {showFeeders && (
-                <div className={styles.total_meters_container}>
+                <div 
+                    className={styles.total_meters_container}
+                    onClick={onFeederClick}
+                    style={onFeederClick ? { cursor: 'pointer' } : {}}
+                    title={onFeederClick ? 'Click to view Feeders' : ''}>
                     <div className={styles.total_meters_main_info}>
                         <img
                             src="icons/electric-meter.svg"
@@ -161,7 +169,19 @@ const SummarySection = ({
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_meters}>
-                            <div className="title">Feeders</div>
+                            <p className="title">
+                                {isUserRoute ? (
+                                    <span style={{ color: 'var(--brand-blue)' }}>
+                                        Feeders{' '}
+                                        {isUserRoute && onFeederClick && (
+                                            <span style={{ fontSize: '0.8rem' }}>
+                                            </span>
+                                        )}
+                                    </span>
+                                ) : (
+                                    'Feeders'
+                                )}
+                            </p>
                             <div className={styles.summary_value}>
                                 <RollingNumber n={widgetsData.totalFeeders} />
                             </div>
@@ -234,6 +254,26 @@ const SummarySection = ({
                                     })()}
                                     %
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showMaxDemand && (
+                <div className={styles.total_substations_container}>
+                    <div className={styles.total_main_info}>
+                        <img
+                            src="icons/electric-power.svg"
+                            alt="Maximum Demand"
+                            className={styles.TNEB_icons}
+                        />
+                        <div className={styles.total_title_value}>
+                            <p className="title">Maximum Demand</p>
+                            <div className={styles.summary_value}>
+                                <RollingNumber n={widgetsData.maxDemand} />
+                                <span style={{ fontSize: '1rem', marginLeft: '0.5rem' }}>
+                                    {widgetsData.maxDemandUnit}
+                                </span>
                             </div>
                         </div>
                     </div>

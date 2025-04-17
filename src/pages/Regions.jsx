@@ -2,17 +2,16 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
-import Buttons from '../components/ui/Buttons/Buttons';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import SummarySection from '../components/SummarySection';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
-import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const Regions = () => {
     const navigate = useNavigate();
-    const [timeRange, setTimeRange] = useState('Daily');
     const [socket, setSocket] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const cacheTimeoutRef = useRef(null);
@@ -65,7 +64,7 @@ const Regions = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
 
@@ -150,7 +149,6 @@ const Regions = () => {
         );
     };
 
-    // Always use admin routes regardless of actual path
     const isRegionUser = false;
     const currentRegionName = '';
 
@@ -186,14 +184,7 @@ const Regions = () => {
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title="Regions">
-                <div className={styles.action_cont}>
-                    <TimeRangeSelectDropdown
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    />
-                </div>
-            </SectionHeader>
+            <SectionHeader title="Regions"></SectionHeader>
 
             <Breadcrumb />
 

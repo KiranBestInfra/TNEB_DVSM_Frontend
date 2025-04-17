@@ -69,7 +69,9 @@ const EDCs = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: import.meta.env.VITE_NODE_ENV === 'production'
+                ? import.meta.env.VITE_SOCKET_PATH
+                : '',
         });
         setSocket(newSocket);
         newSocket.on('edcUpdate', (data) => {
@@ -345,29 +347,6 @@ const EDCs = () => {
         <div className={styles.main_content}>
             <div className={styles.section_header}>
                 <h2 className="title">EDCs</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeframe}
-                                onChange={(e) => setTimeframe(e.target.value)}
-                                className={styles.time_range_select}>
-                                <option value="Last30days">Last 30 Days</option>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">Last Week</option>
-                                <option value="Year">Year</option>
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
-                            />
-                        </div>
-                    </div>
-                </div>
             </div>
             <Breadcrumb items={getBreadcrumbItems()} />
             <div className={styles.summary_section}>

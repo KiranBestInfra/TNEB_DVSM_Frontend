@@ -24,18 +24,19 @@ const Header = () => {
     const debouncedSearchTerm = useDebounce(searchQuery, 500);
 
     const { user } = useAuth();
-    console.log(user);
+
 
     const profileData = {
         profilePicture: user?.profilePicture || null,
         firstName: user?.name || 'User',
         lastName: '',
     };
-    console.log(profileData);
 
     // Check if the screen is mobile or tablet-sized
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-    const [isTablet, setIsTablet] = useState(window.innerWidth > 768 && window.innerWidth <= 1024);
+    const [isTablet, setIsTablet] = useState(
+        window.innerWidth > 768 && window.innerWidth <= 1024
+    );
 
     // Add event listener for window resize
     useEffect(() => {
@@ -43,7 +44,7 @@ const Header = () => {
             const width = window.innerWidth;
             setIsMobile(width <= 768);
             setIsTablet(width > 768 && width <= 1024);
-            
+
             if (width > 1024) {
                 setIsMobileMenuOpen(false);
             }
@@ -150,7 +151,6 @@ const Header = () => {
 
     const renderProfilePicture = () => {
         const initials = profileData.firstName.substring(0, 2).toUpperCase();
-        console.log(initials);
 
 
         return profileData.profilePicture ? (
@@ -240,7 +240,7 @@ const Header = () => {
                     Welcome {profileData.firstName}!
                 </span>
                 {(isMobile || isTablet) && (
-                    <div 
+                    <div
                         className={styles.mobile_menu_toggle}
                         onClick={toggleMobileMenu}>
                         <img
@@ -254,7 +254,12 @@ const Header = () => {
                     </div>
                 )}
             </div>
-            <div className={`${styles.search_cont} ${(isMobile || isTablet) && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
+            <div
+                className={`${styles.search_cont} ${
+                    (isMobile || isTablet) && !isMobileMenuOpen
+                        ? styles.mobile_hidden
+                        : ''
+                }`}>
                 <input
                     type="text"
                     name="query"
@@ -285,7 +290,12 @@ const Header = () => {
                     </div>
                 )}
             </div>
-            <div className={`${styles.right_cont} ${(isMobile || isTablet) && !isMobileMenuOpen ? styles.mobile_hidden : ''}`}>
+            <div
+                className={`${styles.right_cont} ${
+                    (isMobile || isTablet) && !isMobileMenuOpen
+                        ? styles.mobile_hidden
+                        : ''
+                }`}>
                 <div className={styles.right_cont_item}>
                     <div className={styles.theme_toggle}>
                         <ThemeToggle />
@@ -313,23 +323,23 @@ const Header = () => {
                         <img src="icons/support-tickets.svg" alt="Tickets" />
                     </span>
 
-                    <span
+                    {/* <span
                         className={styles.white_icons}
                         onClick={handleNotificationsClick}>
                         <img src="icons/bell.svg" alt="notifications" />
-                    </span>
+                    </span> */}
 
-                    <span
+                    {/* <span
                         className={styles.white_icons}
                         onClick={() => navigate(`${basePath}/error-logs`)}>
                         <p
                             style={{
-                                filter: 'invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%)',
+                                filter: 'var(--icons-color-filter)',
                                 fontSize: '18px',
                             }}>
                             D
                         </p>
-                    </span>
+                    </span> */}
 
                     <span
                         className={`${styles.white_icons} ${styles.mobile_exit_icon}`}

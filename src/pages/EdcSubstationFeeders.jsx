@@ -8,7 +8,8 @@ import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
-import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const EdcSubstationFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
@@ -18,8 +19,9 @@ const EdcSubstationFeeders = () => {
     const [feedersPerPage, setFeedersPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
     const [searchQuery, setSearchQuery] = useState('');
-    const { region: regionParam, edcs, substationId } = useParams();
-    const { user, isRegion } = useAuth();
+    const { region: regionParam, edcs, edc, substationId } = useParams();
+    const edcId = edcs || edc;
+    const { user, isRegion, isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const location = window.location.pathname;
     const [widgetsData, setWidgetsData] = useState(() => {
@@ -70,7 +72,7 @@ const EdcSubstationFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
 
@@ -113,7 +115,7 @@ const EdcSubstationFeeders = () => {
                     `/substations/${substationId}/feeders`
                 );
                 const data = feederResponse.data;
-                //console.log('dataaa:',data);
+                console.log('dataaa:', data);
 
                 setWidgetsData((prev) => ({
                     ...prev,
@@ -138,7 +140,7 @@ const EdcSubstationFeeders = () => {
         };
 
         fetchData();
-    }, [edcs, substationId]);
+    }, [edcId, substationId]);
 
     useEffect(() => {
         let ids = [];
@@ -178,14 +180,8 @@ const EdcSubstationFeeders = () => {
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title={`${substationName} Substation Feeders`}>
-                <div className={styles.action_cont}>
-                    <TimeRangeSelectDropdown
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    />
-                </div>
-            </SectionHeader>
+            <SectionHeader
+                title={`${substationName} Substation Feeders`}></SectionHeader>
             <Breadcrumb />
             <SummarySection
                 widgetsData={{
@@ -238,8 +234,8 @@ const EdcSubstationFeeders = () => {
                                 key={index}
                                 className={styles.individual_region_stats}>
                                 <ShortDetailsWidget
-                                    region={region}
-                                    edc={edcs}
+                                    region={isCircle() ? '' : region}
+                                    edc={edcId}
                                     id={feeder.id}
                                     name={feeder.name}
                                     substationId={substationId}
@@ -265,7 +261,7 @@ const EdcSubstationFeeders = () => {
                                             series: [],
                                         }
                                     }
-                                    showInfoIcon={true}
+                                    showInfoIcon={false}
                                 />
                             </div>
                         ))

@@ -8,6 +8,8 @@
 .chart_controls {
     display: flex;
     justify-content: space-between;
+    border: 1px solid var(--border-color);
+    border-bottom: none;
     align-items: center;
     background-color: var(--main-background-color);
     padding: 1.2rem 1rem;
@@ -46,8 +48,10 @@
 
 .echart_container {
     flex: 1;
-    min-height: 400px;
+    min-height: 420px;
     width: 100%;
+    position: relative;
+    overflow: hidden;
 }
 
 .chart {
@@ -55,6 +59,7 @@
     height: 100%;
     border: 1px solid var(--border-color);
     border-radius: 0 0 8px 8px;
+    position: relative;
     /* min-height: 500px; */
 }
 /*Dropdown for time range*/
@@ -76,6 +81,7 @@
     border: 1px solid var(--border-color);
 }
 
+
 .time_range_select_dropdown_icon {
     position: absolute;
     right: 0.8rem;
@@ -95,6 +101,8 @@
     min-height: 400px;
     color: #666;
     font-family: 'Roboto', sans-serif;
+    border: 1px solid var(--border-color);
+    border-radius: 0 0 8px 8px;
 }
 
 .loading_spinner {
@@ -113,4 +121,36 @@
 }
 canvas{
     background-color: var(--graph-theme-color);
+}
+
+.date_picker {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.date_input {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 2rem;
+    background-color: var(--main-widget-color);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    width: 150px;
+}
+
+.date_icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.date_icon img {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
 }
