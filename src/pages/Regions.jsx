@@ -149,7 +149,6 @@ const Regions = () => {
         );
     };
 
-    // Always use admin routes regardless of actual path
     const isRegionUser = false;
     const currentRegionName = '';
 
@@ -183,11 +182,19 @@ const Regions = () => {
         setCurrentPage(1); // Reset to first page when searching
     };
 
+    // Add this new function to calculate pagination options
+    const getPaginationOptions = (totalItems) => {
+        const options = [6];  // Start with default option
+        if (totalItems > 10) options.push(10);
+        if (totalItems > 20) options.push(20);
+        if (totalItems > 50) options.push(50);
+        if (totalItems > 100) options.push(100);
+        return options.filter(opt => opt <= totalItems);
+    };
+
     return (
         <div className={styles.main_content}>
-            <SectionHeader title="Regions">
-               
-            </SectionHeader>
+            <SectionHeader title="Regions"></SectionHeader>
 
             <Breadcrumb />
 
@@ -217,6 +224,7 @@ const Regions = () => {
                 onItemsPerPageChange={(newPerPage) =>
                     handlePageChange(1, newPerPage)
                 }
+                paginationOptions={getPaginationOptions(filteredRegions.length)}
             />
 
             <div

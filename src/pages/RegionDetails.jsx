@@ -6,9 +6,10 @@ import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
+
 const RegionDetails = () => {
     const { region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { user, isRegion, isCircle, isAdmin } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
@@ -55,11 +56,11 @@ const RegionDetails = () => {
         };
     });
 
-    const entityId = user?.id;
+    const entityId = regionName;
     const entityName = regionName?.replace('_REG', '').toLowerCase();
-    const capitalizedEntityName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
+    const capitalizedEntityName =
+        entityName.charAt(0).toUpperCase() + entityName.slice(1);
 
-    
     const navigate = useNavigate();
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -144,11 +145,17 @@ const RegionDetails = () => {
         <div className={styles.main_content}>
             <div className={styles.section_header}>
                 <h2 className="title">{capitalizedEntityName} Region</h2>
-              
             </div>
-            <Breadcrumb items={[
-                { label: 'Dashboard', path: isRegion() ? '/user/region/dashboard' : `/admin/${regionParam}/dashboard` }
-            ]} />
+            <Breadcrumb
+                items={[
+                    {
+                        label: 'Dashboard',
+                        path: isRegion()
+                            ? '/user/region/dashboard'
+                            : `/admin/${regionParam}/dashboard`,
+                    },
+                ]}
+            />
 
             <SummarySection
                 widgetsData={{
@@ -182,12 +189,12 @@ const RegionDetails = () => {
                     if (isRegion()) {
                         navigate('/user/region/feeders');
                     }
-                 } }
-                 />
-                          <div className={styles.chart_container}>
+                }}
+            />
+            <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />
             </div>
-            </div>
+        </div>
     );
 };
 
