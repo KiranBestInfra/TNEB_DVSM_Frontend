@@ -20,6 +20,7 @@ const EdcDetails = () => {
     const { isRegion } = useAuth();
     const regionUser = isRegion();
     const [timeRange, setTimeRange] = useState('Daily');
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
@@ -73,6 +74,7 @@ const EdcDetails = () => {
     //const entityId =  user?.id;
     const entityId = isCircle() ? user?.id : (regionUser ? edcId : edcId);
     const entityName = regionUser ? entityId : edcName?.replace('_EDC', '').toLowerCase();
+    //console.log('entityName', entityName);
     const navigate = useNavigate();
 
   
@@ -81,8 +83,16 @@ const EdcDetails = () => {
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
+                const formatDate = (date) => {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day} 00:00:00`;
+                };
+
+                const formattedDate = selectedDate ? formatDate(selectedDate) : formatDate(new Date());
                 const response = await apiClient.get(
-                    `/edcs/graph/${entityId}/demand`
+                    `/edcs/graph/${entityId}/demand/${formattedDate}`
                 );
                 const data = response.data;
                 setGraphData(data);
@@ -101,7 +111,7 @@ const EdcDetails = () => {
         };
 
         fetchGraphData();
-    }, [entityId, timeRange]);
+    }, [entityId, timeRange, selectedDate]);
 
     // const entityName = entityId
     //     ? entityId
@@ -152,6 +162,10 @@ const EdcDetails = () => {
         nonCommMeters: widgetsData.nonCommMeters || 0,
     };
 
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+    };
+
     return (
         <div className={styles.main_content}>
             <SectionHeader title={`${entityName} EDC`} />
@@ -195,7 +209,12 @@ const EdcDetails = () => {
         
 
             <div className={styles.chart_container}>
-                <DynamicGraph data={graphData} timeRange={timeRange} />
+                <DynamicGraph 
+                    data={graphData} 
+                    timeRange={timeRange} 
+                    onDateChange={handleDateChange}
+                    selectedDate={selectedDate}
+                />
             </div>
         </div>
     );

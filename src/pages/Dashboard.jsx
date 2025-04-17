@@ -17,7 +17,6 @@ const Dashboard = () => {
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
     const isBiUserRoute = location.includes('/exedb/user/');
-
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -51,6 +50,7 @@ const Dashboard = () => {
             }));
         };
         fetchData();
+        console.log()
     }, []);
 
     useEffect(() => {
@@ -113,6 +113,7 @@ const Dashboard = () => {
                 isUserRoute={isUserRoute}
                 isBiUserRoute={isBiUserRoute}
                 showDistricts={true}
+                showMaxDemand={false}
             />
 
             <div className={styles.detail_chart}>
