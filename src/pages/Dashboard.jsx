@@ -16,7 +16,6 @@ const Dashboard = () => {
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
     const isBiUserRoute = location.includes('/exedb/user/');
-
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
