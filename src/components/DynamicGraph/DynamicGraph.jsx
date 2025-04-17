@@ -228,7 +228,7 @@ const DynamicGraph = ({
             <div className={styles.chart_controls}>
                 <h3 className={styles.chart_title}>{title}</h3>
                 <div className={styles.action_cont}>
-                    {showTimeRangeDropdown && (
+                    {/* {showTimeRangeDropdown && (
                         <div className={styles.time_range_select_dropdown}>
                             <select
                                 value={timeRange}
@@ -249,7 +249,7 @@ const DynamicGraph = ({
                                 }
                             />
                         </div>
-                    )}
+                    )} */}
                     <span
                         className={styles.icons_chart_controls}
                         onClick={handleDownload}>
