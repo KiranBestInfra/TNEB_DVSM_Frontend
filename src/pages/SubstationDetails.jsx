@@ -10,6 +10,7 @@ import SectionHeader from '../components/SectionHeader/SectionHeader';
 import { useAuth } from '../components/AuthProvider';
 const SubstationDetails = () => {
     const { region, substationId } = useParams();
+    console.log('params', useParams());
     const navigate = useNavigate();
     const { isRegion } = useAuth();
     const regionUser = isRegion();
