@@ -11,7 +11,6 @@ const TimeRangeSelectDropdown = ({ value, onChange }) => {
       >
         <option value="Daily">Daily</option>
         <option value="Monthly">Monthly</option>
-        <option value="PreviousMonth">Previous Month</option>
         <option value="Year">Year</option>
       </select>
       <img

@@ -19,7 +19,7 @@ const AdminLayout = ({ children }) => {
                 <div className={styles.content_placeholder}>
                     <Outlet />
                 </div>
-                <Chatbot />
+                {/* <Chatbot /> */}
             </div>
         </div>
     );

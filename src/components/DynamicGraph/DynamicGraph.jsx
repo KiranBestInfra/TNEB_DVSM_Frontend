@@ -29,10 +29,19 @@ const DynamicGraph = ({
 
     useEffect(() => {
         if (chartRef.current && data) {
-            chartInstance.current = echarts.init(chartRef.current);
+            chartInstance.current = echarts.init(chartRef.current, null, {
+                renderer: 'canvas',
+                width: 'auto',
+                height: '410'
+            });
 
             const handleResize = () => {
-                chartInstance.current?.resize();
+                if (chartInstance.current) {
+                    chartInstance.current.resize({
+                        width: 'auto',
+                        height: '410'
+                    });
+                }
             };
 
             window.addEventListener('resize', handleResize);
@@ -52,7 +61,6 @@ const DynamicGraph = ({
                     formatter: function (params) {
                         const timeLabel = params[0].axisValue;
                         let tooltipText = `<div style="font-weight: bold; margin-bottom: 8px; color: var(--text-primary)">${timeLabel}</div>`;
-
                         params.forEach((param) => {
                             tooltipText += `<div style="display: flex; align-items: center; margin: 3px 0;">
                                 <span style="display: inline-block; width: 10px; height: 10px; background-color: ${param.color}; margin-right: 5px; border-radius: 50%;"></span>
@@ -102,7 +110,7 @@ const DynamicGraph = ({
                     textStyle: {
                         fontFamily: 'Roboto',
                         fontSize: '0.8rem',
-                        color: 'var(--text-primary)',
+                        color: '#7e7e7e',
                     },
                 },
                 xAxis: {
@@ -119,7 +127,7 @@ const DynamicGraph = ({
                     axisLabel: {
                         fontFamily: 'Roboto',
                         fontSize: '0.75rem',
-                        color: '#000000',
+                        color: '#7e7e7e',
                         letterSpacing: '-1',
                         margin: 16,
                         rotate: 45,
@@ -147,7 +155,7 @@ const DynamicGraph = ({
                         formatter: '{value} MW',
                         fontFamily: 'Roboto',
                         fontSize: '0.75rem',
-                        color: 'var(--text-secondary)',
+                        color: '#7e7e7e',
                         letterSpacing: '-1',
                         margin: 20,
                     },
@@ -164,7 +172,7 @@ const DynamicGraph = ({
                     splitLine: {
                         show: true,
                         lineStyle: {
-                            color: '#E0E0E0',
+                            color: '#b9b4b429',
                             type: 'dashed',
                         },
                     },
@@ -172,7 +180,7 @@ const DynamicGraph = ({
                 grid: {
                     left: '1%',
                     right: '1%',
-                    bottom: '20%',
+                    bottom: '3%',
                     top: '13%',
                     containLabel: true,
                     backgroundColor: 'var(--main-widget-color)',
@@ -220,7 +228,7 @@ const DynamicGraph = ({
             <div className={styles.chart_controls}>
                 <h3 className={styles.chart_title}>{title}</h3>
                 <div className={styles.action_cont}>
-                    {showTimeRangeDropdown && (
+                    {/* {showTimeRangeDropdown && (
                         <div className={styles.time_range_select_dropdown}>
                             <select
                                 value={timeRange}
@@ -230,8 +238,7 @@ const DynamicGraph = ({
                                 className={styles.time_range_select}>
                                 <option value="Daily">Daily</option>
                                 <option value="Monthly">Monthly</option>
-                                <option value="Last30days">Last 30 Days</option>
-                                <option value="LastWeek">Last Week</option>
+                                
                                 <option value="Year">Year</option>
                             </select>
                             <img
@@ -242,7 +249,7 @@ const DynamicGraph = ({
                                 }
                             />
                         </div>
-                    )}
+                    )} */}
                     <span
                         className={styles.icons_chart_controls}
                         onClick={handleDownload}>

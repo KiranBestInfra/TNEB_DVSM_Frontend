@@ -79,9 +79,10 @@
 .paginationButton {
     font-family: 'Roboto';
     padding: 0.5rem 1rem;
-    border: 1px solid var(--primary-bg);
+    border: 1px solid var(--border-color);
     border-radius: 1.5rem;
-    background-color: var(--white);
+    background-color: var(--main-background-color);
+    color: var(--text-primary);
     cursor: pointer;
 }
 

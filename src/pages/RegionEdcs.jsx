@@ -16,7 +16,7 @@ const RegionEdcs = () => {
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
-    const [timeRange, setTimeRange] = useState('Daily');
+
     const cacheTimeoutRef = useRef(null);
     const [selectedEdc, setSelectedEdc] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +41,7 @@ const RegionEdcs = () => {
                     edcNames: Object.keys(parsedDemandData),
                     substationCount: {},
                     feederCount: {},
+                    filteredEdcs: [],
                     edcDemandData: parsedDemandData,
                 };
             }
@@ -55,6 +56,7 @@ const RegionEdcs = () => {
             totalDistricts: 0,
             edcNames: [],
             substationCount: {},
+            filteredEdcs: [],
             feederCount: {},
             edcDemandData: {},
         };
@@ -121,7 +123,6 @@ const RegionEdcs = () => {
                 setLoading(true);
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response.data || {};
-                console.log('response', response);
                 const transformedData = {
                     totalEdcs: data.edcNames?.length || 0,
                     totalSubstations:
@@ -144,6 +145,7 @@ const RegionEdcs = () => {
                         }, {}) || {},
                     feederCount: data.feederCounts || {},
                     edcDemandData: widgetsData.edcDemandData || {},
+                    filteredEdcs: data.edcNames,
                 };
 
                 setWidgetsData(transformedData);
@@ -216,19 +218,15 @@ const RegionEdcs = () => {
         setCurrentPage(1);
     };
 
-    const filteredEdcs = widgetsData.edcNames.filter((edc) =>
-        edc.hierarchy_name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredEdcs = widgetsData.edcNames?.filter((edc) => {
+        const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
+        return name?.toLowerCase().includes(searchQuery.toLowerCase());
+    }) || [];
 
     return (
         <div className={styles.main_content}>
             <SectionHeader title={`${regionName} - EDCs`}>
-                <div className={styles.action_cont}>
-                    <TimeRangeSelectDropdown
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                    />
-                </div>
+             
             </SectionHeader>
             <Breadcrumb />
 
@@ -241,7 +239,8 @@ const RegionEdcs = () => {
             />
 
             <SectionHeader
-                title={`EDCs: [ ${filteredEdcs.length} ]`}
+                title={`EDCs: [ ${widgetsData.filteredEdcs.length} ]`}
+                dataLength={widgetsData.filteredEdcs.length}
                 showSearch={true}
                 searchQuery={searchQuery}
                 onSearchChange={handleSearch}
@@ -250,7 +249,9 @@ const RegionEdcs = () => {
                 setViewMode={setViewMode}
                 showPagination={true}
                 currentPage={currentPage}
-                totalPages={Math.ceil(filteredEdcs.length / edcsPerPage)}
+                totalPages={Math.ceil(
+                    widgetsData.filteredEdcs.length / edcsPerPage
+                )}
                 itemsPerPage={edcsPerPage}
                 onPageChange={handlePageChange}
                 onItemsPerPageChange={(newPerPage) =>
@@ -265,72 +266,67 @@ const RegionEdcs = () => {
                     className={`${styles.region_stats_container} ${
                         viewMode === 'list' ? styles.list_view : ''
                     }`}>
-                    {filteredEdcs
+                    {widgetsData.filteredEdcs
                         .slice(
                             (currentPage - 1) * edcsPerPage,
                             currentPage * edcsPerPage
                         )
-                        .map((edc, index) => (
-                            <div
-                                key={index}
-                                className={styles.individual_region_stats}>
-                                <ShortDetailsWidget
-                                    region={region}
-                                    edc={edc.hierarchy_id}
-                                    name={edc.hierarchy_name}
-                                    edcId={edc.hierarchy_id}
-                                    substationCount={
-                                        widgetsData.substationCount[
-                                            edc.hierarchy_name
-                                        ] || 0
-                                    }
-                                    feederCount={
-                                        widgetsData.feederCount[
-                                            edc.hierarchy_name
-                                        ] || 0
-                                    }
-                                    edcCount={widgetsData.totalEdcs}
-                                    graphData={
-                                        widgetsData.edcDemandData?.[
-                                            edc.hierarchy_name
-                                        ] ?? {
-                                            xAxis: [],
-                                            series: [],
-                                        }
-                                    }
-                                    currentValue={Number(
-                                        parseFloat(
-                                            widgetsData.edcDemandData?.[
-                                                edc.hierarchy_name
-                                            ]?.series?.[0]?.data?.slice(
-                                                -1
-                                            )[0] || 0
-                                        ).toFixed(1)
-                                    )}
-                                    previousValue={Number(
-                                        parseFloat(
-                                            widgetsData.edcDemandData?.[
-                                                edc.hierarchy_name
-                                            ]?.series?.[0]?.data?.slice(
-                                                -2,
-                                                -1
-                                            )[0] || 0
-                                        ).toFixed(1)
-                                    )}
-                                    pageType="edcs"
-                                    handleRegionClick={() =>
-                                        handleEdcClick(edc)
-                                    }
-                                    showInfoIcon={true}
-                                />
+                        .map((edc, index) => {
+                            const name = edc.hierarchy_name;
+                            const edcId = edc.hierarchy_id;
+                            const demandData =
+                                widgetsData.edcDemandData?.[name];
 
-                                <div>
-                                    {/* <h3>{edc.hierarchy_name}</h3> */}
-                                    {/* <p>Substation Count: {widgetsData.substationCount[edc.hierarchy_name] || 0}</p> */}
-                                    {/* <p>Feeder Count: {widgetsData.feederCount[edc.hierarchy_name] || 0}</p> */}
+                            const currentValue = Number(
+                                parseFloat(
+                                    demandData?.series?.[0]?.data?.slice(
+                                        -1
+                                    )[0] || 0
+                                ).toFixed(1)
+                            );
+                            const previousValue = Number(
+                                parseFloat(
+                                    demandData?.series?.[0]?.data?.slice(
+                                        -2,
+                                        -1
+                                    )[0] || 0
+                                ).toFixed(1)
+                            );
+
+                            return (
+                                <div
+                                    key={index}
+                                    className={styles.individual_region_stats}>
+                                    <ShortDetailsWidget
+                                        region={region}
+                                        edc={edcId}
+                                        name={name}
+                                        edcId={edcId}
+                                        substationCount={
+                                            widgetsData.substationCount[name] ||
+                                            0
+                                        }
+                                        feederCount={
+                                            widgetsData.feederCount[name] || 0
+                                        }
+                                        edcCount={widgetsData.totalEdcs}
+                                        graphData={
+                                            demandData ?? {
+                                                xAxis: [],
+                                                series: [],
+                                            }
+                                        }
+                                        currentValue={currentValue}
+                                        previousValue={previousValue}
+                                        pageType="edcs"
+                                        handleRegionClick={() =>
+                                            handleEdcClick(edc)
+                                        }
+                                        showInfoIcon={true}
+                                    />
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                 </div>
             )}
         </div>

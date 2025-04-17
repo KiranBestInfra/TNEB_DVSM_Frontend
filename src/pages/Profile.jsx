@@ -287,7 +287,7 @@ const Profile = () => {
                     readOnly
                 />
                 <div className="form_row form_row_profile">
-                    <div className="form_group">
+                    <div className="form_group form_container">
                         <input
                             type="password"
                             value={passwordData.currentPassword}
@@ -305,7 +305,7 @@ const Profile = () => {
                 </div>
 
                 <div className="form_row form_row_profile">
-                    <div className="form_group">
+                    <div className="form_group form_container">
                         <input
                             type="password"
                             value={passwordData.newPassword}
@@ -323,7 +323,7 @@ const Profile = () => {
                 </div>
 
                 <div className="form_row form_row_profile">
-                    <div className="form_group">
+                    <div className="form_group form_container">
                         <input
                             type="password"
                             value={passwordData.confirmPassword}

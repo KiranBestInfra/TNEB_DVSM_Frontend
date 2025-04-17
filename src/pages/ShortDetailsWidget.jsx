@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import RollingNumber from '../components/RollingNumber';
 import { useAuth } from '../components/AuthProvider';
 
-
 const ShortDetailsWidget = ({
     region,
     edc,
@@ -42,7 +41,7 @@ const ShortDetailsWidget = ({
         const formattedRegion =
             typeof region === 'number'
                 ? region
-                : region.toLowerCase().replace(/\s+/g, '-');
+                : region?.toLowerCase().replace(/\s+/g, '-') || '';
         const formattedName = id
             ? id
             : name
@@ -50,12 +49,15 @@ const ShortDetailsWidget = ({
             : '';
         const formattedEdc = edcId
             ? edcId
-            : edc
-            ? edc.toLowerCase().replace(/\s+/g, '-')
-            : '';
+            : typeof edc === 'number'
+            ? edc
+            : edc?.toLowerCase().replace(/\s+/g, '-') || '';
+            
         const formattedSubstationId = substationId
-            ? substationId.toLowerCase().replace(/\s+/g, '-')
-            : '';
+            ? substationId
+            : typeof substationId === 'number'
+            ? substationId
+            : substationId?.toLowerCase().replace(/\s+/g, '-') || '';
 
         // Determine route prefix based on user role
         let routePrefix;
@@ -96,12 +98,12 @@ const ShortDetailsWidget = ({
                 break;
             case 'substations':
                 if (isRegion()) {
-                    if (substationId && edc) {
-                        detailsUrl = `${routePrefix}/${formattedEdc}/${formattedSubstationId}/feeders`;
+                    if (subID || (substationId && edc)) {
+                        detailsUrl = `${routePrefix}/${edc}/substations/${subID}/details`;
                     } else if (substationId) {
                         detailsUrl = `${routePrefix}/substations/${formattedSubstationId}/feeders`;
                     } else {
-                        detailsUrl = `${routePrefix}/substations`;
+                        detailsUrl = `${routePrefix}/substations/${id}/details`;
                     }
                 } else if (isCircle()) {
                     if (substationId) {
@@ -256,7 +258,7 @@ const ShortDetailsWidget = ({
                     if (edc) {
                         return (
                             <Link
-                                to={`${routePrefix}/${formattedEdc}/${formattedName}/feeders`}
+                                to={`${routePrefix}/${formattedEdc}/${substationId}/feeders`}
                                 className={styles.nav_link}>
                                 {feederCount} Feeders
                             </Link>
@@ -273,7 +275,7 @@ const ShortDetailsWidget = ({
                 } else if (isCircle()) {
                     return (
                         <Link
-                            to={`${routePrefix}/${formattedEdc}/substations/${formattedName}/feeders`}
+                            to={`${routePrefix}/${formattedEdc}/substations/${substationId}/feeders`}
                             className={styles.nav_link}>
                             {feederCount} Feeders
                         </Link>
@@ -290,7 +292,7 @@ const ShortDetailsWidget = ({
                     if (edc) {
                         return (
                             <Link
-                                to={`${routePrefix}/${formattedRegion}/${formattedEdc}/${formattedName}/feeders`}
+                                to={`${routePrefix}/${formattedRegion}/${formattedEdc}/${substationId}/feeders`}
                                 className={styles.nav_link}>
                                 {feederCount} Feeders
                             </Link>
@@ -399,7 +401,6 @@ const ShortDetailsWidget = ({
                                     n={parseFloat(previousValue)}
                                     decimals={1}
                                 />{' '}
-                                MW
                             </div>
                             <div
                                 className={`${

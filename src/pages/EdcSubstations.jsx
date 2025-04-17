@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import ShortDetailsWidget from './ShortDetailsWidget';
@@ -50,9 +50,11 @@ ErrorBoundary.propTypes = {
 };
 
 const EdcSubstations = () => {
-    const { edcs, region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { edcs, edc, region: regionParam } = useParams();
+    const edcId = edcs || edc; 
+    const { user, isRegion,isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
+    const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const location = window.location.pathname;
@@ -61,14 +63,15 @@ const EdcSubstations = () => {
     const [viewMode, setViewMode] = useState('card');
     const [searchQuery, setSearchQuery] = useState('');
     const [timeRange, setTimeRange] = useState('Daily');
+    const regionUser = isRegion();
 
     useEffect(() => {
-        if (!edcs) return;
+        if (!edcId) return;
 
         const substationNames = async () => {
             try {
                 const response = await apiClient.get(
-                    `/substations/widgets/${edcs}/substations`
+                    `/substations/widgets/${edcId}/substations`
                 );
                 const data = response;
                 setWidgetsData((prev) => ({
@@ -95,14 +98,15 @@ const EdcSubstations = () => {
         };
 
         substationNames();
-    }, [edcs]);
+    }, [edcId]);
 
     useEffect(() => {
-        if (!edcs) return;
+        if (!edcId) return;
+        
 
         const fetchEdcWidgets = async () => {
             try {
-                const response = await apiClient.get(`/edcs/${edcs}/widgets`);
+                const response = await apiClient.get(`/edcs/${edcId}/widgets`);
                 const feederCount =
                     response?.data?.regionFeederNames?.length || 0;
                 setWidgetsData((prev) => ({
@@ -127,7 +131,7 @@ const EdcSubstations = () => {
         };
 
         fetchEdcWidgets();
-    }, [edcs]);
+    }, [edcId]);
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedSubstationData = localStorage.getItem('substationData');
@@ -237,7 +241,11 @@ const EdcSubstations = () => {
             });
         }
     }, [widgetsData.substationNames, socket]);
-
+    const handleFeederClick = () => {
+        if (regionUser && edcs) {
+            navigate(`/user/region/${edcs}/feeders`);
+        }
+    };
     const handlePageChange = (newPage, newPerPage = substationsPerPage) => {
         if (newPerPage !== substationsPerPage) {
             setCurrentPage(1);
@@ -263,14 +271,7 @@ const EdcSubstations = () => {
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
-                    <SectionHeader title="Substations">
-                        <div className={styles.action_cont}>
-                            <TimeRangeSelectDropdown
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                            />
-                        </div>
-                    </SectionHeader>
+                    <SectionHeader title="Substations"></SectionHeader>                    
 
                     <Breadcrumb />
 
@@ -289,6 +290,8 @@ const EdcSubstations = () => {
                         showDistricts={false}
                         showEdcs={false}
                         showSubstations={true}
+                        showFeeders={true}
+                        onFeederClick={regionUser ? handleFeederClick : null}
                     />
 
                     <SectionHeader
@@ -329,11 +332,11 @@ const EdcSubstations = () => {
                                             styles.individual_region_stats
                                         }>
                                         <ShortDetailsWidget
-                                            region={region}
+                                            region={isCircle() ? '' : region}
                                             //edc={edcs}
-                                            edc={parseInt({ edcs }, 10) || 0}
+                                            edc={edcId}
                                             name={substation.substation_names}
-                                            subID={substation.hierarchy_id}
+                                            substationId={substation.hierarchy_id}
                                             substationCount={
                                                 substation.substation_names
                                                     .length || 0
