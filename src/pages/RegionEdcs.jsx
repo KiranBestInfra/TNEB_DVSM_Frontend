@@ -8,7 +8,8 @@ import { apiClient } from '../api/client';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
-import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const RegionEdcs = () => {
     const { region: regionParam } = useParams();
@@ -66,9 +67,7 @@ const RegionEdcs = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: import.meta.env.VITE_NODE_ENV === 'production'
-                ? import.meta.env.VITE_SOCKET_PATH
-                : '',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
         newSocket.on('edcUpdate', (data) => {

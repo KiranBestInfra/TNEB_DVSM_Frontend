@@ -8,6 +8,9 @@ import { apiClient } from '../api/client';
 import { io } from 'socket.io-client';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
+
 const SubstationFeeders = () => {
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
@@ -67,9 +70,7 @@ const SubstationFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: import.meta.env.VITE_NODE_ENV === 'production'
-                ? import.meta.env.VITE_SOCKET_PATH
-                : '',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
         newSocket.on('feederUpdate', (data) => {

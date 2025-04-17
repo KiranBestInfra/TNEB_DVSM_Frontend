@@ -8,7 +8,8 @@ import SummarySection from '../components/SummarySection';
 import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
-import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const Regions = () => {
     const navigate = useNavigate();
@@ -64,10 +65,7 @@ const Regions = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path:
-                import.meta.env.VITE_NODE_ENV === 'production'
-                    ? import.meta.env.VITE_SOCKET_PATH
-                    : '',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
 
