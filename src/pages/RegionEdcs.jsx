@@ -14,14 +14,13 @@ const RegionEdcs = () => {
     const { region: regionParam } = useParams();
     const { user, isRegion } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
-    const regionName = isRegion() && user?.name ? user.name : region;
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
 
     const cacheTimeoutRef = useRef(null);
     const [selectedEdc, setSelectedEdc] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const [edcsPerPage, setEdcsPerPage] = useState(2);
+    const [edcsPerPage, setEdcsPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('regionEdcDemandData');
@@ -146,7 +145,7 @@ const RegionEdcs = () => {
                         }, {}) || {},
                     feederCount: data.feederCounts || {},
                     edcDemandData: widgetsData.edcDemandData || {},
-                    filteredEdcs: data.edcNames?.slice(0, edcsPerPage) || [],
+                    filteredEdcs: data.edcNames,
                 };
 
                 setWidgetsData(transformedData);
@@ -167,7 +166,17 @@ const RegionEdcs = () => {
         };
 
         fetchEdcs();
-    }, [region, edcsPerPage]);
+    }, [region]);
+
+    const regionName =
+        isRegion() && user?.name
+            ? user.name.split(' ')[0]
+            : region
+            ? region
+                  .split('-')
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ')
+            : 'Unknown';
 
     const handleEdcClick = (edc) => {
         setSelectedEdc(edc);
@@ -209,15 +218,10 @@ const RegionEdcs = () => {
         setCurrentPage(1);
     };
 
-    // const filteredEdcs = widgetsData.edcNames?.filter((edc) => {
-    //     const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
-    //     return name?.toLowerCase().includes(searchQuery.toLowerCase());
-    // }) || [];
-
-    // Calculate paginated data
-    const startIndex = (currentPage - 1) * edcsPerPage;
-    const endIndex = startIndex + edcsPerPage;
-    const paginatedEdcs = filteredEdcs.slice(startIndex, endIndex);
+    const filteredEdcs = widgetsData.edcNames?.filter((edc) => {
+        const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
+        return name?.toLowerCase().includes(searchQuery.toLowerCase());
+    }) || [];
 
     return (
         <div className={styles.main_content}>
@@ -235,8 +239,8 @@ const RegionEdcs = () => {
             />
 
             <SectionHeader
-                title={`EDCs: [ ${filteredEdcs.length} ]`}
-                dataLength={filteredEdcs.length}
+                title={`EDCs: [ ${widgetsData.filteredEdcs.length} ]`}
+                dataLength={widgetsData.filteredEdcs.length}
                 showSearch={true}
                 searchQuery={searchQuery}
                 onSearchChange={handleSearch}
@@ -245,10 +249,14 @@ const RegionEdcs = () => {
                 setViewMode={setViewMode}
                 showPagination={true}
                 currentPage={currentPage}
-                totalPages={Math.ceil(filteredEdcs.length / edcsPerPage)}
+                totalPages={Math.ceil(
+                    widgetsData.filteredEdcs.length / edcsPerPage
+                )}
                 itemsPerPage={edcsPerPage}
                 onPageChange={handlePageChange}
-                onItemsPerPageChange={(newPerPage) => handlePageChange(1, newPerPage)}
+                onItemsPerPageChange={(newPerPage) =>
+                    handlePageChange(1, newPerPage)
+                }
             />
 
             {loading ? (
@@ -258,62 +266,67 @@ const RegionEdcs = () => {
                     className={`${styles.region_stats_container} ${
                         viewMode === 'list' ? styles.list_view : ''
                     }`}>
-                    {paginatedEdcs.map((edc, index) => {
-                        const name = edc.hierarchy_name;
-                        const edcId = edc.hierarchy_id;
-                        const demandData =
-                            widgetsData.edcDemandData?.[name];
+                    {widgetsData.filteredEdcs
+                        .slice(
+                            (currentPage - 1) * edcsPerPage,
+                            currentPage * edcsPerPage
+                        )
+                        .map((edc, index) => {
+                            const name = edc.hierarchy_name;
+                            const edcId = edc.hierarchy_id;
+                            const demandData =
+                                widgetsData.edcDemandData?.[name];
 
-                        const currentValue = Number(
-                            parseFloat(
-                                demandData?.series?.[0]?.data?.slice(
-                                    -1
-                                )[0] || 0
-                            ).toFixed(1)
-                        );
-                        const previousValue = Number(
-                            parseFloat(
-                                demandData?.series?.[0]?.data?.slice(
-                                    -2,
-                                    -1
-                                )[0] || 0
-                            ).toFixed(1)
-                        );
+                            const currentValue = Number(
+                                parseFloat(
+                                    demandData?.series?.[0]?.data?.slice(
+                                        -1
+                                    )[0] || 0
+                                ).toFixed(1)
+                            );
+                            const previousValue = Number(
+                                parseFloat(
+                                    demandData?.series?.[0]?.data?.slice(
+                                        -2,
+                                        -1
+                                    )[0] || 0
+                                ).toFixed(1)
+                            );
 
-                        return (
-                            <div
-                                key={index}
-                                className={styles.individual_region_stats}>
-                                <ShortDetailsWidget
-                                    region={region}
-                                    edc={edcId}
-                                    name={name}
-                                    edcId={edcId}
-                                    substationCount={
-                                        widgetsData.substationCount[name] ||
-                                        0
-                                    }
-                                    feederCount={
-                                        widgetsData.feederCount[name] || 0
-                                    }
-                                    edcCount={widgetsData.totalEdcs}
-                                    graphData={
-                                        demandData ?? {
-                                            xAxis: [],
-                                            series: [],
+                            return (
+                                <div
+                                    key={index}
+                                    className={styles.individual_region_stats}>
+                                    <ShortDetailsWidget
+                                        region={region}
+                                        edc={edcId}
+                                        name={name}
+                                        edcId={edcId}
+                                        substationCount={
+                                            widgetsData.substationCount[name] ||
+                                            0
                                         }
-                                    }
-                                    currentValue={currentValue}
-                                    previousValue={previousValue}
-                                    pageType="edcs"
-                                    handleRegionClick={() =>
-                                        handleEdcClick(edc)
-                                    }
-                                    showInfoIcon={true}
-                                />
-                            </div>
-                        );
-                    })}
+                                        feederCount={
+                                            widgetsData.feederCount[name] || 0
+                                        }
+                                        edcCount={widgetsData.totalEdcs}
+                                        graphData={
+                                            demandData ?? {
+                                                xAxis: [],
+                                                series: [],
+                                            }
+                                        }
+                                        currentValue={currentValue}
+                                        previousValue={previousValue}
+                                        pageType="edcs"
+                                        handleRegionClick={() =>
+                                            handleEdcClick(edc)
+                                        }
+                                        showInfoIcon={true}
+                                    />
+                                </div>
+                            );
+                        })}
                 </div>
             )}
         </div>

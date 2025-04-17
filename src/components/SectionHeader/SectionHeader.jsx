@@ -15,21 +15,8 @@ const SectionHeader = ({
   onItemsPerPageChange,
   searchQuery,
   onSearchChange,
-  dataLength,
   children 
 }) => {
-  // Generate pagination options based on data length
-  const getPaginationOptions = () => {
-    if (!dataLength) return [2, 4, 6, 8];
-    
-    const options = [];
-    const maxItems = Math.min(8, Math.ceil(dataLength / 2) * 2); // Ensure even numbers and max 8
-    for (let i = 2; i <= maxItems; i += 2) {
-      options.push(i);
-    }
-    return options.length > 0 ? options : [2, 4, 6, 8];
-  };
-
   return (
     <div className={styles.section_header}>
       <div className={styles.section_header_left}>
@@ -83,7 +70,7 @@ const SectionHeader = ({
                 onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
                 className={styles.select_pagination}
               >
-                {getPaginationOptions().map((option) => (
+                {[6, 9, 12].map((option) => (
                   <option key={option} value={option}>
                     {option} Per Page
                   </option>
