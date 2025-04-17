@@ -21,17 +21,13 @@ const TicketDetails = () => {
             const fetchTicket = async () => {
                 try {
                     setLoading(true);
-                    console.log('Fetching ticket with ID:', id);
-                    const res = await apiClient.get(`/tickets/${id}`);
-                    
-                    if (!res) {
-                        throw new Error('No response from server');
-                    }
 
-                    console.log('Received ticket data:', res);
-                    
-                    // The response is the ticket data directly
+    
+                    const res = await apiClient.get(`/tickets/${id}`);
                     const data = res;
+    
+                    console.log('Received ticket data:', data);
+    
                     const formattedTicket = {
                         id: data.TicketId,
                         subject: data.Subject,
@@ -44,7 +40,7 @@ const TicketDetails = () => {
                         updatedAt: data.LastUpdated || new Date().toISOString(),
                         createdBy: data.ConsumerName || 'User',
                     };
-
+    
                     console.log('Formatted ticket:', formattedTicket);
                     setTicket(formattedTicket);
                 } catch (err) {
@@ -54,23 +50,27 @@ const TicketDetails = () => {
                     setLoading(false);
                 }
             };
+    
             fetchTicket();
         }
     }, [id, isNewTicket]);
+    
 
     const handleStatusChange = async (e) => {
         e.preventDefault();
 
         if (!statusChange || !ticket || statusChange === ticket.status) return;
-
+        console.log('Sending status update:', statusChange);
         try {
             const res = await apiClient.patch(`/tickets/${ticket.id}`, {
                 Status:
-                    statusChange.charAt(0).toUpperCase() +
-                    statusChange.slice(1),
+                    statusChange.charAt(0).toUpperCase() + statusChange.slice(1),
             });
-
-            const updatedStatus = res.data.Status.toLowerCase();
+            
+            
+            const updatedStatus =
+                res?.Status?.toLowerCase?.() || statusChange.toLowerCase(); // fallback if undefined
+            
 
             // Update UI state
             setTicket((prev) => ({

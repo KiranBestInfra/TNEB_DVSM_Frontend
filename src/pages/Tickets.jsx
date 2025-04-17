@@ -125,7 +125,6 @@ const Tickets = () => {
 
     const handleCreateTicket = () => navigate('/admin/tickets/new');
     const handleViewTicket = (ticketId) => {
-        console.log('Viewing ticket:', ticketId);
         navigate(`/admin/tickets/${ticketId}`);
     };
 

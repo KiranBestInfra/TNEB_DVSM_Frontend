@@ -6,41 +6,36 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const DynamicGraph = ({
-    title = 'Demand Graph',
-    height = '100%',
-    data,
-    className,
-    lineColor = '#3f68b2',
-    yAxisLabel = 'MW',
-    timeRange,
-    onTimeRangeChange,
-    showTimeRangeDropdown = true,
-    onDateChange,
-    selectedDate,
+  title = "Demand Graph",
+  height = "100%",
+  data,
+  className,
+  lineColor = "#3f68b2",
+  yAxisLabel = "MW",
+  timeRange,
+  onTimeRangeChange,
+  showTimeRangeDropdown = true,
+  onDateChange,
+  selectedDate,
 }) => {
-    const chartRef = useRef(null);
-    const chartInstance = useRef(null);
-    const [localSelectedDate, setLocalSelectedDate] = useState(
-        selectedDate || new Date()
-    );
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null);
+  const [localSelectedDate, setLocalSelectedDate] = useState(selectedDate || new Date());
 
-    useEffect(() => {
-        console.log(
-            'Selected date prop received in DynamicGraph:',
-            selectedDate
-        );
-        if (selectedDate) {
-            setLocalSelectedDate(selectedDate);
-        }
-    }, [selectedDate]);
+  useEffect(() => {
+   // console.log('Selected date prop received in DynamicGraph:', selectedDate);
+    if (selectedDate) {
+      setLocalSelectedDate(selectedDate);
+    }
+  }, [selectedDate]);
 
-    const handleDateChange = (date) => {
-        console.log('Date selected in DynamicGraph:', date);
-        setLocalSelectedDate(date);
-        if (onDateChange) {
-            onDateChange(date);
-        }
-    };
+  const handleDateChange = (date) => {
+    //console.log('Date selected in DynamicGraph:', date);
+    setLocalSelectedDate(date);
+    if (onDateChange) {
+      onDateChange(date);
+    }
+  };
 
     const handleDownload = () => {
         if (chartInstance.current) {
@@ -52,14 +47,13 @@ const DynamicGraph = ({
         }
     };
 
-    console.log();
-    useEffect(() => {
-        if (chartRef.current && data) {
-            chartInstance.current = echarts.init(chartRef.current, null, {
-                renderer: 'canvas',
-                width: 'auto',
-                height: '410',
-            });
+  useEffect(() => {
+    if (chartRef.current && data) {
+      chartInstance.current = echarts.init(chartRef.current, null, {
+        renderer: "canvas",
+        width: "auto",
+        height: "410",
+      });
 
             const handleResize = () => {
                 if (chartInstance.current) {
@@ -237,7 +231,6 @@ const DynamicGraph = ({
                     },
                 })),
             };
-
             chartInstance.current.setOption(option);
 
             return () => {
@@ -247,75 +240,77 @@ const DynamicGraph = ({
         }
     }, [data, title, lineColor, yAxisLabel]);
 
-    return (
-        <div
-            className={`${styles.graph_container} ${className || ''}`}
-            style={{ height }}>
-            <div className={styles.chart_controls}>
-                <h3 className={styles.chart_title}>{title}</h3>
-                <div className={styles.action_cont}>
-                    <div className={styles.date_picker}>
-                        <DatePicker
-                            selected={localSelectedDate}
-                            onChange={handleDateChange}
-                            className={styles.date_input}
-                            dateFormat="MMM dd, yyyy"
-                            placeholderText="Select Date"
-                            maxDate={new Date()}
-                        />
-                        <span className={styles.date_icon}>
-                            <img
-                                src="icons/date.svg"
-                                alt="Select Date"
-                                style={{ filter: 'var(--icons-color-filter)' }}
-                            />
-                        </span>
-                    </div>
-                    <span
-                        className={styles.icons_chart_controls}
-                        onClick={handleDownload}>
-                        <img
-                            src="icons/download-icon.svg"
-                            alt="Download chart"
-                            style={{ filter: 'var(--icons-color-filter)' }}
-                        />
-                    </span>
-                </div>
-            </div>
-            <div className={styles.echart_container}>
-                {data && data.series && data.series.length > 0 ? (
-                    <div ref={chartRef} className={styles.chart} />
-                ) : (
-                    <div className={styles.loading_container}>
-                        <div className={styles.loading_spinner}></div>
-                        <p>Loading data...</p>
-                    </div>
-                )}
-            </div>
+  return (
+    <div
+      className={`${styles.graph_container} ${className || ""}`}
+      style={{ height }}
+    >
+      <div className={styles.chart_controls}>
+        <h3 className={styles.chart_title}>{title}</h3>
+        <div className={styles.action_cont}>
+          <div className={styles.date_picker}>
+            <DatePicker
+              selected={localSelectedDate}
+              onChange={handleDateChange}
+              className={styles.date_input}
+              dateFormat="MMM dd, yyyy"
+              placeholderText="Select Date"
+              maxDate={new Date()}
+            />
+            <span className={styles.date_icon}>
+              <img 
+                src="icons/date.svg" 
+                alt="Select Date" 
+                style={{ filter: "var(--icons-color-filter)" }}
+              />
+            </span>
+          </div>
+          <span
+            className={styles.icons_chart_controls}
+            onClick={handleDownload}
+          >
+            <img
+              src="icons/download-icon.svg"
+              alt="Download chart"
+              style={{ filter: "var(--icons-color-filter)" }}
+            />
+          </span>
         </div>
-    );
+      </div>
+      <div className={styles.echart_container}>
+        {data && data.series && data.series.length > 0 ? (
+          <div ref={chartRef} className={styles.chart} />
+        ) : (
+          <div className={styles.loading_container}>
+            <div className={styles.loading_spinner}></div>
+            <p>Loading data...</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 DynamicGraph.propTypes = {
-    title: PropTypes.string,
-    height: PropTypes.string,
-    data: PropTypes.shape({
-        xAxis: PropTypes.arrayOf(PropTypes.string),
-        series: PropTypes.arrayOf(
-            PropTypes.shape({
-                name: PropTypes.string,
-                data: PropTypes.arrayOf(PropTypes.number),
-            })
-        ),
-    }),
-    className: PropTypes.string,
-    lineColor: PropTypes.string,
-    yAxisLabel: PropTypes.string,
-    timeRange: PropTypes.string,
-    onTimeRangeChange: PropTypes.func,
-    showTimeRangeDropdown: PropTypes.bool,
-    onDateChange: PropTypes.func,
-    selectedDate: PropTypes.instanceOf(Date),
+  title: PropTypes.string,
+  height: PropTypes.string,
+  data: PropTypes.shape({
+    xAxis: PropTypes.arrayOf(PropTypes.string),
+    series: PropTypes.arrayOf(
+      PropTypes.shape({
+        name: PropTypes.string,
+        data: PropTypes.arrayOf(PropTypes.number),
+      })
+    ),
+  }),
+  className: PropTypes.string,
+  lineColor: PropTypes.string,
+  yAxisLabel: PropTypes.string,
+  timeRange: PropTypes.string,
+  onTimeRangeChange: PropTypes.func,
+  showTimeRangeDropdown: PropTypes.bool,
+  onDateChange: PropTypes.func,
+  selectedDate: PropTypes.instanceOf(Date),
 };
 
 export default DynamicGraph;

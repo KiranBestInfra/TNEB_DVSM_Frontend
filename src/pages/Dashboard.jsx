@@ -9,6 +9,7 @@ import { io } from 'socket.io-client';
 
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
+const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
 const Dashboard = () => {
     const { region } = useParams();
@@ -53,7 +54,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: nodeEnv === 'development' ? '' : socketPath,
+            path: nodeEnv === 'development' ? devSocketPath : socketPath,
         });
         setSocket(newSocket);
         newSocket.on('demandUpdate', (data) => {

@@ -10,7 +10,6 @@ const RegionDetails = () => {
     const { region: regionParam } = useParams();
     const { user, isRegion } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
-    const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
