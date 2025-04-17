@@ -102,7 +102,9 @@ const RegionSubstations = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: import.meta.env.VITE_NODE_ENV === 'production'
+                ? import.meta.env.VITE_SOCKET_PATH
+                : '',
         });
         setSocket(newSocket);
 
@@ -243,7 +245,6 @@ const RegionSubstations = () => {
                 <div className={styles.main_content}>
                     <div className={styles.section_header}>
                         <h2 className="title">{regionName} - Substations</h2>
-                       
                     </div>
                     <Breadcrumb />
 

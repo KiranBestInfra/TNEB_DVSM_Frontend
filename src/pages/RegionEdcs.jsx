@@ -66,7 +66,9 @@ const RegionEdcs = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: import.meta.env.VITE_NODE_ENV === 'production'
+                ? import.meta.env.VITE_SOCKET_PATH
+                : '',
         });
         setSocket(newSocket);
         newSocket.on('edcUpdate', (data) => {
@@ -218,16 +220,15 @@ const RegionEdcs = () => {
         setCurrentPage(1);
     };
 
-    const filteredEdcs = widgetsData.edcNames?.filter((edc) => {
-        const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
-        return name?.toLowerCase().includes(searchQuery.toLowerCase());
-    }) || [];
+    const filteredEdcs =
+        widgetsData.edcNames?.filter((edc) => {
+            const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
+            return name?.toLowerCase().includes(searchQuery.toLowerCase());
+        }) || [];
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title={`${regionName} - EDCs`}>
-             
-            </SectionHeader>
+            <SectionHeader title={`${regionName} - EDCs`}></SectionHeader>
             <Breadcrumb />
 
             <SummarySection

@@ -18,9 +18,9 @@ const EdcSubstationFeeders = () => {
     const [feedersPerPage, setFeedersPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
     const [searchQuery, setSearchQuery] = useState('');
-    const { region: regionParam, edcs,edc, substationId } = useParams();
+    const { region: regionParam, edcs, edc, substationId } = useParams();
     const edcId = edcs || edc;
-    const { user, isRegion,isCircle } = useAuth();
+    const { user, isRegion, isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const location = window.location.pathname;
     const [widgetsData, setWidgetsData] = useState(() => {
@@ -71,7 +71,9 @@ const EdcSubstationFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: import.meta.env.VITE_NODE_ENV === 'production'
+                ? import.meta.env.VITE_SOCKET_PATH
+                : '',
         });
         setSocket(newSocket);
 
@@ -140,7 +142,6 @@ const EdcSubstationFeeders = () => {
 
         fetchData();
     }, [edcId, substationId]);
-    
 
     useEffect(() => {
         let ids = [];
@@ -180,9 +181,8 @@ const EdcSubstationFeeders = () => {
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title={`${substationName} Substation Feeders`}>
-                
-            </SectionHeader>
+            <SectionHeader
+                title={`${substationName} Substation Feeders`}></SectionHeader>
             <Breadcrumb />
             <SummarySection
                 widgetsData={{

@@ -61,7 +61,9 @@ const RegionFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: import.meta.env.VITE_NODE_ENV === 'production'
+                ? import.meta.env.VITE_SOCKET_PATH
+                : '',
         });
         setSocket(newSocket);
         newSocket.on('feederUpdate', (data) => {
@@ -163,9 +165,7 @@ const RegionFeeders = () => {
                     passive: true,
                 })
             }>
-            <SectionHeader title={`${regionName} - Feeders`}>
-           
-            </SectionHeader>
+            <SectionHeader title={`${regionName} - Feeders`}></SectionHeader>
             <Breadcrumb />
 
             <SummarySection

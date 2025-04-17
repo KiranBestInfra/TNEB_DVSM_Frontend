@@ -12,9 +12,9 @@ import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeR
 
 const EdcFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
-    const { region: regionParam, edcs,edc } = useParams();
+    const { region: regionParam, edcs, edc } = useParams();
     const edcId = edcs || edc;
-    const { user, isRegion,isCircle } = useAuth();
+    const { user, isRegion, isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const location = window.location.pathname;
     const [socket, setSocket] = useState(null);
@@ -68,7 +68,9 @@ const EdcFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: import.meta.env.VITE_NODE_ENV === 'production'
+                ? import.meta.env.VITE_SOCKET_PATH
+                : '',
         });
         setSocket(newSocket);
 
@@ -175,7 +177,7 @@ const EdcFeeders = () => {
 
         fetchData();
     }, [edcId]);
-    console.log('edcId',edcId);
+    console.log('edcId', edcId);
 
     const handlePageChange = (newPage, newPerPage = feedersPerPage) => {
         if (newPerPage !== feedersPerPage) {
@@ -198,9 +200,7 @@ const EdcFeeders = () => {
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title="Feeders">
-                
-            </SectionHeader>
+            <SectionHeader title="Feeders"></SectionHeader>
             <Breadcrumb />
 
             <SummarySection

@@ -67,7 +67,9 @@ const SubstationFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: import.meta.env.VITE_NODE_ENV === 'production'
+                ? import.meta.env.VITE_SOCKET_PATH
+                : '',
         });
         setSocket(newSocket);
         newSocket.on('feederUpdate', (data) => {
@@ -235,9 +237,7 @@ const SubstationFeeders = () => {
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title="Feeders for Substation">
-               
-            </SectionHeader>
+            <SectionHeader title="Feeders for Substation"></SectionHeader>
 
             <Breadcrumb />
 

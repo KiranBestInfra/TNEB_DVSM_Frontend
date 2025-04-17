@@ -51,8 +51,8 @@ ErrorBoundary.propTypes = {
 
 const EdcSubstations = () => {
     const { edcs, edc, region: regionParam } = useParams();
-    const edcId = edcs || edc; 
-    const { user, isRegion,isCircle } = useAuth();
+    const edcId = edcs || edc;
+    const { user, isRegion, isCircle } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
@@ -102,7 +102,6 @@ const EdcSubstations = () => {
 
     useEffect(() => {
         if (!edcId) return;
-        
 
         const fetchEdcWidgets = async () => {
             try {
@@ -181,7 +180,9 @@ const EdcSubstations = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: import.meta.env.VITE_NODE_ENV === 'production'
+                ? import.meta.env.VITE_SOCKET_PATH
+                : '',
         });
         setSocket(newSocket);
 
@@ -271,7 +272,7 @@ const EdcSubstations = () => {
         return (
             <ErrorBoundary>
                 <div className={styles.main_content}>
-                    <SectionHeader title="Substations"></SectionHeader>                    
+                    <SectionHeader title="Substations"></SectionHeader>
 
                     <Breadcrumb />
 
@@ -336,7 +337,9 @@ const EdcSubstations = () => {
                                             //edc={edcs}
                                             edc={edcId}
                                             name={substation.substation_names}
-                                            substationId={substation.hierarchy_id}
+                                            substationId={
+                                                substation.hierarchy_id
+                                            }
                                             substationCount={
                                                 substation.substation_names
                                                     .length || 0

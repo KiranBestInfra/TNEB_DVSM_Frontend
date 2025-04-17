@@ -64,7 +64,10 @@ const Regions = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path:
+                import.meta.env.VITE_NODE_ENV === 'production'
+                    ? import.meta.env.VITE_SOCKET_PATH
+                    : '',
         });
         setSocket(newSocket);
 
@@ -149,7 +152,6 @@ const Regions = () => {
         );
     };
 
-    // Always use admin routes regardless of actual path
     const isRegionUser = false;
     const currentRegionName = '';
 
@@ -185,9 +187,7 @@ const Regions = () => {
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title="Regions">
-               
-            </SectionHeader>
+            <SectionHeader title="Regions"></SectionHeader>
 
             <Breadcrumb />
 
