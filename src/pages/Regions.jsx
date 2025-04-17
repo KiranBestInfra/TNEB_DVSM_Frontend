@@ -149,7 +149,6 @@ const Regions = () => {
         );
     };
 
-    // Always use admin routes regardless of actual path
     const isRegionUser = false;
     const currentRegionName = '';
 
@@ -185,9 +184,7 @@ const Regions = () => {
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title="Regions">
-               
-            </SectionHeader>
+            <SectionHeader title="Regions"></SectionHeader>
 
             <Breadcrumb />
 

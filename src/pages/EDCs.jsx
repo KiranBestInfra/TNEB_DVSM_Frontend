@@ -69,7 +69,9 @@ const EDCs = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: import.meta.env.VITE_NODE_ENV === 'production'
+                ? import.meta.env.VITE_SOCKET_PATH
+                : '',
         });
         setSocket(newSocket);
         newSocket.on('edcUpdate', (data) => {
@@ -345,7 +347,6 @@ const EDCs = () => {
         <div className={styles.main_content}>
             <div className={styles.section_header}>
                 <h2 className="title">EDCs</h2>
-               
             </div>
             <Breadcrumb items={getBreadcrumbItems()} />
             <div className={styles.summary_section}>
