@@ -259,7 +259,7 @@ const SummarySection = ({
                     </div>
                 </div>
             )}
-            {showMaxDemand && (
+            {/* {showMaxDemand && (
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
@@ -268,7 +268,7 @@ const SummarySection = ({
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">Maximum Demand</p>
+                            <p className="title">Demand Usage</p>
                             <div className={styles.summary_value}>
                                 <RollingNumber n={widgetsData.maxDemand} />
                                 <span style={{ fontSize: '1rem', marginLeft: '0.5rem' }}>
@@ -278,7 +278,7 @@ const SummarySection = ({
                         </div>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };
