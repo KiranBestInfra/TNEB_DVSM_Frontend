@@ -5,7 +5,10 @@ import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
 import SummarySection from '../components/SummarySection/SummarySection';
 import { apiClient } from '../api/client';
-import useWebSocket from '../hooks/useWebSocket';
+import { io } from 'socket.io-client';
+
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const Dashboard = () => {
     const { region } = useParams();
@@ -18,6 +21,7 @@ const Dashboard = () => {
         xAxis: [],
         series: [],
     });
+    const [socket, setSocket] = useState(null);
     const [widgetsData, setWidgetsData] = useState({
         totalRegions: 0,
         totalEdcs: 0,
@@ -48,35 +52,39 @@ const Dashboard = () => {
     }, []);
 
     useEffect(() => {
-        const fetchGraphData = async () => {
-            try {
-                const response = await apiClient.get('/regions/graph/demand');
-                const data = response.data;
-                setGraphData({
-                    xAxis: data.xAxis || [],
-                    series: data.series || [],
-                });
-            } catch (error) {
-                console.error('Error fetching graph data:', error);
-                try {
-                    await apiClient.post('/log/error', {
-                        message: error.message,
-                        stack: error.stack || 'No stack trace',
-                        time: new Date().toISOString(),
-                    });
-                } catch (logError) {
-                    console.error('Error logging to backend:', logError);
-                }
+        const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
+            path: nodeEnv === 'development' ? '' : socketPath,
+        });
+        setSocket(newSocket);
+
+        newSocket.on('demandUpdate', (data) => {
+            console.log(data);
+            setGraphData({
+                xAxis: data.xAxis || [],
+                series: data.series || [],
+            });
+        });
+
+        newSocket.on('error', (error) => {
+            console.error('WebSocket error:', error.message);
+        });
+
+        newSocket.on('connect', () => {
+            newSocket.emit('subscribeDemand', { regionId: 'main' });
+        });
+
+        return () => {
+            if (newSocket.demandIntervalId) {
+                clearInterval(newSocket.demandIntervalId);
             }
+            newSocket.close();
         };
-        fetchGraphData();
-    }, [timeRange]);
+    }, [region]);
 
     return (
         <div className={styles.main_content}>
             <div className={styles.section_header}>
                 <h2 className="title">Dashboard</h2>
-                
             </div>
 
             <Breadcrumb
