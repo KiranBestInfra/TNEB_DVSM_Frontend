@@ -8,7 +8,6 @@ import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
 const RegionDetails = () => {
     const { region: regionParam } = useParams();
-    console.log("regionParam",regionParam);
     const { user, isRegion } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
     const [timeRange, setTimeRange] = useState('Daily');
@@ -183,13 +182,12 @@ const RegionDetails = () => {
                     if (isRegion()) {
                         navigate('/user/region/feeders');
                     }
-                }}
-            />
-
-            <div className={styles.chart_container}>
+                 } }
+                 />
+                          <div className={styles.chart_container}>
                 <DynamicGraph data={graphData} timeRange={timeRange} />
             </div>
-        </div>
+            </div>
     );
 };
 
