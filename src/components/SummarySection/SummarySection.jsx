@@ -12,6 +12,8 @@ const SummarySection = ({
         commMeters: 0,
         nonCommMeters: 0,
         totalDistricts: 0,
+        maxDemand: 0,
+        maxDemandUnit: 'MW',
     },
     isUserRoute = false,
     isBiUserRoute = false,
@@ -23,6 +25,7 @@ const SummarySection = ({
     showEdcs = true,
     showSubstations = true,
     showFeeders = true,
+    showMaxDemand = true,
 }) => {
     return (
         <div className={styles.summary_section}>
@@ -251,6 +254,26 @@ const SummarySection = ({
                                     })()}
                                     %
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {showMaxDemand && (
+                <div className={styles.total_substations_container}>
+                    <div className={styles.total_main_info}>
+                        <img
+                            src="icons/electric-power.svg"
+                            alt="Maximum Demand"
+                            className={styles.TNEB_icons}
+                        />
+                        <div className={styles.total_title_value}>
+                            <p className="title">Maximum Demand</p>
+                            <div className={styles.summary_value}>
+                                <RollingNumber n={widgetsData.maxDemand} />
+                                <span style={{ fontSize: '1rem', marginLeft: '0.5rem' }}>
+                                    {widgetsData.maxDemandUnit}
+                                </span>
                             </div>
                         </div>
                     </div>
