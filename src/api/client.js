@@ -28,7 +28,7 @@ class ApiClient {
         this.defaultCacheOptions = {
             enabled: true,
             ttl: 5 * 60 * 1000,
-            useLocalStorage: true,
+            useLocalStorage: false,
             storageKey: 'api_cache',
         };
     }
