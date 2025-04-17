@@ -8,6 +8,7 @@ import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
 const RegionDetails = () => {
     const { region: regionParam } = useParams();
+    console.log("regionParam",regionParam);
     const { user, isRegion } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
     const [timeRange, setTimeRange] = useState('Daily');
@@ -165,6 +166,7 @@ const RegionDetails = () => {
                 showSubstations={true}
                 showDistricts={true}
                 showMeters={true}
+                showFeeders={true}
                 onEdcClick={() => {
                     if (isRegion()) {
                         navigate('/user/region/edcs');
@@ -173,6 +175,11 @@ const RegionDetails = () => {
                 onSubstationClick={() => {
                     if (isRegion()) {
                         navigate('/user/region/substations');
+                    }
+                }}
+                onFeederClick={() => {
+                    if (isRegion()) {
+                        navigate('/user/region/feeders');
                     }
                 }}
             />

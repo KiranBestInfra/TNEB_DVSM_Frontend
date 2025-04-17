@@ -18,7 +18,6 @@ const SummarySection = ({
     onEdcClick = null,
     onSubstationClick = null,
     onFeederClick = null,
-    onDistrictClick = null,
     showRegions = true,
     showDistricts = false,
     showEdcs = true,
@@ -79,9 +78,9 @@ const SummarySection = ({
                                         EDCs{' '}
                                         {onEdcClick && (
                                             <span
-                                                style={{
-                                                    fontSize: '0.8rem',
-                                                }}></span>
+                                                style={{ fontSize: '0.8rem' }}>
+                                                
+                                            </span>
                                         )}
                                     </Link>
                                 ) : (
@@ -104,25 +103,7 @@ const SummarySection = ({
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
-                            <p className="title">
-                                {isUserRoute ? (
-                                    <Link
-                                        style={{
-                                            color: 'var(--brand-blue)',
-                                            textDecoration: 'none',
-                                        }}>
-                                        Districts{' '}
-                                        {onDistrictClick && (
-                                            <span
-                                                style={{
-                                                    fontSize: '0.8rem',
-                                                }}></span>
-                                        )}
-                                    </Link>
-                                ) : (
-                                    'Districts'
-                                )}
-                            </p>
+                            <p className="title">Districts</p>
                             <div className={styles.summary_value}>
                                 <RollingNumber
                                     n={widgetsData.totalDistricts || 0}
@@ -132,7 +113,6 @@ const SummarySection = ({
                     </div>
                 </div>
             )}
-
             {showSubstations && (
                 <div
                     className={styles.total_substations_container}
@@ -155,9 +135,9 @@ const SummarySection = ({
                                         Substations{' '}
                                         {isUserRoute && onSubstationClick && (
                                             <span
-                                                style={{
-                                                    fontSize: '0.8rem',
-                                                }}></span>
+                                                style={{ fontSize: '0.8rem' }}>
+                                              
+                                            </span>
                                         )}
                                     </span>
                                 ) : (
@@ -174,12 +154,12 @@ const SummarySection = ({
                 </div>
             )}
             {showFeeders && (
-                <div className={styles.total_meters_container}>
-                    <div
-                        className={styles.total_meters_main_info}
-                        onClick={onFeederClick}
-                        style={onFeederClick ? { cursor: 'pointer' } : {}}
-                        title={onFeederClick ? 'Click to view Feeders' : ''}>
+                <div 
+                    className={styles.total_meters_container}
+                    onClick={onFeederClick}
+                    style={onFeederClick ? { cursor: 'pointer' } : {}}
+                    title={onFeederClick ? 'Click to view Feeders' : ''}>
+                    <div className={styles.total_meters_main_info}>
                         <img
                             src="icons/electric-meter.svg"
                             alt="Total Meters"
@@ -188,20 +168,13 @@ const SummarySection = ({
                         <div className={styles.total_meters}>
                             <p className="title">
                                 {isUserRoute ? (
-                                    <Link
-                                        to="/user/region/feeders"
-                                        style={{
-                                            color: 'var(--brand-blue)',
-                                            textDecoration: 'none',
-                                        }}>
+                                    <span style={{ color: 'var(--brand-blue)' }}>
                                         Feeders{' '}
-                                        {onFeederClick && (
-                                            <span
-                                                style={{
-                                                    fontSize: '0.8rem',
-                                                }}></span>
+                                        {isUserRoute && onFeederClick && (
+                                            <span style={{ fontSize: '0.8rem' }}>
+                                            </span>
                                         )}
-                                    </Link>
+                                    </span>
                                 ) : (
                                     'Feeders'
                                 )}
@@ -211,7 +184,6 @@ const SummarySection = ({
                             </div>
                         </div>
                     </div>
-
                     <div className={styles.metrics_communication_info}>
                         <div className="titles">Communication Status</div>
                         <div className={styles.overall_communication_status}>

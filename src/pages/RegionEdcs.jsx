@@ -14,6 +14,7 @@ const RegionEdcs = () => {
     const { region: regionParam } = useParams();
     const { user, isRegion } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
+    const regionName = isRegion() && user?.name ? user.name : region;
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
     const [timeRange, setTimeRange] = useState('Daily');
@@ -168,16 +169,6 @@ const RegionEdcs = () => {
         fetchEdcs();
     }, [region]);
 
-    const regionName =
-        isRegion() && user?.name
-            ? user.name.split(' ')[0]
-            : region
-            ? region
-                  .split('-')
-                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                  .join(' ')
-            : 'Unknown';
-
     const handleEdcClick = (edc) => {
         setSelectedEdc(edc);
     };
@@ -218,10 +209,10 @@ const RegionEdcs = () => {
         setCurrentPage(1);
     };
 
-    const filteredEdcs = widgetsData.edcNames?.filter((edc) => {
-        const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
-        return name?.toLowerCase().includes(searchQuery.toLowerCase());
-    }) || [];
+    // const filteredEdcs = widgetsData.edcNames?.filter((edc) => {
+    //     const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
+    //     return name?.toLowerCase().includes(searchQuery.toLowerCase());
+    // }) || [];
 
     return (
         <div className={styles.main_content}>
