@@ -23,7 +23,6 @@ const DynamicGraph = ({
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
-    console.log("Selected Date:", date);
     if (onDateChange) {
       onDateChange(date);
     }
@@ -39,7 +38,6 @@ const DynamicGraph = ({
     }
   };
 
-  console.log()
   useEffect(() => {
     if (chartRef.current && data) {
       chartInstance.current = echarts.init(chartRef.current, null, {
