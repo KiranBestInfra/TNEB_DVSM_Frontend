@@ -49,6 +49,7 @@ const Dashboard = () => {
             }));
         };
         fetchData();
+        console.log()
     }, []);
 
     useEffect(() => {
@@ -112,6 +113,7 @@ const Dashboard = () => {
                 isUserRoute={isUserRoute}
                 isBiUserRoute={isBiUserRoute}
                 showDistricts={true}
+                showMaxDemand={false}
             />
 
             <div className={styles.detail_chart}>

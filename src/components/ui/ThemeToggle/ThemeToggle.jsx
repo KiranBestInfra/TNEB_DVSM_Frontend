@@ -1,22 +1,25 @@
-
 import { useState, useEffect } from 'react';
 import styles from './ThemeToggle.module.css';
 
 const ThemeToggle = () => {
-  const [isDarkMode, setIsDarkMode] = useState(
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      return savedTheme === 'dark';
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
-  // Initial theme setup
+
   useEffect(() => {
     const body = document.body;
     body.classList.add(isDarkMode ? 'dark-theme' : 'light-theme');
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
     return () => {
       body.classList.remove('dark-theme', 'light-theme');
     };
   }, []);
 
-  // Theme toggle effect
   useEffect(() => {
     const body = document.body;
     if (isDarkMode) {
@@ -26,6 +29,7 @@ const ThemeToggle = () => {
       body.classList.remove('dark-theme');
       body.classList.add('light-theme');
     }
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
   const toggleTheme = () => {

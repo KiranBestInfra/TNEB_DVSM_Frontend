@@ -6,9 +6,10 @@ import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
+
 const RegionDetails = () => {
     const { region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { user, isRegion, isCircle, isAdmin } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
