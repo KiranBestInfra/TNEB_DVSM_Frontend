@@ -55,7 +55,7 @@ const RegionDetails = () => {
         };
     });
 
-    const entityId = user?.id;
+    const entityId = regionName;
     const entityName = regionName?.replace('_REG', '').toLowerCase();
     const capitalizedEntityName = entityName.charAt(0).toUpperCase() + entityName.slice(1);
 
