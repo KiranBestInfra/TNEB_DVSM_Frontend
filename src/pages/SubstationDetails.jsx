@@ -10,7 +10,6 @@ import SectionHeader from '../components/SectionHeader/SectionHeader';
 import { useAuth } from '../components/AuthProvider';
 const SubstationDetails = () => {
     const { region, substationId } = useParams();
-    console.log('params', useParams());
     const navigate = useNavigate();
     const { isRegion } = useAuth();
     const regionUser = isRegion();
@@ -58,7 +57,6 @@ const SubstationDetails = () => {
             edcDemandData: {},
         };
     });
-    console.log('widgetsData', widgetsData);
     const entityId = substationId;
 
     useEffect(() => {
@@ -69,7 +67,6 @@ const SubstationDetails = () => {
                 );
                 const data = response.data;
                 setGraphData(data);
-                console.log(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
                 try {

@@ -9,6 +9,7 @@ import { apiClient } from '../api/client';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
+const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
 const Regions = () => {
     const navigate = useNavigate();
@@ -64,7 +65,7 @@ const Regions = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: nodeEnv === 'development' ? '' : socketPath,
+            path: nodeEnv === 'development' ? devSocketPath : socketPath,
         });
         setSocket(newSocket);
 
@@ -182,6 +183,16 @@ const Regions = () => {
         setCurrentPage(1); // Reset to first page when searching
     };
 
+    // Add this new function to calculate pagination options
+    const getPaginationOptions = (totalItems) => {
+        const options = [6];  // Start with default option
+        if (totalItems > 10) options.push(10);
+        if (totalItems > 20) options.push(20);
+        if (totalItems > 50) options.push(50);
+        if (totalItems > 100) options.push(100);
+        return options.filter(opt => opt <= totalItems);
+    };
+
     return (
         <div className={styles.main_content}>
             <SectionHeader title="Regions"></SectionHeader>
@@ -214,6 +225,7 @@ const Regions = () => {
                 onItemsPerPageChange={(newPerPage) =>
                     handlePageChange(1, newPerPage)
                 }
+                paginationOptions={getPaginationOptions(filteredRegions.length)}
             />
 
             <div

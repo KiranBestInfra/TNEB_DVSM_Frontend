@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { useAuth } from '../components/AuthProvider';
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
+const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -104,7 +105,7 @@ const RegionSubstations = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: nodeEnv === 'development' ? '' : socketPath,
+            path: nodeEnv === 'development' ? devSocketPath : socketPath,
         });
         setSocket(newSocket);
 
@@ -198,10 +199,7 @@ const RegionSubstations = () => {
 
         substationNames();
     }, [region]);
-    console.log(
-        'Substation IDs:',
-        widgetsData.substationIds
-    ); /*Substaion id's*/
+   
     const handleTimeframeChange = (e) => {
         setTimeframe(e.target.value);
     };

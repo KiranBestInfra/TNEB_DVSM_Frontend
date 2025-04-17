@@ -10,6 +10,7 @@ import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
+const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
 const SubstationFeeders = () => {
     const [socket, setSocket] = useState(null);
@@ -70,7 +71,7 @@ const SubstationFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: nodeEnv === 'development' ? '' : socketPath,
+            path: nodeEnv === 'development' ? devSocketPath : socketPath,
         });
         setSocket(newSocket);
         newSocket.on('feederUpdate', (data) => {
