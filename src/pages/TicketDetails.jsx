@@ -14,14 +14,24 @@ const TicketDetails = () => {
     const [activities, setActivities] = useState([]);
     const [replyText, setReplyText] = useState('');
     const [statusChange, setStatusChange] = useState('');
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if (!isNewTicket) {
             const fetchTicket = async () => {
                 try {
                     setLoading(true);
+                    console.log('Fetching ticket with ID:', id);
                     const res = await apiClient.get(`/tickets/${id}`);
-                    const data = res.data;
+                    
+                    if (!res) {
+                        throw new Error('No response from server');
+                    }
+
+                    console.log('Received ticket data:', res);
+                    
+                    // The response is the ticket data directly
+                    const data = res;
                     const formattedTicket = {
                         id: data.TicketId,
                         subject: data.Subject,
@@ -35,9 +45,11 @@ const TicketDetails = () => {
                         createdBy: data.ConsumerName || 'User',
                     };
 
+                    console.log('Formatted ticket:', formattedTicket);
                     setTicket(formattedTicket);
                 } catch (err) {
                     console.error('Failed to fetch ticket:', err);
+                    setError(err.message || 'Failed to fetch ticket details');
                 } finally {
                     setLoading(false);
                 }
@@ -250,31 +262,31 @@ const TicketDetails = () => {
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>Priority:</span>
-                            <span>{ticket.priority}</span>
+                            <span className={styles.ticket_details}>{ticket.priority}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>Category:</span>
-                            <span>{ticket.category}</span>
+                            <span className={styles.ticket_details}>{ticket.category}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>Region:</span>
-                            <span>{ticket.region}</span>
+                            <span className={styles.ticket_details}>{ticket.region}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>Created:</span>
-                            <span>{formatDate(ticket.createdAt)}</span>
+                            <span className={styles.ticket_details}>{formatDate(ticket.createdAt)}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>
                                 Last Updated:
                             </span>
-                            <span>{formatDate(ticket.updatedAt)}</span>
+                            <span className={styles.ticket_details}>{formatDate(ticket.updatedAt)}</span>
                         </div>
                         <div className={styles.info_row}>
                             <span className={styles.info_label}>
                                 Created By:
                             </span>
-                            <span>{ticket.createdBy}</span>
+                            <span className={styles.ticket_details}>{ticket.createdBy}</span>
                         </div>
                     </div>
                 </div>

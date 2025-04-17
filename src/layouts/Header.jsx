@@ -24,6 +24,8 @@ const Header = () => {
     const debouncedSearchTerm = useDebounce(searchQuery, 500);
 
     const { user } = useAuth();
+
+
     const profileData = {
         profilePicture: user?.profilePicture || null,
         firstName: user?.name || 'User',
@@ -149,6 +151,7 @@ const Header = () => {
 
     const renderProfilePicture = () => {
         const initials = profileData.firstName.substring(0, 2).toUpperCase();
+
 
         return profileData.profilePicture ? (
             <img
@@ -320,23 +323,23 @@ const Header = () => {
                         <img src="icons/support-tickets.svg" alt="Tickets" />
                     </span>
 
-                    <span
+                    {/* <span
                         className={styles.white_icons}
                         onClick={handleNotificationsClick}>
                         <img src="icons/bell.svg" alt="notifications" />
-                    </span>
+                    </span> */}
 
-                    <span
+                    {/* <span
                         className={styles.white_icons}
                         onClick={() => navigate(`${basePath}/error-logs`)}>
                         <p
                             style={{
-                                filter: 'invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) contrast(85%)',
+                                filter: 'var(--icons-color-filter)',
                                 fontSize: '18px',
                             }}>
                             D
                         </p>
-                    </span>
+                    </span> */}
 
                     <span
                         className={`${styles.white_icons} ${styles.mobile_exit_icon}`}

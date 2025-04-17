@@ -7,6 +7,7 @@ import { apiClient } from '../api/client';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import { Link } from 'react-router-dom';
 import SummarySection from '../components/SummarySection';
+import SectionHeader from '../components/SectionHeader/SectionHeader';
 import { useAuth } from '../components/AuthProvider';
 
 
@@ -72,7 +73,8 @@ const EdcDetails = () => {
     //const entityId =  user?.id;
    // console.log('entityIdYYYYY', entityId);
     const entityId = isCircle() ? user?.id : (regionUser ? edcId : edcId);
-    const entityName = edcName?.replace('_EDC', '').toLowerCase();
+    const entityName = regionUser ? entityId : edcName?.replace('_EDC', '').toLowerCase();
+    console.log('entityName', entityName);
     const navigate = useNavigate();
 
   
@@ -154,33 +156,7 @@ const EdcDetails = () => {
 
     return (
         <div className={styles.main_content}>
-            <div className={styles.section_header}>
-                <h2 className="title">{entityName} EDC</h2>
-                <div className={styles.action_container}>
-                    <div className={styles.action_cont}>
-                        <div className={styles.time_range_select_dropdown}>
-                            <select
-                                value={timeRange}
-                                onChange={(e) => setTimeRange(e.target.value)}
-                                className={styles.time_range_select}>
-                                <option value="Daily">Daily</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="PreviousMonth">
-                                    Previous Month
-                                </option>
-                                <option value="Year">Year</option>
-                            </select>
-                            <img
-                                src="icons/arrow-down.svg"
-                                alt="Select Time"
-                                className={
-                                    styles.time_range_select_dropdown_icon
-                                }
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <SectionHeader title={`${entityName} EDC`} />
             <Breadcrumb />
                       <SummarySection
         widgetsData={{
@@ -202,12 +178,20 @@ const EdcDetails = () => {
         onSubstationClick={() => {
             if (isCircle()) {
                 navigate(`/user/edc/${edcId}/substations`);
-            } 
+            } else if (isRegion()) {
+                navigate(`/user/region/${edcId}/substations`);
+            } else {
+                navigate(`/admin/${region}/edcs/${edcId}/substations`);
+            }
         }}
         onFeederClick={() => {
             if (isCircle()) {
                 navigate(`/user/edc/${edcId}/feeders`);
-            } 
+            } else if (isRegion()) {
+                navigate(`/user/region/${edcId}/feeders`);
+            } else {
+                navigate(`/admin/${region}/edcs/${edcId}/feeders`);
+            }
         }}
       />           
         

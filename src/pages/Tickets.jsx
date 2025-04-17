@@ -49,7 +49,7 @@ const Tickets = () => {
             setLoading(true);
             setError(null);
             try {
-                const res = await apiClient.get('/tickets');
+                const res = await apiClient.get('/tickets');    
 
                 if (Array.isArray(res)) {
                     setAllTickets(res);
@@ -124,8 +124,10 @@ const Tickets = () => {
     ]);
 
     const handleCreateTicket = () => navigate('/admin/tickets/new');
-    const handleViewTicket = (ticketId) =>
+    const handleViewTicket = (ticketId) => {
+        console.log('Viewing ticket:', ticketId);
         navigate(`/admin/tickets/${ticketId}`);
+    };
 
     const handleDeleteTicket = async (ticket) => {
         try {

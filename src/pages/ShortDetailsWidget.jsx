@@ -1,4 +1,3 @@
-
 import styles from '../styles/ShortDetailsWidget.module.css';
 import LineChartTNEB from '../components/graphs/LineChartTNEB/LineChartTNEB';
 import { Link, useNavigate } from 'react-router-dom';
@@ -42,24 +41,23 @@ const ShortDetailsWidget = ({
         const formattedRegion =
             typeof region === 'number'
                 ? region
-                : region.toLowerCase().replace(/\s+/g, '-');
+                : region?.toLowerCase().replace(/\s+/g, '-') || '';
         const formattedName = id
             ? id
             : name
             ? name.toLowerCase().replace(/\s+/g, '-')
             : '';
-            const formattedEdc = edcId
+        const formattedEdc = edcId
             ? edcId
             : typeof edc === 'number'
             ? edc
-            : edc.toLowerCase().replace(/\s+/g, '-')
+            : edc?.toLowerCase().replace(/\s+/g, '-') || '';
             
         const formattedSubstationId = substationId
-        ? substationId
-        : typeof substationId === 'number'
-        ? substationId
-        : substationId.toLowerCase().replace(/\s+/g, '-')
-
+            ? substationId
+            : typeof substationId === 'number'
+            ? substationId
+            : substationId?.toLowerCase().replace(/\s+/g, '-') || '';
 
         // Determine route prefix based on user role
         let routePrefix;
@@ -294,7 +292,7 @@ const ShortDetailsWidget = ({
                     if (edc) {
                         return (
                             <Link
-                                to={`${routePrefix}/${formattedRegion}/${formattedEdc}/${formattedName}/feeders`}
+                                to={`${routePrefix}/${formattedRegion}/${formattedEdc}/${substationId}/feeders`}
                                 className={styles.nav_link}>
                                 {feederCount} Feeders
                             </Link>
@@ -403,7 +401,6 @@ const ShortDetailsWidget = ({
                                     n={parseFloat(previousValue)}
                                     decimals={1}
                                 />{' '}
-                                MW
                             </div>
                             <div
                                 className={`${
