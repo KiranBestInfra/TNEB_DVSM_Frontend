@@ -200,14 +200,9 @@ const App = () => {
                             }>
                             <Route
                                 index
-                                element={
-                                    <Navigate to="dashboard" replace />
-                                }
+                                element={<Navigate to="dashboard" replace />}
                             />
-                            <Route
-                                path="dashboard"
-                                element={<EdcDetails />}
-                            />
+                            <Route path="dashboard" element={<EdcDetails />} />
                             <Route
                                 path=":edc/substations"
                                 element={<EdcSubstations />}

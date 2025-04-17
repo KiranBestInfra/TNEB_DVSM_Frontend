@@ -9,6 +9,8 @@ import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 import PropTypes from 'prop-types';
 import { useAuth } from '../components/AuthProvider';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const ErrorBoundary = ({ children }) => {
     const [hasError, setHasError] = useState(false);
@@ -102,7 +104,7 @@ const RegionSubstations = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
 
