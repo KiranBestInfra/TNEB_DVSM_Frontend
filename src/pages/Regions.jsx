@@ -9,6 +9,8 @@ import ShortDetailsWidget from './ShortDetailsWidget';
 import { apiClient } from '../api/client';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
 import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeRangeSelectDropdown';
+const nodeEnv = import.meta.env.VITE_NODE_ENV;
+const socketPath = import.meta.env.VITE_SOCKET_PATH;
 
 const Regions = () => {
     const navigate = useNavigate();
@@ -65,7 +67,7 @@ const Regions = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: '/dsocket/socket.io',
+            path: nodeEnv === 'development' ? '' : socketPath,
         });
         setSocket(newSocket);
 
