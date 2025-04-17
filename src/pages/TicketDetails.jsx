@@ -21,7 +21,7 @@ const TicketDetails = () => {
             const fetchTicket = async () => {
                 try {
                     setLoading(true);
-                    console.log('Fetching ticket with ID:', id);
+
     
                     const res = await apiClient.get(`/tickets/${id}`);
                     const data = res;
@@ -67,7 +67,6 @@ const TicketDetails = () => {
                     statusChange.charAt(0).toUpperCase() + statusChange.slice(1),
             });
             
-            console.log(' PATCH response:', res);
             
             const updatedStatus =
                 res?.Status?.toLowerCase?.() || statusChange.toLowerCase(); // fallback if undefined

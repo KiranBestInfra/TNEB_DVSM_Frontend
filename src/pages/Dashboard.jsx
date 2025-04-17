@@ -9,6 +9,7 @@ import { io } from 'socket.io-client';
 
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
+const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
 const Dashboard = () => {
     const { region } = useParams();
@@ -16,7 +17,6 @@ const Dashboard = () => {
     const location = window.location.pathname;
     const isUserRoute = location.includes('/user/');
     const isBiUserRoute = location.includes('/exedb/user/');
-
     const [timeRange, setTimeRange] = useState('Daily');
     const [graphData, setGraphData] = useState({
         xAxis: [],
@@ -55,12 +55,11 @@ const Dashboard = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: nodeEnv === 'development' ? '' : socketPath,
+            path: nodeEnv === 'development' ? devSocketPath : socketPath,
         });
         setSocket(newSocket);
 
         newSocket.on('demandUpdate', (data) => {
-            console.log(data);
             setGraphData({
                 xAxis: data.xAxis || [],
                 series: data.series || [],

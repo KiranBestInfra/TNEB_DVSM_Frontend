@@ -16,14 +16,22 @@ const DynamicGraph = ({
   onTimeRangeChange,
   showTimeRangeDropdown = true,
   onDateChange,
+  selectedDate,
 }) => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [localSelectedDate, setLocalSelectedDate] = useState(selectedDate || new Date());
+
+  useEffect(() => {
+   // console.log('Selected date prop received in DynamicGraph:', selectedDate);
+    if (selectedDate) {
+      setLocalSelectedDate(selectedDate);
+    }
+  }, [selectedDate]);
 
   const handleDateChange = (date) => {
-    setSelectedDate(date);
-    console.log("Selected Date:", date);
+    //console.log('Date selected in DynamicGraph:', date);
+    setLocalSelectedDate(date);
     if (onDateChange) {
       onDateChange(date);
     }
@@ -39,7 +47,6 @@ const DynamicGraph = ({
     }
   };
 
-  console.log()
   useEffect(() => {
     if (chartRef.current && data) {
       chartInstance.current = echarts.init(chartRef.current, null, {
@@ -239,7 +246,7 @@ const DynamicGraph = ({
         <div className={styles.action_cont}>
           <div className={styles.date_picker}>
             <DatePicker
-              selected={selectedDate}
+              selected={localSelectedDate}
               onChange={handleDateChange}
               className={styles.date_input}
               dateFormat="MMM dd, yyyy"
@@ -299,6 +306,7 @@ DynamicGraph.propTypes = {
   onTimeRangeChange: PropTypes.func,
   showTimeRangeDropdown: PropTypes.bool,
   onDateChange: PropTypes.func,
+  selectedDate: PropTypes.instanceOf(Date),
 };
 
 export default DynamicGraph;

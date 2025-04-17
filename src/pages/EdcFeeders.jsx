@@ -10,6 +10,7 @@ import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
+const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
 const EdcFeeders = () => {
     const [timeRange, setTimeRange] = useState('Daily');
@@ -69,7 +70,7 @@ const EdcFeeders = () => {
 
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
-            path: nodeEnv === 'development' ? '' : socketPath,
+            path: nodeEnv === 'development' ? devSocketPath : socketPath,
         });
         setSocket(newSocket);
 
@@ -121,7 +122,6 @@ const EdcFeeders = () => {
                 try {
                     const data = await apiClient.get(`/edcs/${edcId}/widgets`);
                     const edcWidgets = data.data;
-                    console.log(edcWidgets);
 
                     setWidgetsData((prev) => {
                         const newData = {
@@ -176,7 +176,6 @@ const EdcFeeders = () => {
 
         fetchData();
     }, [edcId]);
-    console.log('edcId', edcId);
 
     const handlePageChange = (newPage, newPerPage = feedersPerPage) => {
         if (newPerPage !== feedersPerPage) {
