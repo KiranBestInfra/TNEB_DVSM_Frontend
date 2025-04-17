@@ -12,7 +12,6 @@ import TimeRangeSelectDropdown from '../components/TimeRangeSelectDropdown/TimeR
 
 const Regions = () => {
     const navigate = useNavigate();
-    const [timeRange, setTimeRange] = useState('Daily');
     const [socket, setSocket] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const cacheTimeoutRef = useRef(null);

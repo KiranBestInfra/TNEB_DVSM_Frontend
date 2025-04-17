@@ -146,7 +146,9 @@ const RegionDetails = () => {
                 <h2 className="title">{capitalizedEntityName} Region</h2>
               
             </div>
-            <Breadcrumb />
+            <Breadcrumb items={[
+                { label: 'Dashboard', path: isRegion() ? '/user/region/dashboard' : `/admin/${regionParam}/dashboard` }
+            ]} />
 
             <SummarySection
                 widgetsData={{
