@@ -74,7 +74,6 @@ const EdcDetails = () => {
     //const entityId =  user?.id;
     const entityId = isCircle() ? user?.id : (regionUser ? edcId : edcId);
     const entityName = regionUser ? entityId : edcName?.replace('_EDC', '').toLowerCase();
-    //console.log('entityName', entityName);
     const navigate = useNavigate();
 
   

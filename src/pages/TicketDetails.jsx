@@ -26,7 +26,6 @@ const TicketDetails = () => {
                     const res = await apiClient.get(`/tickets/${id}`);
                     const data = res;
     
-                    console.log('Received ticket data:', data);
     
                     const formattedTicket = {
                         id: data.TicketId,
@@ -41,7 +40,6 @@ const TicketDetails = () => {
                         createdBy: data.ConsumerName || 'User',
                     };
     
-                    console.log('Formatted ticket:', formattedTicket);
                     setTicket(formattedTicket);
                 } catch (err) {
                     console.error('Failed to fetch ticket:', err);
@@ -60,7 +58,6 @@ const TicketDetails = () => {
         e.preventDefault();
 
         if (!statusChange || !ticket || statusChange === ticket.status) return;
-        console.log('Sending status update:', statusChange);
         try {
             const res = await apiClient.patch(`/tickets/${ticket.id}`, {
                 Status:

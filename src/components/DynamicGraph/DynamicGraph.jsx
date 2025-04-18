@@ -31,7 +31,6 @@ const DynamicGraph = ({
     }, [selectedDate]);
 
     const handleDateChange = (date) => {
-        //console.log('Date selected in DynamicGraph:', date);
         setLocalSelectedDate(date);
         if (onDateChange) {
             onDateChange(date);
