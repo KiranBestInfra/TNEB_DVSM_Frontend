@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { data, useParams } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -50,7 +50,6 @@ const Dashboard = () => {
             }));
         };
         fetchData();
-        console.log()
     }, []);
 
     useEffect(() => {
@@ -58,7 +57,6 @@ const Dashboard = () => {
             path: nodeEnv === 'development' ? devSocketPath : socketPath,
         });
         setSocket(newSocket);
-
         newSocket.on('demandUpdate', (data) => {
             setGraphData({
                 xAxis: data.xAxis || [],
