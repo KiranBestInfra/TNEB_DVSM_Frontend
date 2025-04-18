@@ -343,17 +343,13 @@ const Header = () => {
           <span className={styles.white_icons} onClick={handleTicketsClick}>
             <img src="icons/support-tickets.svg" alt="Tickets" />
           </span>
-          <Buttons
-            onClick={handleLogout}
-            variant="secondary"
-            icon="icons/logout-icon.svg"
-            alt="Logout"
-            iconPosition="left"
-            className={styles.logout_button}
-          />
+          <span className={styles.white_icons} onClick={handleLogout}>
+            <img src="icons/logout-icon.svg" alt="Tickets" />
+          </span>
           <span className={styles.company_icon} onClick={handleProfileClick}>
             <img src="images/logoTGNPDCL.png" alt="Settings" />
           </span>
+          
 
           {/* <span
                         className={styles.white_icons}

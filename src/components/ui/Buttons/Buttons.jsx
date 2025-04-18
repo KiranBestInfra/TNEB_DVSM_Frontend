@@ -8,24 +8,14 @@ const Buttons = ({
     disabled = false,
     variant = 'primary',
     className,
-    icon,
-    iconPosition = 'left',
-    alt,
 }) => {
     return (
         <button
             type={type}
-            className={`${styles.button} ${styles[variant]} ${className || ''} ${!label ? styles.icon_only : ''}`}
+            className={`${styles.button} ${styles[variant]} ${className || ''}`}
             onClick={onClick}
-            disabled={disabled}
-            title={alt}>
-            {icon && iconPosition === 'left' && (
-                <img src={icon} alt={alt} className={styles.icon} />
-            )}
-            {label && <span className={styles.label}>{label}</span>}
-            {icon && iconPosition === 'right' && (
-                <img src={icon} alt={alt} className={styles.icon} />
-            )}
+            disabled={disabled}>
+            <span className={styles.label}>{label}</span>
         </button>
     );
 };
