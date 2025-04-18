@@ -10,6 +10,8 @@ const RegionDetails = () => {
     const { region: regionParam } = useParams();
     const { user, isRegion } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
+    const [timeRange, setTimeRange] = useState('Daily');
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
@@ -63,8 +65,21 @@ const RegionDetails = () => {
     useEffect(() => {
         const fetchGraphData = async () => {
             try {
+                const formatDate = (date) => {
+                    const year = date.getFullYear();
+
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+
+                    const day = String(date.getDate()).padStart(2, '0');
+
+                    return `${year}-${month}-${day} 00:00:00`;
+                };
+
+                const formattedDate = selectedDate
+                    ? formatDate(selectedDate)
+                    : formatDate(new Date());
                 const response = await apiClient.get(
-                    `/regions/graph/${entityId}/demand`
+                    `/regions/graph/${entityId}/demand/{$formattedDate}`
                 );
                 const data = response.data;
                 setGraphData(data);
@@ -83,7 +98,7 @@ const RegionDetails = () => {
         };
 
         fetchGraphData();
-    }, [entityId, timeRange]);
+    }, [entityId, timeRange, selectedDate]);
     useEffect(() => {
         const fetchEdcs = async () => {
             try {
@@ -138,6 +153,9 @@ const RegionDetails = () => {
         commMeters: widgetsData.commMeters || 0,
         nonCommMeters: widgetsData.nonCommMeters || 0,
     };
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+    };
 
     return (
         <div className={styles.main_content}>
@@ -190,7 +208,12 @@ const RegionDetails = () => {
                 }}
             />
             <div className={styles.chart_container}>
-                <DynamicGraph data={graphData} timeRange={timeRange} />
+                <DynamicGraph
+                    data={graphData}
+                    timeRange={timeRange}
+                    onDateChange={handleDateChange}
+                    selectedDate={selectedDate}
+                />
             </div>
         </div>
     );
