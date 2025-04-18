@@ -4,7 +4,7 @@
          http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
-    <display-name>Smart Meter Metrics - BI</display-name>
+    <display-name>Smart Meter Metrics - BII</display-name>
     
     <error-page>
         <error-code>404</error-code>
