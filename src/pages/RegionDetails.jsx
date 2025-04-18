@@ -79,7 +79,7 @@ const RegionDetails = () => {
                     ? formatDate(selectedDate)
                     : formatDate(new Date());
                 const response = await apiClient.get(
-                    `/regions/graph/${entityId}/demand/{$formattedDate}`
+                    `/regions/graph/${entityId}/demand/${formattedDate}`
                 );
                 const data = response.data;
                 setGraphData(data);
