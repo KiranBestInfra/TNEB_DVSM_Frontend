@@ -16,6 +16,7 @@ const EdcSubstationDetails = () => {
     const location = useLocation();
     const regionUser = isRegion();
     const [timeRange, setTimeRange] = useState('Daily');
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
@@ -67,8 +68,16 @@ const EdcSubstationDetails = () => {
         const fetchGraphData = async () => {
             try {
                 setLoading(true);
+                const formatDate = (date) => {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}-${month}-${day} 00:00:00`;
+                };
+
+                const formattedDate = selectedDate ? formatDate(selectedDate) : formatDate(new Date());
                 const response = await apiClient.get(
-                    `/substations/graph/${entityId}/demand`
+                    `/substations/graph/${entityId}/demand/${formattedDate}`
                 );
                 const data = response.data;
                 setGraphData(data);
@@ -90,7 +99,7 @@ const EdcSubstationDetails = () => {
         };
 
         fetchGraphData();
-    }, [entityId, timeRange]);
+    }, [entityId, timeRange,selectedDate]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -135,6 +144,9 @@ const EdcSubstationDetails = () => {
                 `/user/edc/${edcIdentifier}/substations/${substationId}/feeders`
             );
         }
+    };
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
     };
 
     const handleFeederClick = () => {
@@ -208,8 +220,13 @@ const EdcSubstationDetails = () => {
                 // }}
             />
 
-            <div className={styles.detail_chart}>
-                <DynamicGraph data={graphData} timeRange={timeRange} />
+               <div className={styles.detail_chart}>
+                <DynamicGraph 
+                    data={graphData} 
+                    timeRange={timeRange} 
+                    onDateChange={handleDateChange}
+                    selectedDate={selectedDate}
+                />
             </div>
         </div>
     );
