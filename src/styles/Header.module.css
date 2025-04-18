@@ -75,8 +75,8 @@
     background-color: var(--main-widget-color);
     border-radius: 50%;
     padding: 0.5rem;
-    height: 2.5rem;
-    width: 2.5rem;
+    height: 4.5rem;
+    width: 4.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -85,10 +85,9 @@
     border: 2px solid var(--main-widget-color);
 }
 .company_icon img{
-    height: 2rem;
-    width: 2rem;
+    height: 4rem;
+    width: 4rem;
     object-fit: contain;
-    filter: var(--icons-brand-color-filter);
 }
 .company_icon:hover {
     border: 2px solid var(--brand-blue);
@@ -480,4 +479,32 @@ filter: invert(23%) sepia(0%) saturate(0%) hue-rotate(213deg) brightness(98%) co
     .right_cont {
         width: auto;
     }
+}
+
+.full_screen_icon {
+    background-color: var(--main-widget-color);
+    border-radius: 50%;
+    padding: 0.5rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: 2px solid var(--main-widget-color);
+}
+
+.full_screen_icon img {
+    height: 1.5rem;
+    width: 1.5rem;
+    filter: var(--icons-color-filter);
+}
+
+.full_screen_icon:hover {
+    border: 2px solid var(--brand-blue);
+}
+
+.full_screen_icon:hover img {
+    filter: var(--icons-hover-color-filter);
 }
