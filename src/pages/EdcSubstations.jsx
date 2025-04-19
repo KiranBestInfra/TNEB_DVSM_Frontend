@@ -66,6 +66,7 @@ const EdcSubstations = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [timeRange, setTimeRange] = useState('Daily');
     const regionUser = isRegion();
+    const circleUser = isCircle();
 
     useEffect(() => {
         if (!edcId) return;
@@ -133,6 +134,12 @@ const EdcSubstations = () => {
 
         fetchEdcWidgets();
     }, [edcId]);
+
+    const handleEdcFeederClick = () => {
+        if (circleUser && edcId) {
+            navigate(`/user/edc/${edcId}/feeders`);
+        }
+    };
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedSubstationData = localStorage.getItem('substationData');
@@ -284,15 +291,20 @@ const EdcSubstations = () => {
                             nonCommMeters: widgetsData.nonCommMeters,
                             totalDistricts: widgetsData.totalDistricts,
                         }}
-                        isUserRoute={isRegion()}
+                        isUserRoute={isCircle() && isRegion()}
                         isBiUserRoute={location.includes('/bi/user/')}
                         showRegions={false}
                         showDistricts={false}
                         showEdcs={false}
                         showSubstations={true}
                         showFeeders={true}
-                        onFeederClick={regionUser ? handleFeederClick : null}
-                    />
+                        onFeederClick={
+                            regionUser
+                                ? handleFeederClick
+                                : circleUser
+                                ? handleEdcFeederClick
+                                : null
+                        }                    />
 
                     <SectionHeader
                         title={`Substations: [ ${filteredSubstations.length} ]`}
