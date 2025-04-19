@@ -237,6 +237,11 @@ const RegionEdcs = () => {
                 isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
                 showDistricts={true}
+                onSubstationClick={() => {
+                    if (isRegion()) {
+                        navigate('/user/region/edcs');
+                    }
+                }}
             />
 
             <SectionHeader
