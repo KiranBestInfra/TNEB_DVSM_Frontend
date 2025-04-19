@@ -291,7 +291,7 @@ const EdcSubstations = () => {
                             nonCommMeters: widgetsData.nonCommMeters,
                             totalDistricts: widgetsData.totalDistricts,
                         }}
-                        isUserRoute={isCircle() && isRegion()}
+                        isUserRoute={isCircle()}
                         isBiUserRoute={location.includes('/bi/user/')}
                         showRegions={false}
                         showDistricts={false}
