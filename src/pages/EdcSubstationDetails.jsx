@@ -198,7 +198,7 @@ const EdcSubstationDetails = () => {
                 }}
                 // isUserRoute={location.pathname.includes('/user/')}
                 // isBiUserRoute={location.pathname.includes('/bi/user/')}
-                isUserRoute={isCircle()}
+                isUserRoute={isCircle() && isRegion()}
                 showRegions={false}
                 showEdcs={false}
                 showMeters={false}

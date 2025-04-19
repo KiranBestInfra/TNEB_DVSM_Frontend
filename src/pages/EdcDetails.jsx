@@ -14,7 +14,6 @@ import { useAuth } from '../components/AuthProvider';
 const EdcDetails = () => {
     const { edc: edcParam } = useParams();
     const { user, isCircle } = useAuth();
-    console.log('user', user);
     const edcName = isCircle() && user?.name ? user.name : edcParam;
     const { region, edcId: paramEdcId } = useParams();
     const edcId = isCircle() ? user?.hierarchy_id : paramEdcId;
@@ -182,7 +181,7 @@ const EdcDetails = () => {
         }}
         // isUserRoute={location.includes("/user/")}
         // isBiUserRoute={location.includes("/bi/user/")}
-        isUserRoute={isCircle()}
+        isUserRoute={isCircle() && isRegion()}
         showDistricts={true}
         showFeeders={true}
         showEdcs={false}

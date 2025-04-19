@@ -71,7 +71,7 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute ? (
+                                {isUserRoute && onEdcClick ? (
                                     <Link
                                         to="/user/edcs"
                                         style={{
@@ -132,7 +132,7 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute ? (
+                                {isUserRoute && onSubstationClick ? (
                                     <span
                                         style={{ color: 'var(--brand-blue)' }}>
                                         Substations{' '}
@@ -170,7 +170,7 @@ const SummarySection = ({
                         />
                         <div className={styles.total_meters}>
                             <p className="title">
-                                {isUserRoute ? (
+                                {isUserRoute && onFeederClick ? (
                                     <span style={{ color: 'var(--brand-blue)' }}>
                                         Feeders{' '}
                                         {isUserRoute && onFeederClick && (
