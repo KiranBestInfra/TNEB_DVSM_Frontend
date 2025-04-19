@@ -191,6 +191,12 @@ const App = () => {
                                 path=":edcs/:substationId/feeders"
                                 element={<EdcSubstationFeeders />}
                             />
+                            <Route path="account" element={<Profile />} />
+                            <Route path="tickets">
+                                <Route index element={<Tickets />} />
+                                <Route path="new" element={<CreateTicket />} />
+                                <Route path=":id" element={<TicketDetails />} />
+                            </Route>
                         </Route>
 
                         <Route
@@ -227,6 +233,12 @@ const App = () => {
                                 path=":edc/substations/:substationId/feeders/:feederId/details"
                                 element={<EdcSubstationFeederDetails />}
                             />
+                            <Route path="account" element={<Profile />} />
+                            <Route path="tickets">
+                                <Route index element={<Tickets />} />
+                                <Route path="new" element={<CreateTicket />} />
+                                <Route path=":id" element={<TicketDetails />} />
+                            </Route>
                         </Route>
 
                         <Route
