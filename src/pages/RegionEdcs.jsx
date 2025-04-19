@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -18,6 +18,7 @@ const RegionEdcs = () => {
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
+    const navigate = useNavigate();
 
     const cacheTimeoutRef = useRef(null);
     const [selectedEdc, setSelectedEdc] = useState(null);
@@ -214,6 +215,16 @@ const RegionEdcs = () => {
             setCurrentPage(newPage);
         }
     };
+    const handleFeederClick = () => {
+        if (isRegion()) {
+            navigate(`/user/region/feeders`);
+        }
+    };
+    const handleSubstationClick = () => {
+        if (isRegion()) {
+            navigate(`/user/region/substations`);
+        }
+    };
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
@@ -237,11 +248,11 @@ const RegionEdcs = () => {
                 isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
                 showDistricts={true}
-                onSubstationClick={() => {
-                    if (isRegion()) {
-                        navigate('/user/region/edcs');
-                    }
-                }}
+                showSubstations={true}
+                showFeeders={true}
+                showEdcs={true}
+                onSubstationClick={handleSubstationClick || null}
+                onFeederClick={handleFeederClick || null}
             />
 
             <SectionHeader
