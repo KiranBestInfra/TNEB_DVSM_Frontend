@@ -181,7 +181,7 @@ const EdcDetails = () => {
         }}
         // isUserRoute={location.includes("/user/")}
         // isBiUserRoute={location.includes("/bi/user/")}
-        isUserRoute={isCircle() && isRegion()}
+        isUserRoute={isCircle()}
         showDistricts={true}
         showFeeders={true}
         showEdcs={false}
