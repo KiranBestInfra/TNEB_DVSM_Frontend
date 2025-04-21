@@ -27,7 +27,6 @@ const TicketDetails = () => {
                     const res = await apiClient.get(`/tickets/${id}`);
                     const data = res;
     
-                    console.log('Received ticket data:', data);
     
                     const formattedTicket = {
                         id: data.TicketId,
@@ -42,7 +41,6 @@ const TicketDetails = () => {
                         createdBy: data.ConsumerName || 'User',
                     };
     
-                    console.log('Formatted ticket:', formattedTicket);
                     setTicket(formattedTicket);
                     // Also set the currentStatus to match the fetched ticket status
                     setCurrentStatus(formattedTicket.status);

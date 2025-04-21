@@ -82,9 +82,9 @@ const SummarySection = ({
                                         EDCs{' '}
                                         {onEdcClick && (
                                             <span
-                                                style={{ fontSize: '0.8rem' }}>
-                                                
-                                            </span>
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
                                         )}
                                     </Link>
                                 ) : (
@@ -139,9 +139,9 @@ const SummarySection = ({
                                         Substations{' '}
                                         {(isUserRoute || isRegion) && onSubstationClick && (
                                             <span
-                                                style={{ fontSize: '0.8rem' }}>
-                                              
-                                            </span>
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
                                         )}
                                     </span>
                                 ) : (
@@ -158,7 +158,7 @@ const SummarySection = ({
                 </div>
             )}
             {showFeeders && (
-                <div 
+                <div
                     className={styles.total_meters_container}
                     onClick={onFeederClick}
                     style={onFeederClick ? { cursor: 'pointer' } : {}}

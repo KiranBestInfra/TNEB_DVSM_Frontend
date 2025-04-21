@@ -139,7 +139,6 @@ const Feeders = () => {
         <div className={styles.main_content}>
             <div className={styles.section_header}>
                 <h2 className="title">Feeders</h2>
-             
             </div>
             <Breadcrumb />
             <div className={styles.summary_section}>
