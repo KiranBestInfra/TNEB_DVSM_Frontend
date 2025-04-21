@@ -220,6 +220,7 @@ const SubstationDetails = () => {
                 }}
                 isUserRoute={false}
                 isBiUserRoute={false}
+                isRegion={isRegion()}
                 showRegions={false}
                 showEdcs={false}
                 showSubstations={false}
