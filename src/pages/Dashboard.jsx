@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { data, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styles from '../styles/Dashboard.module.css';
 import DynamicGraph from '../components/DynamicGraph/DynamicGraph';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -11,6 +11,13 @@ const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
 const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
+const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day} 00:00:00`;
+};
+
 const Dashboard = () => {
     const { region } = useParams();
 
@@ -18,6 +25,7 @@ const Dashboard = () => {
     const isUserRoute = location.includes('/user/');
     const isBiUserRoute = location.includes('/exedb/user/');
     const [timeRange, setTimeRange] = useState('Daily');
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
@@ -57,6 +65,8 @@ const Dashboard = () => {
             path: nodeEnv === 'development' ? devSocketPath : socketPath,
         });
         setSocket(newSocket);
+
+        // Handle data reception
         newSocket.on('demandUpdate', (data) => {
             setGraphData({
                 xAxis: data.xAxis || [],
@@ -68,9 +78,18 @@ const Dashboard = () => {
             console.error('WebSocket error:', error.message);
         });
 
-        newSocket.on('connect', () => {
-            newSocket.emit('subscribeDemand', { regionId: 'main' });
-        });
+        // Emit data on initial connection and when selectedDate changes
+        const emitDemand = () => {
+            const formattedDate = formatDate(selectedDate);
+            newSocket.emit('subscribeDemand', {
+                regionId: region || 'main',
+                date: formattedDate,
+            });
+        };
+
+        // Emit on connect and when selectedDate changes
+        newSocket.on('connect', emitDemand);
+        emitDemand(); // Emit demand for the first time after connection
 
         return () => {
             if (newSocket.demandIntervalId) {
@@ -78,7 +97,7 @@ const Dashboard = () => {
             }
             newSocket.close();
         };
-    }, [region]);
+    }, [region, selectedDate]); // Only trigger when region or selectedDate changes
 
     return (
         <div className={styles.main_content}>
@@ -124,7 +143,9 @@ const Dashboard = () => {
                     toolbox={true}
                     height="410px"
                     timeRange={timeRange}
+                    selectedDate={selectedDate}
                     onTimeRangeChange={setTimeRange}
+                    onDateChange={setSelectedDate} // Pass the date change handler
                 />
             </div>
         </div>
