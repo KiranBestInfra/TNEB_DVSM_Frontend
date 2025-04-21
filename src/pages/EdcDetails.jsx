@@ -14,7 +14,6 @@ import { useAuth } from '../components/AuthProvider';
 const EdcDetails = () => {
     const { edc: edcParam } = useParams();
     const { user, isCircle } = useAuth();
-    console.log('user', user);
     const edcName = isCircle() && user?.name ? user.name : edcParam;
     const { region, edcId: paramEdcId } = useParams();
     const edcId = isCircle() ? user?.hierarchy_id : paramEdcId;
