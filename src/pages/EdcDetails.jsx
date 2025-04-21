@@ -17,8 +17,9 @@ const EdcDetails = () => {
     const edcName = isCircle() && user?.name ? user.name : edcParam;
     const { region, edcId: paramEdcId } = useParams();
     const edcId = isCircle() ? user?.hierarchy_id : paramEdcId;
-    const { isRegion } = useAuth();
+    const { isRegion, isAdmin } = useAuth();
     const regionUser = isRegion();
+    const adminUser = isAdmin();
     const [timeRange, setTimeRange] = useState('Daily');
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [graphData, setGraphData] = useState({
@@ -73,7 +74,7 @@ const EdcDetails = () => {
 
     //const entityId =  user?.id;
     const entityId = isCircle() ? user?.id : (regionUser ? edcId : edcId);
-    const entityName = regionUser ? entityId : edcName?.replace('_EDC', '').toLowerCase();
+    const entityName = adminUser || regionUser ? entityId : edcName?.replace('_EDC', '').toLowerCase();
     //console.log('entityName', entityName);
     const navigate = useNavigate();
 

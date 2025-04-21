@@ -13,7 +13,9 @@ const TicketDetails = () => {
     const [ticket, setTicket] = useState(null);
     const [activities, setActivities] = useState([]);
     const [replyText, setReplyText] = useState('');
-    const [statusChange, setStatusChange] = useState('');
+    // Remove the separate statusChange state and use currentStatus instead
+    const [currentStatus, setCurrentStatus] = useState('');
+    const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -21,12 +23,10 @@ const TicketDetails = () => {
             const fetchTicket = async () => {
                 try {
                     setLoading(true);
-
-    
+                    
                     const res = await apiClient.get(`/tickets/${id}`);
                     const data = res;
     
-                    console.log('Received ticket data:', data);
     
                     const formattedTicket = {
                         id: data.TicketId,
@@ -41,8 +41,9 @@ const TicketDetails = () => {
                         createdBy: data.ConsumerName || 'User',
                     };
     
-                    console.log('Formatted ticket:', formattedTicket);
                     setTicket(formattedTicket);
+                    // Also set the currentStatus to match the fetched ticket status
+                    setCurrentStatus(formattedTicket.status);
                 } catch (err) {
                     console.error('Failed to fetch ticket:', err);
                     setError(err.message || 'Failed to fetch ticket details');
@@ -55,51 +56,84 @@ const TicketDetails = () => {
         }
     }, [id, isNewTicket]);
     
-
     const handleStatusChange = async (e) => {
         e.preventDefault();
-
-        if (!statusChange || !ticket || statusChange === ticket.status) return;
-        console.log('Sending status update:', statusChange);
+        
+        // Get the original status from the ticket object
+        const originalStatus = ticket.status;
+        
+        // Return early if no change or no ticket
+        if (!currentStatus || !ticket || currentStatus === originalStatus) return;
+    
         try {
-            const res = await apiClient.patch(`/tickets/${ticket.id}`, {
-                Status:
-                    statusChange.charAt(0).toUpperCase() + statusChange.slice(1),
+            setIsUpdatingStatus(true);
+            setError(null); // Clear any previous errors
+            
+            // Store new status to use in API call
+            const newStatus = currentStatus;
+            
+            // Log to help debugging
+            console.log('Updating status:', originalStatus, '->', newStatus);
+            
+            // Update ticket in state immediately for UI responsiveness
+            setTicket(prev => {
+                const updated = {
+                    ...prev,
+                    status: newStatus,
+                    updatedAt: new Date().toISOString()
+                };
+                console.log('Updated ticket in state:', updated);
+                return updated;
             });
             
-            
-            const updatedStatus =
-                res?.Status?.toLowerCase?.() || statusChange.toLowerCase(); // fallback if undefined
-            
-
-            // Update UI state
-            setTicket((prev) => ({
-                ...prev,
-                status: updatedStatus,
-                updatedAt: new Date().toISOString(),
-            }));
-
+            // Add activity log
             const newActivity = {
-                id: activities.length + 1,
+                id: new Date().getTime(), // Use timestamp for ID to ensure uniqueness
                 type: 'status',
                 author: 'Admin User',
-                text: `Ticket status changed to "${updatedStatus}"`,
+                text: `Ticket status changed to "${newStatus}"`,
                 timestamp: new Date().toISOString(),
             };
-
-            setActivities((prev) => [...prev, newActivity]);
-            setStatusChange('');
+            
+            setActivities(prev => [...prev, newActivity]);
+            
+            // Send update to backend
+            await apiClient.patch(`/tickets/${ticket.id}`, {
+                Status: newStatus.charAt(0).toUpperCase() + newStatus.slice(1).toLowerCase(),
+            });
+            
+            console.log('Status updated successfully in backend');
+            
         } catch (error) {
             console.error('Failed to update status:', error);
+            
+            // Revert UI changes on error
+            setCurrentStatus(originalStatus);
+            setTicket(prev => ({
+                ...prev,
+                status: originalStatus
+            }));
+            
+            // Remove the last activity if it was our status update
+            setActivities(prev => {
+                const lastActivity = prev[prev.length - 1];
+                if (lastActivity && lastActivity.type === 'status') {
+                    return prev.slice(0, -1);
+                }
+                return prev;
+            });
+            
+            setError('Failed to update ticket status. Please try again.');
+            
             try {
                 await apiClient.post('/log/error', {
-                    message: error.message,
-                    stack: error.stack || 'No stack trace',
-                    time: new Date().toISOString(),
+                    error: `${error.message}\n${error.stack || 'No stack trace'}`,
                 });
             } catch (logError) {
                 console.error('Error logging to backend:', logError);
             }
+        } finally {
+            setIsUpdatingStatus(false);
         }
     };
 
@@ -108,7 +142,7 @@ const TicketDetails = () => {
         if (!replyText.trim()) return;
 
         const newActivity = {
-            id: activities.length + 1,
+            id: new Date().getTime(),
             type: 'comment',
             author: 'Admin User',
             text: replyText,
@@ -138,8 +172,17 @@ const TicketDetails = () => {
         return <div className={styles.loading}>Ticket not found.</div>;
     }
 
+    // For debugging - log the current state values
+    console.log('Current state values:', {
+        ticketStatus: ticket.status,
+        currentStatus,
+        isUpdatingStatus
+    });
+
     return (
         <div className={styles.ticket_details_container}>
+            {error && <div className={styles.error_message}>{error}</div>}
+            
             <div className={styles.ticket_header}>
                 <div className={styles.header_right}>
                     <span
@@ -162,18 +205,20 @@ const TicketDetails = () => {
                         </label>
                         <select
                             className={styles.status_dropdown}
-                            value={statusChange || ticket.status}
-                            onChange={(e) => setStatusChange(e.target.value)}>
+                            value={currentStatus}
+                            onChange={(e) => setCurrentStatus(e.target.value)}
+                            disabled={isUpdatingStatus}>
                             <option value="open">Open</option>
                             <option value="pending">Pending</option>
                             <option value="closed">Closed</option>
                         </select>
-                        {statusChange && statusChange !== ticket.status && (
+                        {currentStatus !== ticket.status && (
                             <Buttons
-                                label="Update"
+                                label={isUpdatingStatus ? "Updating..." : "Update"}
                                 variant="primary"
                                 onClick={handleStatusChange}
                                 size="small"
+                                disabled={isUpdatingStatus}
                             />
                         )}
                     </div>
@@ -220,6 +265,11 @@ const TicketDetails = () => {
                                     </div>
                                 </div>
                             ))}
+                            {activities.length === 0 && (
+                                <div className={styles.no_activities}>
+                                    No activity yet.
+                                </div>
+                            )}
                         </div>
                     </div>
 

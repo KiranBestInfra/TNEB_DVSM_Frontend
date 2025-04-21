@@ -18,13 +18,20 @@ const Header = () => {
         useState(false);
     const [currentDateTime, setCurrentDateTime] = useState(new Date());
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { isAdmin } = useAuth();
-    const basePath = isAdmin() ? '/admin' : '/user';
+    const { isAdmin, isRegion, isCircle, isSubstation } = useAuth();
+    const basePath = isAdmin()
+        ? '/admin'
+        : isRegion()
+        ? '/user/region'
+        : isCircle()
+        ? '/user/edc'
+        : isSubstation()
+        ? '/user/substation'
+        : '/user';
 
     const debouncedSearchTerm = useDebounce(searchQuery, 500);
 
     const { user } = useAuth();
-
 
     const profileData = {
         profilePicture: user?.profilePicture || null,
@@ -152,7 +159,6 @@ const Header = () => {
     const renderProfilePicture = () => {
         const initials = profileData.firstName.substring(0, 2).toUpperCase();
 
-
         return profileData.profilePicture ? (
             <img
                 src={profileData.profilePicture}
@@ -225,6 +231,34 @@ const Header = () => {
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
+
+    const [isFullScreen, setIsFullScreen] = useState(false);
+
+    const toggleFullScreen = () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+            setIsFullScreen(true);
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                setIsFullScreen(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        const handleFullScreenChange = () => {
+            setIsFullScreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener('fullscreenchange', handleFullScreenChange);
+        return () => {
+            document.removeEventListener(
+                'fullscreenchange',
+                handleFullScreenChange
+            );
+        };
+    }, []);
 
     return (
         <div className={styles.header_container}>
@@ -311,16 +345,35 @@ const Header = () => {
                         </div>
                     </div>
 
-                    <span
-                        className={styles.company_icon}
-                        onClick={handleProfileClick}>
-                        <img src="images/tange.svg" alt="Settings" />
-                    </span>
+                    <div
+                        className={styles.full_screen_icon}
+                        onClick={toggleFullScreen}>
+                        <img
+                            src={
+                                isFullScreen
+                                    ? 'icons/minimize-size.svg'
+                                    : 'icons/full-screen.svg'
+                            }
+                            alt={
+                                isFullScreen
+                                    ? 'Exit Full Screen'
+                                    : 'Full Screen'
+                            }
+                        />
+                    </div>
 
                     <span
                         className={styles.white_icons}
                         onClick={handleTicketsClick}>
                         <img src="icons/support-tickets.svg" alt="Tickets" />
+                    </span>
+                    <span className={styles.white_icons} onClick={handleLogout}>
+                        <img src="icons/logout-icon.svg" alt="Tickets" />
+                    </span>
+                    <span
+                        className={styles.company_icon}
+                        onClick={handleProfileClick}>
+                        <img src="images/logoTGNPDCL.png" alt="Settings" />
                     </span>
 
                     {/* <span
@@ -346,16 +399,6 @@ const Header = () => {
                         onClick={handleLogout}>
                         <img src="icons/exit-button.svg" alt="Logout" />
                     </span>
-
-                    <Buttons
-                        label="Logout"
-                        onClick={handleLogout}
-                        variant="secondary"
-                        icon="icons/logout-icon.svg"
-                        alt="Logout"
-                        iconPosition="right"
-                        className={styles.logout_button}
-                    />
                 </div>
             </div>
 

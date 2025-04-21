@@ -71,7 +71,7 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute ? (
+                                {isUserRoute && onEdcClick ? (
                                     <Link
                                         to="/user/edcs"
                                         style={{
@@ -81,9 +81,9 @@ const SummarySection = ({
                                         EDCs{' '}
                                         {onEdcClick && (
                                             <span
-                                                style={{ fontSize: '0.8rem' }}>
-                                                
-                                            </span>
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
                                         )}
                                     </Link>
                                 ) : (
@@ -132,15 +132,15 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute ? (
+                                {isUserRoute && onSubstationClick ? (
                                     <span
                                         style={{ color: 'var(--brand-blue)' }}>
                                         Substations{' '}
                                         {isUserRoute && onSubstationClick && (
                                             <span
-                                                style={{ fontSize: '0.8rem' }}>
-                                              
-                                            </span>
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
                                         )}
                                     </span>
                                 ) : (
@@ -157,7 +157,7 @@ const SummarySection = ({
                 </div>
             )}
             {showFeeders && (
-                <div 
+                <div
                     className={styles.total_meters_container}
                     onClick={onFeederClick}
                     style={onFeederClick ? { cursor: 'pointer' } : {}}
@@ -170,12 +170,14 @@ const SummarySection = ({
                         />
                         <div className={styles.total_meters}>
                             <p className="title">
-                                {isUserRoute ? (
+                                {isUserRoute && onFeederClick ? (
                                     <span style={{ color: 'var(--brand-blue)' }}>
                                         Feeders{' '}
                                         {isUserRoute && onFeederClick && (
-                                            <span style={{ fontSize: '0.8rem' }}>
-                                            </span>
+                                            <span
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
                                         )}
                                     </span>
                                 ) : (

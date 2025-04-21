@@ -203,7 +203,9 @@ const Tickets = () => {
                     label="Create New Ticket"
                     variant="primary"
                     onClick={handleCreateTicket}
+                    size="small"
                     icon="icons/plus.svg"
+                    iconPosition="left"
                 />
             </div>
 
