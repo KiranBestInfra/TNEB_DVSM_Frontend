@@ -185,12 +185,12 @@ const Regions = () => {
 
     // Add this new function to calculate pagination options
     const getPaginationOptions = (totalItems) => {
-        const options = [6];  // Start with default option
+        const options = [6]; // Start with default option
         if (totalItems > 10) options.push(10);
         if (totalItems > 20) options.push(20);
         if (totalItems > 50) options.push(50);
         if (totalItems > 100) options.push(100);
-        return options.filter(opt => opt <= totalItems);
+        return options.filter((opt) => opt <= totalItems);
     };
 
     return (

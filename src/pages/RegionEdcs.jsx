@@ -11,7 +11,6 @@ import SectionHeader from '../components/SectionHeader/SectionHeader';
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
 const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
-
 const RegionEdcs = () => {
     const { region: regionParam } = useParams();
     const { user, isRegion } = useAuth();
@@ -236,6 +235,10 @@ const RegionEdcs = () => {
             const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
             return name?.toLowerCase().includes(searchQuery.toLowerCase());
         }) || [];
+    
+    const redirectSubstation = () => {
+        return 
+    }
 
     return (
         <div className={styles.main_content}>
