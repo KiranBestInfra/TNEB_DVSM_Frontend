@@ -179,9 +179,8 @@ const EdcDetails = () => {
           commMeters: stats.commMeters,
           nonCommMeters: stats.nonCommMeters,
         }}
-        // isUserRoute={location.includes("/user/")}
-        // isBiUserRoute={location.includes("/bi/user/")}
         isUserRoute={isCircle()}
+        isRegion={isRegion()}
         showDistricts={true}
         showFeeders={true}
         showEdcs={false}

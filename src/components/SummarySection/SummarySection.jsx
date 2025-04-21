@@ -17,6 +17,7 @@ const SummarySection = ({
     },
     isUserRoute = false,
     isBiUserRoute = false,
+    isRegion = false,
     onEdcClick = null,
     onSubstationClick = null,
     onFeederClick = null,
@@ -132,11 +133,11 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute && onSubstationClick ? (
+                                {(isUserRoute || isRegion) && onSubstationClick ? (
                                     <span
                                         style={{ color: 'var(--brand-blue)' }}>
                                         Substations{' '}
-                                        {isUserRoute && onSubstationClick && (
+                                        {(isUserRoute || isRegion) && onSubstationClick && (
                                             <span
                                                 style={{
                                                     fontSize: '0.8rem',
@@ -170,14 +171,12 @@ const SummarySection = ({
                         />
                         <div className={styles.total_meters}>
                             <p className="title">
-                                {isUserRoute && onFeederClick ? (
+                                {(isUserRoute || isRegion) && onFeederClick ? (
                                     <span style={{ color: 'var(--brand-blue)' }}>
                                         Feeders{' '}
-                                        {isUserRoute && onFeederClick && (
-                                            <span
-                                                style={{
-                                                    fontSize: '0.8rem',
-                                                }}></span>
+                                        {(isUserRoute || isRegion) && onFeederClick && (
+                                            <span style={{ fontSize: '0.8rem' }}>
+                                            </span>
                                         )}
                                     </span>
                                 ) : (
