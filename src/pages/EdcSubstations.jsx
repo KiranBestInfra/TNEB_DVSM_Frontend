@@ -54,7 +54,7 @@ ErrorBoundary.propTypes = {
 const EdcSubstations = () => {
     const { edcs, edc, region: regionParam } = useParams();
     const edcId = edcs || edc;
-    const { user, isRegion, isCircle } = useAuth();
+    const { user, isRegion, isCircle, isAdmin } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
@@ -251,6 +251,8 @@ const EdcSubstations = () => {
     const handleFeederClick = () => {
         if (regionUser && edcs) {
             navigate(`/user/region/${edcs}/feeders`);
+        } else if (isAdmin() && region && edcId) {
+            navigate(`/admin/${region}/${edcId}/feeders`);
         }
     };
     const handlePageChange = (newPage, newPerPage = substationsPerPage) => {
@@ -293,6 +295,7 @@ const EdcSubstations = () => {
                         }}
                         isUserRoute={isCircle()}
                         isRegion={isRegion()}
+                        isAdmin={isAdmin()}
                         isBiUserRoute={location.includes('/bi/user/')}
                         showRegions={false}
                         showDistricts={false}
@@ -304,8 +307,11 @@ const EdcSubstations = () => {
                                 ? handleFeederClick
                                 : circleUser
                                 ? handleEdcFeederClick
+                                : isAdmin()
+                                ? handleFeederClick
                                 : null
-                        }                    />
+                        }
+                    />
 
                     <SectionHeader
                         title={`Substations: [ ${filteredSubstations.length} ]`}
