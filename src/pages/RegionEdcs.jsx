@@ -14,7 +14,7 @@ const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
 const RegionEdcs = () => {
     const { region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { user, isRegion,isAdmin } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
@@ -214,6 +214,20 @@ const RegionEdcs = () => {
             setCurrentPage(newPage);
         }
     };
+    const handleFeederClick = () => {
+        if (isRegion()) {
+            navigate(`/user/region/feeders`);
+        } else if (isAdmin() && region) {
+            navigate(`/admin/${region}/feeders`);
+        }
+    };
+    const handleSubstationClick = () => {
+        if (isRegion()) {
+            navigate(`/user/region/substations`);
+        } else if (isAdmin() && region) {
+            navigate(`/admin/${region}/substations`);
+        }
+    };
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
@@ -234,9 +248,15 @@ const RegionEdcs = () => {
             <SummarySection
                 widgetsData={getSummaryData()}
                 isUserRoute={isRegion()}
+                isAdmin={isAdmin()}
                 isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
                 showDistricts={true}
+                onSubstationClick={() => {
+                    if (isRegion()) {
+                        navigate('/user/region/edcs');
+                    }
+                }}
             />
 
             <SectionHeader

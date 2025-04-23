@@ -11,8 +11,9 @@ import { useAuth } from '../components/AuthProvider';
 const SubstationDetails = () => {
     const { region, substationId } = useParams();
     const navigate = useNavigate();
-    const { isRegion } = useAuth();
+    const { isRegion, isAdmin } = useAuth();
     const regionUser = isRegion();
+    const adminUser = isAdmin();
     const [timeRange, setTimeRange] = useState('Daily');
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [graphData, setGraphData] = useState({
@@ -198,6 +199,8 @@ const SubstationDetails = () => {
     const handleFeederClick = () => {
         if (regionUser && substationId) {
             navigate(`/user/region/substations/${substationId}/feeders`);
+        } else if (adminUser && region && substationId) {
+            navigate(`/admin/${region}/substations/${substationId}/feeders`);
         }
     };
     const handleDateChange = (date) => {
@@ -220,13 +223,21 @@ const SubstationDetails = () => {
                 }}
                 isUserRoute={false}
                 isBiUserRoute={false}
+                isRegion={isRegion()}
+                isAdmin={isAdmin()}
                 showRegions={false}
                 showEdcs={false}
                 showSubstations={false}
                 showDistricts={false}
                 showMeters={true}
                 showFeeders={true}
-                onFeederClick={regionUser ? handleFeederClick : null}
+                onFeederClick={
+                    regionUser
+                        ? handleFeederClick
+                        : adminUser
+                        ? handleFeederClick
+                        : null
+                }
             />
 
             <div className={styles.chart_container}>

@@ -54,7 +54,7 @@ ErrorBoundary.propTypes = {
 const EdcSubstations = () => {
     const { edcs, edc, region: regionParam } = useParams();
     const edcId = edcs || edc;
-    const { user, isRegion, isCircle } = useAuth();
+    const { user, isRegion, isCircle, isAdmin } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
@@ -66,6 +66,7 @@ const EdcSubstations = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [timeRange, setTimeRange] = useState('Daily');
     const regionUser = isRegion();
+    const circleUser = isCircle();
 
     useEffect(() => {
         if (!edcId) return;
@@ -133,6 +134,12 @@ const EdcSubstations = () => {
 
         fetchEdcWidgets();
     }, [edcId]);
+
+    const handleEdcFeederClick = () => {
+        if (circleUser && edcId) {
+            navigate(`/user/edc/${edcId}/feeders`);
+        }
+    };
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedSubstationData = localStorage.getItem('substationData');
@@ -244,6 +251,8 @@ const EdcSubstations = () => {
     const handleFeederClick = () => {
         if (regionUser && edcs) {
             navigate(`/user/region/${edcs}/feeders`);
+        } else if (isAdmin() && region && edcId) {
+            navigate(`/admin/${region}/${edcId}/feeders`);
         }
     };
     const handlePageChange = (newPage, newPerPage = substationsPerPage) => {
@@ -284,14 +293,24 @@ const EdcSubstations = () => {
                             nonCommMeters: widgetsData.nonCommMeters,
                             totalDistricts: widgetsData.totalDistricts,
                         }}
-                        isUserRoute={isRegion()}
+                        isUserRoute={isCircle()}
+                        isRegion={isRegion()}
+                        isAdmin={isAdmin()}
                         isBiUserRoute={location.includes('/bi/user/')}
                         showRegions={false}
                         showDistricts={false}
                         showEdcs={false}
                         showSubstations={true}
                         showFeeders={true}
-                        onFeederClick={regionUser ? handleFeederClick : null}
+                        onFeederClick={
+                            regionUser
+                                ? handleFeederClick
+                                : circleUser
+                                ? handleEdcFeederClick
+                                : isAdmin()
+                                ? handleFeederClick
+                                : null
+                        }
                     />
 
                     <SectionHeader

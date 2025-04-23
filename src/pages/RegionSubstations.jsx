@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Buttons from '../components/ui/Buttons/Buttons';
@@ -56,10 +56,13 @@ const RegionSubstations = () => {
     const [socket, setSocket] = useState(null);
     const cacheTimeoutRef = useRef(null);
     const { region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { user, isRegion, isAdmin } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [selectedSubstation, setSelectedSubstation] = useState(null);
+    const regionUser = isRegion();
+    const adminUser = isAdmin();
+    const navigate = useNavigate();
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('substationDemandData');
@@ -203,7 +206,13 @@ const RegionSubstations = () => {
     const handleTimeframeChange = (e) => {
         setTimeframe(e.target.value);
     };
-
+    const handleFeederClick = () => {
+        if (isRegion()) {
+            navigate(`/user/region/feeders`);
+        } else if (isAdmin() && region) {
+            navigate(`/admin/${region}/feeders`);
+        }
+    };
     const regionName =
         isRegion() && user?.name
             ? user.name.split(' ')[0]
@@ -249,12 +258,15 @@ const RegionSubstations = () => {
                     <SummarySection
                         widgetsData={getSummaryData()}
                         isUserRoute={isRegion()}
+                        isRegion={isRegion()}
+                        isAdmin={isAdmin()}
                         isBiUserRoute={location.pathname.includes('/bi/user/')}
                         showRegions={false}
                         showEdcs={false}
                         showDistricts={false}
                         showSubstations={true}
                         showFeeders={true}
+                        onFeederClick={handleFeederClick || null}
                     />
 
                     <div className={styles.section_header}>

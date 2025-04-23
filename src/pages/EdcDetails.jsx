@@ -14,7 +14,6 @@ import { useAuth } from '../components/AuthProvider';
 const EdcDetails = () => {
     const { edc: edcParam } = useParams();
     const { user, isCircle } = useAuth();
-    console.log('user', user);
     const edcName = isCircle() && user?.name ? user.name : edcParam;
     const { region, edcId: paramEdcId } = useParams();
     const edcId = isCircle() ? user?.hierarchy_id : paramEdcId;
@@ -180,9 +179,9 @@ const EdcDetails = () => {
           commMeters: stats.commMeters,
           nonCommMeters: stats.nonCommMeters,
         }}
-        // isUserRoute={location.includes("/user/")}
-        // isBiUserRoute={location.includes("/bi/user/")}
         isUserRoute={isCircle()}
+        isRegion={isRegion()}
+        isAdmin={isAdmin()}
         showDistricts={true}
         showFeeders={true}
         showEdcs={false}
@@ -194,8 +193,8 @@ const EdcDetails = () => {
                 navigate(`/user/edc/${edcId}/substations`);
             } else if (isRegion()) {
                 navigate(`/user/region/${edcId}/substations`);
-            } else {
-                navigate(`/admin/${region}/edcs/${edcId}/substations`);
+            } else if (isAdmin() && region && edcId) {
+                navigate(`/admin/${region}/${edcId}/substations`);
             }
         }}
         onFeederClick={() => {
@@ -203,8 +202,8 @@ const EdcDetails = () => {
                 navigate(`/user/edc/${edcId}/feeders`);
             } else if (isRegion()) {
                 navigate(`/user/region/${edcId}/feeders`);
-            } else {
-                navigate(`/admin/${region}/edcs/${edcId}/feeders`);
+            } else if (isAdmin() && region && edcId) {
+                navigate(`/admin/${region}/${edcId}/feeders`);
             }
         }}
       />           
