@@ -18,6 +18,7 @@ const SummarySection = ({
     isUserRoute = false,
     isBiUserRoute = false,
     isRegion = false,
+    isAdmin = false,
     onEdcClick = null,
     onSubstationClick = null,
     onFeederClick = null,
@@ -72,7 +73,7 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute && onEdcClick ? (
+                                {isUserRoute || isRegion || isAdmin && onEdcClick ? (
                                     <Link
                                         to="/user/edcs"
                                         style={{
@@ -133,18 +134,16 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {(isUserRoute || isRegion) &&
-                                onSubstationClick ? (
+                                {(isUserRoute || isRegion || isAdmin) && onSubstationClick ? (
                                     <span
                                         style={{ color: 'var(--brand-blue)' }}>
                                         Substations{' '}
-                                        {(isUserRoute || isRegion) &&
-                                            onSubstationClick && (
-                                                <span
-                                                    style={{
-                                                        fontSize: '0.8rem',
-                                                    }}></span>
-                                            )}
+                                        {(isUserRoute || isRegion || isAdmin) && onSubstationClick && (
+                                            <span
+                                                style={{
+                                                    fontSize: '0.8rem',
+                                                }}></span>
+                                        )}
                                     </span>
                                 ) : (
                                     'Substations'
@@ -173,18 +172,24 @@ const SummarySection = ({
                         />
                         <div className={styles.total_meters}>
                             <p className="title">
-                                {(isUserRoute || isRegion) && onFeederClick ? (
-                                    <span
-                                        style={{ color: 'var(--brand-blue)' }}>
+                                {(isUserRoute || isRegion || isAdmin) && onFeederClick ? (
+                                    <Link
+                                        to="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            onFeederClick();
+                                        }}
+                                        style={{
+                                            color: 'var(--brand-blue)',
+                                            textDecoration: 'none',
+                                            cursor: 'pointer',
+                                        }}>
                                         Feeders{' '}
-                                        {(isUserRoute || isRegion) &&
-                                            onFeederClick && (
-                                                <span
-                                                    style={{
-                                                        fontSize: '0.8rem',
-                                                    }}></span>
-                                            )}
-                                    </span>
+                                        {(isUserRoute || isRegion || isAdmin) && onFeederClick && (
+                                            <span style={{ fontSize: '0.8rem' }}>
+                                            </span>
+                                        )}
+                                    </Link>
                                 ) : (
                                     'Feeders'
                                 )}

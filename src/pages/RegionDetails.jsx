@@ -8,7 +8,7 @@ import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
 const RegionDetails = () => {
     const { region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { user, isRegion,isAdmin } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
     const [timeRange, setTimeRange] = useState('Daily');
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -196,6 +196,8 @@ const RegionDetails = () => {
                     DemandUnit: 'MW',
                 }}
                 isUserRoute={isRegion()}
+                isRegion={isRegion()}
+                isAdmin={isAdmin()}
                 isBiUserRoute={false}
                 showRegions={false}
                 showEdcs={true}
@@ -206,16 +208,22 @@ const RegionDetails = () => {
                 onEdcClick={() => {
                     if (isRegion()) {
                         navigate('/user/region/edcs');
+                    } else if (isAdmin() && entityId) {
+                        navigate(`/admin/${entityId}/edcs`);
                     }
                 }}
                 onSubstationClick={() => {
                     if (isRegion()) {
                         navigate('/user/region/substations');
+                    } else if (isAdmin() && entityId) {
+                        navigate(`/admin/${entityId}/substations`);
                     }
                 }}
                 onFeederClick={() => {
                     if (isRegion()) {
                         navigate('/user/region/feeders');
+                    } else if (isAdmin() && entityId) {
+                        navigate(`/admin/${entityId}/feeders`);
                     }
                 }}
                 showDemand={true}
