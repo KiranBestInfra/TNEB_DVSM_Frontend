@@ -27,6 +27,7 @@ const SummarySection = ({
     showFeeders = true,
     showMaxDemand = true,
 }) => {
+    console.log(widgetsData.totalFeeders)
     return (
         <div className={styles.summary_section}>
             {showRegions && (
@@ -183,7 +184,8 @@ const SummarySection = ({
                                 )}
                             </p>
                             <div className={styles.summary_value}>
-                                <RollingNumber n={widgetsData.totalFeeders} />
+                                <RollingNumber n={widgetsData.totalFeeders} showDecimals={true} />
+                               
                             </div>
                         </div>
                     </div>
