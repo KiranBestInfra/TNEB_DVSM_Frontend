@@ -394,12 +394,14 @@ const ShortDetailsWidget = ({
                                 <RollingNumber
                                     n={parseFloat(currentValue)}
                                     decimals={1}
+                                    showDecimals={true}
                                 />
                             </div>
                             <div className={styles.region_previous_value}>
                                 <RollingNumber
                                     n={parseFloat(previousValue)}
                                     decimals={1}
+                                    showDecimals={true}
                                 />{' '}
                             </div>
                             <div

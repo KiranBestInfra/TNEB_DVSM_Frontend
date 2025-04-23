@@ -6,7 +6,7 @@ function RollingNumber({
     delay = 200,
     decimals = 0,
     springConfig = { mass: 1, tension: 20, friction: 20 },
-    showDecimals = true,
+    showDecimals = false,
 }) {
     // Ensure n is a valid number
     const valueToAnimate = typeof n === 'number' && !isNaN(n) ? n : 0;
@@ -21,8 +21,8 @@ function RollingNumber({
     return (
         <animated.div>
             {number.to((num) => 
-                showDecimals ? parseFloat(num).toFixed(decimals) : Math.round(num)
-            )}
+                showDecimals ? parseFloat(num).toFixed(decimals) : Math.round(num)  
+            )}  
         </animated.div>
     );
 }
