@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -11,13 +11,13 @@ import SectionHeader from '../components/SectionHeader/SectionHeader';
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
 const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
+
 const RegionEdcs = () => {
     const { region: regionParam } = useParams();
     const { user, isRegion,isAdmin } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
-    const navigate = useNavigate();
 
     const cacheTimeoutRef = useRef(null);
     const [selectedEdc, setSelectedEdc] = useState(null);
@@ -239,10 +239,6 @@ const RegionEdcs = () => {
             const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
             return name?.toLowerCase().includes(searchQuery.toLowerCase());
         }) || [];
-    
-    const redirectSubstation = () => {
-        return 
-    }
 
     return (
         <div className={styles.main_content}>
@@ -256,11 +252,11 @@ const RegionEdcs = () => {
                 isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
                 showDistricts={true}
-                showSubstations={true}
-                showFeeders={true}
-                showEdcs={true}
-                onSubstationClick={handleSubstationClick || null}
-                onFeederClick={handleFeederClick || null}
+                onSubstationClick={() => {
+                    if (isRegion()) {
+                        navigate('/user/region/edcs');
+                    }
+                }}
             />
 
             <SectionHeader
