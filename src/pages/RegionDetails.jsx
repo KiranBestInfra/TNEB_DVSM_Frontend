@@ -16,6 +16,7 @@ const RegionDetails = () => {
         xAxis: [],
         series: [],
     });
+    const [demand, setDemand] = useState(0);
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('edcDemandData');
         const savedTimestamp = localStorage.getItem('edcDemandTimestamp');
@@ -82,6 +83,15 @@ const RegionDetails = () => {
                     `/regions/graph/${entityId}/demand/${formattedDate}`
                 );
                 const data = response.data;
+                if (
+                    data?.series?.length > 0 &&
+                    data.series[0]?.data?.length > 0
+                ) {
+                    const latestCurrentDayValue =
+                        data.series[0].data[data.series[0].data.length - 1];
+                    setDemand(latestCurrentDayValue);
+                    console.log('Latest Demand:', latestCurrentDayValue); // ✅ Here's your latest value!
+                }
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching region graph data:', error);
@@ -182,6 +192,8 @@ const RegionDetails = () => {
                     commMeters: stats.commMeters,
                     nonCommMeters: stats.nonCommMeters,
                     totalDistricts: stats.edcCount || 0,
+                    Demand: demand,
+                    DemandUnit: 'MW',
                 }}
                 isUserRoute={isRegion()}
                 isBiUserRoute={false}
@@ -206,6 +218,7 @@ const RegionDetails = () => {
                         navigate('/user/region/feeders');
                     }
                 }}
+                showDemand={true}
             />
             <div className={styles.chart_container}>
                 <DynamicGraph
