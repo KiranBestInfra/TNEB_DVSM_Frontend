@@ -14,11 +14,11 @@ const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
 
 const RegionEdcs = () => {
     const { region: regionParam } = useParams();
-    const { user, isRegion,isAdmin } = useAuth();
+    const { user, isRegion, isAdmin } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
-
+    const [demand, setDemand] = useState(0);
     const cacheTimeoutRef = useRef(null);
     const [selectedEdc, setSelectedEdc] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -45,6 +45,7 @@ const RegionEdcs = () => {
                     feederCount: {},
                     filteredEdcs: [],
                     edcDemandData: parsedDemandData,
+                    Demand: 0,
                 };
             }
         }
@@ -61,6 +62,7 @@ const RegionEdcs = () => {
             filteredEdcs: [],
             feederCount: {},
             edcDemandData: {},
+            Demand: 0,
         };
     });
 
@@ -313,7 +315,15 @@ const RegionEdcs = () => {
                                     )[0] || 0
                                 ).toFixed(1)
                             );
-
+                            const totalCurrentValue =
+                                demandData?.series?.reduce((sum, series) => {
+                                    const latestValue = Number(
+                                        parseFloat(
+                                            series?.data?.slice(-1)[0] || 0
+                                        ).toFixed(1)
+                                    );
+                                    return sum + latestValue;
+                                }, 0);
                             return (
                                 <div
                                     key={index}
