@@ -29,6 +29,7 @@ const SummarySection = ({
     showFeeders = true,
     showDemand = true,
 }) => {
+    console.log(widgetsData.Demand)
     return (
         <div className={styles.summary_section}>
             {showRegions && (
@@ -195,7 +196,8 @@ const SummarySection = ({
                                 )}
                             </p>
                             <div className={styles.summary_value}>
-                                <RollingNumber n={widgetsData.totalFeeders} />
+                                <RollingNumber n={widgetsData.totalFeeders}  />
+                               
                             </div>
                         </div>
                     </div>
@@ -275,14 +277,14 @@ const SummarySection = ({
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/electric-power.svg"
+                            src="icons/demand_usage.svg"
                             alt="Demand"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">Demand Usage</p>
                             <div className={styles.summary_value}>
-                                <RollingNumber n={widgetsData.Demand} />
+                                <RollingNumber n={widgetsData.Demand} showDecimals={true}  decimals={1}  />
                                 <span
                                     style={{
                                         fontSize: '1rem',
