@@ -29,6 +29,7 @@ const Dashboard = () => {
     const [graphData, setGraphData] = useState({
         xAxis: [],
         series: [],
+        Demand: 0,
     });
     const [socket, setSocket] = useState(null);
     const [widgetsData, setWidgetsData] = useState({
@@ -39,6 +40,8 @@ const Dashboard = () => {
         commMeters: 0,
         nonCommMeters: 0,
         totalDistricts: 0,
+        Demand: graphData.Demand,
+        DemandUnit: 'MW',
     });
 
     useEffect(() => {
@@ -67,11 +70,33 @@ const Dashboard = () => {
         setSocket(newSocket);
 
         // Handle data reception
+        // newSocket.on('demandUpdate', (data) => {
+        //     setGraphData({
+        //         xAxis: data.xAxis || [],
+        //         series: data.series || [],
+        //     });
+        // });
         newSocket.on('demandUpdate', (data) => {
+            const lastDemandValue =
+                data.series?.[0]?.data?.length > 0
+                    ? parseFloat(
+                          data.series[0].data[
+                              data.series[0].data.length - 1
+                          ].toFixed(1)
+                      )
+                    : 0;
+
             setGraphData({
                 xAxis: data.xAxis || [],
                 series: data.series || [],
+                Demand: lastDemandValue,
             });
+
+            // 👉 Update the widget demand value
+            setWidgetsData((prev) => ({
+                ...prev,
+                Demand: lastDemandValue,
+            }));
         });
 
         newSocket.on('error', (error) => {
@@ -130,7 +155,7 @@ const Dashboard = () => {
                 isUserRoute={isUserRoute}
                 isBiUserRoute={isBiUserRoute}
                 showDistricts={true}
-                showMaxDemand={false}
+                showDemand={true}
             />
 
             <div className={styles.detail_chart}>

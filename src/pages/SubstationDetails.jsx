@@ -11,8 +11,9 @@ import { useAuth } from '../components/AuthProvider';
 const SubstationDetails = () => {
     const { region, substationId } = useParams();
     const navigate = useNavigate();
-    const { isRegion } = useAuth();
+    const { isRegion, isAdmin } = useAuth();
     const regionUser = isRegion();
+    const adminUser = isAdmin();
     const [timeRange, setTimeRange] = useState('Daily');
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [graphData, setGraphData] = useState({
@@ -40,6 +41,8 @@ const SubstationDetails = () => {
                     substationCount: {},
                     feederCount: {},
                     edcDemandData: parsedDemandData,
+                    Demand: 0,
+                    demandUnit: 'MW',
                 };
             }
         }
@@ -56,6 +59,8 @@ const SubstationDetails = () => {
             feederCount: {},
             regionEdcCount: 0,
             edcDemandData: {},
+            Demand: 0,
+            demandUnit: 'MW',
         };
     });
     const entityId = substationId;
@@ -70,7 +75,9 @@ const SubstationDetails = () => {
                     return `${year}-${month}-${day} 00:00:00`;
                 };
 
-                const formattedDate = selectedDate ? formatDate(selectedDate) : formatDate(new Date());
+                const formattedDate = selectedDate
+                    ? formatDate(selectedDate)
+                    : formatDate(new Date());
                 const response = await apiClient.get(
                     `/substations/graph/${entityId}/demand/${formattedDate}`
                 );
@@ -91,7 +98,7 @@ const SubstationDetails = () => {
         };
 
         fetchGraphData();
-    }, [entityId, timeRange,selectedDate]);
+    }, [entityId, timeRange, selectedDate]);
 
     const entityName = entityId
         ? entityId
@@ -188,7 +195,29 @@ const SubstationDetails = () => {
             fetchFeeders();
         }
     }, [substationId]);
+    useEffect(() => {
+        const getLatestDemand = () => {
+            if (graphData.series?.length > 0) {
+                const demandSeries = graphData.series[0]?.data;
+                if (Array.isArray(demandSeries) && demandSeries.length > 0) {
+                    const latest = demandSeries[demandSeries.length - 1];
+                    return parseFloat(latest); // Keep it as float without rounding
+                }
+            }
+            return null;
+        };
 
+        const latest = getLatestDemand();
+
+        if (latest !== null) {
+            setWidgetsData((prev) => ({
+                ...prev,
+                Demand: latest,
+                demandUnit: 'MW',
+            }));
+        }
+    }, [graphData]);
+    console.log('data', widgetsData.Demand);
     const stats = {
         feederCount: 20,
         currentValue: 8.5,
@@ -198,6 +227,8 @@ const SubstationDetails = () => {
     const handleFeederClick = () => {
         if (regionUser && substationId) {
             navigate(`/user/region/substations/${substationId}/feeders`);
+        } else if (adminUser && region && substationId) {
+            navigate(`/admin/${region}/substations/${substationId}/feeders`);
         }
     };
     const handleDateChange = (date) => {
@@ -217,26 +248,37 @@ const SubstationDetails = () => {
                     commMeters: widgetsData.commMeters,
                     nonCommMeters: widgetsData.nonCommMeters,
                     totalDistricts: stats.edcCount || 0,
+                    Demand: widgetsData.Demand,
+                    DemandUnit: widgetsData.demandUnit,
                 }}
                 isUserRoute={false}
                 isBiUserRoute={false}
                 isRegion={isRegion()}
+                isAdmin={isAdmin()}
                 showRegions={false}
                 showEdcs={false}
                 showSubstations={false}
                 showDistricts={false}
                 showMeters={true}
                 showFeeders={true}
-                onFeederClick={regionUser ? handleFeederClick : null}
+                onFeederClick={
+                    regionUser
+                        ? handleFeederClick
+                        : adminUser
+                        ? handleFeederClick
+                        : null
+                }
+                showDemand={true}
             />
 
             <div className={styles.chart_container}>
-            <DynamicGraph 
-                    data={graphData} 
-                    timeRange={timeRange} 
+                <DynamicGraph
+                    data={graphData}
+                    timeRange={timeRange}
                     onDateChange={handleDateChange}
                     selectedDate={selectedDate}
-                />            </div>
+                />{' '}
+            </div>
         </div>
     );
 };

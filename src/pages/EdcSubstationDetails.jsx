@@ -10,8 +10,9 @@ import { useAuth } from '../components/AuthProvider';
 
 const EdcSubstationDetails = () => {
     const { region, edc, edcId, edcs, substationId } = useParams();
-    const { isRegion, isCircle, isSubstation } = useAuth();
+    const { isRegion, isCircle, isSubstation, isAdmin } = useAuth();
     const circleUser = isCircle();
+    const adminUser = isAdmin();
     const navigate = useNavigate();
     const location = useLocation();
     const regionUser = isRegion();
@@ -21,6 +22,7 @@ const EdcSubstationDetails = () => {
         xAxis: [],
         series: [],
     });
+    const [Demand, setDemand] = useState(0);
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('regionEdcDemandData');
         const savedTimestamp = localStorage.getItem('regionEdcDemandTimestamp');
@@ -56,6 +58,8 @@ const EdcSubstationDetails = () => {
             substationCount: {},
             feederCount: {},
             edcDemandData: {},
+            Demand: 0, // NEW
+            DemandUnit: 'MW',
         };
     });
     const entityId = substationId;
@@ -75,11 +79,21 @@ const EdcSubstationDetails = () => {
                     return `${year}-${month}-${day} 00:00:00`;
                 };
 
-                const formattedDate = selectedDate ? formatDate(selectedDate) : formatDate(new Date());
+                const formattedDate = selectedDate
+                    ? formatDate(selectedDate)
+                    : formatDate(new Date());
                 const response = await apiClient.get(
                     `/substations/graph/${entityId}/demand/${formattedDate}`
                 );
                 const data = response.data;
+                if (
+                    data?.series?.length > 0 &&
+                    data.series[0]?.data?.length > 0
+                ) {
+                    const latestCurrentDayValue =
+                        data.series[0].data[data.series[0].data.length - 1];
+                    setDemand(latestCurrentDayValue);
+                }
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching substation graph data:', error);
@@ -99,7 +113,7 @@ const EdcSubstationDetails = () => {
         };
 
         fetchGraphData();
-    }, [entityId, timeRange,selectedDate]);
+    }, [entityId, timeRange, selectedDate]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -143,6 +157,10 @@ const EdcSubstationDetails = () => {
             navigate(
                 `/user/edc/${edcIdentifier}/substations/${substationId}/feeders`
             );
+        } else if (adminUser && region && edcIdentifier && substationId) {
+            navigate(
+                `/admin/${region}/edcs/${edcIdentifier}/substations/${substationId}/feeders`
+            );
         }
     };
     const handleDateChange = (date) => {
@@ -152,6 +170,10 @@ const EdcSubstationDetails = () => {
     const handleFeederClick = () => {
         if (regionUser && substationId) {
             navigate(`/user/region/substations/${substationId}/feeders`);
+        } else if (adminUser && region && edcIdentifier && substationId) {
+            navigate(
+                `/admin/${region}/${edcIdentifier}/${substationId}/feeders`
+            );
         }
     };
 
@@ -184,7 +206,6 @@ const EdcSubstationDetails = () => {
     const edcLink = region
         ? `${routePrefix}/${region}/edcs/${edcIdentifier}/details`
         : `${routePrefix}/${edcIdentifier}/dashboard`;
-
     return (
         <div className={styles.main_content}>
             <SectionHeader title={`${substationName} Substation`} />
@@ -195,10 +216,14 @@ const EdcSubstationDetails = () => {
                     totalFeeders: stats.feederCount,
                     commMeters: stats.commMeters,
                     nonCommMeters: stats.nonCommMeters,
+                    demand: widgetsData.Demand,
+                    demandUnit: widgetsData.DemandUnit,
+                    Demand: Demand,
+                    DemandUnit: 'MW',
                 }}
-                // isUserRoute={location.pathname.includes('/user/')}
-                // isBiUserRoute={location.pathname.includes('/bi/user/')}
                 isUserRoute={isCircle()}
+                isRegion={isRegion()}
+                isAdmin={isAdmin()}
                 showRegions={false}
                 showEdcs={false}
                 showMeters={false}
@@ -210,20 +235,16 @@ const EdcSubstationDetails = () => {
                         ? handleFeederClick
                         : circleUser
                         ? handleSubstationFeederClick
+                        : adminUser
+                        ? handleFeederClick
                         : null
                 }
-
-                // onFeederClick={() => {
-                //     if (isCircle()) {
-                //         navigate(`/user/edc/${edcId}/substations/${substationId}/feeders`);
-                //     }
-                // }}
             />
 
-               <div className={styles.detail_chart}>
-                <DynamicGraph 
-                    data={graphData} 
-                    timeRange={timeRange} 
+            <div className={styles.detail_chart}>
+                <DynamicGraph
+                    data={graphData}
+                    timeRange={timeRange}
                     onDateChange={handleDateChange}
                     selectedDate={selectedDate}
                 />

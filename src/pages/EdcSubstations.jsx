@@ -54,7 +54,7 @@ ErrorBoundary.propTypes = {
 const EdcSubstations = () => {
     const { edcs, edc, region: regionParam } = useParams();
     const edcId = edcs || edc;
-    const { user, isRegion, isCircle } = useAuth();
+    const { user, isRegion, isCircle, isAdmin } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
@@ -184,6 +184,8 @@ const EdcSubstations = () => {
             substationFeederCounts: {},
             substationStats: {},
             substationDemandData: {},
+            Demand: 0,
+            DemandUnit: 'MW',
         };
     });
     useEffect(() => {
@@ -251,6 +253,8 @@ const EdcSubstations = () => {
     const handleFeederClick = () => {
         if (regionUser && edcs) {
             navigate(`/user/region/${edcs}/feeders`);
+        } else if (isAdmin() && region && edcId) {
+            navigate(`/admin/${region}/${edcId}/feeders`);
         }
     };
     const handlePageChange = (newPage, newPerPage = substationsPerPage) => {
@@ -273,6 +277,22 @@ const EdcSubstations = () => {
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase())
     );
+    useEffect(() => {
+        if (!filteredSubstations || filteredSubstations.length === 0) return;
+
+        const totalDemand = filteredSubstations.reduce((sum, substation) => {
+            const latestValue =
+                widgetsData.substationDemandData?.[
+                    substation.hierarchy_id
+                ]?.series?.[0]?.data?.slice(-1)[0] || 0;
+            return sum + parseFloat(latestValue || 0);
+        }, 0);
+
+        setWidgetsData((prev) => ({
+            ...prev,
+            demand: Number(totalDemand.toFixed(1)), // Round to 1 decimal
+        }));
+    }, [filteredSubstations, widgetsData.substationDemandData]);
 
     try {
         return (
@@ -290,9 +310,12 @@ const EdcSubstations = () => {
                             commMeters: widgetsData.commMeters,
                             nonCommMeters: widgetsData.nonCommMeters,
                             totalDistricts: widgetsData.totalDistricts,
+                            Demand: widgetsData.demand,
+                            DemandUnit: widgetsData.DemandUnit,
                         }}
                         isUserRoute={isCircle()}
                         isRegion={isRegion()}
+                        isAdmin={isAdmin()}
                         isBiUserRoute={location.includes('/bi/user/')}
                         showRegions={false}
                         showDistricts={false}
@@ -304,8 +327,12 @@ const EdcSubstations = () => {
                                 ? handleFeederClick
                                 : circleUser
                                 ? handleEdcFeederClick
+                                : isAdmin()
+                                ? handleFeederClick
                                 : null
-                        }                    />
+                        }
+                        showDemand={true}
+                    />
 
                     <SectionHeader
                         title={`Substations: [ ${filteredSubstations.length} ]`}

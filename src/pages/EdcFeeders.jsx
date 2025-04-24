@@ -48,6 +48,8 @@ const EdcFeeders = () => {
                     feederStats: parsedData.feederStats || {},
                     feederDemandData: parsedData.feederDemandData,
                     feederIds: {},
+                    Demand: 0,
+                    DemandUnit: 'MW',
                 };
             }
         }
@@ -65,6 +67,8 @@ const EdcFeeders = () => {
             feederStats: {},
             feederDemandData: {},
             feederIds: {},
+            Demand: 0,
+            DemandUnit: 'MW',
         };
     });
 
@@ -195,6 +199,26 @@ const EdcFeeders = () => {
         widgetsData.feederNames?.filter((feeder) =>
             feeder.name.toLowerCase().includes(searchQuery.toLowerCase())
         ) || [];
+    useEffect(() => {
+        if (
+            !widgetsData.feederDemandData ||
+            Object.keys(widgetsData.feederDemandData).length === 0
+        )
+            return;
+
+        const totalFeederDemand = Object.values(
+            widgetsData.feederDemandData
+        ).reduce((sum, feederData) => {
+            const latestValue =
+                feederData?.series?.[0]?.data?.slice(-1)[0] || 0;
+            return sum + parseFloat(latestValue || 0);
+        }, 0);
+
+        setWidgetsData((prev) => ({
+            ...prev,
+            Demand: Number(totalFeederDemand.toFixed(1)),
+        }));
+    }, [widgetsData.feederDemandData]);
 
     return (
         <div className={styles.main_content}>
@@ -208,6 +232,8 @@ const EdcFeeders = () => {
                     nonCommMeters: widgetsData.nonCommMeters,
                     totalDistricts: 0,
                     feederCount: widgetsData.feederCount,
+                    Demand: widgetsData.Demand,
+                    DemandUnit: widgetsData.DemandUnit,
                 }}
                 isUserRoute={isRegion()}
                 isBiUserRoute={location.includes('/bi/user/')}
@@ -215,6 +241,7 @@ const EdcFeeders = () => {
                 showEdcs={false}
                 showSubstations={false}
                 showDistricts={false}
+                showDemand={true}
             />
 
             <SectionHeader

@@ -49,6 +49,8 @@ const EdcSubstationFeeders = () => {
                     feederStats: parsedData.feederStats || {},
                     feederDemandData: parsedData.feederDemandData,
                     feederIds: {},
+                    Demand: 0,
+                    DemandUnit: 'MW',
                 };
             }
         }
@@ -67,6 +69,8 @@ const EdcSubstationFeeders = () => {
             feederStats: {},
             feederDemandData: {},
             feederIds: [],
+            Demand: 0,
+            DemandUnit: 'MW',
         };
     });
 
@@ -176,6 +180,27 @@ const EdcSubstationFeeders = () => {
         widgetsData.feeders?.filter((feeder) =>
             feeder.name.toLowerCase().includes(searchQuery.toLowerCase())
         ) || [];
+    useEffect(() => {
+        const calculateTotalDemand = () => {
+            let total = 0;
+            for (const feeder of widgetsData.feeders) {
+                const latest =
+                    widgetsData.feederDemandData?.[
+                        feeder.id
+                    ]?.series?.[0]?.data?.slice(-1)[0];
+                if (!isNaN(latest)) {
+                    total += parseFloat(latest);
+                }
+            }
+            return parseFloat(total.toFixed(1));
+        };
+
+        const updatedDemand = calculateTotalDemand();
+        setWidgetsData((prev) => ({
+            ...prev,
+            Demand: updatedDemand,
+        }));
+    }, [widgetsData.feeders, widgetsData.feederDemandData]);
 
     return (
         <div className={styles.main_content}>
@@ -190,6 +215,8 @@ const EdcSubstationFeeders = () => {
                     totalFeeders: widgetsData.feederCount,
                     commMeters: widgetsData.commMeters,
                     nonCommMeters: widgetsData.nonCommMeters,
+                    Demand: widgetsData.Demand,
+                    DemandUnit: widgetsData.DemandUnit,
                 }}
                 isUserRoute={isRegion()}
                 isBiUserRoute={location.includes('/bi/user/')}
@@ -198,6 +225,7 @@ const EdcSubstationFeeders = () => {
                 showEdcs={false}
                 showSubstations={false}
                 showRegions={false}
+                showDemand={true}
             />
 
             <SectionHeader

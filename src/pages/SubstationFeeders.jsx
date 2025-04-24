@@ -48,7 +48,9 @@ const SubstationFeeders = () => {
                     meterCount: parsedData.meterCount || {},
                     feederStats: parsedData.feederStats || {},
                     feederDemandData: parsedData.feederDemandData,
-                    feederIds: {},
+                    feederIds: [],
+                    Demand: 0,
+                    DemandUnit: 'MW',
                 };
             }
         }
@@ -66,6 +68,8 @@ const SubstationFeeders = () => {
             feederStats: {},
             feederDemandData: {},
             feederIds: [],
+            Demand: 0,
+            DemandUnit: 'MW',
         };
     });
 
@@ -135,73 +139,69 @@ const SubstationFeeders = () => {
     useEffect(() => {
         const fetchFeeders = async () => {
             try {
-                try {
-                    const response = await apiClient.get(
-                        `/substations/${substationId}/feeders`
-                    );
-                    const feedersData = response.data.feeders || [];
+                const response = await apiClient.get(
+                    `/substations/${substationId}/feeders`
+                );
+                const feedersData = response.data.feeders || [];
 
-                    setWidgetsData((prev) => {
-                        const newData = {
-                            ...prev,
-                            commMeters: response.data.commMeters,
-                            nonCommMeters: response.data.nonCommMeters,
-                            feederNames: feedersData.map((f) => f.name) || [],
-                            feederCount: feedersData.length || 0,
-                            totalFeeders: feedersData.length || 0,
-                            meterCount: feedersData.reduce((acc, f) => {
-                                acc[f.name] = f.meter_count || 0;
-                                return acc;
-                            }, {}),
-                            feederStats: feedersData.reduce((acc, f) => {
-                                acc[f.name] = {
-                                    currentValue: f.current_value || 0,
-                                    previousValue: f.previous_value || 0,
-                                };
-                                return acc;
-                            }, {}),
-                            feederIds:
-                                feedersData.map((feeder) => ({
-                                    [feeder.name]: feeder.id,
-                                })) || [],
+                setWidgetsData((prev) => {
+                    const meterCount = {};
+                    const feederStats = feedersData.reduce((acc, f) => {
+                        acc[f.name] = {
+                            currentValue: f.current_value || 0,
+                            previousValue: f.previous_value || 0,
                         };
-
-                        const cacheData = {
-                            feederNames: newData.feederNames,
-                            meterCount: newData.meterCount,
-                            feederStats: newData.feederStats,
-                            feederDemandData: newData.feederDemandData,
-                            feederIds: newData.feederIds,
-                        };
-
-                        localStorage.setItem(
-                            'substationFeederData',
-                            JSON.stringify(cacheData)
+                        return acc;
+                    }, {});
+                    const totalDemand = feedersData.reduce((total, f) => {
+                        const id = f.id;
+                        const currentValue = Number(
+                            parseFloat(
+                                widgetsData.feederDemandData?.[
+                                    id
+                                ]?.series?.[0]?.data?.slice(-1)[0] || 0
+                            ).toFixed(1)
                         );
-                        localStorage.setItem(
-                            'substationFeederDataTimestamp',
-                            Date.now().toString()
-                        );
+                        return total + currentValue;
+                    }, 0);
+                    const newData = {
+                        ...prev,
+                        commMeters: response.data.commMeters,
+                        nonCommMeters: response.data.nonCommMeters,
+                        feederNames: feedersData.map((f) => f.name) || [],
+                        feederCount: feedersData.length || 0,
+                        totalFeeders: feedersData.length || 0,
+                        meterCount,
+                        feederStats,
+                        feederIds:
+                            feedersData.map((feeder) => ({
+                                [feeder.name]: feeder.id,
+                            })) || [],
+                        Demand: Number(totalDemand.toFixed(1)),
+                        DemandUnit: 'MW',
+                    };
 
-                        return newData;
-                    });
-                } catch (error) {
-                    console.error(
-                        'API error, using demo data for feeders:',
-                        error
+                    const cacheData = {
+                        feederNames: newData.feederNames,
+                        meterCount: newData.meterCount,
+                        feederStats: newData.feederStats,
+                        feederDemandData: newData.feederDemandData,
+                        feederIds: newData.feederIds,
+                    };
+
+                    localStorage.setItem(
+                        'substationFeederData',
+                        JSON.stringify(cacheData)
                     );
-                    try {
-                        await apiClient.post('/log/error', {
-                            message: error.message,
-                            stack: error.stack || 'No stack trace',
-                            time: new Date().toISOString(),
-                        });
-                    } catch (logError) {
-                        console.error('Error logging to backend:', logError);
-                    }
-                }
+                    localStorage.setItem(
+                        'substationFeederDataTimestamp',
+                        Date.now().toString()
+                    );
+
+                    return newData;
+                });
             } catch (error) {
-                console.error('Error fetching feeders for substation:', error);
+                console.error('API error:', error);
                 try {
                     await apiClient.post('/log/error', {
                         message: error.message,
@@ -234,13 +234,12 @@ const SubstationFeeders = () => {
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value);
-        setCurrentPage(1); // Reset to first page when searching
+        setCurrentPage(1);
     };
 
     return (
         <div className={styles.main_content}>
-            <SectionHeader title="Feeders for Substation"></SectionHeader>
-
+            <SectionHeader title="Feeders for Substation" />
             <Breadcrumb />
 
             <SummarySection
@@ -252,6 +251,8 @@ const SubstationFeeders = () => {
                     commMeters: widgetsData.commMeters,
                     nonCommMeters: widgetsData.nonCommMeters,
                     totalDistricts: 0,
+                    Demand: widgetsData.Demand,
+                    DemandUnit: widgetsData.DemandUnit,
                 }}
                 isUserRoute={isRegion()}
                 isBiUserRoute={location.includes('/bi/user/')}
@@ -283,7 +284,7 @@ const SubstationFeeders = () => {
                 className={`${styles.region_stats_container} ${
                     viewMode === 'list' ? styles.list_view : ''
                 }`}>
-                {filteredFeeders && filteredFeeders.length > 0 ? (
+                {filteredFeeders.length > 0 ? (
                     filteredFeeders
                         .slice(
                             (currentPage - 1) * feedersPerPage,

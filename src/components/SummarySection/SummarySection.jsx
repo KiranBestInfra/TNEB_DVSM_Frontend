@@ -12,12 +12,13 @@ const SummarySection = ({
         commMeters: 0,
         nonCommMeters: 0,
         totalDistricts: 0,
-        maxDemand: 0,
-        maxDemandUnit: 'MW',
+        Demand: 0,
+        DemandUnit: 'MW',
     },
     isUserRoute = false,
     isBiUserRoute = false,
     isRegion = false,
+    isAdmin = false,
     onEdcClick = null,
     onSubstationClick = null,
     onFeederClick = null,
@@ -26,7 +27,7 @@ const SummarySection = ({
     showEdcs = true,
     showSubstations = true,
     showFeeders = true,
-    showMaxDemand = true,
+    showDemand = true,
 }) => {
     return (
         <div className={styles.summary_section}>
@@ -72,7 +73,9 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute && onEdcClick ? (
+                                {isUserRoute ||
+                                isRegion ||
+                                (isAdmin && onEdcClick) ? (
                                     <Link
                                         to="/user/edcs"
                                         style={{
@@ -133,16 +136,18 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {(isUserRoute || isRegion) && onSubstationClick ? (
+                                {(isUserRoute || isRegion || isAdmin) &&
+                                onSubstationClick ? (
                                     <span
                                         style={{ color: 'var(--brand-blue)' }}>
                                         Substations{' '}
-                                        {(isUserRoute || isRegion) && onSubstationClick && (
-                                            <span
-                                                style={{
-                                                    fontSize: '0.8rem',
-                                                }}></span>
-                                        )}
+                                        {(isUserRoute || isRegion || isAdmin) &&
+                                            onSubstationClick && (
+                                                <span
+                                                    style={{
+                                                        fontSize: '0.8rem',
+                                                    }}></span>
+                                            )}
                                     </span>
                                 ) : (
                                     'Substations'
@@ -171,14 +176,28 @@ const SummarySection = ({
                         />
                         <div className={styles.total_meters}>
                             <p className="title">
-                                {(isUserRoute || isRegion) && onFeederClick ? (
-                                    <span style={{ color: 'var(--brand-blue)' }}>
+                                {(isUserRoute || isRegion || isAdmin) &&
+                                onFeederClick ? (
+                                    <Link
+                                        to="#"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            onFeederClick();
+                                        }}
+                                        style={{
+                                            color: 'var(--brand-blue)',
+                                            textDecoration: 'none',
+                                            cursor: 'pointer',
+                                        }}>
                                         Feeders{' '}
-                                        {(isUserRoute || isRegion) && onFeederClick && (
-                                            <span style={{ fontSize: '0.8rem' }}>
-                                            </span>
-                                        )}
-                                    </span>
+                                        {(isUserRoute || isRegion || isAdmin) &&
+                                            onFeederClick && (
+                                                <span
+                                                    style={{
+                                                        fontSize: '0.8rem',
+                                                    }}></span>
+                                            )}
+                                    </Link>
                                 ) : (
                                     'Feeders'
                                 )}
@@ -260,26 +279,34 @@ const SummarySection = ({
                     </div>
                 </div>
             )}
-            {/* {showMaxDemand && (
+            {showDemand && (
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/electric-power.svg"
-                            alt="Maximum Demand"
+                            src="icons/demand_usage.svg"
+                            alt="Demand"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">Demand Usage</p>
                             <div className={styles.summary_value}>
-                                <RollingNumber n={widgetsData.maxDemand} />
-                                <span style={{ fontSize: '1rem', marginLeft: '0.5rem' }}>
-                                    {widgetsData.maxDemandUnit}
+                                <RollingNumber
+                                    n={widgetsData.Demand}
+                                    showDecimals={true}
+                                    decimals={1}
+                                />
+                                <span
+                                    style={{
+                                        fontSize: '1rem',
+                                        marginLeft: '0.5rem',
+                                    }}>
+                                    {widgetsData.DemandUnit}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
-            )} */}
+            )}
         </div>
     );
 };

@@ -8,6 +8,7 @@ import { io } from 'socket.io-client';
 import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
+
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
 const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
@@ -21,6 +22,20 @@ const RegionFeeders = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [feedersPerPage, setFeedersPerPage] = useState(6);
     const [viewMode, setViewMode] = useState('card');
+
+    const calculateTotalDemand = (data) => {
+        let total = 0;
+        for (const feederId in data) {
+            const seriesData = data[feederId]?.series?.[0]?.data;
+            if (seriesData && seriesData.length > 0) {
+                const latest = seriesData[seriesData.length - 1];
+                if (!isNaN(latest)) {
+                    total += parseFloat(latest);
+                }
+            }
+        }
+        return parseFloat(total.toFixed(1));
+    };
 
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedFeederData = localStorage.getItem('feederDemandData');
@@ -43,10 +58,11 @@ const RegionFeeders = () => {
                     feederStats: {},
                     feederDemandData: parsedFeederData,
                     feederIds: {},
+                    Demand: calculateTotalDemand(parsedFeederData),
+                    DemandUnit: 'MW',
                 };
             }
         }
-
         return {
             totalRegions: 0,
             totalEdcs: 0,
@@ -59,9 +75,10 @@ const RegionFeeders = () => {
             feederStats: {},
             feederDemandData: {},
             feederIds: {},
+            Demand: 0,
+            DemandUnit: 'MW',
         };
     });
-
     useEffect(() => {
         const newSocket = io(import.meta.env.VITE_SOCKET_BASE_URL, {
             path: nodeEnv === 'development' ? devSocketPath : socketPath,
@@ -69,16 +86,18 @@ const RegionFeeders = () => {
         setSocket(newSocket);
         newSocket.on('feederUpdate', (data) => {
             setWidgetsData((prevData) => {
-                const newData = {
+                const updatedFeederData = {
+                    ...prevData.feederDemandData,
+                    [data.feeder]: data.graphData,
+                };
+                const updated = {
                     ...prevData,
-                    feederDemandData: {
-                        ...prevData.feederDemandData,
-                        [data.feeder]: data.graphData,
-                    },
+                    feederDemandData: updatedFeederData,
+                    Demand: calculateTotalDemand(updatedFeederData),
                 };
                 localStorage.removeItem('feederDemandData');
                 localStorage.removeItem('feederDemandTimestamp');
-                return newData;
+                return updated;
             });
         });
 
@@ -110,18 +129,25 @@ const RegionFeeders = () => {
                 const commMeters = response.data.commMeters || 0;
                 const nonCommMeters = response.data.nonCommMeters || 0;
 
-                setWidgetsData((prev) => ({
-                    ...prev,
-                    feederNames: feedersData.map((feeder) => feeder.name) || [],
-                    feederIds:
-                        feedersData.map((feeder) => ({
-                            [feeder.name]: feeder.id,
-                        })) || [],
-                    feederCount: feedersData.length || 0,
-                    totalFeeders: feedersData.length || 0,
-                    commMeters,
-                    nonCommMeters,
-                }));
+                setWidgetsData((prev) => {
+                    const updated = {
+                        ...prev,
+                        feederNames:
+                            feedersData.map((feeder) => feeder.name) || [],
+                        feederIds:
+                            feedersData.map((feeder) => ({
+                                [feeder.name]: feeder.id,
+                            })) || [],
+                        feederCount: feedersData.length || 0,
+                        totalFeeders: feedersData.length || 0,
+                        commMeters,
+                        nonCommMeters,
+                    };
+                    updated.Demand = calculateTotalDemand(
+                        updated.feederDemandData
+                    );
+                    return updated;
+                });
             } catch (error) {
                 console.error('API error:', error);
                 try {
@@ -157,7 +183,6 @@ const RegionFeeders = () => {
             setCurrentPage(newPage);
         }
     };
-
     return (
         <div
             className={styles.main_content}
@@ -178,6 +203,8 @@ const RegionFeeders = () => {
                     commMeters: widgetsData.commMeters,
                     nonCommMeters: widgetsData.nonCommMeters,
                     totalDistricts: 0,
+                    Demand: widgetsData.Demand,
+                    DemandUnit: widgetsData.DemandUnit,
                 }}
                 isUserRoute={isRegion()}
                 isBiUserRoute={false}
@@ -185,6 +212,7 @@ const RegionFeeders = () => {
                 showDistricts={false}
                 showEdcs={false}
                 showSubstations={false}
+                showDemand={true}
             />
 
             <SectionHeader

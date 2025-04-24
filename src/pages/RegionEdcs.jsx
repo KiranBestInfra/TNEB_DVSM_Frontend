@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import styles from '../styles/Dashboard.module.css';
 import Breadcrumb from '../components/Breadcrumb/Breadcrumb';
@@ -11,14 +11,14 @@ import SectionHeader from '../components/SectionHeader/SectionHeader';
 const nodeEnv = import.meta.env.VITE_NODE_ENV;
 const socketPath = import.meta.env.VITE_SOCKET_PATH;
 const devSocketPath = import.meta.env.VITE_DEV_SOCKET_PATH;
+
 const RegionEdcs = () => {
     const { region: regionParam } = useParams();
-    const { user, isRegion } = useAuth();
+    const { user, isRegion, isAdmin } = useAuth();
     const region = isRegion() && user?.id ? user.id : regionParam;
     const [loading, setLoading] = useState(true);
     const [socket, setSocket] = useState(null);
-    const navigate = useNavigate();
-
+    const [demand, setDemand] = useState(0);
     const cacheTimeoutRef = useRef(null);
     const [selectedEdc, setSelectedEdc] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -45,6 +45,8 @@ const RegionEdcs = () => {
                     feederCount: {},
                     filteredEdcs: [],
                     edcDemandData: parsedDemandData,
+                    Demand: 0,
+                    DemandUnit: 'MW',
                 };
             }
         }
@@ -61,6 +63,7 @@ const RegionEdcs = () => {
             filteredEdcs: [],
             feederCount: {},
             edcDemandData: {},
+            Demand: 0,
         };
     });
 
@@ -125,6 +128,8 @@ const RegionEdcs = () => {
                 setLoading(true);
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response.data || {};
+                const edcDemandData = widgetsData.edcDemandData || {};
+
                 const transformedData = {
                     totalEdcs: data.edcNames?.length || 0,
                     totalSubstations:
@@ -146,11 +151,26 @@ const RegionEdcs = () => {
                             return acc;
                         }, {}) || {},
                     feederCount: data.feederCounts || {},
-                    edcDemandData: widgetsData.edcDemandData || {},
+                    edcDemandData,
                     filteredEdcs: data.edcNames,
+                    DemandUnit: 'MW',
                 };
 
+                const totalDemand = Object.entries(edcDemandData).reduce(
+                    (sum, [_, demandData]) => {
+                        const currentValue = Number(
+                            parseFloat(
+                                demandData?.series?.[0]?.data?.slice(-1)[0] || 0
+                            ).toFixed(1)
+                        );
+                        return sum + currentValue;
+                    },
+                    0
+                );
+
+                transformedData.Demand = Number(totalDemand.toFixed(1));
                 setWidgetsData(transformedData);
+                setDemand(transformedData.Demand);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching EDCs for region:', error);
@@ -193,6 +213,8 @@ const RegionEdcs = () => {
                 commMeters: widgetsData.commMeters || 0,
                 nonCommMeters: widgetsData.nonCommMeters || 0,
                 totalDistricts: widgetsData.totalDistricts,
+                Demand: widgetsData.Demand || 0,
+                DemandUnit: widgetsData.DemandUnit,
             };
         }
 
@@ -203,6 +225,7 @@ const RegionEdcs = () => {
             commMeters: widgetsData.commMeters || 0,
             nonCommMeters: widgetsData.nonCommMeters || 0,
             totalDistricts: widgetsData.totalDistricts,
+            Demand: widgetsData.Demand || 0,
         };
     };
 
@@ -217,11 +240,15 @@ const RegionEdcs = () => {
     const handleFeederClick = () => {
         if (isRegion()) {
             navigate(`/user/region/feeders`);
+        } else if (isAdmin() && region) {
+            navigate(`/admin/${region}/feeders`);
         }
     };
     const handleSubstationClick = () => {
         if (isRegion()) {
             navigate(`/user/region/substations`);
+        } else if (isAdmin() && region) {
+            navigate(`/admin/${region}/substations`);
         }
     };
 
@@ -235,10 +262,6 @@ const RegionEdcs = () => {
             const name = typeof edc === 'string' ? edc : edc.hierarchy_name;
             return name?.toLowerCase().includes(searchQuery.toLowerCase());
         }) || [];
-    
-    const redirectSubstation = () => {
-        return 
-    }
 
     return (
         <div className={styles.main_content}>
@@ -248,14 +271,15 @@ const RegionEdcs = () => {
             <SummarySection
                 widgetsData={getSummaryData()}
                 isUserRoute={isRegion()}
+                isAdmin={isAdmin()}
                 isBiUserRoute={location.pathname.includes('/bi/user/')}
                 showRegions={false}
                 showDistricts={true}
-                showSubstations={true}
-                showFeeders={true}
-                showEdcs={true}
-                onSubstationClick={handleSubstationClick || null}
-                onFeederClick={handleFeederClick || null}
+                onSubstationClick={() => {
+                    if (isRegion()) {
+                        navigate('/user/region/edcs');
+                    }
+                }}
             />
 
             <SectionHeader
@@ -312,7 +336,15 @@ const RegionEdcs = () => {
                                     )[0] || 0
                                 ).toFixed(1)
                             );
-
+                            const totalCurrentValue =
+                                demandData?.series?.reduce((sum, series) => {
+                                    const latestValue = Number(
+                                        parseFloat(
+                                            series?.data?.slice(-1)[0] || 0
+                                        ).toFixed(1)
+                                    );
+                                    return sum + latestValue;
+                                }, 0);
                             return (
                                 <div
                                     key={index}
