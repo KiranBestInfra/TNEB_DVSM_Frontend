@@ -46,6 +46,7 @@ const RegionEdcs = () => {
                     filteredEdcs: [],
                     edcDemandData: parsedDemandData,
                     Demand: 0,
+                    DemandUnit: 'MW',
                 };
             }
         }
@@ -127,6 +128,8 @@ const RegionEdcs = () => {
                 setLoading(true);
                 const response = await apiClient.get(`/edcs/widgets/${region}`);
                 const data = response.data || {};
+                const edcDemandData = widgetsData.edcDemandData || {};
+
                 const transformedData = {
                     totalEdcs: data.edcNames?.length || 0,
                     totalSubstations:
@@ -148,11 +151,26 @@ const RegionEdcs = () => {
                             return acc;
                         }, {}) || {},
                     feederCount: data.feederCounts || {},
-                    edcDemandData: widgetsData.edcDemandData || {},
+                    edcDemandData,
                     filteredEdcs: data.edcNames,
+                    DemandUnit: 'MW',
                 };
 
+                const totalDemand = Object.entries(edcDemandData).reduce(
+                    (sum, [_, demandData]) => {
+                        const currentValue = Number(
+                            parseFloat(
+                                demandData?.series?.[0]?.data?.slice(-1)[0] || 0
+                            ).toFixed(1)
+                        );
+                        return sum + currentValue;
+                    },
+                    0
+                );
+
+                transformedData.Demand = Number(totalDemand.toFixed(1));
                 setWidgetsData(transformedData);
+                setDemand(transformedData.Demand);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching EDCs for region:', error);
@@ -195,6 +213,8 @@ const RegionEdcs = () => {
                 commMeters: widgetsData.commMeters || 0,
                 nonCommMeters: widgetsData.nonCommMeters || 0,
                 totalDistricts: widgetsData.totalDistricts,
+                Demand: widgetsData.Demand || 0,
+                DemandUnit: widgetsData.DemandUnit,
             };
         }
 
@@ -205,6 +225,7 @@ const RegionEdcs = () => {
             commMeters: widgetsData.commMeters || 0,
             nonCommMeters: widgetsData.nonCommMeters || 0,
             totalDistricts: widgetsData.totalDistricts,
+            Demand: widgetsData.Demand || 0,
         };
     };
 

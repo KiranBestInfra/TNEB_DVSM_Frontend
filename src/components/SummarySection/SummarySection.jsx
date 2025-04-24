@@ -29,7 +29,6 @@ const SummarySection = ({
     showFeeders = true,
     showDemand = true,
 }) => {
-    console.log(widgetsData.Demand)
     return (
         <div className={styles.summary_section}>
             {showRegions && (
@@ -74,7 +73,9 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute || isRegion || isAdmin && onEdcClick ? (
+                                {isUserRoute ||
+                                isRegion ||
+                                (isAdmin && onEdcClick) ? (
                                     <Link
                                         to="/user/edcs"
                                         style={{
@@ -135,16 +136,18 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {(isUserRoute || isRegion || isAdmin) && onSubstationClick ? (
+                                {(isUserRoute || isRegion || isAdmin) &&
+                                onSubstationClick ? (
                                     <span
                                         style={{ color: 'var(--brand-blue)' }}>
                                         Substations{' '}
-                                        {(isUserRoute || isRegion || isAdmin) && onSubstationClick && (
-                                            <span
-                                                style={{
-                                                    fontSize: '0.8rem',
-                                                }}></span>
-                                        )}
+                                        {(isUserRoute || isRegion || isAdmin) &&
+                                            onSubstationClick && (
+                                                <span
+                                                    style={{
+                                                        fontSize: '0.8rem',
+                                                    }}></span>
+                                            )}
                                     </span>
                                 ) : (
                                     'Substations'
@@ -173,7 +176,8 @@ const SummarySection = ({
                         />
                         <div className={styles.total_meters}>
                             <p className="title">
-                                {(isUserRoute || isRegion || isAdmin) && onFeederClick ? (
+                                {(isUserRoute || isRegion || isAdmin) &&
+                                onFeederClick ? (
                                     <Link
                                         to="#"
                                         onClick={(e) => {
@@ -186,18 +190,20 @@ const SummarySection = ({
                                             cursor: 'pointer',
                                         }}>
                                         Feeders{' '}
-                                        {(isUserRoute || isRegion || isAdmin) && onFeederClick && (
-                                            <span style={{ fontSize: '0.8rem' }}>
-                                            </span>
-                                        )}
+                                        {(isUserRoute || isRegion || isAdmin) &&
+                                            onFeederClick && (
+                                                <span
+                                                    style={{
+                                                        fontSize: '0.8rem',
+                                                    }}></span>
+                                            )}
                                     </Link>
                                 ) : (
                                     'Feeders'
                                 )}
                             </p>
                             <div className={styles.summary_value}>
-                                <RollingNumber n={widgetsData.totalFeeders}  />
-                               
+                                <RollingNumber n={widgetsData.totalFeeders} />
                             </div>
                         </div>
                     </div>
@@ -284,7 +290,11 @@ const SummarySection = ({
                         <div className={styles.total_title_value}>
                             <p className="title">Demand Usage</p>
                             <div className={styles.summary_value}>
-                                <RollingNumber n={widgetsData.Demand} showDecimals={true}  decimals={1}  />
+                                <RollingNumber
+                                    n={widgetsData.Demand}
+                                    showDecimals={true}
+                                    decimals={1}
+                                />
                                 <span
                                     style={{
                                         fontSize: '1rem',

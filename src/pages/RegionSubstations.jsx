@@ -87,6 +87,8 @@ const RegionSubstations = () => {
                     substationFeederCounts: {},
                     substationDemandData: parsedDemandData,
                     substationIds: {},
+                    Demand: 0,
+                    DemandUnit: 'MW',
                 };
             }
         }
@@ -103,6 +105,7 @@ const RegionSubstations = () => {
             substationFeederCounts: {},
             substationDemandData: {},
             substationIds: {},
+            Demand: 0,
         };
     });
 
@@ -116,13 +119,31 @@ const RegionSubstations = () => {
 
         newSocket.on('substationUpdate', (data) => {
             setWidgetsData((prevData) => {
+                // Update the specific substation's graph data
+                const updatedDemandData = {
+                    ...prevData.substationDemandData,
+                    [data.substation]: data.graphData,
+                };
+
+                // Calculate total demand from all currentValues
+                const totalDemand = Object.values(updatedDemandData).reduce(
+                    (sum, graph) => {
+                        const seriesData = graph?.series?.[0]?.data;
+                        const currentValue =
+                            seriesData && seriesData.length
+                                ? parseFloat(seriesData[seriesData.length - 1])
+                                : 0;
+                        return sum + currentValue;
+                    },
+                    0
+                );
+
                 const newData = {
                     ...prevData,
-                    substationDemandData: {
-                        ...prevData.substationDemandData,
-                        [data.substation]: data.graphData,
-                    },
+                    substationDemandData: updatedDemandData,
+                    Demand: parseFloat(totalDemand.toFixed(1)), // optional rounding
                 };
+
                 localStorage.setItem(
                     'substationDemandData',
                     JSON.stringify(newData.substationDemandData)
@@ -131,6 +152,7 @@ const RegionSubstations = () => {
                     'substationDemandTimestamp',
                     Date.now().toString()
                 );
+
                 return newData;
             });
 
@@ -202,7 +224,7 @@ const RegionSubstations = () => {
 
         substationNames();
     }, [region]);
-   
+
     const handleTimeframeChange = (e) => {
         setTimeframe(e.target.value);
     };
@@ -232,6 +254,8 @@ const RegionSubstations = () => {
                 totalFeeders: widgetsData.totalFeeders,
                 commMeters: widgetsData.commMeters,
                 nonCommMeters: widgetsData.nonCommMeters,
+                Demand: widgetsData.Demand,
+                DemandUnit: widgetsData.DemandUnit || 'MW',
             };
         }
 
@@ -243,6 +267,8 @@ const RegionSubstations = () => {
                 widgetsData.substationFeederCounts?.[selectedSubstation] || 0,
             commMeters: widgetsData.commMeters,
             nonCommMeters: widgetsData.nonCommMeters,
+            Demand: widgetsData.Demand,
+            DemandUnit: widgetsData.DemandUnit || 'MW',
         };
     };
 
@@ -267,6 +293,7 @@ const RegionSubstations = () => {
                         showSubstations={true}
                         showFeeders={true}
                         onFeederClick={handleFeederClick || null}
+                        showDemand={true}
                     />
 
                     <div className={styles.section_header}>
