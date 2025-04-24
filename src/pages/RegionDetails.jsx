@@ -8,7 +8,7 @@ import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
 const RegionDetails = () => {
     const { region: regionParam } = useParams();
-    const { user, isRegion,isAdmin } = useAuth();
+    const { user, isRegion, isAdmin } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
     const [timeRange, setTimeRange] = useState('Daily');
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -90,7 +90,6 @@ const RegionDetails = () => {
                     const latestCurrentDayValue =
                         data.series[0].data[data.series[0].data.length - 1];
                     setDemand(latestCurrentDayValue);
-                    console.log('Latest Demand:', latestCurrentDayValue); // ✅ Here's your latest value!
                 }
                 setGraphData(data);
             } catch (error) {
