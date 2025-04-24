@@ -10,7 +10,6 @@ import SummarySection from '../components/SummarySection';
 import SectionHeader from '../components/SectionHeader/SectionHeader';
 import { useAuth } from '../components/AuthProvider';
 
-
 const EdcDetails = () => {
     const { edc: edcParam } = useParams();
     const { user, isCircle } = useAuth();
@@ -73,13 +72,13 @@ const EdcDetails = () => {
     });
 
     //const entityId =  user?.id;
-    const entityId = isCircle() ? user?.id : (regionUser ? edcId : edcId);
-    const entityName = adminUser || regionUser ? entityId : edcName?.replace('_EDC', '').toLowerCase();
+    const entityId = isCircle() ? user?.id : regionUser ? edcId : edcId;
+    const entityName =
+        adminUser || regionUser
+            ? entityId
+            : edcName?.replace('_EDC', '').toLowerCase();
     //console.log('entityName', entityName);
     const navigate = useNavigate();
-
-  
-
 
     useEffect(() => {
         const fetchGraphData = async () => {
@@ -91,7 +90,9 @@ const EdcDetails = () => {
                     return `${year}-${month}-${day} 00:00:00`;
                 };
 
-                const formattedDate = selectedDate ? formatDate(selectedDate) : formatDate(new Date());
+                const formattedDate = selectedDate
+                    ? formatDate(selectedDate)
+                    : formatDate(new Date());
                 const response = await apiClient.get(
                     `/edcs/graph/${entityId}/demand/${formattedDate}`
                 );
@@ -113,16 +114,7 @@ const EdcDetails = () => {
 
         fetchGraphData();
     }, [entityId, timeRange, selectedDate]);
-
-    // const entityName = entityId
-    //     ? entityId
-    //           .split('-')
-    //           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    //           .join(' ')
-    //     : 'Unknown';
-
     useEffect(() => {
-       
         const fetchEdcWidgets = async () => {
             try {
                 const response = await apiClient.get(`/edcs/${edcId}/widgets`);
@@ -152,7 +144,28 @@ const EdcDetails = () => {
 
         fetchEdcWidgets();
     }, [edcId]);
+    useEffect(() => {
+        const getLatestDemand = () => {
+            if (graphData.series?.length > 0) {
+                const demandSeries = graphData.series[0]?.data;
+                if (Array.isArray(demandSeries) && demandSeries.length > 0) {
+                    const latest = demandSeries[demandSeries.length - 1];
+                    return parseFloat(latest).toFixed(1); // or `.toFixed(2)` if needed
+                }
+            }
+            return null;
+        };
 
+        const latestDemand = getLatestDemand();
+
+        if (latestDemand !== null) {
+            setWidgetsData((prev) => ({
+                ...prev,
+                demand: parseFloat(latestDemand),
+                demandUnit: 'MW',
+            }));
+        }
+    }, [graphData]);
     const stats = {
         substationCount: widgetsData.edcSubstationCount,
         feederCount: widgetsData.edcFeederCount,
@@ -161,58 +174,59 @@ const EdcDetails = () => {
         districtcounts: widgetsData.districtcounts,
         commMeters: widgetsData.commMeters || 0,
         nonCommMeters: widgetsData.nonCommMeters || 0,
+        demand: widgetsData.demand || 0,
+        demandUnit: widgetsData.demandUnit || 'MW',
     };
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
-
     return (
         <div className={styles.main_content}>
             <SectionHeader title={`${entityName} EDC`} />
             <Breadcrumb />
-                      <SummarySection
-        widgetsData={{
-        totalDistricts:stats.districtcounts,
-        totalSubstations:stats.substationCount,
-          totalFeeders: stats.feederCount,
-          commMeters: stats.commMeters,
-          nonCommMeters: stats.nonCommMeters,
-        }}
-        isUserRoute={isCircle()}
-        isRegion={isRegion()}
-        isAdmin={isAdmin()}
-        showDistricts={true}
-        showFeeders={true}
-        showEdcs={false}
-        showSubstations={true}
-        showRegions={false}
-
-        onSubstationClick={() => {
-            if (isCircle()) {
-                navigate(`/user/edc/${edcId}/substations`);
-            } else if (isRegion()) {
-                navigate(`/user/region/${edcId}/substations`);
-            } else if (isAdmin() && region && edcId) {
-                navigate(`/admin/${region}/${edcId}/substations`);
-            }
-        }}
-        onFeederClick={() => {
-            if (isCircle()) {
-                navigate(`/user/edc/${edcId}/feeders`);
-            } else if (isRegion()) {
-                navigate(`/user/region/${edcId}/feeders`);
-            } else if (isAdmin() && region && edcId) {
-                navigate(`/admin/${region}/${edcId}/feeders`);
-            }
-        }}
-      />           
-        
+            <SummarySection
+                widgetsData={{
+                    totalDistricts: stats.districtcounts,
+                    totalSubstations: stats.substationCount,
+                    totalFeeders: stats.feederCount,
+                    commMeters: stats.commMeters,
+                    nonCommMeters: stats.nonCommMeters,
+                    Demand: stats.demand,
+                    DemandUnit: stats.demandUnit,
+                }}
+                isUserRoute={isCircle()}
+                isRegion={isRegion()}
+                isAdmin={isAdmin()}
+                showDistricts={true}
+                showFeeders={true}
+                showEdcs={false}
+                showSubstations={true}
+                showRegions={false}
+                onSubstationClick={() => {
+                    if (isCircle()) {
+                        navigate(`/user/edc/${edcId}/substations`);
+                    } else if (isRegion()) {
+                        navigate(`/user/region/${edcId}/substations`);
+                    } else if (isAdmin() && region && edcId) {
+                        navigate(`/admin/${region}/${edcId}/substations`);
+                    }
+                }}
+                onFeederClick={() => {
+                    if (isCircle()) {
+                        navigate(`/user/edc/${edcId}/feeders`);
+                    } else if (isRegion()) {
+                        navigate(`/user/region/${edcId}/feeders`);
+                    } else if (isAdmin() && region && edcId) {
+                        navigate(`/admin/${region}/${edcId}/feeders`);
+                    }
+                }}
+            />
 
             <div className={styles.chart_container}>
-                <DynamicGraph 
-                    data={graphData} 
-                    timeRange={timeRange} 
+                <DynamicGraph
+                    data={graphData}
+                    timeRange={timeRange}
                     onDateChange={handleDateChange}
                     selectedDate={selectedDate}
                 />

@@ -43,6 +43,7 @@ const Regions = () => {
                     regionDemandData: parsedDemandData,
                     regionStats: {},
                     Demand: 0,
+                    DemandUnit: 'MW',
                 };
             }
         }
@@ -62,6 +63,7 @@ const Regions = () => {
             regionDemandData: {},
             regionStats: {},
             Demand: 0,
+            DemandUnit: 'MW',
         };
     });
 
@@ -156,6 +158,7 @@ const Regions = () => {
                 feederCount: data.regionFeederCounts || prev.feederCount,
                 //   regionDemandData: prev.regionDemandData,
                 // regionStats: prev.regionStats,
+                DemandUnit: 'MW',
             }));
         };
 

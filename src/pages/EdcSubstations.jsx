@@ -184,6 +184,8 @@ const EdcSubstations = () => {
             substationFeederCounts: {},
             substationStats: {},
             substationDemandData: {},
+            Demand: 0,
+            DemandUnit: 'MW',
         };
     });
     useEffect(() => {
@@ -275,6 +277,22 @@ const EdcSubstations = () => {
                 .toLowerCase()
                 .includes(searchQuery.toLowerCase())
     );
+    useEffect(() => {
+        if (!filteredSubstations || filteredSubstations.length === 0) return;
+
+        const totalDemand = filteredSubstations.reduce((sum, substation) => {
+            const latestValue =
+                widgetsData.substationDemandData?.[
+                    substation.hierarchy_id
+                ]?.series?.[0]?.data?.slice(-1)[0] || 0;
+            return sum + parseFloat(latestValue || 0);
+        }, 0);
+
+        setWidgetsData((prev) => ({
+            ...prev,
+            demand: Number(totalDemand.toFixed(1)), // Round to 1 decimal
+        }));
+    }, [filteredSubstations, widgetsData.substationDemandData]);
 
     try {
         return (
@@ -292,6 +310,8 @@ const EdcSubstations = () => {
                             commMeters: widgetsData.commMeters,
                             nonCommMeters: widgetsData.nonCommMeters,
                             totalDistricts: widgetsData.totalDistricts,
+                            Demand: widgetsData.demand,
+                            DemandUnit: widgetsData.DemandUnit,
                         }}
                         isUserRoute={isCircle()}
                         isRegion={isRegion()}
@@ -311,6 +331,7 @@ const EdcSubstations = () => {
                                 ? handleFeederClick
                                 : null
                         }
+                        showDemand={true}
                     />
 
                     <SectionHeader
