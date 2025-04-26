@@ -156,6 +156,7 @@ const Dashboard = () => {
                 isBiUserRoute={isBiUserRoute}
                 showDistricts={true}
                 showDemand={true}
+                showCommStatus={false}
             />
 
             <div className={styles.detail_chart}>

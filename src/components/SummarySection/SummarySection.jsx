@@ -28,6 +28,7 @@ const SummarySection = ({
     showSubstations = true,
     showFeeders = true,
     showDemand = true,
+    showCommStatus = true,
 }) => {
     return (
         <div className={styles.summary_section}>
@@ -207,76 +208,80 @@ const SummarySection = ({
                             </div>
                         </div>
                     </div>
-                    <div className={styles.metrics_communication_info}>
-                        <div className="titles">Communication Status</div>
-                        <div className={styles.overall_communication_status}>
+                    {showCommStatus && (
+                        <div className={styles.metrics_communication_info}>
+                            <div className="titles">Communication Status</div>
                             <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    {widgetsData.commMeters}
+                                className={styles.overall_communication_status}>
+                                <div
+                                    className={
+                                        styles.communication_status_container
+                                    }>
+                                    <div className={styles.communication_value}>
+                                        {widgetsData.commMeters}
+                                    </div>
+                                    <div
+                                        className={
+                                            styles.communication_positive_percentage
+                                        }>
+                                        <img
+                                            src="icons/up-right-arrow.svg"
+                                            alt="Positive"
+                                            className={
+                                                styles.communication_positive_arrow
+                                            }
+                                        />
+                                        {(() => {
+                                            const comm =
+                                                widgetsData?.commMeters ?? 0;
+                                            const nonComm =
+                                                widgetsData?.nonCommMeters ?? 0;
+                                            const total = comm + nonComm;
+                                            if (total === 0) return '0.0';
+                                            return (
+                                                (comm / total) *
+                                                100
+                                            ).toFixed(1);
+                                        })()}
+                                        %
+                                    </div>
                                 </div>
                                 <div
                                     className={
-                                        styles.communication_positive_percentage
+                                        styles.communication_status_container
                                     }>
-                                    <img
-                                        src="icons/up-right-arrow.svg"
-                                        alt="Positive"
+                                    <div className={styles.communication_value}>
+                                        {widgetsData?.nonCommMeters ?? 0}
+                                    </div>
+                                    <div
                                         className={
-                                            styles.communication_positive_arrow
-                                        }
-                                    />
-                                    {(() => {
-                                        const comm =
-                                            widgetsData?.commMeters ?? 0;
-                                        const nonComm =
-                                            widgetsData?.nonCommMeters ?? 0;
-                                        const total = comm + nonComm;
-                                        if (total === 0) return '0.0';
-                                        return ((comm / total) * 100).toFixed(
-                                            1
-                                        );
-                                    })()}
-                                    %
-                                </div>
-                            </div>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    {widgetsData?.nonCommMeters ?? 0}
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_negative_percentage
-                                    }>
-                                    <img
-                                        src="icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_negative_arrow
-                                        }
-                                    />
-                                    {(() => {
-                                        const comm =
-                                            widgetsData?.commMeters ?? 0;
-                                        const nonComm =
-                                            widgetsData?.nonCommMeters ?? 0;
-                                        const total = comm + nonComm;
-                                        if (total === 0) return '0.0';
-                                        return (
-                                            (nonComm / total) *
-                                            100
-                                        ).toFixed(1);
-                                    })()}
-                                    %
+                                            styles.communication_negative_percentage
+                                        }>
+                                        <img
+                                            src="icons/up-right-arrow.svg"
+                                            alt="Positive"
+                                            className={
+                                                styles.communication_negative_arrow
+                                            }
+                                        />
+                                        {(() => {
+                                            const comm =
+                                                widgetsData?.commMeters ?? 0;
+                                            const nonComm =
+                                                widgetsData?.nonCommMeters ?? 0;
+                                            const total = comm + nonComm;
+                                            if (total === 0) return '0.0';
+                                            return (
+                                                (nonComm / total) *
+                                                100
+                                            ).toFixed(1);
+                                        })()}
+                                        %
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             )}
             {showDemand && (
