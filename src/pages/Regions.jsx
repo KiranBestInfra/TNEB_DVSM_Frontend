@@ -42,6 +42,8 @@ const Regions = () => {
                     feederCount: {},
                     regionDemandData: parsedDemandData,
                     regionStats: {},
+                    Demand: 0,
+                    DemandUnit: 'MW',
                 };
             }
         }
@@ -60,6 +62,8 @@ const Regions = () => {
             feederCount: {},
             regionDemandData: {},
             regionStats: {},
+            Demand: 0,
+            DemandUnit: 'MW',
         };
     });
 
@@ -71,21 +75,39 @@ const Regions = () => {
 
         newSocket.on('regionUpdate', (data) => {
             setWidgetsData((prevData) => {
+                const updatedRegionDemandData = {
+                    ...prevData.regionDemandData,
+                    [data.region]: data.graphData,
+                };
+
+                // Calculate total demand
+                const totalDemand = Object.values(
+                    updatedRegionDemandData
+                ).reduce((sum, regionData) => {
+                    const lastValue =
+                        regionData?.series?.[0]?.data?.slice(-1)[0];
+                    const value =
+                        lastValue !== undefined && lastValue !== null
+                            ? parseFloat(lastValue)
+                            : 0;
+                    return sum + value;
+                }, 0);
+
                 const newData = {
                     ...prevData,
-                    regionDemandData: {
-                        ...prevData.regionDemandData,
-                        [data.region]: data.graphData,
-                    },
+                    regionDemandData: updatedRegionDemandData,
+                    Demand: parseFloat(totalDemand.toFixed(1)),
                 };
+
                 localStorage.setItem(
                     'regionDemandData',
-                    JSON.stringify(newData.regionDemandData)
+                    JSON.stringify(updatedRegionDemandData)
                 );
                 localStorage.setItem(
                     'regionDemandTimestamp',
                     Date.now().toString()
                 );
+
                 return newData;
             });
 
@@ -136,6 +158,7 @@ const Regions = () => {
                 feederCount: data.regionFeederCounts || prev.feederCount,
                 //   regionDemandData: prev.regionDemandData,
                 // regionStats: prev.regionStats,
+                DemandUnit: 'MW',
             }));
         };
 
@@ -207,6 +230,7 @@ const Regions = () => {
                 onSubstationClick={isRegionUser ? handleSubstationClick : null}
                 showRegions={false}
                 showDistricts={true}
+                showDemand={true}
             />
 
             <SectionHeader
@@ -238,66 +262,62 @@ const Regions = () => {
                             (currentPage - 1) * regionsPerPage,
                             currentPage * regionsPerPage
                         )
-                        .map((region, index) => (
-                            <div
-                                key={index}
-                                className={styles.individual_region_stats}>
-                                <ShortDetailsWidget
-                                    region={region}
-                                    name={region}
-                                    edcCount={
-                                        widgetsData.edcCount?.[region.trim()] ||
-                                        0
-                                    }
-                                    substationCount={
-                                        widgetsData.substationCount?.[
-                                            region.trim()
-                                        ] ?? 0
-                                    }
-                                    feederCount={
-                                        widgetsData.feederCount?.[
-                                            region.trim()
-                                        ] ?? 0
-                                    }
-                                    graphData={
-                                        widgetsData.regionDemandData?.[
-                                            region.trim()
-                                        ] ?? {
-                                            xAxis: [],
-                                            series: [],
+                        .map((region, index) => {
+                            const currentValue = (() => {
+                                const value =
+                                    widgetsData.regionDemandData?.[
+                                        region.trim()
+                                    ]?.series?.[0]?.data?.slice(-1)[0];
+                                return value !== undefined && value !== null
+                                    ? parseFloat(parseFloat(value).toFixed(1))
+                                    : 0.0;
+                            })();
+                            const previousValue = (() => {
+                                const value = widgetsData.regionDemandData?.[
+                                    region.trim()
+                                ]?.series?.[0]?.data?.slice(-2, -1)[0];
+                                return value !== undefined && value !== null
+                                    ? parseFloat(parseFloat(value).toFixed(1))
+                                    : 0.0;
+                            })();
+
+                            return (
+                                <div
+                                    key={index}
+                                    className={styles.individual_region_stats}>
+                                    <ShortDetailsWidget
+                                        region={region}
+                                        name={region}
+                                        edcCount={
+                                            widgetsData.edcCount?.[
+                                                region.trim()
+                                            ] || 0
                                         }
-                                    }
-                                    currentValue={(() => {
-                                        const value =
+                                        substationCount={
+                                            widgetsData.substationCount?.[
+                                                region.trim()
+                                            ] ?? 0
+                                        }
+                                        feederCount={
+                                            widgetsData.feederCount?.[
+                                                region.trim()
+                                            ] ?? 0
+                                        }
+                                        graphData={
                                             widgetsData.regionDemandData?.[
                                                 region.trim()
-                                            ]?.series?.[0]?.data?.slice(-1)[0];
-                                        return value !== undefined &&
-                                            value !== null
-                                            ? parseFloat(
-                                                  parseFloat(value).toFixed(1)
-                                              )
-                                            : 0.0;
-                                    })()}
-                                    previousValue={(() => {
-                                        const value =
-                                            widgetsData.regionDemandData?.[
-                                                region.trim()
-                                            ]?.series?.[0]?.data?.slice(
-                                                -2,
-                                                -1
-                                            )[0];
-                                        return value !== undefined &&
-                                            value !== null
-                                            ? parseFloat(
-                                                  parseFloat(value).toFixed(1)
-                                              )
-                                            : 0.0;
-                                    })()}
-                                    showInfoIcon={true}
-                                />
-                            </div>
-                        ))
+                                            ] ?? {
+                                                xAxis: [],
+                                                series: [],
+                                            }
+                                        }
+                                        currentValue={currentValue}
+                                        previousValue={previousValue}
+                                        showInfoIcon={true}
+                                    />
+                                </div>
+                            );
+                        })
                 ) : (
                     <p>No regions available</p>
                 )}

@@ -12,8 +12,8 @@ const SummarySection = ({
         commMeters: 0,
         nonCommMeters: 0,
         totalDistricts: 0,
-        maxDemand: 0,
-        maxDemandUnit: 'MW',
+        Demand: 0,
+        DemandUnit: 'MW',
     },
     isUserRoute = false,
     isBiUserRoute = false,
@@ -27,7 +27,8 @@ const SummarySection = ({
     showEdcs = true,
     showSubstations = true,
     showFeeders = true,
-    showMaxDemand = true,
+    showDemand = true,
+    showCommStatus = true,
 }) => {
     return (
         <div className={styles.summary_section}>
@@ -73,7 +74,9 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {isUserRoute || isRegion || isAdmin && onEdcClick ? (
+                                {isUserRoute ||
+                                isRegion ||
+                                (isAdmin && onEdcClick) ? (
                                     <Link
                                         to="/user/edcs"
                                         style={{
@@ -134,16 +137,18 @@ const SummarySection = ({
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">
-                                {(isUserRoute || isRegion || isAdmin) && onSubstationClick ? (
+                                {(isUserRoute || isRegion || isAdmin) &&
+                                onSubstationClick ? (
                                     <span
                                         style={{ color: 'var(--brand-blue)' }}>
                                         Substations{' '}
-                                        {(isUserRoute || isRegion || isAdmin) && onSubstationClick && (
-                                            <span
-                                                style={{
-                                                    fontSize: '0.8rem',
-                                                }}></span>
-                                        )}
+                                        {(isUserRoute || isRegion || isAdmin) &&
+                                            onSubstationClick && (
+                                                <span
+                                                    style={{
+                                                        fontSize: '0.8rem',
+                                                    }}></span>
+                                            )}
                                     </span>
                                 ) : (
                                     'Substations'
@@ -172,7 +177,8 @@ const SummarySection = ({
                         />
                         <div className={styles.total_meters}>
                             <p className="title">
-                                {(isUserRoute || isRegion || isAdmin) && onFeederClick ? (
+                                {(isUserRoute || isRegion || isAdmin) &&
+                                onFeederClick ? (
                                     <Link
                                         to="#"
                                         onClick={(e) => {
@@ -185,10 +191,13 @@ const SummarySection = ({
                                             cursor: 'pointer',
                                         }}>
                                         Feeders{' '}
-                                        {(isUserRoute || isRegion || isAdmin) && onFeederClick && (
-                                            <span style={{ fontSize: '0.8rem' }}>
-                                            </span>
-                                        )}
+                                        {(isUserRoute || isRegion || isAdmin) &&
+                                            onFeederClick && (
+                                                <span
+                                                    style={{
+                                                        fontSize: '0.8rem',
+                                                    }}></span>
+                                            )}
                                     </Link>
                                 ) : (
                                     'Feeders'
@@ -199,98 +208,110 @@ const SummarySection = ({
                             </div>
                         </div>
                     </div>
-                    <div className={styles.metrics_communication_info}>
-                        <div className="titles">Communication Status</div>
-                        <div className={styles.overall_communication_status}>
+                    {showCommStatus && (
+                        <div className={styles.metrics_communication_info}>
+                            <div className="titles">Communication Status</div>
                             <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    {widgetsData.commMeters}
+                                className={styles.overall_communication_status}>
+                                <div
+                                    className={
+                                        styles.communication_status_container
+                                    }>
+                                    <div className={styles.communication_value}>
+                                        {widgetsData.commMeters}
+                                    </div>
+                                    <div
+                                        className={
+                                            styles.communication_positive_percentage
+                                        }>
+                                        <img
+                                            src="icons/up-right-arrow.svg"
+                                            alt="Positive"
+                                            className={
+                                                styles.communication_positive_arrow
+                                            }
+                                        />
+                                        {(() => {
+                                            const comm =
+                                                widgetsData?.commMeters ?? 0;
+                                            const nonComm =
+                                                widgetsData?.nonCommMeters ?? 0;
+                                            const total = comm + nonComm;
+                                            if (total === 0) return '0.0';
+                                            return (
+                                                (comm / total) *
+                                                100
+                                            ).toFixed(1);
+                                        })()}
+                                        %
+                                    </div>
                                 </div>
                                 <div
                                     className={
-                                        styles.communication_positive_percentage
+                                        styles.communication_status_container
                                     }>
-                                    <img
-                                        src="icons/up-right-arrow.svg"
-                                        alt="Positive"
+                                    <div className={styles.communication_value}>
+                                        {widgetsData?.nonCommMeters ?? 0}
+                                    </div>
+                                    <div
                                         className={
-                                            styles.communication_positive_arrow
-                                        }
-                                    />
-                                    {(() => {
-                                        const comm =
-                                            widgetsData?.commMeters ?? 0;
-                                        const nonComm =
-                                            widgetsData?.nonCommMeters ?? 0;
-                                        const total = comm + nonComm;
-                                        if (total === 0) return '0.0';
-                                        return ((comm / total) * 100).toFixed(
-                                            1
-                                        );
-                                    })()}
-                                    %
-                                </div>
-                            </div>
-                            <div
-                                className={
-                                    styles.communication_status_container
-                                }>
-                                <div className={styles.communication_value}>
-                                    {widgetsData?.nonCommMeters ?? 0}
-                                </div>
-                                <div
-                                    className={
-                                        styles.communication_negative_percentage
-                                    }>
-                                    <img
-                                        src="icons/up-right-arrow.svg"
-                                        alt="Positive"
-                                        className={
-                                            styles.communication_negative_arrow
-                                        }
-                                    />
-                                    {(() => {
-                                        const comm =
-                                            widgetsData?.commMeters ?? 0;
-                                        const nonComm =
-                                            widgetsData?.nonCommMeters ?? 0;
-                                        const total = comm + nonComm;
-                                        if (total === 0) return '0.0';
-                                        return (
-                                            (nonComm / total) *
-                                            100
-                                        ).toFixed(1);
-                                    })()}
-                                    %
+                                            styles.communication_negative_percentage
+                                        }>
+                                        <img
+                                            src="icons/up-right-arrow.svg"
+                                            alt="Positive"
+                                            className={
+                                                styles.communication_negative_arrow
+                                            }
+                                        />
+                                        {(() => {
+                                            const comm =
+                                                widgetsData?.commMeters ?? 0;
+                                            const nonComm =
+                                                widgetsData?.nonCommMeters ?? 0;
+                                            const total = comm + nonComm;
+                                            if (total === 0) return '0.0';
+                                            return (
+                                                (nonComm / total) *
+                                                100
+                                            ).toFixed(1);
+                                        })()}
+                                        %
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             )}
-            {/* {showMaxDemand && (
+            {showDemand && (
                 <div className={styles.total_substations_container}>
                     <div className={styles.total_main_info}>
                         <img
-                            src="icons/electric-power.svg"
-                            alt="Maximum Demand"
+                            src="icons/demand_usage.svg"
+                            alt="Demand"
                             className={styles.TNEB_icons}
                         />
                         <div className={styles.total_title_value}>
                             <p className="title">Demand Usage</p>
                             <div className={styles.summary_value}>
-                                <RollingNumber n={widgetsData.maxDemand} />
-                                <span style={{ fontSize: '1rem', marginLeft: '0.5rem' }}>
-                                    {widgetsData.maxDemandUnit}
+                                <RollingNumber
+                                    n={widgetsData.Demand}
+                                    showDecimals={true}
+                                    decimals={1}
+                                />
+                                <span
+                                    style={{
+                                        fontSize: '1rem',
+                                        marginLeft: '0.5rem',
+                                    }}>
+                                    {widgetsData.DemandUnit}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </div>
-            )} */}
+            )}
         </div>
     );
 };

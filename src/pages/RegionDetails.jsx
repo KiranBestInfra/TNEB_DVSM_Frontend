@@ -8,7 +8,7 @@ import SummarySection from '../components/SummarySection';
 import { useAuth } from '../components/AuthProvider';
 const RegionDetails = () => {
     const { region: regionParam } = useParams();
-    const { user, isRegion,isAdmin } = useAuth();
+    const { user, isRegion, isAdmin } = useAuth();
     const regionName = isRegion() && user?.name ? user.name : regionParam;
     const [timeRange, setTimeRange] = useState('Daily');
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -16,6 +16,7 @@ const RegionDetails = () => {
         xAxis: [],
         series: [],
     });
+    const [demand, setDemand] = useState(0);
     const [widgetsData, setWidgetsData] = useState(() => {
         const savedDemandData = localStorage.getItem('edcDemandData');
         const savedTimestamp = localStorage.getItem('edcDemandTimestamp');
@@ -82,6 +83,14 @@ const RegionDetails = () => {
                     `/regions/graph/${entityId}/demand/${formattedDate}`
                 );
                 const data = response.data;
+                if (
+                    data?.series?.length > 0 &&
+                    data.series[0]?.data?.length > 0
+                ) {
+                    const latestCurrentDayValue =
+                        data.series[0].data[data.series[0].data.length - 1];
+                    setDemand(latestCurrentDayValue);
+                }
                 setGraphData(data);
             } catch (error) {
                 console.error('Error fetching region graph data:', error);
@@ -182,6 +191,8 @@ const RegionDetails = () => {
                     commMeters: stats.commMeters,
                     nonCommMeters: stats.nonCommMeters,
                     totalDistricts: stats.edcCount || 0,
+                    Demand: demand,
+                    DemandUnit: 'MW',
                 }}
                 isUserRoute={isRegion()}
                 isRegion={isRegion()}
@@ -214,6 +225,7 @@ const RegionDetails = () => {
                         navigate(`/admin/${entityId}/feeders`);
                     }
                 }}
+                showDemand={true}
             />
             <div className={styles.chart_container}>
                 <DynamicGraph
