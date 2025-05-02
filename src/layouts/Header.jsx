@@ -182,9 +182,9 @@ const Header = () => {
         navigate(`${basePath}/account`);
     };
 
-    const handleTicketsClick = () => {
-        navigate(`${basePath}/tickets`);
-    };
+    // const handleTicketsClick = () => {
+    //     navigate(`${basePath}/tickets`);
+    // };
 
     useEffect(() => {
         if (debouncedSearchTerm) {
@@ -362,11 +362,11 @@ const Header = () => {
                         />
                     </div>
 
-                    <span
+                    {/* <span
                         className={styles.white_icons}
                         onClick={handleTicketsClick}>
                         <img src="icons/support-tickets.svg" alt="Tickets" />
-                    </span>
+                    </span> */}
                     <span className={styles.white_icons} onClick={handleLogout}>
                         <img src="icons/logout-icon.svg" alt="Tickets" />
                     </span>
